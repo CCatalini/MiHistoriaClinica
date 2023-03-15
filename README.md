@@ -14,4 +14,8 @@
 * Ver lista de pacientes
 * Ver y Modificar historia clinica como medico
 * Ver y desligar mis medicamentos
+
+
+#### Casos de Usos Deseables:
 * Descargar historia clinica
+* 
