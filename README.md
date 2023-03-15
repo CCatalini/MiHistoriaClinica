@@ -10,12 +10,17 @@
 * ABM medicamentos
 * ABM estudios
 * Altas de historias clinicas
-* Agregar paciente
+* Linkear paciente
 * Ver lista de pacientes
 * Ver y Modificar historia clinica como medico
-* Ver y desligar mis medicamentos
+* Ver medicamentos como paciente
+
+* Filtrar listas 
+* Agenda de turnos propios 
+* Estudios y Vacunas pendientes 
 
 
 #### Casos de Usos Deseables:
 * Descargar historia clinica
-* 
+* creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
+(Bajo los criterios de sexo, edad) 
