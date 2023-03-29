@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 //Los servicios usan al repositorio para ejecutar la lógica de la app
 public class UserService {
 
     @Autowired //esto hace que no haya que instanciar a la variable, Spring sabe que existe una instancia y cual tiene que utilizar
+
     UserRepository userRepository;
 
     /** método para que el servicio use al repositorio
@@ -33,6 +35,24 @@ public class UserService {
          */
         return userRepository.save(user);
     }
+
+    public Optional<UserModel> findById(Long id){
+        return userRepository.findById(id);
+    }
+
+    public Iterable<UserModel> findAll(){
+        return userRepository.findAll();
+    }
+
+    public void deleteById(Long id){
+        userRepository.deleteById(id);
+    }
+
+    public void delete(UserModel model){
+        userRepository.delete(model);
+    }
+
+
 
 
 }

@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -28,6 +29,15 @@ public class UserModel {
 
     @Column(unique = true, nullable = false)
     private Long dni;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role_relationship",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<RoleModel> userRoles;
+
+
 
 
 
