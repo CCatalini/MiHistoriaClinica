@@ -19,6 +19,9 @@ public class RoleModel {
     @ManyToMany(mappedBy = "userRoles")
     private List<UserModel> users;
 
+    @OneToMany(mappedBy = "characteristic")
+    private List<RoleCharacteristic> characteristics;
+
 
     public void setRole_id(Long roleId) {
         this.role_id = roleId;

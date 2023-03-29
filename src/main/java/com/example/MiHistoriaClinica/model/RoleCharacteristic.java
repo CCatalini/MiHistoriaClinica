@@ -3,7 +3,7 @@ package com.example.MiHistoriaClinica.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "role_characteristic")
+@Table(name = "characteristics")
 public class RoleCharacteristic {
 
     @Id
@@ -12,4 +12,9 @@ public class RoleCharacteristic {
 
     @Column(name="characteristic_name")
     private String characteristic;
+
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RoleModel role;
 }
