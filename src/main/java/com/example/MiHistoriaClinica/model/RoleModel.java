@@ -38,4 +38,20 @@ public class RoleModel {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public List<UserModel> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserModel> users) {
+        this.users = users;
+    }
+
+    public List<RoleCharacteristic> getCharacteristics() {
+        return characteristics;
+    }
+
+    public void setCharacteristics(List<RoleCharacteristic> characteristics) {
+        this.characteristics = characteristics;
+    }
 }

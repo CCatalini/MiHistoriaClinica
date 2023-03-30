@@ -38,31 +38,28 @@ public class UserModel {
     private List<RoleModel> userRoles;
 
 
-
-
-
-    public void setId(Long id) {
-        this.user_id = id;
+    public Long getUser_id() {
+        return user_id;
     }
 
-    public Long getId() {
-        return user_id;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String username) {
-        this.name = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String password) {
-        this.lastname = password;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {
@@ -87,5 +84,13 @@ public class UserModel {
 
     public void setDni(Long dni) {
         this.dni = dni;
+    }
+
+    public List<RoleModel> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(List<RoleModel> userRoles) {
+        this.userRoles = userRoles;
     }
 }
