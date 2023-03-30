@@ -21,14 +21,19 @@ public class UserModel {
     @Column(nullable = false)
     private String lastname;
 
+    @Column(unique = true, nullable = false)
+    private Long dni;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private Date birthdate;
 
-    @Column(unique = true, nullable = false)
-    private Long dni;
+
 
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -62,6 +67,22 @@ public class UserModel {
         this.lastname = lastname;
     }
 
+    public Long getDni() {
+        return dni;
+    }
+
+    public void setDni(Long dni) {
+        this.dni = dni;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -76,14 +97,6 @@ public class UserModel {
 
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
-    }
-
-    public Long getDni() {
-        return dni;
-    }
-
-    public void setDni(Long dni) {
-        this.dni = dni;
     }
 
     public List<RoleModel> getUserRoles() {
