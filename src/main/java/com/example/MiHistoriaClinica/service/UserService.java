@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public boolean existUserById(Long id){
+    public boolean existsUserById(Long id){
         return userRepository.existsById(id);
     }
 
@@ -49,8 +49,10 @@ public class UserService {
         return (ArrayList<UserModel>) userRepository.findAll();
     }
 
-    public ArrayList<UserModel> findUserByRole (RoleModel role){
-
+    public void /*ArrayList<UserModel>*/ findUserByRole (RoleModel role){
+        /**
+         *
+         */
     }
 
     public Iterable<UserModel> findAllUsersById(Iterable<Long> id){
@@ -61,24 +63,33 @@ public class UserService {
         return userRepository.count();
     }
 
-
-
-
     public void deleteById(Long id){
         userRepository.deleteById(id);
     }
 
-    public void delete(UserModel model){
-        userRepository.delete(model);
+    public void deleteUser(UserModel user){
+        userRepository.delete(user);
+    }
+
+    public void deleteAllById(Iterable<Long> ids){
+        userRepository.deleteAllById(ids);
+    }
+
+    public void deleteAllUsers(Iterable<UserModel> users){
+        userRepository.deleteAll(users);
+    }
+
+    public void deleteAll(){
+        userRepository.deleteAll();
     }
 
 
 
 
 
-    private Iterable<Long> encontrarIdsPorRol(){
+    private void /*Iterable<Long>*/ encontrarIdsPorRol(){
         /**
-         * armar un iterador con los id de los usuarios con un solo rol para obtenerlo stodos con un finAll (pasando este iterados???????????
+         * ¿armar un iterador con los id de los usuarios con un solo rol para obtenerlo stodos con un finAll (pasando este iterados???????????
          */
     }
 }
