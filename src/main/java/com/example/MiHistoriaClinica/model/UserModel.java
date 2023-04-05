@@ -15,22 +15,22 @@ public class UserModel {
     @Column(unique = true, nullable = false)
     private Long user_id;
 
-    @Column(nullable = false)
+    @Column()
     private String name;
 
-    @Column(nullable = false)
+    @Column()
     private String lastname;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private Long dni;
 
-    @Column(nullable = false)
+    @Column()
     private String password;
 
-    @Column(nullable = false)
+    @Column()
     private String email;
 
-    @Column(nullable = false)
+    @Column()
     private Date birthdate;
 
 

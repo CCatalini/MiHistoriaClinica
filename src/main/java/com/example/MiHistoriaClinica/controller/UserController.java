@@ -7,6 +7,8 @@ import com.example.MiHistoriaClinica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -25,6 +27,11 @@ public class UserController {
     @GetMapping("/{id}")
     public UserModel getUser(@PathVariable Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/getAllUsers")
+    public ArrayList<UserModel> getAllUsers(){
+        return (ArrayList<UserModel>) userRepository.findAll();
     }
 
     @PutMapping("/{id}")
