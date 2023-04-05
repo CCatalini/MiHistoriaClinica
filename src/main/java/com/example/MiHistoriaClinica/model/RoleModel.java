@@ -2,7 +2,9 @@ package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "role")
@@ -17,7 +19,7 @@ public class RoleModel {
 
 
     @ManyToMany(mappedBy = "userRoles")
-    private List<UserModel> users;
+    private Set<UserModel> users = new HashSet<>();
 
     @OneToMany(mappedBy = "characteristic")
     private List<RoleCharacteristic> characteristics;
@@ -39,11 +41,11 @@ public class RoleModel {
         this.role = role;
     }
 
-    public List<UserModel> getUsers() {
+    public Set<UserModel> getUsers() {
         return users;
     }
 
-    public void setUsers(List<UserModel> users) {
+    public void setUsers(Set<UserModel> users) {
         this.users = users;
     }
 
