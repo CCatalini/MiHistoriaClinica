@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,11 +36,14 @@ public class UserModel {
 
 
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role_relationship",
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_role",
+            // joinColumns e inverseJoinColumns definen las claves foráneas de las tablas "user" y "role" en la tabla intermedia
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<RoleModel> userRoles;
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<RoleModel> roles = new ArrayList<>();
 
 
     public Long getUser_id() {
@@ -99,10 +103,10 @@ public class UserModel {
     }
 
     public List<RoleModel> getUserRoles() {
-        return userRoles;
+        return roles;
     }
 
     public void setUserRoles(List<RoleModel> userRoles) {
-        this.userRoles = userRoles;
+        this.roles = userRoles;
     }
 }

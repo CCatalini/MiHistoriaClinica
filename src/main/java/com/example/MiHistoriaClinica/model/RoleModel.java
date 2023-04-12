@@ -2,9 +2,9 @@ package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "role")
@@ -18,8 +18,9 @@ public class RoleModel {
     private String role;
 
 
-    @ManyToMany(mappedBy = "userRoles")
-    private Set<UserModel> users = new HashSet<>();
+    // la relación inversa es también de muchos a muchos, y que la clave foránea en la tabla "user_role" se llama "role_id".
+    @ManyToMany(mappedBy = "roles")
+    private List<UserModel> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "characteristic")
     private List<RoleCharacteristic> characteristics;
@@ -41,11 +42,11 @@ public class RoleModel {
         this.role = role;
     }
 
-    public Set<UserModel> getUsers() {
+    public List<UserModel> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<UserModel> users) {
+    public void setUsers(List<UserModel> users) {
         this.users = users;
     }
 
