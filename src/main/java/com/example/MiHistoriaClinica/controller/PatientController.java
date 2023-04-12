@@ -12,6 +12,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/patient")
+@CrossOrigin("*")
 public class PatientController {
 
     @Autowired private PatientRepository patientRepository;

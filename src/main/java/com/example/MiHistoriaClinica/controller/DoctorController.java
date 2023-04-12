@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/doctor")
+@CrossOrigin("*")
 public class DoctorController {
 
     DoctorRepository doctorRepository;

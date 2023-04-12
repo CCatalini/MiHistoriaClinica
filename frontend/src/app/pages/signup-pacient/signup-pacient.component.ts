@@ -3,10 +3,10 @@ import {UserService} from "../../services/user.service";
 
 @Component({
   selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  templateUrl: './signup-pacient.component.html',
+  styleUrls: ['./signup-pacient.component.css']
 })
-export class SignupComponent implements OnInit{
+export class SignupPacientComponent implements OnInit{
 
     public user = {
         name: '',
@@ -22,12 +22,13 @@ export class SignupComponent implements OnInit{
     }
 
     ngOnInit():void{
+        console.log("Hola");
     }
 
     formSubmit(){
       console.log(this.user);
       if(this.user.DNI == '' || this.user.DNI == null){
-          alert('El nombre de usuario es requerido');
+          alert('El DNI es requerido');
           return;
       }
 
