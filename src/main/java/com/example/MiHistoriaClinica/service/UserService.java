@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.model.RoleModel;
-import com.example.MiHistoriaClinica.model.UserModel;
+import com.example.MiHistoriaClinica.paraDiseñoRoles.RoleModel;
+import com.example.MiHistoriaClinica.model.PacientModel;
 import com.example.MiHistoriaClinica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class UserService {
      * @param user que quiero guardar (sin id)
      * @return user guardado con el id que se autogeneró
      */
-    public UserModel saveUser(UserModel user){
+    public PacientModel saveUser(PacientModel user){
         /*
         si en postman NO envío el usuario se crea uno nuevo
         si en postman envío el id se actualiza el usuario ya existente
@@ -29,11 +29,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Iterable<UserModel> saveAllUsers(Iterable<UserModel> users) {
+    public Iterable<PacientModel> saveAllUsers(Iterable<PacientModel> users) {
         return userRepository.saveAll(users);
     }
 
-    public Optional<UserModel> findById(Long id){
+    public Optional<PacientModel> findById(Long id){
         return userRepository.findById(id);
     }
 
@@ -44,9 +44,9 @@ public class UserService {
     /** método para que el servicio use al repositorio
      * @return todos los usuarios registrados de la BD
      */
-    public ArrayList<UserModel> findAllUsers(){
+    public ArrayList<PacientModel> findAllUsers(){
         // se castea para poder meterlo en un JSON
-        return (ArrayList<UserModel>) userRepository.findAll();
+        return (ArrayList<PacientModel>) userRepository.findAll();
     }
 
     public void /*ArrayList<UserModel>*/ findUserByRole (RoleModel role){
@@ -55,7 +55,7 @@ public class UserService {
          */
     }
 
-    public Iterable<UserModel> findAllUsersById(Iterable<Long> id){
+    public Iterable<PacientModel> findAllUsersById(Iterable<Long> id){
         return userRepository.findAllById(id);
     }
 
@@ -67,7 +67,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void deleteUser(UserModel user){
+    public void deleteUser(PacientModel user){
         userRepository.delete(user);
     }
 
@@ -75,7 +75,7 @@ public class UserService {
         userRepository.deleteAllById(ids);
     }
 
-    public void deleteAllUsers(Iterable<UserModel> users){
+    public void deleteAllUsers(Iterable<PacientModel> users){
         userRepository.deleteAll(users);
     }
 

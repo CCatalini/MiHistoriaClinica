@@ -1,8 +1,8 @@
-package com.example.MiHistoriaClinica.controller;
+package com.example.MiHistoriaClinica.paraDiseñoRoles;
 
-import com.example.MiHistoriaClinica.model.RoleModel;
-import com.example.MiHistoriaClinica.repository.RoleRepository;
+import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,7 +35,10 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRole(@PathVariable Long id) {
-        roleRepository.deleteById(id);
+    public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
+        RoleModel existingRole = roleRepository.findById(id).orElseThrow(()
+                              -> new ResourceNotFoundException("User not found"));
+        roleRepository.delete(existingRole);
+        return ResponseEntity.noContent().build();
     }
 }

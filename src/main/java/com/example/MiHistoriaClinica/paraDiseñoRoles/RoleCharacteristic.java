@@ -1,4 +1,4 @@
-package com.example.MiHistoriaClinica.model;
+package com.example.MiHistoriaClinica.paraDiseñoRoles;
 
 import jakarta.persistence.*;
 

@@ -1,20 +1,17 @@
 package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "user")
-public class UserModel {
+@Table(name = "Patient")
+public class PatientModel {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long user_id;
+    private Long patient_id;
 
     @Column()
     private String name;
@@ -35,23 +32,12 @@ public class UserModel {
     private Date birthdate;
 
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_role",
-            // joinColumns e inverseJoinColumns definen las claves foráneas de las tablas "user" y "role" en la tabla intermedia
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private List<RoleModel> roles = new ArrayList<>();
-
-
-    public Long getUser_id() {
-        return user_id;
+    public Long getPatient_id() {
+        return patient_id;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setPatient_id(Long patient_id) {
+        this.patient_id = patient_id;
     }
 
     public String getName() {
@@ -101,7 +87,21 @@ public class UserModel {
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
+}
 
+/*
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_role",
+            // joinColumns e inverseJoinColumns definen las claves foráneas de las tablas "user" y "role" en la tabla intermedia
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private List<RoleModel> roles = new ArrayList<>();
+*/
+
+
+/*
     public List<RoleModel> getUserRoles() {
         return roles;
     }
@@ -109,4 +109,5 @@ public class UserModel {
     public void setUserRoles(List<RoleModel> userRoles) {
         this.roles = userRoles;
     }
-}
+
+ */
