@@ -1,107 +1,86 @@
 package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
-import com.example.MiHistoriaClinica.model.RoleModel;
-import com.example.MiHistoriaClinica.model.UserModel;
-import com.example.MiHistoriaClinica.repository.RoleRepository;
-import com.example.MiHistoriaClinica.repository.UserRepository;
+import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private RoleRepository roleRepository;
+    @Autowired private PatientRepository patientRepository;
+
 
     @PostMapping
-    public UserModel createUser(@RequestBody UserModel user) {
-        return userRepository.save(user);
+    public PatientModel createUser(@RequestBody PatientModel user) {
+        return patientRepository.save(user);
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
+                               @RequestParam String email, @RequestParam String password, @RequestParam(required = false) Date birthdate) {
+        PatientModel patient = new PatientModel();
+
+        patient.setName(name);
+        patient.setLastname(lastname);
+        patient.setDni(dni);
+        patient.setEmail(email);
+        patient.setPassword(password);
+        patient.setBirthdate(birthdate);
+
+        patientRepository.save(patient);
+
+        return "redirect:/login";
     }
 
     @GetMapping("/{id}")
-    public UserModel getUser(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null);
+    public PatientModel getUser(@PathVariable Long id) {
+        return patientRepository.findById(id).orElse(null);
     }
 
     @GetMapping("/getAllUsers")
-    public ArrayList<UserModel> getAllUsers(){
-        return (ArrayList<UserModel>) userRepository.findAll();
+    public ArrayList<PatientModel> getAllUsers(){
+        return (ArrayList<PatientModel>) patientRepository.findAll();
     }
 
     @PutMapping("/{id}")
-    public UserModel updateUser(@PathVariable Long id, @RequestBody UserModel newUser) {
-        UserModel userModel = userRepository.findById(id).orElse(null);
-        if (userModel != null) {
-            userModel.setName(newUser.getName());
-            userModel.setLastname(newUser.getLastname());
-            userModel.setEmail(newUser.getEmail());
-            userModel.setPassword(newUser.getPassword());
-            userModel.setDni(newUser.getDni());
-            userModel.setBirthdate(newUser.getBirthdate());
+    public PatientModel updateUser(@PathVariable Long id, @RequestBody PatientModel newPatient) {
+        PatientModel patientModel = patientRepository.findById(id).orElseThrow(()
+                            -> new ResourceNotFoundException("User not found"));
 
-            userModel.setUserRoles(newUser.getUserRoles());
+        patientModel.setName(newPatient.getName());
+        patientModel.setLastname(newPatient.getLastname());
+        patientModel.setEmail(newPatient.getEmail());
+        patientModel.setPassword(newPatient.getPassword());
+        patientModel.setDni(newPatient.getDni());
+        patientModel.setBirthdate(newPatient.getBirthdate());
 
-                return userRepository.save(userModel);
-        } else  return null;
+
+        return patientRepository.save(patientModel);
+
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        UserModel existingUser = userRepository.findById(id).orElseThrow(()
+        PatientModel existingUser = patientRepository.findById(id).orElseThrow(()
                                 -> new ResourceNotFoundException("User not found"));
-        userRepository.delete(existingUser);
+        patientRepository.delete(existingUser);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
     public void deleteAllUser(){
-        userRepository.deleteAll();
+        patientRepository.deleteAll();
     }
 
-    @PostMapping("/{usuarioId}/roles/{rolId}")
-    public UserModel asignarRol(@PathVariable Long usuarioId, @PathVariable Long rolId) {
-        UserModel usuario = userRepository.findById(usuarioId).orElse(null);
-        RoleModel rol = roleRepository.findById(rolId).orElse(null);
-        if (usuario != null && rol != null) {
-            usuario.getUserRoles().add(rol);
-            return userRepository.save(usuario);
-        } else {
-            return null;
-        }
-    }
+
 
 
 }
 
-
-
-
-
-/*
-  @PostMapping("/postUser")
-    public UserModel postUser(@RequestBody UserModel user){
-        return this.userService.saveUser(user);
-    }
-
-    @PostMapping("/postAllUsers")
-    public Iterable<UserModel> postAllUsers(Iterable<UserModel> users){
-        return userService.saveAllUsers(users);
-    }
-
-    @GetMapping()
-    public ArrayList<UserModel> getAllUsers(){
-        return userService.findAllUsers();
-    }
-
-    @GetMapping()
-    public Optional<UserModel> getById(Long id){
-        return userService.findById(id);
-    }
-
- */

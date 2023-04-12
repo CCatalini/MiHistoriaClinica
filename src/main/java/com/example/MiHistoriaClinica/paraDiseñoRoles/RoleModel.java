@@ -1,5 +1,6 @@
-package com.example.MiHistoriaClinica.model;
+package com.example.MiHistoriaClinica.paraDiseñoRoles;
 
+import com.example.MiHistoriaClinica.model.UserModel;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
