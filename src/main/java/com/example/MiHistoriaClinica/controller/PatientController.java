@@ -60,9 +60,7 @@ public class PatientController {
         patientModel.setDni(newPatient.getDni());
         patientModel.setBirthdate(newPatient.getBirthdate());
 
-
         return patientRepository.save(patientModel);
-
     }
 
     @DeleteMapping("/{id}")
