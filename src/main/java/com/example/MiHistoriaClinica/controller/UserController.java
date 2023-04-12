@@ -1,24 +1,22 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.RoleModel;
 import com.example.MiHistoriaClinica.model.UserModel;
 import com.example.MiHistoriaClinica.repository.RoleRepository;
 import com.example.MiHistoriaClinica.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin("*")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private RoleRepository roleRepository;
 
     @PostMapping
     public UserModel createUser(@RequestBody UserModel user) {
@@ -40,16 +38,30 @@ public class UserController {
         UserModel userModel = userRepository.findById(id).orElse(null);
         if (userModel != null) {
             userModel.setName(newUser.getName());
+            userModel.setLastname(newUser.getLastname());
+            userModel.setEmail(newUser.getEmail());
+            userModel.setPassword(newUser.getPassword());
+            userModel.setDni(newUser.getDni());
+            userModel.setBirthdate(newUser.getBirthdate());
+
             userModel.setUserRoles(newUser.getUserRoles());
-            return userRepository.save(userModel);
-        } else {
-            return null;
-        }
+
+                return userRepository.save(userModel);
+        } else  return null;
     }
 
+
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        UserModel existingUser = userRepository.findById(id).orElseThrow(()
+                                -> new ResourceNotFoundException("User not found"));
+        userRepository.delete(existingUser);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public void deleteAllUser(){
+        userRepository.deleteAll();
     }
 
     @PostMapping("/{usuarioId}/roles/{rolId}")

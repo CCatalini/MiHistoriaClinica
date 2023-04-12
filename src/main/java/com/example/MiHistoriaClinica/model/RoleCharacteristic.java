@@ -10,7 +10,7 @@ public class RoleCharacteristic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long characteristic_id;
 
-    @Column(name="characteristic_name")
+    @Column(name="characteristic")
     private String characteristic;
 
 
