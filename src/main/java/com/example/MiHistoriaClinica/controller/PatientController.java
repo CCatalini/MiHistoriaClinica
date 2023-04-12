@@ -11,14 +11,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/patient")
+public class PatientController {
 
     @Autowired private PatientRepository patientRepository;
 
-
     @PostMapping
-    public PatientModel createUser(@RequestBody PatientModel user) {
+    public PatientModel createPatient(@RequestBody PatientModel user) {
         return patientRepository.save(user);
     }
 
@@ -40,17 +39,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public PatientModel getUser(@PathVariable Long id) {
+    public PatientModel getPatient(@PathVariable Long id) {
         return patientRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/getAllUsers")
-    public ArrayList<PatientModel> getAllUsers(){
+    @GetMapping("/getAllPatient")
+    public ArrayList<PatientModel> getAllPatient(){
         return (ArrayList<PatientModel>) patientRepository.findAll();
     }
 
     @PutMapping("/{id}")
-    public PatientModel updateUser(@PathVariable Long id, @RequestBody PatientModel newPatient) {
+    public PatientModel updatePatient(@PathVariable Long id, @RequestBody PatientModel newPatient) {
         PatientModel patientModel = patientRepository.findById(id).orElseThrow(()
                             -> new ResourceNotFoundException("User not found"));
 
@@ -67,15 +66,15 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> delelePatient(@PathVariable Long id) {
         PatientModel existingUser = patientRepository.findById(id).orElseThrow(()
-                                -> new ResourceNotFoundException("User not found"));
+                                -> new ResourceNotFoundException("Patient not found"));
         patientRepository.delete(existingUser);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
-    public void deleteAllUser(){
+    public void deleteAllPatient(){
         patientRepository.deleteAll();
     }
 
