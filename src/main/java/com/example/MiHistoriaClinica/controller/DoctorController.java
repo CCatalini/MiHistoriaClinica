@@ -4,6 +4,7 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.DoctorModel;
 import com.example.MiHistoriaClinica.repository.DoctorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 @CrossOrigin("*")
 public class DoctorController {
 
-    DoctorRepository doctorRepository;
+   @Autowired  private DoctorRepository doctorRepository;
 
     @PostMapping()
     public DoctorModel createDoctor(@RequestBody DoctorModel doctor) {
