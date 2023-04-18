@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services/user.service";
 
 @Component({
-  selector: 'app-signup',
+  selector: 'app-signup-pacient',
   templateUrl: './signup-pacient.component.html',
   styleUrls: ['./signup-pacient.component.css']
 })
