@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {SignupPacientComponent} from "./pages/signup-pacient/signup-pacient.component";
+import {SignupPatientComponent} from "./pages/signup-patient/signup-patient.component";
 import {HomeComponent} from "./pages/home/home.component";
 
 const routes: Routes = [
@@ -11,7 +11,7 @@ const routes: Routes = [
   },
   {
       path:'signup-pacient',
-      component:SignupPacientComponent,
+      component:SignupPatientComponent,
       pathMatch:'full'
   },
 
