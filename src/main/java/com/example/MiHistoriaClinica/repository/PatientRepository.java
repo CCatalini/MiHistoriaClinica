@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends JpaRepository<PatientModel, Long> {
 
-
+    PatientModel findByDniAndPass(Long dni, String contraseña);
 }
