@@ -16,7 +16,7 @@
 
           <mat-form-field class = "full-width" appearance = "outline">
             <mat-label>Apellido:</mat-label>
-            <input required [(ngModel)] = "user.surname" name = "surname" matInput placeholder="Ingrese su apellido">
+            <input required [(ngModel)] = "user.lastname" name = "surname" matInput placeholder="Ingrese su apellido">
           </mat-form-field>
 
           <mat-form-field class = "full-width" appearance = "outline">
@@ -25,14 +25,10 @@
           </mat-form-field>
 
           <mat-form-field class = "full-width" appearance = "outline">
-            <mat-label>DNI:</mat-label>
-              <input required [(ngModel)] = "user.DNI" name = "dni" matInput placeholder="Ingrese su DNI">
+            <mat-label>dni:</mat-label>
+              <input required [(ngModel)] = "user.dni" name = "dni" matInput placeholder="Ingrese su DNI">
           </mat-form-field>
 
-          <mat-form-field class = "full-width" appearance = "outline">
-            <mat-label>Fecha de nacimiento:</mat-label>
-            <input type = "date" pattern = "\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" matInput placeholder = "Ingrese su fecha de nacimiento">
-          </mat-form-field>
 
           <mat-form-field class = "full-width" appearance = "outline">
             <mat-label>Mail:</mat-label>

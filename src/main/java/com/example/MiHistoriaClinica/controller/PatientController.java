@@ -17,12 +17,12 @@ public class PatientController {
 
     @Autowired private PatientRepository patientRepository;
 
-    @PostMapping
+    @PostMapping("/register") // recibe JSON
     public PatientModel createPatient(@RequestBody PatientModel user) {
         return patientRepository.save(user);
     }
 
-    @PostMapping("/register")
+    @PostMapping() // recibe form
     public String registerUser(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
                                @RequestParam String email, @RequestParam String password, @RequestParam(required = false) Date birthdate) {
         PatientModel patient = new PatientModel();

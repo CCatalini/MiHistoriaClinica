@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import {RouterModule} from "@angular/router";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SignupPacientComponent } from './pages/signup-pacient/signup-pacient.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,12 +12,12 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {HttpClientModule} from "@angular/common/http";
-import { HomeComponent } from './pages/home/home.component';
+import { HomeComponent } from "./pages/home/home.component";
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    //RegistrarPacienteComponent,
     NavbarComponent,
     SignupPacientComponent,
     HomeComponent,
@@ -30,7 +30,8 @@ import { HomeComponent } from './pages/home/home.component';
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
-        HttpClientModule
+        HttpClientModule,
+        ReactiveFormsModule
     ],
   providers: [],
   bootstrap: [AppComponent]
