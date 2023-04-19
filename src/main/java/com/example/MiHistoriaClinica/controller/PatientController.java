@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -39,6 +40,19 @@ public class PatientController {
         return "redirect:/login";
     }
 
+    @GetMapping("/login")
+    public String login(Long dni, String password, Model model) {
+        PatientModel patient = patientRepository.findByDniAndPass(dni, password);
+        if (patient == null) {
+            model.addAttribute("error", "Paciente no encontrado");
+            return "error";
+        } else {
+            model.addAttribute("patient", patient);
+            return "redirect:/patientMainPage";
+        }
+    }
+
+
     @GetMapping("/{id}")
     public PatientModel getPatient(@PathVariable Long id) {
         return patientRepository.findById(id).orElse(null);
@@ -65,7 +79,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delelePatient(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         PatientModel existingUser = patientRepository.findById(id).orElseThrow(()
                                 -> new ResourceNotFoundException("Patient not found"));
         patientRepository.delete(existingUser);
