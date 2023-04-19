@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services/user.service";
-
+import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-signup-patient',
   templateUrl: './signup-patient.component.html',
@@ -17,7 +18,7 @@ export class SignupPatientComponent implements OnInit{
         birthday: ''
     }
 
-    constructor(private userService:UserService){
+    constructor(private userService:UserService, private snack:MatSnackBar){
 
     }
 
@@ -28,18 +29,25 @@ export class SignupPatientComponent implements OnInit{
     formSubmit(){
       console.log(this.user);
       if(this.user.dni == '' || this.user.dni == null){
-          alert('El DNI es requerido');
+          this.snack.open("El DNI es requerido", "Aceptar",{
+              duration: 3000,
+              verticalPosition: 'top',
+              horizontalPosition: 'right'
+          });
           return;
       }
 
       this.userService.añadirUsuario(this.user).subscribe(
           (data) => {
               console.log(data);
-              alert('Usuario guardado con exito');
+              Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema', 'success');
           },(error) => {
               console.log(error);
-              alert('Ha ocurrido un eror en el sistema');
-          }
+              this.snack.open("Ha ocurrido un error en el sistema", "Aceptar",{
+                  duration: 3000,
+                  verticalPosition: 'top',
+                  horizontalPosition: 'right'
+              });          }
       )
 
 
