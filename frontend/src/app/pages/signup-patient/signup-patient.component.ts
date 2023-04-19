@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services/user.service";
 
 @Component({
-  selector: 'app-signup-pacient',
-  templateUrl: './signup-pacient.component.html',
-  styleUrls: ['./signup-pacient.component.css']
+  selector: 'app-signup-patient',
+  templateUrl: './signup-patient.component.html',
+  styleUrls: ['./signup-patient.component.css']
 })
-export class SignupPacientComponent implements OnInit{
+export class SignupPatientComponent implements OnInit{
 
     public user = {
         name: '',
@@ -15,7 +15,6 @@ export class SignupPacientComponent implements OnInit{
         email: '',
         password: '',
         birthday: ''
-
     }
 
     constructor(private userService:UserService){

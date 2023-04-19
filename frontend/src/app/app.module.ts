@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import {RouterModule} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { SignupPacientComponent } from './pages/signup-pacient/signup-pacient.component';
+import { SignupPatientComponent } from './pages/signup-patient/signup-patient.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatButtonModule} from '@angular/material/button';
@@ -19,7 +19,7 @@ import { HomeComponent } from "./pages/home/home.component";
   declarations: [
     AppComponent,
     NavbarComponent,
-    SignupPacientComponent,
+    SignupPatientComponent,
     HomeComponent,
   ],
     imports: [
