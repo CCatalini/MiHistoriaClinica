@@ -10,11 +10,12 @@ export class SignupPacientComponent implements OnInit{
 
     public user = {
         name: '',
-        surname: '',
+        lastname: '',
+        dni: '',
+        email: '',
         password: '',
-        DNI: '',
-        date_of_birth: '',
-        email: ''
+        birthday: ''
+
     }
 
     constructor(private userService:UserService){
@@ -27,7 +28,7 @@ export class SignupPacientComponent implements OnInit{
 
     formSubmit(){
       console.log(this.user);
-      if(this.user.DNI == '' || this.user.DNI == null){
+      if(this.user.dni == '' || this.user.dni == null){
           alert('El DNI es requerido');
           return;
       }

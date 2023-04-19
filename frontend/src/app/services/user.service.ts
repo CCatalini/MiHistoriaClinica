@@ -6,8 +6,9 @@ import baserUrl from './helper';
 })
 export class UserService {
 
-  constructor(private httpClient:HttpClient) { }
+  constructor(private http:HttpClient) { }
+
   public añadirUsuario(user:any){
-    return this.httpClient.post(`&{baserUrl}/users/`,user);
+    return this.http.post(`http://localhost:8080/patient/register`,user);
   }
 }
