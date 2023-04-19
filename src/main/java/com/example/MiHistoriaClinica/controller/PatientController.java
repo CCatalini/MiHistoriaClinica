@@ -18,7 +18,7 @@ public class PatientController {
 
     @Autowired private PatientRepository patientRepository;
 
-    @PostMapping("/register") // recibe JSON
+    @PostMapping("/signup") // recibe JSON
     public PatientModel createPatient(@RequestBody PatientModel user) {
         return patientRepository.save(user);
     }
@@ -90,9 +90,6 @@ public class PatientController {
     public void deleteAllPatient(){
         patientRepository.deleteAll();
     }
-
-
-
 
 }
 

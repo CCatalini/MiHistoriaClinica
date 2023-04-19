@@ -13,6 +13,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {HttpClientModule} from "@angular/common/http";
 import { HomeComponent } from "./pages/home/home.component";
+import { SignupMedicComponent } from './pages/signup-medic/signup-medic.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 
 @NgModule({
@@ -21,6 +23,7 @@ import { HomeComponent } from "./pages/home/home.component";
     NavbarComponent,
     SignupPatientComponent,
     HomeComponent,
+    SignupMedicComponent,
   ],
     imports: [
         BrowserModule,
@@ -31,7 +34,8 @@ import { HomeComponent } from "./pages/home/home.component";
         MatFormFieldModule,
         MatInputModule,
         HttpClientModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatSnackBarModule
     ],
   providers: [],
   bootstrap: [AppComponent]
