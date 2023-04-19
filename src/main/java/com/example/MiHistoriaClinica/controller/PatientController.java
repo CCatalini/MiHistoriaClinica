@@ -42,7 +42,7 @@ public class PatientController {
 
     @GetMapping("/login")
     public String login(Long dni, String password, Model model) {
-        PatientModel patient = patientRepository.findByDniAndPass(dni, password);
+        PatientModel patient = patientRepository.findByDniAndPassword(dni, password);
         if (patient == null) {
             model.addAttribute("error", "Paciente no encontrado");
             return "error";
