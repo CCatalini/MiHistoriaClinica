@@ -3,11 +3,14 @@ package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.DoctorModel;
+import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 
 
@@ -18,27 +21,21 @@ public class DoctorController {
 
    @Autowired  private DoctorRepository doctorRepository;
 
-    @PostMapping()
+    @PostMapping("/register") //recibe JSON
     public DoctorModel createDoctor(@RequestBody DoctorModel doctor) {
         return doctorRepository.save(doctor);
     }
 
-    @PostMapping("/register")
-    public String registerDoctor(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
-                               @RequestParam String email, @RequestParam Long matricula, @RequestParam String specialty, @RequestParam String password) {
-        DoctorModel doctor = new DoctorModel();
-
-        doctor.setName(name);
-        doctor.setLastname(lastname);
-        doctor.setDni(dni);
-        doctor.setEmail(email);
-        doctor.setMatricula(matricula);
-        doctor.setSpecialty(specialty);
-        doctor.setPassword(password);
-
-        doctorRepository.save(doctor);
-
-        return "redirect:/login";
+    @GetMapping("/login")
+    public String login(Long dni, String password, Model model) {
+        DoctorModel doctor = doctorRepository.findByDniAndPassword(dni, password);
+        if (doctor == null) {
+            model.addAttribute("error", "Doctor no registrado");
+            return "error";
+        } else {
+            model.addAttribute("doctor", doctor);
+            return "redirect:/doctorMainPage";
+        }
     }
 
     @GetMapping("/{id}")
