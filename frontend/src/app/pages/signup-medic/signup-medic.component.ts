@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 export class SignupMedicComponent implements OnInit{
 
-    public user = {
+    public medic = {
         name: '',
         lastname: '',
         email: '',
@@ -30,13 +30,13 @@ export class SignupMedicComponent implements OnInit{
     }
 
     formSubmit(){
-        console.log(this.user);
-        if(this.user.dni == '' || this.user.dni == null){
+        console.log(this.medic);
+        if(this.medic.dni == '' || this.medic.dni == null){
             Swal.fire('Ingrese su DNI', 'El DNI es requisito para registrarse como paciente.', 'warning');
             return;
         }
 
-        this.userService.añadirUsuario(this.user).subscribe(
+        this.userService.añadirUsuario(this.medic).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
