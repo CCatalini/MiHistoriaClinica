@@ -2,8 +2,8 @@ package com.example.MiHistoriaClinica.controller;
 
 
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
-import com.example.MiHistoriaClinica.model.DoctorModel;
-import com.example.MiHistoriaClinica.repository.DoctorRepository;
+import com.example.MiHistoriaClinica.model.MedicModel;
+import com.example.MiHistoriaClinica.repository.MedicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,19 +14,19 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/doctor")
 @CrossOrigin("*")
-public class DoctorController {
+public class MedicController {
 
-   @Autowired  private DoctorRepository doctorRepository;
+   @Autowired  private MedicRepository medicRepository;
 
     @PostMapping()
-    public DoctorModel createDoctor(@RequestBody DoctorModel doctor) {
-        return doctorRepository.save(doctor);
+    public MedicModel createDoctor(@RequestBody MedicModel doctor) {
+        return medicRepository.save(doctor);
     }
 
     @PostMapping("/register")
     public String registerDoctor(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
                                @RequestParam String email, @RequestParam Long matricula, @RequestParam String specialty, @RequestParam String password) {
-        DoctorModel doctor = new DoctorModel();
+        MedicModel doctor = new MedicModel();
 
         doctor.setName(name);
         doctor.setLastname(lastname);
@@ -36,24 +36,24 @@ public class DoctorController {
         doctor.setSpecialty(specialty);
         doctor.setPassword(password);
 
-        doctorRepository.save(doctor);
+        medicRepository.save(doctor);
 
         return "redirect:/login";
     }
 
     @GetMapping("/{id}")
-    public DoctorModel getDoctor(@PathVariable Long id) {
-        return doctorRepository.findById(id).orElse(null);
+    public MedicModel getDoctor(@PathVariable Long id) {
+        return medicRepository.findById(id).orElse(null);
     }
 
     @GetMapping("/getAllDoctor")
-    public ArrayList<DoctorModel> getAllDoctor(){
-        return (ArrayList<DoctorModel>) doctorRepository.findAll();
+    public ArrayList<MedicModel> getAllDoctor(){
+        return (ArrayList<MedicModel>) medicRepository.findAll();
     }
 
     @PutMapping("/{id}")
-    public DoctorModel updateDoctor(@PathVariable Long id, @RequestBody DoctorModel newDoctor) {
-        DoctorModel doctor = doctorRepository.findById(id).orElseThrow(()
+    public MedicModel updateDoctor(@PathVariable Long id, @RequestBody MedicModel newDoctor) {
+        MedicModel doctor = medicRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("User not found"));
 
         doctor.setName(newDoctor.getName());
@@ -64,20 +64,20 @@ public class DoctorController {
         doctor.setSpecialty(newDoctor.getSpecialty());
         doctor.setPassword(newDoctor.getPassword());
 
-        return doctorRepository.save(doctor);
+        return medicRepository.save(doctor);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        DoctorModel existingDoctor = doctorRepository.findById(id).orElseThrow(()
+        MedicModel existingDoctor = medicRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Doctor not found"));
-        doctorRepository.delete(existingDoctor);
+        medicRepository.delete(existingDoctor);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
     public void deleteAllPatient(){
-        doctorRepository.deleteAll();
+        medicRepository.deleteAll();
     }
 
 
