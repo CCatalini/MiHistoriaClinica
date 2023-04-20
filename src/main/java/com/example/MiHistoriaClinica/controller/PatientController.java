@@ -53,9 +53,14 @@ public class PatientController {
     }
 
 
-    @GetMapping("/{id}")
-    public PatientModel getPatient(@PathVariable Long id) {
+    @GetMapping("/findPatientById/{id}")
+    public PatientModel getPatientById(@PathVariable Long id) {
         return patientRepository.findById(id).orElse(null);
+    }
+
+    @GetMapping("/findPatientByDni/{dni}")
+    public PatientModel getPatientByDni(@PathVariable Long dni){
+        return patientRepository.findByDni(dni);
     }
 
     @GetMapping("/getAllPatient")

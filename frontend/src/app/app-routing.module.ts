@@ -5,12 +5,12 @@ import {SignupMedicComponent} from "./pages/signup-medic/signup-medic.component"
 
 const routes: Routes = [
   {
-      path:'signup-patient',
+      path:'patient/signup',
       component:SignupPatientComponent,
       pathMatch:'full'
   },
   {
-      path:'signup-medic',
+      path:'medic/signup',
       component:SignupMedicComponent,
       pathMatch:'full'
   }
