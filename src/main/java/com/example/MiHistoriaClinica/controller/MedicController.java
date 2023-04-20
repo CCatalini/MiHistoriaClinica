@@ -12,34 +12,17 @@ import java.util.ArrayList;
 
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/medic")
 @CrossOrigin("*")
 public class MedicController {
 
    @Autowired  private MedicRepository medicRepository;
 
-    @PostMapping()
-    public MedicModel createDoctor(@RequestBody MedicModel doctor) {
+    @PostMapping("/signup")
+    public MedicModel createMedic(@RequestBody MedicModel doctor) {
         return medicRepository.save(doctor);
     }
 
-    @PostMapping("/register")
-    public String registerDoctor(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
-                               @RequestParam String email, @RequestParam Long matricula, @RequestParam String specialty, @RequestParam String password) {
-        MedicModel doctor = new MedicModel();
-
-        doctor.setName(name);
-        doctor.setLastname(lastname);
-        doctor.setDni(dni);
-        doctor.setEmail(email);
-        doctor.setMatricula(matricula);
-        doctor.setSpecialty(specialty);
-        doctor.setPassword(password);
-
-        medicRepository.save(doctor);
-
-        return "redirect:/login";
-    }
 
     @GetMapping("/{id}")
     public MedicModel getDoctor(@PathVariable Long id) {

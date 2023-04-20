@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 })
 export class SignupPatientComponent implements OnInit{
 
-    public user = {
+    public patient = {
         name: '',
         lastname: '',
         dni: '',
@@ -27,13 +27,13 @@ export class SignupPatientComponent implements OnInit{
     }
 
     formSubmit(){
-      console.log(this.user);
-      if(this.user.dni == '' || this.user.dni == null){
+      console.log(this.patient);
+      if(this.patient.dni == '' || this.patient.dni == null){
           Swal.fire('Ingrese su DNI', 'El DNI es requisito para registrarse como paciente.', 'warning');
           return;
       }
 
-      this.userService.añadirUsuario(this.user).subscribe(
+      this.userService.addPatient(this.patient).subscribe(
           (data) => {
               console.log(data);
               Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');

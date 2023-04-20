@@ -36,7 +36,7 @@ export class SignupMedicComponent implements OnInit{
             return;
         }
 
-        this.userService.añadirUsuario(this.medic).subscribe(
+        this.userService.addMedic(this.medic).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');

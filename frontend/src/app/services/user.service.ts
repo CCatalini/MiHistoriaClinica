@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
-import baserUrl from './helper';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -8,7 +8,10 @@ export class UserService {
 
   constructor(private http:HttpClient) { }
 
-  public añadirUsuario(user:any){
-    return this.http.post(`http://localhost:8080/patient/register`,user);
+  public addPatient(patient:any){
+    return this.http.post(`http://localhost:8080/patient/signup`,patient);
+  }
+  public addMedic(medic:any){
+    return this.http.post(`http://localhost:8080/medic/signup`,medic);
   }
 }
