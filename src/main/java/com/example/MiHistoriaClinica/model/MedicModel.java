@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Doctor")
-public class DoctorModel {
+public class MedicModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long doctor_id;
+    private Long medic_id;
 
     private String name;
 
@@ -30,12 +30,12 @@ public class DoctorModel {
     private String password;
 
 
-    public Long getDoctor_id() {
-        return doctor_id;
+    public Long getMedic_id() {
+        return medic_id;
     }
 
-    public void setDoctor_id(Long doctor_id) {
-        this.doctor_id = doctor_id;
+    public void setMedic_id(Long doctor_id) {
+        this.medic_id = doctor_id;
     }
 
     public String getName() {
