@@ -6,6 +6,7 @@ import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.repository.MedicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,43 +24,63 @@ public class MedicController {
         return medicRepository.save(doctor);
     }
 
+    @GetMapping("/login")
+    public String loginMedic(Long dni, String password, Model model){
+        MedicModel medic = medicRepository.findByDniAndPassword(dni, password);
+        if (medic == null){
+            model.addAttribute("error", "Doctor no encontrado");
+            return"error";
+        } else {
+            model.addAttribute("medic", medic);
+            return "redirect:/medicMainPage";
+        }
+    }
 
-    @GetMapping("/{id}")
-    public MedicModel getDoctor(@PathVariable Long id) {
+    @GetMapping("/getById/{id}")
+    public MedicModel getMedicById(@PathVariable Long id) {
         return medicRepository.findById(id).orElse(null);
     }
 
-    @GetMapping("/getAllDoctor")
-    public ArrayList<MedicModel> getAllDoctor(){
+    @GetMapping("/getByDni/{id}")
+    public MedicModel getMedicByDni(@PathVariable Long dni){
+        return medicRepository.findByDni(dni);
+    }
+    @GetMapping("/getAll")
+    public ArrayList<MedicModel> getAllMedic(){
         return (ArrayList<MedicModel>) medicRepository.findAll();
     }
 
-    @PutMapping("/{id}")
-    public MedicModel updateDoctor(@PathVariable Long id, @RequestBody MedicModel newDoctor) {
-        MedicModel doctor = medicRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("User not found"));
+    @PutMapping("/update/{id}")
+    public MedicModel updateMedic(@PathVariable Long id, @RequestBody MedicModel newMedic) {
+        MedicModel medic = medicRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Medic not found"));
 
-        doctor.setName(newDoctor.getName());
-        doctor.setLastname(newDoctor.getLastname());
-        doctor.setDni(newDoctor.getDni());
-        doctor.setEmail(newDoctor.getEmail());
-        doctor.setMatricula(newDoctor.getMatricula());
-        doctor.setSpecialty(newDoctor.getSpecialty());
-        doctor.setPassword(newDoctor.getPassword());
+        medic.setName(newMedic.getName());
+        medic.setLastname(newMedic.getLastname());
+        medic.setDni(newMedic.getDni());
+        medic.setEmail(newMedic.getEmail());
+        medic.setMatricula(newMedic.getMatricula());
+        medic.setSpecialty(newMedic.getSpecialty());
+        medic.setPassword(newMedic.getPassword());
 
-        return medicRepository.save(doctor);
+        return medicRepository.save(medic);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        MedicModel existingDoctor = medicRepository.findById(id).orElseThrow(()
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteMedic(@PathVariable Long id) {
+        MedicModel medic = medicRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Doctor not found"));
-        medicRepository.delete(existingDoctor);
+        medicRepository.delete(medic);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
-    public void deleteAllPatient(){
+    @DeleteMapping("/deleteByDni/{dni}")
+    public void deleteMedicByDni (@PathVariable Long dni){
+        medicRepository.deleteByDni(dni);
+    }
+
+    @DeleteMapping("/deleteAll")
+    public void deleteAllMedic(){
         medicRepository.deleteAll();
     }
 
