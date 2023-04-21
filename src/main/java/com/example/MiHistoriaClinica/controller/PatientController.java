@@ -65,7 +65,7 @@ public class PatientController {
         else                return patient;
     }
 
-    // todo probar en postman desde aca y
+    // todo probar en postman desde aca y el resto de los controladores
     @GetMapping("/getAll")
     public ArrayList<PatientModel> getAllPatient(){
         return (ArrayList<PatientModel>) patientRepository.findAll();
