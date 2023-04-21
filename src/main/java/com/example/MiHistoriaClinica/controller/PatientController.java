@@ -41,7 +41,7 @@ public class PatientController {
     }
 
     @GetMapping("/login")
-    public String login(Long dni, String password, Model model) {
+    public String loginPatient(Long dni, String password, Model model) {
         PatientModel patient = patientRepository.findByDniAndPassword(dni, password);
         if (patient == null) {
             model.addAttribute("error", "Paciente no encontrado");
@@ -52,46 +52,54 @@ public class PatientController {
         }
     }
 
-
-    @GetMapping("/findPatientById/{id}")
+    @GetMapping("/getById/{id}")
     public PatientModel getPatientById(@PathVariable Long id) {
-        return patientRepository.findById(id).orElse(null);
+        return patientRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Paciente no encontrado"));
     }
 
-    @GetMapping("/findPatientByDni/{dni}")
-    public PatientModel getPatientByDni(@PathVariable Long dni){
-        return patientRepository.findByDni(dni);
+    @GetMapping("/getByDni/{dni}")
+    public Object getPatientByDni(@PathVariable Long dni){
+        PatientModel patient = patientRepository.findByDni(dni);
+        if(patient == null) return new ResourceNotFoundException("Paciente no encontrado");
+        else                return patient;
     }
 
-    @GetMapping("/getAllPatient")
+    // todo probar en postman desde aca y
+    @GetMapping("/getAll")
     public ArrayList<PatientModel> getAllPatient(){
         return (ArrayList<PatientModel>) patientRepository.findAll();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public PatientModel updatePatient(@PathVariable Long id, @RequestBody PatientModel newPatient) {
-        PatientModel patientModel = patientRepository.findById(id).orElseThrow(()
-                            -> new ResourceNotFoundException("User not found"));
+        PatientModel patient = patientRepository.findById(id).orElseThrow(()
+                            -> new ResourceNotFoundException("Patient not found"));
 
-        patientModel.setName(newPatient.getName());
-        patientModel.setLastname(newPatient.getLastname());
-        patientModel.setEmail(newPatient.getEmail());
-        patientModel.setPassword(newPatient.getPassword());
-        patientModel.setDni(newPatient.getDni());
-        patientModel.setBirthdate(newPatient.getBirthdate());
+        patient.setName(newPatient.getName());
+        patient.setLastname(newPatient.getLastname());
+        patient.setEmail(newPatient.getEmail());
+        patient.setPassword(newPatient.getPassword());
+        patient.setDni(newPatient.getDni());
+        patient.setBirthdate(newPatient.getBirthdate());
 
-        return patientRepository.save(patientModel);
+        return patientRepository.save(patient);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        PatientModel existingUser = patientRepository.findById(id).orElseThrow(()
+        PatientModel patient = patientRepository.findById(id).orElseThrow(()
                                 -> new ResourceNotFoundException("Patient not found"));
-        patientRepository.delete(existingUser);
+        patientRepository.delete(patient);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/deleteByDni/{dni}")
+    public void deletePatientByDni (@PathVariable Long dni){
+        patientRepository.deleteByDni(dni);
+    }
+
+    @DeleteMapping("/deleteAll")
     public void deleteAllPatient(){
         patientRepository.deleteAll();
     }
