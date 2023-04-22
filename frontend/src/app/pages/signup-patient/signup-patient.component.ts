@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import Swal from 'sweetalert2';
-import {PatientService} from "../../services/patient.service";
+import {SignupPatientService} from "../../services/signup-patient.service";
 @Component({
   selector: 'app-signup-patient',
   templateUrl: './signup-patient.component.html',
@@ -18,7 +18,7 @@ export class SignupPatientComponent implements OnInit{
         birthday: ''
     }
 
-    constructor(private userService:PatientService, private snack:MatSnackBar){
+    constructor(private userService:SignupPatientService, private snack:MatSnackBar){
 
     }
 
@@ -41,7 +41,5 @@ export class SignupPatientComponent implements OnInit{
               Swal.fire('Error', 'Falta completar algún campo o existen datos repetidos.', 'error');
           }
       )
-
-
     }
 }
