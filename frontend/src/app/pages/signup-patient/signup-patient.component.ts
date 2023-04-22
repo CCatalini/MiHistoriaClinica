@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../services/user.service";
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import Swal from 'sweetalert2';
+import {PatientService} from "../../services/patient.service";
 @Component({
   selector: 'app-signup-patient',
   templateUrl: './signup-patient.component.html',
@@ -18,7 +18,7 @@ export class SignupPatientComponent implements OnInit{
         birthday: ''
     }
 
-    constructor(private userService:UserService, private snack:MatSnackBar){
+    constructor(private userService:PatientService, private snack:MatSnackBar){
 
     }
 
@@ -32,7 +32,6 @@ export class SignupPatientComponent implements OnInit{
           Swal.fire('Ingrese su DNI', 'El DNI es requisito para registrarse como paciente.', 'warning');
           return;
       }
-
       this.userService.addPatient(this.patient).subscribe(
           (data) => {
               console.log(data);

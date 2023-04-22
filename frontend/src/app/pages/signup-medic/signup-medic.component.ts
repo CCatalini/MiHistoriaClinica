@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from "../../services/user.service";
+import {MedicService} from "../../services/medic.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 
@@ -21,12 +21,11 @@ export class SignupMedicComponent implements OnInit{
         password: ''
     }
 
-    constructor(private userService:UserService, private snack:MatSnackBar){
+    constructor(private userService:MedicService, private snack:MatSnackBar){
 
     }
 
     ngOnInit():void{
-        console.log("Hola");
     }
 
     formSubmit(){
@@ -45,7 +44,5 @@ export class SignupMedicComponent implements OnInit{
                 Swal.fire('Error', 'Falta completar algún campo o existen datos repetidos.', 'error');
             }
         )
-
-
     }
 }
