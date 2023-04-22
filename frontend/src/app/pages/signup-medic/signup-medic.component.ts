@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MedicService} from "../../services/medic.service";
+import {SignupMedicService} from "../../services/signup-medic.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 
@@ -21,7 +21,7 @@ export class SignupMedicComponent implements OnInit{
         password: ''
     }
 
-    constructor(private userService:MedicService, private snack:MatSnackBar){
+    constructor(private userService:SignupMedicService, private snack:MatSnackBar){
 
     }
 
