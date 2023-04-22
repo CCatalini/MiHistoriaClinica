@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name = "Doctor")
+@Table(name = "Medic")
 public class MedicModel {
 
     @Id
