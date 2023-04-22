@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {SignupPatientComponent} from "./pages/signup-patient/signup-patient.component";
 import {SignupMedicComponent} from "./pages/signup-medic/signup-medic.component";
 import {LoginPatientComponent} from "./pages/login-patient/login-patient.component";
+import {LoginMedicComponent} from "./pages/login-medic/login-medic.component";
 
 const routes: Routes = [
   {
@@ -18,6 +19,11 @@ const routes: Routes = [
   {
       path:'patient/login',
       component:LoginPatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/login',
+      component:LoginMedicComponent,
       pathMatch:'full'
   }
 ];
