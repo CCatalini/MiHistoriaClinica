@@ -18,6 +18,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {AppRoutingModule} from "./app-routing.module";
 import { LoginPatientComponent } from './pages/login-patient/login-patient.component';
+import { LoginMedicComponent } from './pages/login-medic/login-medic.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { LoginPatientComponent } from './pages/login-patient/login-patient.compo
     HomeComponent,
     SignupMedicComponent,
     LoginPatientComponent,
+    LoginMedicComponent,
   ],
     imports: [
         BrowserModule,

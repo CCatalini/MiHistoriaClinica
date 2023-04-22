@@ -3,21 +3,21 @@
         <div class = "row" style = "margin-top : 20px;">
             <div clazz = "col-md-6 offset-md-3">
                 <div class = "container text-center">
-                    <img src = "../../../assets/Pacientes.png" width = "200" height = "200">
+                    <img src = "../../../assets/Medicos.png" width = "200" height = "200">
                 </div>
 
-                <h1 class = "text-center">Inicio de sesión como paciente</h1>
+                <h1 class = "text-center">Inicio de sesión como médico</h1>
 
                 <form  (ngSubmit) = "formSubmit()">
 
                     <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>DNI:</mat-label>
-                        <input required [(ngModel)] = "patient.dni" name = "dni" matInput placeholder="Ingrese su DNI">
+                        <mat-label>Matrícula:</mat-label>
+                        <input required [(ngModel)] = "medic.matricula" name = "dni" matInput placeholder="Ingrese su matrícula">
                     </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Contraseña:</mat-label>
-                        <input required [(ngModel)] = "patient.password" name = "password" matInput placeholder="Ingrese su contraseña">
+                        <input required [(ngModel)] = "medic.password" name = "password" matInput placeholder="Ingrese su contraseña">
                     </mat-form-field>
 
                     <div class = "container text-center">

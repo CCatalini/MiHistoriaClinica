@@ -32,7 +32,7 @@ export class LoginPatientComponent implements OnInit{
             Swal.fire('Ingrese su contraseña', 'La contraseña es requisito para iniciar sesión como paciente.', 'warning');
             return;
         }
-        this.userService.addPatient(this.patient).subscribe(
+        this.userService.loginPatient(this.patient).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
