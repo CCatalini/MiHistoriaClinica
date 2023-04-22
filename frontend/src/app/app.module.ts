@@ -19,6 +19,7 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {AppRoutingModule} from "./app-routing.module";
 import { LoginPatientComponent } from './pages/login-patient/login-patient.component';
 import { LoginMedicComponent } from './pages/login-medic/login-medic.component';
+import { AddMedicineComponent } from './pages/alta-medicamento/add-medicine.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { LoginMedicComponent } from './pages/login-medic/login-medic.component';
     SignupMedicComponent,
     LoginPatientComponent,
     LoginMedicComponent,
+    AddMedicineComponent,
   ],
     imports: [
         BrowserModule,
