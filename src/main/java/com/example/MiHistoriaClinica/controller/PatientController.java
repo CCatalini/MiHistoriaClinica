@@ -6,7 +6,6 @@ import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,6 +42,13 @@ public class PatientController {
 
     @PostMapping("/login")
     @ResponseBody
+    /*
+      @param Patient, es enviado el objeto por el front
+     */
+    /* En una solicitud GET, los parámetros se deben enviar en la URL, no en el cuerpo de la solicitud.
+     * Password no debería ser visible en la URL
+     * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
+     */
     public PatientModel loginPatient(@RequestBody PatientModel patient) {
         PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
         if (result == null) {

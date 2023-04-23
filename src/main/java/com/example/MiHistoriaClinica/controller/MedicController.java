@@ -1,12 +1,12 @@
 package com.example.MiHistoriaClinica.controller;
 
 
+import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.repository.MedicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,15 +24,14 @@ public class MedicController {
         return medicRepository.save(doctor);
     }
 
-    @GetMapping("/login")
-    public String loginMedic(Long dni, String password, Model model){
-        MedicModel medic = medicRepository.findByDniAndPassword(dni, password);
-        if (medic == null){
-            model.addAttribute("error", "Doctor no encontrado");
-            return"error";
+    @PostMapping("/login")
+    @ResponseBody
+    public MedicModel loginMedic(@RequestBody MedicModel medic) {
+        MedicModel result = medicRepository.findByMatriculaAndPassword(medic.getMatricula(), medic.getPassword());
+        if (result == null) {
+            throw new MedicNotFoundException();
         } else {
-            model.addAttribute("medic", medic);
-            return "redirect:/medicMainPage";
+            return result;
         }
     }
 
