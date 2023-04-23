@@ -4,12 +4,12 @@ import { HttpClient} from '@angular/common/http';
 @Injectable({
     providedIn: 'root'
 })
-export class LoginMedicService {
+export class HomeService {
 
     constructor(private http:HttpClient) { }
 
     public loginMedic(medic:any){
-        return this.http.get(`http://localhost:8080/medic/login`,medic);
+        return this.http.post(`http://localhost:8080/medic/login`,medic);
     }
 
 }
