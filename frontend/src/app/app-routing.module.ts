@@ -1,9 +1,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SignupPatientComponent} from "./pages/patient/signup-patient/signup-patient.component";
-import {SignupMedicComponent} from "./pages/medic/signup-medic/signup-medic.component";
-import {LoginPatientComponent} from "./pages/patient/login-patient/login-patient.component";
-import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.component";
+import {SignupPatientComponent} from "./pages/signup-patient/signup-patient.component";
+import {SignupMedicComponent} from "./pages/signup-medic/signup-medic.component";
+import {LoginPatientComponent} from "./pages/login-patient/login-patient.component";
+import {LoginMedicComponent} from "./pages/login-medic/login-medic.component";
+import {HomeComponent} from "./pages/home/home.component";
+import {AddMedicineComponent} from "./pages/alta-medicamento/add-medicine.component";
 
 const routes: Routes = [
   {
@@ -25,7 +27,18 @@ const routes: Routes = [
       path:'medic/login',
       component:LoginMedicComponent,
       pathMatch:'full'
-  }
+  },
+  {
+      path:'home',
+      component:HomeComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'addMedicine',
+      component:AddMedicineComponent,
+      pathMatch:'full'
+  },
+
 ];
 
 
