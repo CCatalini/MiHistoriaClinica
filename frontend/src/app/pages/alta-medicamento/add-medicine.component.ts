@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
-import {AddMedicineService} from "../../services/add-medicine.service";
+import {AddMedicineService} from "../../services/medicine/add-medicine.service";
 
 @Component({
   selector: 'app-alta-medicamento',
