@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SignupPatientComponent} from "./pages/signup-patient/signup-patient.component";
-import {SignupMedicComponent} from "./pages/signup-medic/signup-medic.component";
-import {LoginPatientComponent} from "./pages/login-patient/login-patient.component";
-import {LoginMedicComponent} from "./pages/login-medic/login-medic.component";
+import {SignupPatientComponent} from "./pages/patient/signup-patient/signup-patient.component";
+import {SignupMedicComponent} from "./pages/medic/signup-medic/signup-medic.component";
+import {LoginPatientComponent} from "./pages/patient/login-patient/login-patient.component";
+import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.component";
 
 const routes: Routes = [
   {

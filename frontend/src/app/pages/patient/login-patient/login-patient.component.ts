@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
-import {LoginPatientService} from "../../services/login-patient.service";
+import {LoginPatientService} from "../../../services/patient/login-patient.service";
 
 @Component({
   selector: 'app-login-patient',
@@ -15,7 +14,7 @@ export class LoginPatientComponent implements OnInit{
         password: '',
     }
 
-    constructor(private userService:LoginPatientService, private snack:MatSnackBar){
+    constructor(private userService:LoginPatientService){
 
     }
 

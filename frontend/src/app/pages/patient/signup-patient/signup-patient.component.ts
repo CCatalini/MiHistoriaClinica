@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import Swal from 'sweetalert2';
-import {SignupPatientService} from "../../services/signup-patient.service";
+import {SignupPatientService} from "../../../services/patient/signup-patient.service";
 @Component({
   selector: 'app-signup-patient',
   templateUrl: './signup-patient.component.html',

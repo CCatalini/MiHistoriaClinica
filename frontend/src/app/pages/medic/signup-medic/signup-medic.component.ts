@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SignupMedicService} from "../../services/signup-medic.service";
+import {SignupMedicService} from "../../../services/medic/signup-medic.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 
