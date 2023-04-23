@@ -6,10 +6,10 @@ import { HttpClient} from '@angular/common/http';
 })
 export class LoginPatientService {
 
-    constructor(private http:HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-    public loginPatient(patient:any){
-        return this.http.post(`http://localhost:8080/patient/login`,patient);
+    public loginPatient(patient: any) {
+        return this.http.post(`http://localhost:8080/patient/login`, patient);
     }
 
 }

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {LoginPatientService} from "../../services/login-patient.service";
+import {LoginPatientService} from "../../../services/patient/login-patient.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
-import {LoginMedicService} from "../../services/login-medic.service";
+import {LoginMedicService} from "../../../services/medic/login-medic.service";
 
 @Component({
   selector: 'app-login-medic',

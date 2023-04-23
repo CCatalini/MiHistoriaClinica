@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
@@ -40,17 +41,17 @@ public class PatientController {
         return "redirect:/login";
     }
 
-    @GetMapping("/login")
-    public String loginPatient(Long dni, String password, Model model) {
-        PatientModel patient = patientRepository.findByDniAndPassword(dni, password);
-        if (patient == null) {
-            model.addAttribute("error", "Paciente no encontrado");
-            return "error";
+    @PostMapping("/login")
+    @ResponseBody
+    public PatientModel loginPatient(@RequestBody PatientModel patient) {
+        PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
+        if (result == null) {
+            throw new PatientNotFoundException();
         } else {
-            model.addAttribute("patient", patient);
-            return "redirect:/patientMainPage";
+            return result;
         }
     }
+
 
     @GetMapping("/getById/{id}")
     public PatientModel getPatientById(@PathVariable Long id) {
