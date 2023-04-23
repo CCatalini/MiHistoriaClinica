@@ -9,7 +9,9 @@ export class SignupPatientService {
     constructor(private http:HttpClient) { }
 
     public addPatient(patient:any){
+
         return this.http.post(`http://localhost:8080/patient/signup`,patient);
     }
 
 }
+

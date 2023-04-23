@@ -10,4 +10,6 @@ public interface MedicRepository extends JpaRepository<MedicModel, Long> {
     MedicModel findByDni(Long dni);
 
     void deleteByDni(Long dni);
+
+    MedicModel findByMatriculaAndPassword(Long matricula, String password);
 }
