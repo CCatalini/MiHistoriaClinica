@@ -35,6 +35,9 @@ export class LoginPatientComponent implements OnInit{
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+            },(error) => {
+                console.log(error);
+                Swal.fire('Error', 'Falta completar algún campo o existen datos erroneos.', 'error');
             }
         )
     }
