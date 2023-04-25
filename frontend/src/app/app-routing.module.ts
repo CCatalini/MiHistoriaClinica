@@ -5,7 +5,7 @@ import {SignupMedicComponent} from "./pages/medic/signup-medic/signup-medic.comp
 import {LoginPatientComponent} from "./pages/patient/login-patient/login-patient.component";
 import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.component";
 import {HomeComponent} from "./pages/home/home.component";
-import {AddMedicineComponent} from "./pages/alta-medicamento/add-medicine.component";
+import {AddMedicineComponent} from "./pages/medic/add-medicine/add-medicine.component";
 
 const routes: Routes = [
   {
@@ -34,13 +34,11 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'addMedicine',
+      path:'medic/addMedicine',
       component:AddMedicineComponent,
       pathMatch:'full'
   },
-
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
