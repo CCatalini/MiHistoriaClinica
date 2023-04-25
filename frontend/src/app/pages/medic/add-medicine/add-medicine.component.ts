@@ -9,7 +9,7 @@ import {AddMedicineService} from "../../../services/medicine/add-medicine.servic
   styleUrls: ['./add-medicine.component.css']
 })
 export class AddMedicineComponent implements OnInit{
-    public medic = {
+    public medicine = {
         medicineName: '',
         activeIngredient: '',
         description: '',
@@ -23,24 +23,24 @@ export class AddMedicineComponent implements OnInit{
     }
 
     formSubmit(){
-        console.log(this.medic);
-        if(this.medic.medicineName == '' || this.medic.medicineName == null){
+        console.log(this.medicine);
+        if(this.medicine.medicineName == '' || this.medicine.medicineName == null){
             Swal.fire('Ingrese el nombre del medicamento', 'El nombre es requisito para cargar el medicamento.', 'warning');
             return;
         }
-        if(this.medic.activeIngredient == '' || this.medic.activeIngredient == null){
+        if(this.medicine.activeIngredient == '' || this.medicine.activeIngredient == null){
             Swal.fire('Ingrese el compuesto activo', 'El compuesto activo es requisito para cargar el medicamento.', 'warning');
             return;
         }
-        if(this.medic.lab == '' || this.medic.lab == null){
+        if(this.medicine.lab == '' || this.medicine.lab == null){
             Swal.fire('Ingrese el laboratorio', 'El laboratorio es requisito para cargar el medicamento.', 'warning');
             return;
         }
-        if(this.medic.description == '' || this.medic.description == null){
+        if(this.medicine.description == '' || this.medicine.description == null){
             Swal.fire('Ingrese la descripción', 'La descripción es requisito para cargar el medicamento.', 'warning');
             return;
         }
-        this.userService.addMedicine(this.medic).subscribe(
+        this.userService.addMedicine(this.medicine).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');

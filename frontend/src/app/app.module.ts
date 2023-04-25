@@ -20,6 +20,7 @@ import {AppRoutingModule} from "./app-routing.module";
 import { LoginPatientComponent } from './pages/patient/login-patient/login-patient.component';
 import { LoginMedicComponent } from './pages/medic/login-medic/login-medic.component';
 import { AddMedicineComponent } from './pages/medic/add-medicine/add-medicine.component';
+import { AddAnalysisComponent } from './pages/medic/add-analysis/add-analysis.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { AddMedicineComponent } from './pages/medic/add-medicine/add-medicine.co
     LoginPatientComponent,
     LoginMedicComponent,
     AddMedicineComponent,
+    AddAnalysisComponent,
   ],
     imports: [
         BrowserModule,
