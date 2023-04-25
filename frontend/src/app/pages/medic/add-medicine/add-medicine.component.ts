@@ -32,10 +32,21 @@ export class AddMedicineComponent implements OnInit{
             Swal.fire('Ingrese el compuesto activo', 'El compuesto activo es requisito para cargar el medicamento.', 'warning');
             return;
         }
+        if(this.medic.lab == '' || this.medic.lab == null){
+            Swal.fire('Ingrese el laboratorio', 'El laboratorio es requisito para cargar el medicamento.', 'warning');
+            return;
+        }
+        if(this.medic.description == '' || this.medic.description == null){
+            Swal.fire('Ingrese la descripción', 'La descripción es requisito para cargar el medicamento.', 'warning');
+            return;
+        }
         this.userService.addMedicine(this.medic).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+            },(error) => {
+                console.log(error);
+                Swal.fire('Error', 'Existen datos erroneos.', 'error');
             }
         )
     }
