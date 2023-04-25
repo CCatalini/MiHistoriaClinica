@@ -6,6 +6,7 @@ import {LoginPatientComponent} from "./pages/patient/login-patient/login-patient
 import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.component";
 import {HomeComponent} from "./pages/home/home.component";
 import {AddMedicineComponent} from "./pages/medic/add-medicine/add-medicine.component";
+import {AddAnalysisComponent} from "./pages/medic/add-analysis/add-analysis.component";
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
   {
       path:'medic/addMedicine',
       component:AddMedicineComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/addAnalysis',
+      component:AddAnalysisComponent,
       pathMatch:'full'
   },
 ];

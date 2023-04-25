@@ -3,30 +3,25 @@
         <div class = "row" style = "margin-top : 20px;">
             <div clazz = "col-md-6 offset-md-3">
                 <div class = "container text-center">
-                    <img src = "../../../../assets/Medicamentos.png" width = "200" height = "200">
+                    <img src = "../../../../assets/Estudios.png" width = "200" height = "200">
                 </div>
 
-                <h1 class = "text-center">Añadir medicamento</h1>
+                <h1 class = "text-center">Añadir análisis</h1>
 
                 <form  (ngSubmit) = "formSubmit()">
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Nombre del medicamento:</mat-label>
-                        <input required [(ngModel)] = "medicine.medicineName" name = "medicineName" matInput placeholder="Ingrese el nombre del medicamento">
+                        <input required [(ngModel)] = "analysis.name" name = "name" matInput placeholder="Ingrese el nombre del estudio">
                     </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Compuesto activo:</mat-label>
-                        <input required [(ngModel)] = "medicine.activeIngredient" name = "activeIngredient" matInput placeholder="Ingrese el nombre del compuesto activo">
-                    </mat-form-field>
-
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Laboratorio:</mat-label>
-                        <input required [(ngModel)] = "medicine.lab" name = "lab" matInput placeholder="Ingrese el nombre del laboratorio al que pertenece le medicamento">
+                        <mat-label>Centro médico:</mat-label>
+                        <input required [(ngModel)] = "analysis.medicalCenter" name = "medicalCenter" matInput placeholder="Ingrese el centro médico donde se realizará el análisis">
                     </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Descripción:</mat-label>
-                        <input [(ngModel)] = "medicine.description" name = "description" matInput placeholder="Ingrese la descripción del medicamento">
+                        <input [(ngModel)] = "analysis.description" name = "description" matInput placeholder="Ingrese la descripción del análisis">
                     </mat-form-field>
 
                     <div class = "container text-center">
