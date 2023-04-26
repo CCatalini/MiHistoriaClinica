@@ -1,0 +1,58 @@
+<div class = "bootstrap-wrapper">
+    <div class = "container">
+        <div class = "row" style = "margin-top : 20px;">
+            <div clazz = "col-md-6 offset-md-3">
+                <div class = "container text-center">
+                    <img src = "../../../../assets/MH.png" width = "200" height = "200">
+                </div>
+
+                <h1 class = "text-center">Alta de historia clínica</h1>
+
+                <form  (ngSubmit) = "formSubmit()">
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Altura:</mat-label>
+                        <input required [(ngModel)] = "medicalHistory.height" name = "height" matInput placeholder="Ingrese la altura">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Peso:</mat-label>
+                        <input required [(ngModel)] = "medicalHistory.weight" name = "weight" matInput placeholder="Ingrese el peso">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Grupo sanguíneo:</mat-label>
+                        <input required [(ngModel)] = "medicalHistory.bloodType" name = "weight" matInput placeholder="Ingrese el grupo sanguíneo">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Alergias:</mat-label>
+                        <input [(ngModel)] = "medicalHistory.allergy" name = "weight" matInput placeholder="Ingrese alergias si las hay">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Medicamentos:</mat-label>
+                        <input [(ngModel)] = "medicalHistory.actualMedicine" name = "weight" matInput placeholder="Ingrese los medicamentos en curso si los hay">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Enfermedades crónicas:</mat-label>
+                        <input [(ngModel)] = "medicalHistory.chronicDisease" name = "weight" matInput placeholder="Ingrese enfermedades crónicas si las hay">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Antecedentes familiares:</mat-label>
+                        <input [(ngModel)] = "medicalHistory.familyMedicalHistory" name = "weight" matInput placeholder="Ingrese antecedentes familiares si los hay">
+                    </mat-form-field>
+
+                    <div class = "container text-center">
+                        <button class="boton">Guardar</button>
+                        <button type="reset" style = "margin-left: 20px;" mat-raised-button color="accent">Limpiar</button>
+                    </div>
+
+                </form>
+                <br><br><br>
+            </div>
+        </div>
+    </div>
+</div>

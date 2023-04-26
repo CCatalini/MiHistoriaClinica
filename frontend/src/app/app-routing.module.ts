@@ -7,8 +7,14 @@ import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.compone
 import {HomeComponent} from "./pages/home/home.component";
 import {AddMedicineComponent} from "./pages/medic/add-medicine/add-medicine.component";
 import {AddAnalysisComponent} from "./pages/medic/add-analysis/add-analysis.component";
+import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-history/create-medical-history.component";
 
 const routes: Routes = [
+  {
+      path:'',
+      component:HomeComponent,
+      pathMatch:'full'
+  },
   {
       path:'patient/signup',
       component:SignupPatientComponent,
@@ -30,11 +36,6 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'home',
-      component:HomeComponent,
-      pathMatch:'full'
-  },
-  {
       path:'medic/addMedicine',
       component:AddMedicineComponent,
       pathMatch:'full'
@@ -42,6 +43,11 @@ const routes: Routes = [
   {
       path:'medic/addAnalysis',
       component:AddAnalysisComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/createMH',
+      component:CreateMedicalHistoryComponent,
       pathMatch:'full'
   },
 ];
