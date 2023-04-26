@@ -41,7 +41,7 @@ export class CreateMedicalHistoryComponent {
         this.userService.createMedicalHistory(this.medicalHistory).subscribe(
             (data) => {
                 console.log(data);
-                Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+                Swal.fire('Historia clínica guardada', 'Historia clínica guardada con éxito en el sistema.', 'success');
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

@@ -34,7 +34,6 @@ export class LoginPatientComponent implements OnInit{
         this.userService.loginPatient(this.patient).subscribe(
             (data) => {
                 console.log(data);
-                Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['home']);
             },(error) => {
                 console.log(error);
