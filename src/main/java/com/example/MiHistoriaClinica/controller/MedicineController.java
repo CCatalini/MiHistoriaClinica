@@ -22,12 +22,19 @@ public class MedicineController {
         return medicineRepository.findAll();
     }
 
-    @GetMapping("/findAllById/{id}")
+    @GetMapping("/findById/{id}")
     public MedicineModel getMedicineById (@PathVariable Long id){
         return medicineRepository.findById(id).orElse(null);
     }
 
-    @PostMapping("/saveNewMedicine")
+    @GetMapping("/findByMedicineNameAndLab")
+    public Object getMedicineByNameAndLab(@PathVariable String name, @PathVariable String lab){
+        MedicineModel medicine = medicineRepository.findByNameAndLab(name, lab);
+        if(medicine == null) return new ResourceNotFoundException("Medicina no encontrada");
+        else                 return medicine;
+    }
+
+    @PostMapping("/addMedicine")
     public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
         return medicineRepository.save(medicine);
     }
@@ -39,7 +46,6 @@ public class MedicineController {
         newMedicine.setMedicineName(medicine.getMedicineName());
         newMedicine.setActiveIngredient(medicine.getActiveIngredient());
         newMedicine.setDescription(medicine.getDescription());
-        newMedicine.setLab(medicine.getLab());
 
         return newMedicine;
     }

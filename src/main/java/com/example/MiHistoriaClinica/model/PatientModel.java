@@ -31,7 +31,7 @@ public class PatientModel {
     @Column()
     private Date birthdate;
 
-
+    
     public Long getPatient_id() {
         return patient_id;
     }
