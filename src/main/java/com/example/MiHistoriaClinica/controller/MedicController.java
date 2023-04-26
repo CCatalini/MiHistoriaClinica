@@ -3,8 +3,14 @@ package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
+import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
+import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
+import com.example.MiHistoriaClinica.model.MedicineModel;
+import com.example.MiHistoriaClinica.repository.AnalysisRepository;
 import com.example.MiHistoriaClinica.repository.MedicRepository;
+import com.example.MiHistoriaClinica.repository.MedicalHistoryRepository;
+import com.example.MiHistoriaClinica.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +23,13 @@ import java.util.ArrayList;
 @CrossOrigin("*")
 public class MedicController {
 
-   @Autowired  private MedicRepository medicRepository;
+    @Autowired  private MedicRepository medicRepository;
+    @Autowired private MedicineRepository medicineRepository;
+
+
+    @Autowired private AnalysisRepository analysisRepository;
+    @Autowired private MedicalHistoryRepository medicalHistoryRepository;
+
 
     @PostMapping("/signup")
     public MedicModel createMedic(@RequestBody MedicModel doctor) {
@@ -84,6 +96,26 @@ public class MedicController {
     }
 
 
+
+
+
+    @PostMapping("/addMedicine")
+    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
+        return medicineRepository.save(medicine);
+    }
+
+
+    @PostMapping("/addAnalysis")
+    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
+        return analysisRepository.save(analysis);
+    }
+
+
+
+    @PostMapping("/createMedicalHistory")
+    public MedicalHistoryModel createMedicalHistory(@RequestBody MedicalHistoryModel history){
+        return medicalHistoryRepository.save(history);
+    }
 
 
 }

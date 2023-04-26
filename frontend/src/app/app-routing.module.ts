@@ -46,7 +46,7 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'medic/createMH',
+      path:'medic/createMedicalHistory',
       component:CreateMedicalHistoryComponent,
       pathMatch:'full'
   },

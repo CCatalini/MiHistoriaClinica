@@ -28,16 +28,12 @@ public class MedicineController {
     }
 
     @GetMapping("/findByMedicineNameAndLab")
-    public Object getMedicineByNameAndLab(@PathVariable String name, @PathVariable String lab){
-        MedicineModel medicine = medicineRepository.findByNameAndLab(name, lab);
+    public Object getMedicineByNameAndLab(@PathVariable String medicineName, @PathVariable String lab){
+        MedicineModel medicine = medicineRepository.findByMedicineNameAndLab(medicineName, lab);
         if(medicine == null) return new ResourceNotFoundException("Medicina no encontrada");
         else                 return medicine;
     }
 
-    @PostMapping("/addMedicine")
-    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
-        return medicineRepository.save(medicine);
-    }
 
     @PutMapping("/updateMedicine/{id}")
     public MedicineModel updateMedicine(@PathVariable Long id, @RequestBody MedicineModel medicine) {

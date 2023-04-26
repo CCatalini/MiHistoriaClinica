@@ -22,8 +22,13 @@ public class MedicineModel {
     private String description;
 
 
+    public String getLab() {
+        return lab;
+    }
 
-
+    public void setLab(String lab) {
+        this.lab = lab;
+    }
 
     public Long getMedicine_id() {
         return medicine_id;
