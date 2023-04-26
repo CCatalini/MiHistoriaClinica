@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import Swal from "sweetalert2";
 import {LoginMedicService} from "../../../services/medic/login-medic.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-medic',
@@ -13,7 +14,7 @@ export class LoginMedicComponent implements OnInit{
         password: '',
     }
 
-    constructor(private userService:LoginMedicService){
+    constructor(private userService:LoginMedicService, private router: Router){
     }
 
     ngOnInit(): void {
@@ -33,6 +34,7 @@ export class LoginMedicComponent implements OnInit{
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+                this.router.navigate(['home']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

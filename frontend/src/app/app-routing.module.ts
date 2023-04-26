@@ -11,7 +11,7 @@ import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-histor
 
 const routes: Routes = [
   {
-      path:'',
+      path:'home',
       component:HomeComponent,
       pathMatch:'full'
   },

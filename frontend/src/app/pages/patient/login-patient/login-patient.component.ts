@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import Swal from "sweetalert2";
 import {LoginPatientService} from "../../../services/patient/login-patient.service";
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login-patient',
-  templateUrl: './login-patient.component.html',
-  styleUrls: ['./login-patient.component.css']
+    selector: 'app-login-patient',
+    templateUrl: './login-patient.component.html',
+    styleUrls: ['./login-patient.component.css']
 })
 export class LoginPatientComponent implements OnInit{
 
@@ -14,8 +15,7 @@ export class LoginPatientComponent implements OnInit{
         password: '',
     }
 
-    constructor(private userService:LoginPatientService){
-
+    constructor(private userService:LoginPatientService, private router: Router){
     }
 
     ngOnInit(): void {
@@ -35,6 +35,7 @@ export class LoginPatientComponent implements OnInit{
             (data) => {
                 console.log(data);
                 Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+                this.router.navigate(['home']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
