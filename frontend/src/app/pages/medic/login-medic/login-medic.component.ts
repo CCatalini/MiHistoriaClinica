@@ -33,7 +33,6 @@ export class LoginMedicComponent implements OnInit{
         this.userService.loginMedic(this.medic).subscribe(
             (data) => {
                 console.log(data);
-                Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['home']);
             },(error) => {
                 console.log(error);

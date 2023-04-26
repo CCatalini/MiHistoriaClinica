@@ -43,7 +43,7 @@ export class AddMedicineComponent implements OnInit{
         this.userService.addMedicine(this.medicine).subscribe(
             (data) => {
                 console.log(data);
-                Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+                Swal.fire('Medicamento guardado', 'Medicamento guardado con éxito en el sistema.', 'success');
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
