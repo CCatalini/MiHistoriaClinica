@@ -21,6 +21,7 @@ import { LoginPatientComponent } from './pages/patient/login-patient/login-patie
 import { LoginMedicComponent } from './pages/medic/login-medic/login-medic.component';
 import { AddMedicineComponent } from './pages/medic/add-medicine/add-medicine.component';
 import { AddAnalysisComponent } from './pages/medic/add-analysis/add-analysis.component';
+import { CreateMedicalHistoryComponent } from './pages/medic/create-medical-history/create-medical-history.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { AddAnalysisComponent } from './pages/medic/add-analysis/add-analysis.co
     LoginMedicComponent,
     AddMedicineComponent,
     AddAnalysisComponent,
+    CreateMedicalHistoryComponent,
   ],
     imports: [
         BrowserModule,

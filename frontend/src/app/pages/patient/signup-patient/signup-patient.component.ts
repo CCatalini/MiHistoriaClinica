@@ -15,7 +15,7 @@ export class SignupPatientComponent implements OnInit{
         dni: '',
         email: '',
         password: '',
-        birthday: ''
+        birthday: '',
     }
 
     constructor(private userService:SignupPatientService, private snack:MatSnackBar){
