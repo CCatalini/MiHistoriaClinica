@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import Swal from 'sweetalert2';
 import {SignupPatientService} from "../../../services/patient/signup-patient.service";
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-signup-patient',
   templateUrl: './signup-patient.component.html',
@@ -18,7 +20,7 @@ export class SignupPatientComponent implements OnInit{
         birthday: '',
     }
 
-    constructor(private userService:SignupPatientService, private snack:MatSnackBar){
+    constructor(private userService:SignupPatientService, private snack:MatSnackBar, private router: Router){
 
     }
 
@@ -36,6 +38,7 @@ export class SignupPatientComponent implements OnInit{
           (data) => {
               console.log(data);
               Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
+              this.router.navigate(['patient/login']);
           },(error) => {
               console.log(error);
               Swal.fire('Error', 'Existen datos erroneos.', 'error');
