@@ -4,5 +4,5 @@ import com.example.MiHistoriaClinica.model.MedicineModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MedicineRepository extends JpaRepository<MedicineModel, Long> {
-    MedicineModel findByNameAndLab(String name, String lab);
+    MedicineModel findByMedicineNameAndLab(String medicineName, String lab);
 }

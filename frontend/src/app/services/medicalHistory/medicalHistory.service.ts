@@ -8,8 +8,8 @@ export class CreateMedicalHistoryService {
 
     constructor(private http:HttpClient) { }
 
-    public createMedicalHistory(medicalHistory:any){
-        return this.http.post(`http://localhost:8080/medic/medicalHistory`,medicalHistory);
+    public createMedicalHistory(medical_history:any){
+        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medical_history);
     }
 
 }

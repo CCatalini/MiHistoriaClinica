@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {LoginMedicService} from "../../../services/medic/login-medic.service";
 import Swal from "sweetalert2";
 import {CreateMedicalHistoryService} from "../../../services/medicalHistory/medicalHistory.service";
 
