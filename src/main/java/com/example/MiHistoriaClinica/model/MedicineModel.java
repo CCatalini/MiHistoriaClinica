@@ -17,11 +17,11 @@ public class MedicineModel {
     @Column(name="active_ingredient")
     private String activeIngredient;
 
+    private String lab;
+
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "laboratorio_id")
-    private LabModel lab;
+
 
 
 
@@ -55,13 +55,5 @@ public class MedicineModel {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public LabModel getLab() {
-        return lab;
-    }
-
-    public void setLab(LabModel lab) {
-        this.lab = lab;
     }
 }
