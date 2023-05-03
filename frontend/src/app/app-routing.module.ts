@@ -4,15 +4,21 @@ import {SignupPatientComponent} from "./pages/patient/signup-patient/signup-pati
 import {SignupMedicComponent} from "./pages/medic/signup-medic/signup-medic.component";
 import {LoginPatientComponent} from "./pages/patient/login-patient/login-patient.component";
 import {LoginMedicComponent} from "./pages/medic/login-medic/login-medic.component";
-import {HomeComponent} from "./pages/home/home.component";
+import {HomePatientComponent} from "./pages/patient/home-patient/home-patient.component";
 import {AddMedicineComponent} from "./pages/medic/add-medicine/add-medicine.component";
 import {AddAnalysisComponent} from "./pages/medic/add-analysis/add-analysis.component";
 import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-history/create-medical-history.component";
+import {HomeMedicComponent} from "./pages/medic/home-medic/home-medic.component";
 
 const routes: Routes = [
   {
-      path:'home',
-      component:HomeComponent,
+      path:'home-patient',
+      component:HomePatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'home-medic',
+      component:HomeMedicComponent,
       pathMatch:'full'
   },
   {
