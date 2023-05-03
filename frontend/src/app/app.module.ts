@@ -11,7 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {HttpClientModule} from "@angular/common/http";
-import {HomeComponent} from "./pages/home/home.component";
+import {HomePatientComponent} from "./pages/patient/home-patient/home-patient.component";
 import {SignupMedicComponent} from './pages/medic/signup-medic/signup-medic.component';
 import {SignupPatientComponent} from './pages/patient/signup-patient/signup-patient.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
@@ -22,19 +22,21 @@ import { LoginMedicComponent } from './pages/medic/login-medic/login-medic.compo
 import { AddMedicineComponent } from './pages/medic/add-medicine/add-medicine.component';
 import { AddAnalysisComponent } from './pages/medic/add-analysis/add-analysis.component';
 import { CreateMedicalHistoryComponent } from './pages/medic/create-medical-history/create-medical-history.component';
+import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     SignupPatientComponent,
-    HomeComponent,
+    HomePatientComponent,
     SignupMedicComponent,
     LoginPatientComponent,
     LoginMedicComponent,
     AddMedicineComponent,
     AddAnalysisComponent,
     CreateMedicalHistoryComponent,
+    HomeMedicComponent,
   ],
     imports: [
         BrowserModule,

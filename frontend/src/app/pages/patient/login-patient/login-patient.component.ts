@@ -34,7 +34,7 @@ export class LoginPatientComponent implements OnInit{
         this.userService.loginPatient(this.patient).subscribe(
             (data) => {
                 console.log(data);
-                this.router.navigate(['home']);
+                this.router.navigate(['home-patient']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
