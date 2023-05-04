@@ -6,7 +6,7 @@
                     <img src = "../../../../assets/Pacientes.png" width = "200" height = "200">
                 </div>
 
-                <h1 class = "text-center">Inicio de sesión como paciente</h1>
+                <h1 class = "text-center">Inicio de sesión del paciente</h1>
 
                 <form  (ngSubmit) = "formSubmit()">
 
@@ -24,7 +24,11 @@
                         <button class="boton">Iniciar sesión</button>
                         <button type="reset" style = "margin-left: 20px;" class="boton">Limpiar</button>
                     </div>
-
+                    <a [routerLink]="'/patient/signup'" mat-button
+                       class="example-icon favorite-icon"
+                       aria-label="Example icon-button with heart icon" style="font-size: 16px;">
+                        Registrar
+                    </a>
                 </form>
                 <br><br><br>
             </div>
