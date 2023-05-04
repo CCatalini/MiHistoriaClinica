@@ -23,6 +23,8 @@ import { AddMedicineComponent } from './pages/medic/add-medicine/add-medicine.co
 import { AddAnalysisComponent } from './pages/medic/add-analysis/add-analysis.component';
 import { CreateMedicalHistoryComponent } from './pages/medic/create-medical-history/create-medical-history.component';
 import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.component';
+import { MatIconModule } from '@angular/material/icon';
+import { HomeComponent } from './pages/home/home.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.componen
     AddAnalysisComponent,
     CreateMedicalHistoryComponent,
     HomeMedicComponent,
+    HomeComponent,
   ],
     imports: [
         BrowserModule,
@@ -50,7 +53,8 @@ import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.componen
         ReactiveFormsModule,
         MatSnackBarModule,
         MatToolbarModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MatIconModule
     ],
   providers: [],
   bootstrap: [AppComponent]
