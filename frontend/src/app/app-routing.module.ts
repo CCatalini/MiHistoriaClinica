@@ -9,9 +9,15 @@ import {AddMedicineComponent} from "./pages/medic/add-medicine/add-medicine.comp
 import {AddAnalysisComponent} from "./pages/medic/add-analysis/add-analysis.component";
 import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-history/create-medical-history.component";
 import {HomeMedicComponent} from "./pages/medic/home-medic/home-medic.component";
+import {HomeComponent} from "./pages/home/home.component";
 
 const routes: Routes = [
-  {
+    {
+        path:'home',
+        component:HomeComponent,
+        pathMatch:'full'
+    },
+    {
       path:'home-patient',
       component:HomePatientComponent,
       pathMatch:'full'

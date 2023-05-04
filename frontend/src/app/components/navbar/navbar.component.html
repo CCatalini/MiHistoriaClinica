@@ -1,50 +1,14 @@
-<!--
-<mat-toolbar color="primary">
-    <a
-            [routerLink]="'/'"
-            mat-icon-button
-            class="example-icon"
-            arial-label="Example icon-button with menu icon"
-    >
-        <mat-icon>menu_books</mat-icon>
+<mat-toolbar color="primary" style="width: 100%">
+    <a [routerLink]="'/'" mat-icon-button class="example-icon"
+       aria-label="Example icon-button with menu icon"
+       style="display: flex; justify-content: center">
+        <img src="../../../../assets/LogoHC.png" alt="Menú">
     </a>
-    <span>Portal de exámenes</span>
+    <span>Mi Historia Clínica</span>
     <span class="example-spacer"></span>
-    <a
-            *ngIf = "!isLoggedIn"
-            [routerLink]="'/login'"
-            mat-icon-button
-            class = "example-icon favorite-icon"
-            aria-label = "Example icon-button with heart icon"
-    >
+    <a [routerLink]="'/login'" mat-button
+       class="example-icon favorite-icon"
+       aria-label="Example icon-button with heart icon" style="font-size: 16px;">
         Iniciar sesión
     </a>
-    <a
-            *ngIf = "!isLoggedIn"
-            [routerLink]="'/signup'"
-            mat-icon-button
-            class="example-icon favorite-icon mr20 ml70"
-            aria-label="Example icon-button with heart icon"
-    >
-        Registrar
-    </a>
-    <a
-            *ngIf = "isLoggedIn"
-            (click) = "logout()"
-            style="margin-right: 50px"
-            mat-icon-button
-            class="example-icon favorite-icon"
-            aria-label="Example icon-button with heart icon"
-    >
-        Cerrar sesión
-    </a>
-    <button
-            *ngIf = "isLoggedIn && user"
-            mat-button
-            style="margin-right: 10px"
-            class="example-icon favorite-icon"
-            aria-label="Example icon-button with heart icon"
-    >
-        {{ user.username }}
-    </button>
-</mat-toolbar>-->
+</mat-toolbar>

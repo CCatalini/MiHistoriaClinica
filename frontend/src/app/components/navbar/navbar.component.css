@@ -1,4 +1,26 @@
-
 .example-spacer{
     flex: 1 1 auto;
+}
+
+.mat-toolbar {
+    background-color: #3fb5eb;
+    color: white;
+    font-size: 30px;
+    margin-right: -16px;
+    margin-left: -16px;
+}
+
+.mat-toolbar a.example-icon img {
+    width: 40px;
+    height: 40px;
+}
+
+.mat-toolbar a:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.example-icon.favorite-icon {
+    background-color: transparent;
+    color: white;
 }
