@@ -7,7 +7,7 @@
                 </div>
 
                 <h1 class = "text-center">Inicio de sesión del médico</h1>
-
+                <div class="page-container" style="margin-bottom: -110px;">
                 <form  (ngSubmit) = "formSubmit()">
 
                     <mat-form-field class = "full-width" appearance = "outline">
@@ -17,7 +17,7 @@
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Contraseña:</mat-label>
-                        <input required [(ngModel)] = "medic.password" name = "password" matInput placeholder="Ingrese su contraseña">
+                        <input required [(ngModel)] = "medic.password" name = "password" matInput placeholder="Ingrese su contraseña" type="password">
                     </mat-form-field>
 
                     <div class = "container text-center">
@@ -34,4 +34,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

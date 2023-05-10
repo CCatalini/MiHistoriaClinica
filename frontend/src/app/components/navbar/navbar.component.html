@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" style="width: 100%">
+<mat-toolbar color="primary" style="width: 100%; position: fixed; top: 0;">
     <a [routerLink]="'/'" mat-icon-button class="example-icon"
        aria-label="Example icon-button with menu icon"
        style="display: flex; justify-content: center">
@@ -6,9 +6,7 @@
     </a>
     <span>Mi Historia Clínica</span>
     <span class="example-spacer"></span>
-    <a [routerLink]="'/'" mat-button
-       class="example-icon favorite-icon"
-       aria-label="Example icon-button with heart icon" style="font-size: 16px;">
-        Inicio
+    <a [routerLink]="'/'" mat-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" style="font-size: 16px;" *ngIf="!isHomePage()">
+        Cerrar sesión
     </a>
 </mat-toolbar>
