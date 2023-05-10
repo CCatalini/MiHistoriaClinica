@@ -2,9 +2,15 @@
     flex: 1 1 auto;
 }
 
+.active {
+    font-weight: bold;
+    background-color: #eee;
+}
+
 .mat-toolbar {
     background-color: #3fb5eb;
     color: white;
+    z-index: 1;
     font-size: 30px;
     margin-right: -16px;
     margin-left: -16px;

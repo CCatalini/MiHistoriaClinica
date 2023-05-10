@@ -10,4 +10,6 @@ export class HomeMedicComponent implements OnInit{
 
     ngOnInit(): void {
     }
+
+
 }
