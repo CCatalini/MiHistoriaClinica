@@ -1,11 +1,12 @@
 package com.example.MiHistoriaClinica.util.jwt;
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 
 import java.util.Map;
 
 public interface JwtGenerator {
 
-    Map<String, String> generateToken(String id, String role);
+    TokenDTO generateToken(String id, String role);
     Claims getClaims(String token);
 }

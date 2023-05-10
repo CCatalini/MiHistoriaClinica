@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.util.jwt;
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,7 +19,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
 
     static final SecretKey KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     @Override
-    public Map<String, String> generateToken(String id, String role) {
+    public TokenDTO generateToken(String id, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);
         claims.put("role", role);
@@ -29,10 +30,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // token valid for 24 hours
                 .signWith(KEY)
                 .compact();
-
-        Map<String, String> map = new HashMap<>();
-        map.put("token", jwt);
-        return map;
+        return new TokenDTO(jwt);
     }
 
     @Override

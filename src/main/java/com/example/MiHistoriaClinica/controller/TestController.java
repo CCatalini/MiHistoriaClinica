@@ -1,11 +1,11 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -13,19 +13,28 @@ import java.util.Map;
 @RequestMapping("/test")
 @CrossOrigin("*")
 public class TestController {
+
     @GetMapping("/test")
-    public String test(){
+    public TokenDTO test(){
 
         JwtGenerator jwtGenerator = new JwtGeneratorImpl();
+        JwtValidator validator = new JwtValidatorImpl(jwtGenerator);
 
-        Map<String, String> map = jwtGenerator.generateToken("1", "admin");
-        System.out.println(map.get("token"));
+        TokenDTO token = jwtGenerator.generateToken("1", "user");
+        System.out.println(token.getToken());
 
-        String role = jwtGenerator.getClaims(map.get("token")).get("role").toString();
-        String id = jwtGenerator.getClaims(map.get("token")).get("id").toString();
+        String role = validator.getRole(token.getToken());
+        String id = validator.getId(token.getToken());
 
         System.out.println(id);
         System.out.println(role);
-        return "test";
+        return token;
+    }
+
+    @GetMapping("/test2")
+    public String test2(@RequestHeader("Authorization") String token) throws RuntimeException{
+        JwtValidator validator = new JwtValidatorImpl(new JwtGeneratorImpl());
+        String id = validator.validateMedic(token); //Tira error (Deberia pq uso el token de un user en el test de postman)
+        return id;
     }
 }
