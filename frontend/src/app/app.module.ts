@@ -25,6 +25,8 @@ import { CreateMedicalHistoryComponent } from './pages/medic/create-medical-hist
 import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.component';
 import { MatIconModule } from '@angular/material/icon';
 import { HomeComponent } from './pages/home/home.component';
+import { AttendPatientComponent } from './pages/medic/attend-patient/attend-patient.component';
+import { PatientsListComponent } from './pages/medic/patients-list/patients-list.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { HomeComponent } from './pages/home/home.component';
     CreateMedicalHistoryComponent,
     HomeMedicComponent,
     HomeComponent,
+    AttendPatientComponent,
+    PatientsListComponent,
   ],
     imports: [
         BrowserModule,
