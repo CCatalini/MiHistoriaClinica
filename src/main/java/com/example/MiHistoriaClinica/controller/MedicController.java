@@ -36,6 +36,12 @@ public class MedicController {
         return medicRepository.save(doctor);
     }
 
+
+    /**
+     * En vez de devolver un objeto medico, devolves un objeto que es {token: (token generado por el jwt)}
+     * Rochi va a guardar ese token en el local storage y lo va a usar para hacer las peticiones a los endpoints
+     * Rochi lo deberia mandar como "Bearer token"
+     * **/
     @PostMapping("/login")
     @ResponseBody
     public MedicModel loginMedic(@RequestBody MedicModel medic) {
