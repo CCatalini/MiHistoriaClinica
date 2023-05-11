@@ -14,4 +14,6 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
     PatientModel findByDni(Long dni);
 
     void deleteByDni(Long dni);
+
+   // void assignRole(Long patient_id, Long role_id);
 }

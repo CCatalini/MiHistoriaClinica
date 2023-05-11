@@ -12,4 +12,6 @@ public interface MedicRepository extends JpaRepository<MedicModel, Long> {
     void deleteByDni(Long dni);
 
     MedicModel findByMatriculaAndPassword(Long matricula, String password);
+
+    // void assignRole(Long medic_id, Long role_id);
 }

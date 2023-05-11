@@ -33,7 +33,7 @@ export class LoginMedicComponent implements OnInit{
         this.userService.loginMedic(this.medic).subscribe(
             (data) => {
                 console.log(data);
-                this.router.navigate(['home']);
+                this.router.navigate(['home-medic']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
