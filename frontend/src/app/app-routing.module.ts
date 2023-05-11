@@ -11,6 +11,7 @@ import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-histor
 import {HomeMedicComponent} from "./pages/medic/home-medic/home-medic.component";
 import {HomeComponent} from "./pages/home/home.component";
 import {AttendPatientComponent} from "./pages/medic/attend-patient/attend-patient.component";
+import {PatientsListComponent} from "./pages/medic/patients-list/patients-list.component";
 
 const routes: Routes = [
     {
@@ -66,6 +67,11 @@ const routes: Routes = [
   {
       path:'medic/attendPatient',
       component:AttendPatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/patientsList',
+      component:PatientsListComponent,
       pathMatch:'full'
   },
 ];
