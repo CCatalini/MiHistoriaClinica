@@ -3,7 +3,9 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.model.Role;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
+import com.example.MiHistoriaClinica.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,34 +20,23 @@ public class PatientController {
 
     @Autowired private PatientRepository patientRepository;
 
+    @Autowired private RoleRepository roleRepository;
+
     @PostMapping("/signup") // recibe JSON
-    public PatientModel createPatient(@RequestBody PatientModel user) {
-        return patientRepository.save(user);
-    }
+    public PatientModel createPatient(@RequestBody PatientModel patient) {
 
-    @PostMapping() // recibe form
-    public String registerUser(@RequestParam String name, @RequestParam String lastname, @RequestParam Long dni,
-                               @RequestParam String email, @RequestParam String password, @RequestParam(required = false) Date birthdate) {
-        PatientModel patient = new PatientModel();
+        // Asignar rol por defecto al paciente
+        Role role = roleRepository.findByName("PATIENT_ROLE");
+        patient.setRole(role);
 
-        patient.setName(name);
-        patient.setLastname(lastname);
-        patient.setDni(dni);
-        patient.setEmail(email);
-        patient.setPassword(password);
-        patient.setBirthdate(birthdate);
-
-        patientRepository.save(patient);
-
-        return "redirect:/login";
+        return patientRepository.save(patient);
     }
 
     @PostMapping("/login")
     @ResponseBody
     /*
       @param Patient, es enviado el objeto por el front
-     */
-    /* En una solicitud GET, los parámetros se deben enviar en la URL, no en el cuerpo de la solicitud.
+     * En una solicitud GET, los parámetros se deben enviar en la URL, no en el cuerpo de la solicitud.
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
