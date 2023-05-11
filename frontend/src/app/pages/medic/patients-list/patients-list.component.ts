@@ -1,39 +1,42 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import Swal from "sweetalert2";
-import {LoginMedicService} from "../../../services/medic/login-medic.service";
-import {Router} from "@angular/router";
-import {PatientsListService} from "../../../services/medic/patients-list.service";
+import { Router } from "@angular/router";
+import { PatientsListService } from "../../../services/medic/patients-list.service";
 
 @Component({
-  selector: 'app-patients-list',
-  templateUrl: './patients-list.component.html',
-  styleUrls: ['./patients-list.component.css']
+    selector: 'app-patients-list',
+    templateUrl: './patients-list.component.html',
+    styleUrls: ['./patients-list.component.css']
 })
-export class PatientsListComponent implements OnInit{
+export class PatientsListComponent implements OnInit {
 
-    public patient = {
+    patient = {
         name: '',
         lastname: '',
         dni: '',
         email: '',
         birthday: ''
-    }
+    };
 
-    constructor(private userService:PatientsListService, private router: Router){
-    }
+    patients: ArrayBuffer | any = null;
+
+    constructor(private userService: PatientsListService, private router: Router) { }
 
     ngOnInit(): void {
+        console.log("Hola");
     }
 
-    formSubmit(){
-        this.userService.getPatientsList(this.patient).subscribe(
-            (data) => {
-                console.log(data);
-                this.router.navigate(['home']);
-            },(error) => {
+    formSubmit() {
+        this.userService.getPatientsList().subscribe(
+            (data: any) => {
+                this.patients = data;
+            },
+            (error: any) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
             }
-        )
+        );
     }
+
+
 }
