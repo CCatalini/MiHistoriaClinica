@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {AttendPatientService} from "./attend-patient.component";
+import {AttendPatientService} from "./attend-patient.service";
 
 describe('AttendPatientService', () => {
     let service: AttendPatientService;
