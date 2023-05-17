@@ -10,6 +10,9 @@ import {AddAnalysisComponent} from "./pages/medic/add-analysis/add-analysis.comp
 import {CreateMedicalHistoryComponent} from "./pages/medic/create-medical-history/create-medical-history.component";
 import {HomeMedicComponent} from "./pages/medic/home-medic/home-medic.component";
 import {HomeComponent} from "./pages/home/home.component";
+import {AttendPatientComponent} from "./pages/medic/attend-patient/attend-patient.component";
+import {PatientsListComponent} from "./pages/medic/patients-list/patients-list.component";
+import {MedicalAppointmentComponent} from "./pages/medic/medical-appointment/medical-appointment.component";
 
 const routes: Routes = [
     {
@@ -62,6 +65,21 @@ const routes: Routes = [
       component:CreateMedicalHistoryComponent,
       pathMatch:'full'
   },
+  {
+      path:'medic/attendPatient',
+      component:AttendPatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/patientsList',
+      component:PatientsListComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/medicalAppointment',
+      component:MedicalAppointmentComponent,
+      pathMatch:'full'
+  }
 ];
 
 @NgModule({

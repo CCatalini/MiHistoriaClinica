@@ -31,7 +31,20 @@ public class PatientModel {
     @Column()
     private Date birthdate;
 
-    
+
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
+
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     public Long getPatient_id() {
         return patient_id;
     }

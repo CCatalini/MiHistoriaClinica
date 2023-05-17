@@ -29,6 +29,20 @@ public class MedicModel {
 
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
+
+
+
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public Long getMedic_id() {
         return medic_id;
