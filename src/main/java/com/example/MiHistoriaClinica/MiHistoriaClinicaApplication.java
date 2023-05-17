@@ -8,8 +8,6 @@ public class MiHistoriaClinicaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MiHistoriaClinicaApplication.class, args);
-
-
 	}
 
 }
