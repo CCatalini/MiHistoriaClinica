@@ -1,0 +1,18 @@
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>DNI</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let medic of medics">
+        <td>{{medic.name}}</td>
+        <td>{{medic.lastname}}</td>
+        <td>{{medic.dni}}</td>
+        <td>{{medic.email}}</td>
+    </tr>
+    </tbody>
+</table>
