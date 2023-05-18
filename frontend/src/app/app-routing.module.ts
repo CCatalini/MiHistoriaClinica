@@ -13,6 +13,7 @@ import {HomeComponent} from "./pages/home/home.component";
 import {AttendPatientComponent} from "./pages/medic/attend-patient/attend-patient.component";
 import {PatientsListComponent} from "./pages/medic/patients-list/patients-list.component";
 import {MedicalAppointmentComponent} from "./pages/medic/medical-appointment/medical-appointment.component";
+import {LinkPatientComponent} from "./pages/medic/link-patient/link-patient.component";
 
 const routes: Routes = [
     {
@@ -78,6 +79,11 @@ const routes: Routes = [
   {
       path:'medic/medicalAppointment',
       component:MedicalAppointmentComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/linkPatient',
+      component:LinkPatientComponent,
       pathMatch:'full'
   }
 ];
