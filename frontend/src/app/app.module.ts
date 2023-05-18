@@ -24,10 +24,11 @@ import { HomeMedicComponent } from './pages/medic/home-medic/home-medic.componen
 import { MatIconModule } from '@angular/material/icon';
 import { HomeComponent } from './pages/home/home.component';
 import { AttendPatientComponent } from './pages/medic/attend-patient/attend-patient.component';
-import { PatientsListComponent } from './pages/medic/patients-list/patients-list.component';
+import { PatientsListComponent } from './pages/lists/patients-list/patients-list.component';
 import { MedicalAppointmentComponent } from './pages/medic/medical-appointment/medical-appointment.component';
 import { LinkPatientComponent } from './pages/medic/link-patient/link-patient.component';
-import { MedicsListComponent } from './pages/patient/medics-list/medics-list.component';
+import { MedicsListComponent } from './pages/lists/medics-list/medics-list.component';
+import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-list.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { MedicsListComponent } from './pages/patient/medics-list/medics-list.com
     MedicalAppointmentComponent,
     LinkPatientComponent,
     MedicsListComponent,
+    MedicinesListComponent,
   ],
     imports: [
         BrowserModule,
