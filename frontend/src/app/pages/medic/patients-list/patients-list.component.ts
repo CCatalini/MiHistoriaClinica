@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import Swal from "sweetalert2";
-import { Router } from "@angular/router";
-import { PatientsListService } from "../../../services/medic/patients-list.service";
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+import { PatientsListService } from '../../../services/medic/patients-list.service';
 
 @Component({
     selector: 'app-patients-list',
@@ -18,12 +18,13 @@ export class PatientsListComponent implements OnInit {
         birthday: ''
     };
 
-    patients: ArrayBuffer | any = null;
+    patients: any[] = [];
 
     constructor(private userService: PatientsListService, private router: Router) { }
 
     ngOnInit(): void {
-        console.log("Hola");
+        console.log('Hola');
+        this.formSubmit();
     }
 
     formSubmit() {
@@ -33,10 +34,14 @@ export class PatientsListComponent implements OnInit {
             },
             (error: any) => {
                 console.log(error);
-                Swal.fire('Error', 'Existen datos erroneos.', 'error');
+                if (error.status === 400) {
+                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                } else if (error.status === 404) {
+                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                } else {
+                    Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                }
             }
         );
     }
-
-
 }

@@ -6,30 +6,31 @@ import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.model.Role;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.RoleRepository;
+import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/patient")
 @CrossOrigin("*")
 public class PatientController {
 
-    @Autowired private PatientRepository patientRepository;
+    private final PatientServiceImpl patientService;
 
-    @Autowired private RoleRepository roleRepository;
+    @Autowired
+    public PatientController(PatientServiceImpl patientService){
+        this.patientService = patientService;
+    }
 
-    @PostMapping("/signup") // recibe JSON
-    public PatientModel createPatient(@RequestBody PatientModel patient) {
-
-        // Asignar rol por defecto al paciente
-        Role role = roleRepository.findByName("PATIENT_ROLE");
-        patient.setRole(role);
-
-        return patientRepository.save(patient);
+    @PostMapping("/signup")
+    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientModel patient) {
+        PatientModel createdPatient = patientService.createPatient(patient);
+        return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -40,66 +41,62 @@ public class PatientController {
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
-    public PatientModel loginPatient(@RequestBody PatientModel patient) {
-        PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
-        if (result == null) {
-            throw new PatientNotFoundException();
-        } else {
-            return result;
-        }
+    public ResponseEntity<PatientModel> loginPatient(@RequestBody PatientModel patient) {
+        PatientModel loggedInPatient = patientService.loginPatient(patient);
+        return new ResponseEntity<>(loggedInPatient, HttpStatus.OK);
     }
 
+    /**
+     * Este método recibe el identificador del paciente como parámetro de la URL y llama al método
+     * generateLinkCode() de la capa de servicio para generar el código de enlace correspondiente.
+     * Luego, devuelve el código de enlace generado como respuesta al cliente.
+     */
+    @PostMapping("/{patientId}/generate-link-code")
+    public ResponseEntity<String> generateLinkCode(@PathVariable Long patientId) {
+        String linkCode = patientService.generateLinkCode(patientId);
+        return ResponseEntity.ok(linkCode);
+    }
 
     @GetMapping("/getById/{id}")
-    public PatientModel getPatientById(@PathVariable Long id) {
-        return patientRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Paciente no encontrado"));
+    public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
+        PatientModel patient = patientService.getPatientById(id);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
     @GetMapping("/getByDni/{dni}")
-    public Object getPatientByDni(@PathVariable Long dni){
-        PatientModel patient = patientRepository.findByDni(dni);
-        if(patient == null) return new ResourceNotFoundException("Paciente no encontrado");
-        else                return patient;
+    public ResponseEntity<PatientModel> getPatientByDni(@PathVariable Long dni) {
+        PatientModel patient = patientService.getPatientByDni(dni);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    // todo probar en postman desde aca y el resto de los controladores
     @GetMapping("/getAll")
-    public ArrayList<PatientModel> getAllPatient(){
-        return (ArrayList<PatientModel>) patientRepository.findAll();
+    public ResponseEntity<List<PatientModel>> getAllPatient() {
+        List<PatientModel> patients = patientService.getAllPatient();
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public PatientModel updatePatient(@PathVariable Long id, @RequestBody PatientModel newPatient) {
-        PatientModel patient = patientRepository.findById(id).orElseThrow(()
-                            -> new ResourceNotFoundException("Patient not found"));
-
-        patient.setName(newPatient.getName());
-        patient.setLastname(newPatient.getLastname());
-        patient.setEmail(newPatient.getEmail());
-        patient.setPassword(newPatient.getPassword());
-        patient.setDni(newPatient.getDni());
-        patient.setBirthdate(newPatient.getBirthdate());
-
-        return patientRepository.save(patient);
+    public ResponseEntity<PatientModel> updatePatient(@PathVariable Long id, @RequestBody PatientModel patient) {
+        PatientModel updatedPatient = patientService.updatePatient(id, patient);
+        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        PatientModel patient = patientRepository.findById(id).orElseThrow(()
-                                -> new ResourceNotFoundException("Patient not found"));
-        patientRepository.delete(patient);
-        return ResponseEntity.noContent().build();
+        patientService.deletePatient(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/deleteByDni/{dni}")
-    public void deletePatientByDni (@PathVariable Long dni){
-        patientRepository.deleteByDni(dni);
+    public ResponseEntity<Void> deletePatientByDni(@PathVariable Long dni) {
+        patientService.deletePatientByDni(dni);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/deleteAll")
-    public void deleteAllPatient(){
-        patientRepository.deleteAll();
+    public ResponseEntity<Void> deleteAllPatient() {
+        patientService.deleteAllPatient();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
