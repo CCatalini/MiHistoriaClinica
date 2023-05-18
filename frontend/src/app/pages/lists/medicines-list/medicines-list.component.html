@@ -1,0 +1,20 @@
+<h1 class = "text-center">Mis Pacientes</h1>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Medicación</th>
+        <th>Compuesto activo</th>
+        <th>Laboratorio</th>
+        <th>Descripción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let medicine of medicines">
+        <td>{{medicine.medicineName}}</td>
+        <td>{{medicine.activeIngredient}}</td>
+        <td>{{medicine.lab}}</td>
+        <td>{{medicine.description}}</td>
+    </tr>
+    </tbody>
+</table>
