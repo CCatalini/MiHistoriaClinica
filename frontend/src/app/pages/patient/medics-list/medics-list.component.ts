@@ -1,25 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
-import { PatientsListService } from '../../../services/medic/patients-list.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from "@angular/router";
+import Swal from "sweetalert2";
+import {MedicsListService} from "../../../services/patient/medics-list.service";
 
 @Component({
-    selector: 'app-patients-list',
-    templateUrl: './patients-list.component.html',
-    styleUrls: ['./patients-list.component.css']
+  selector: 'app-medics-list',
+  templateUrl: './medics-list.component.html',
+  styleUrls: ['./medics-list.component.css']
 })
-export class PatientsListComponent implements OnInit {
-
-    patient = {
+export class MedicsListComponent implements OnInit{
+    medic = {
         name: '',
         lastname: '',
         dni: '',
         email: '',
     };
 
-    patients: any[] = [];
+    medics: any[] = [];
 
-    constructor(private userService: PatientsListService, private router: Router) { }
+    constructor(private userService: MedicsListService, private router: Router) { }
 
     ngOnInit(): void {
         console.log('Hola');
@@ -27,9 +26,9 @@ export class PatientsListComponent implements OnInit {
     }
 
     formSubmit() {
-        this.userService.getPatientsList().subscribe(
+        this.userService.getMedicsList().subscribe(
             (data: any) => {
-                this.patients = data;
+                this.medics = data;
             },
             (error: any) => {
                 console.log(error);
