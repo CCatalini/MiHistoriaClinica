@@ -1,7 +1,10 @@
 package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "Patient")
@@ -36,6 +39,37 @@ public class PatientModel {
     @JoinColumn(name="role_id")
     private Role role;
 
+
+    @Column(name = "link_code", nullable = false, unique = true)
+    private String linkCode;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "patient_medic",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "medic_id")
+    )
+    private List<MedicModel> medics = new ArrayList<>();
+
+
+
+
+
+    public List<MedicModel> getMedics() {
+        return medics;
+    }
+
+    public void setMedics(List<MedicModel> medics) {
+        this.medics = medics;
+    }
+
+    public String getLinkCode() {
+        return linkCode;
+    }
+
+    public void setLinkCode(String linkCode) {
+        this.linkCode = linkCode;
+    }
 
     public Role getRole() {
         return role;

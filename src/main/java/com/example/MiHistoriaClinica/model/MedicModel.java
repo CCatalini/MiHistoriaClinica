@@ -2,6 +2,11 @@ package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 @Entity
 @Table(name = "Medic")
@@ -33,8 +38,20 @@ public class MedicModel {
     @JoinColumn(name="role_id")
     private Role role;
 
+    @ManyToMany(mappedBy = "medics")
+    private List<PatientModel> patients = new ArrayList<>();
 
 
+
+
+
+    public List<PatientModel> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<PatientModel> patients) {
+        this.patients = patients;
+    }
 
     public Role getRole() {
         return role;
