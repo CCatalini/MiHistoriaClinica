@@ -41,10 +41,6 @@ public class MedicModel {
     @ManyToMany(mappedBy = "medics")
     private List<PatientModel> patients = new ArrayList<>();
 
-
-
-
-
     public List<PatientModel> getPatients() {
         return patients;
     }
