@@ -38,7 +38,7 @@ public class MedicModel {
     @JoinColumn(name="role_id")
     private Role role;
 
-    @ManyToMany(mappedBy = "medics")
+    @ManyToMany(mappedBy = "medics",fetch = FetchType.EAGER)
     private List<PatientModel> patients = new ArrayList<>();
 
     public List<PatientModel> getPatients() {

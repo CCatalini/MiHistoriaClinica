@@ -4,10 +4,12 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.service.MedicServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -48,8 +50,9 @@ public class MedicController {
     }
 
     @GetMapping("/getAll")
-    public ArrayList<MedicModel> getAllMedic(){
-        return medicService.getAllMedic();
+    public ResponseEntity<List<MedicModel>> getAllMedic() {
+        List<MedicModel> medics = medicService.getAllMedic();
+        return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
