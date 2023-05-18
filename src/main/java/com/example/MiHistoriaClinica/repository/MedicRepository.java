@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.repository;
 
 import com.example.MiHistoriaClinica.model.MedicModel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.ResponseEntity;
 
 public interface MedicRepository extends JpaRepository<MedicModel, Long> {
 
@@ -9,7 +10,7 @@ public interface MedicRepository extends JpaRepository<MedicModel, Long> {
 
     MedicModel findByDni(Long dni);
 
-    void deleteByDni(Long dni);
+    ResponseEntity<Void> deleteByDni(Long dni);
 
     MedicModel findByMatriculaAndPassword(Long matricula, String password);
 

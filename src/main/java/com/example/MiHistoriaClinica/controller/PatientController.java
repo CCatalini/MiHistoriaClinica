@@ -1,18 +1,12 @@
 package com.example.MiHistoriaClinica.controller;
 
-import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
-import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
-import com.example.MiHistoriaClinica.model.Role;
-import com.example.MiHistoriaClinica.repository.PatientRepository;
-import com.example.MiHistoriaClinica.repository.RoleRepository;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
