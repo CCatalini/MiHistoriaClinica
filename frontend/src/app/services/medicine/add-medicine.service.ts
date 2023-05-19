@@ -9,7 +9,11 @@ export class AddMedicineService {
     constructor(private http:HttpClient) { }
 
     public addMedicine(medicine:any){
-        return this.http.post(`http://localhost:8080/medic/addMedicine`,medicine);
+        return this.http.post(`http://localhost:8080/medic/addMedicine`,medicine,{
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem('token')
+            }
+        });
     }
 
 }

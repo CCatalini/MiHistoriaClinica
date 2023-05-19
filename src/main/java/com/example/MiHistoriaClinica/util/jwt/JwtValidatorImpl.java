@@ -15,7 +15,7 @@ public class JwtValidatorImpl implements JwtValidator{
 
         String role = getRole(token);
 
-        if(role.equals("user")){
+        if(role.equals("PATIENT")){
             return getId(token);
         }
 
@@ -26,7 +26,7 @@ public class JwtValidatorImpl implements JwtValidator{
     public String validateMedic(String token) {
         String role = getRole(token);
 
-        if(role.equals("medic")){
+        if(role.equals("MEDIC")){
             return getId(token);
         }
 

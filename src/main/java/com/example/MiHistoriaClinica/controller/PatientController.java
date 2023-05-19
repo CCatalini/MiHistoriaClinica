@@ -1,7 +1,10 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +38,11 @@ public class PatientController {
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
-    public ResponseEntity<PatientModel> loginPatient(@RequestBody PatientModel patient) {
+    public ResponseEntity<TokenDTO> loginPatient(@RequestBody PatientModel patient) {
         PatientModel loggedInPatient = patientService.loginPatient(patient);
-        return new ResponseEntity<>(loggedInPatient, HttpStatus.OK);
+        JwtGenerator jwt = new JwtGeneratorImpl();
+        TokenDTO token = jwt.generateToken(loggedInPatient.getPatient_id().toString(),"PATIENT");
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     /**

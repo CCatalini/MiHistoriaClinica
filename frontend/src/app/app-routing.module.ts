@@ -69,7 +69,7 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'medic/attendPatient',
+      path:'medic/attendPatient/:linkCode',
       component:AttendPatientComponent,
       pathMatch:'full'
   },

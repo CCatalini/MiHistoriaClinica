@@ -119,12 +119,12 @@ public class MedicServiceImpl implements MedicService {
      * Luego, asocia al paciente al conjunto de pacientes del médico y guarda el registro del médico actualizado.
      */
     @Transactional
-    public void linkPatient(String linkCode, Long medicId) {
+    public void linkPatient(String linkCode, String dni,Long medicId) {
         MedicModel medic = medicRepository.findById(medicId).orElse(null);
         if (medic == null) {
             throw new RuntimeException("No se pudo asociar el paciente. El médico no existe.");
         }
-        PatientModel patient = patientRepository.findByLinkCode(linkCode);
+        PatientModel patient = patientRepository.findByLinkCodeAndDni(linkCode, dni);
         if (patient == null) {
             throw new RuntimeException("No se pudo asociar el paciente. El código de enlace no es válido.");
         }

@@ -1,8 +1,13 @@
 package com.example.MiHistoriaClinica.controller;
 
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.service.MedicServiceImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +21,6 @@ import java.util.List;
 @RequestMapping("/medic")
 @CrossOrigin("*")
 public class MedicController {
-
 
     private final MedicServiceImpl medicService;
 
@@ -35,8 +39,11 @@ public class MedicController {
 
     @PostMapping("/login")
     @ResponseBody
-    public MedicModel loginMedic(@RequestBody MedicModel medic) {
-        return medicService.loginMedic(medic);
+    public ResponseEntity<TokenDTO> loginMedic(@RequestBody MedicModel medic) {
+        MedicModel loggedMedic = medicService.loginMedic(medic);
+        JwtGenerator jwt = new JwtGeneratorImpl();
+        TokenDTO token = jwt.generateToken(loggedMedic.getMedic_id().toString(),"MEDIC");
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @GetMapping("/getById/{id}")
@@ -81,15 +88,19 @@ public class MedicController {
      * de servicio para asociar al paciente correspondiente al médico.
      * Devuelve una respuesta vacía al cliente.
      */
-    @PostMapping("/{medicId}/link-patient")
-    public ResponseEntity<Void> linkPatient(@RequestParam String linkCode, @PathVariable Long medicId) {
-        medicService.linkPatient(linkCode, medicId);
+    @PostMapping("/link-patient")
+    public ResponseEntity<Void> linkPatient(@RequestParam String linkCode, @RequestParam String dni, @RequestHeader("Authorization") String token) {
+        JwtValidator validator = new JwtValidatorImpl(new JwtGeneratorImpl());
+        String medicId = validator.validateMedic(token);
+        medicService.linkPatient(linkCode, dni, Long.parseLong(medicId));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/addMedicine")
   //  @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
+    public MedicineModel addMedicine(@RequestBody MedicineModel medicine, @RequestHeader("Authorization") String token){
+        JwtValidator validator = new JwtValidatorImpl(new JwtGeneratorImpl());
+        String id = validator.validateMedic(token);
         return medicService.addMedicine(medicine);
     }
 

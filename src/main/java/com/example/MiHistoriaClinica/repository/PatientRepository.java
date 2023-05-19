@@ -17,5 +17,7 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
 
     PatientModel findByLinkCode(String linkCode);
 
+    PatientModel findByLinkCodeAndDni(String linkCode, String dni);
+
     // void assignRole(Long patient_id, Long role_id);
 }

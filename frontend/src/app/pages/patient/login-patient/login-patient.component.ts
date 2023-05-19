@@ -32,8 +32,10 @@ export class LoginPatientComponent implements OnInit{
             return;
         }
         this.userService.loginPatient(this.patient).subscribe(
-            (data) => {
+            (data: any) => {
                 console.log(data);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userType', 'PATIENT')
                 this.router.navigate(['home-patient']);
             },(error) => {
                 console.log(error);

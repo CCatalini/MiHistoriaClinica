@@ -18,7 +18,7 @@ public interface MedicService {
     ResponseEntity<Void> deleteMedic(Long id);
     ResponseEntity<Void> deleteMedicByDni(Long dni);
     void deleteAllMedic();
-    void linkPatient(String linkCode, Long medicId);
+    void linkPatient(String linkCode, String dni,Long medicId);
     MedicineModel addMedicine(MedicineModel medicine);
     AnalysisModel addAnalysis(AnalysisModel analysis);
     MedicalHistoryModel createMedicalHistory(MedicalHistoryModel history);

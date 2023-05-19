@@ -18,8 +18,10 @@ export class AddMedicineComponent implements OnInit{
 
     constructor(private userService:AddMedicineService, private snack:MatSnackBar){
     }
-
     ngOnInit(): void {
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
     }
 
     formSubmit(){
