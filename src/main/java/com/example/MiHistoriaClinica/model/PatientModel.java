@@ -28,10 +28,6 @@ public class PatientModel {
     @Column(nullable = false)
     private String password;
 
-    @Column()
-    private Date birthdate;
-
-
     @ManyToOne
     @JoinColumn(name="role_id")
     private Role role;
@@ -91,14 +87,6 @@ public class PatientModel {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Date getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
     }
 }
 

@@ -1,11 +1,14 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.model.Role;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.RoleRepository;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +43,14 @@ public class PatientController {
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
-    public PatientModel loginPatient(@RequestBody PatientModel patient) {
+    public TokenDTO loginPatient(@RequestBody PatientModel patient) {
+        JwtGenerator jwt = new JwtGeneratorImpl();
         PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
+        TokenDTO token = jwt.generateToken(result.getPatient_id().toString(),"PATIENT");
         if (result == null) {
             throw new PatientNotFoundException();
         } else {
-            return result;
+            return token;
         }
     }
 
@@ -79,7 +84,6 @@ public class PatientController {
         patient.setEmail(newPatient.getEmail());
         patient.setPassword(newPatient.getPassword());
         patient.setDni(newPatient.getDni());
-        patient.setBirthdate(newPatient.getBirthdate());
 
         return patientRepository.save(patient);
     }
