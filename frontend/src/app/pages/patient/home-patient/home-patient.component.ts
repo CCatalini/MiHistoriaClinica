@@ -10,6 +10,11 @@ export class HomePatientComponent implements OnInit {
     constructor() { }
 
     ngOnInit(): void {
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'PATIENT') {
+            window.location.href = '/patient/login';
+
+        }
     }
 
 }

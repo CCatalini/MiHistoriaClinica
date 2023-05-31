@@ -19,7 +19,12 @@ export class AddAnalysisComponent {
     }
 
     ngOnInit(): void {
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
     }
+
 
     formSubmit(){
         console.log(this.analysis);

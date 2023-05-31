@@ -31,8 +31,10 @@ export class LoginMedicComponent implements OnInit{
             return;
         }
         this.userService.loginMedic(this.medic).subscribe(
-            (data) => {
+            (data: any) => {
                 console.log(data);
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userType', 'MEDIC')
                 this.router.navigate(['home-medic']);
             },(error) => {
                 console.log(error);
