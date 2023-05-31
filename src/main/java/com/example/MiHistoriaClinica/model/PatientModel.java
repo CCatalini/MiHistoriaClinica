@@ -1,10 +1,12 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Patient")
@@ -14,7 +16,7 @@ public class PatientModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long patient_id;
+    private Long patientId;
 
     @Column()
     private String name;
@@ -35,20 +37,18 @@ public class PatientModel {
     private Date birthdate;
 
 
-    @ManyToOne
-    @JoinColumn(name="role_id")
-    private Role role;
-
-
     @Column(name = "link_code", nullable = false, unique = true)
     private String linkCode;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "patient_medic",
-            joinColumns = @JoinColumn(name = "patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "medic_id")
+            joinColumns = @JoinColumn(name = "patientId"),
+            inverseJoinColumns = @JoinColumn(name = "medicId")
     )
+    @JsonManagedReference
     private List<MedicModel> medics = new ArrayList<>();
 
 
@@ -71,20 +71,14 @@ public class PatientModel {
         this.linkCode = linkCode;
     }
 
-    public Role getRole() {
-        return role;
+    
+
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Long getPatient_id() {
-        return patient_id;
-    }
-
-    public void setPatient_id(Long patient_id) {
-        this.patient_id = patient_id;
+    public void setPatientId(Long patient_id) {
+        this.patientId = patient_id;
     }
 
     public String getName() {
@@ -134,6 +128,29 @@ public class PatientModel {
     public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PatientModel patient = (PatientModel) o;
+        return Objects.equals(patientId, patient.patientId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(patientId);
+    }
+
+
+
+
+
 }
 
 /*

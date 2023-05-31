@@ -1,11 +1,11 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
 
 
 @Entity
@@ -15,7 +15,7 @@ public class MedicModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long medic_id;
+    private Long medicId;
 
     private String name;
 
@@ -34,11 +34,9 @@ public class MedicModel {
 
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name="role_id")
-    private Role role;
 
-    @ManyToMany(mappedBy = "medics",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "medics", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<PatientModel> patients = new ArrayList<>();
 
     public List<PatientModel> getPatients() {
@@ -49,20 +47,15 @@ public class MedicModel {
         this.patients = patients;
     }
 
-    public Role getRole() {
-        return role;
+
+
+
+    public Long getMedicId() {
+        return medicId;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Long getMedic_id() {
-        return medic_id;
-    }
-
-    public void setMedic_id(Long doctor_id) {
-        this.medic_id = doctor_id;
+    public void setMedicId(Long doctor_id) {
+        this.medicId = doctor_id;
     }
 
     public String getName() {
@@ -120,4 +113,27 @@ public class MedicModel {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MedicModel medicModel = (MedicModel) o;
+        return Objects.equals(medicId, medicModel.medicId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(medicId);
+    }
+
+
+
 }
