@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {SignupMedicService} from "../../../services/medic/signup-medic.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 import { Router } from '@angular/router';
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-signup-medic',
@@ -22,7 +22,7 @@ export class SignupMedicComponent implements OnInit{
         password: ''
     }
 
-    constructor(private userService:SignupMedicService, private snack:MatSnackBar, private router: Router){
+    constructor(private userService:MedicService, private snack:MatSnackBar, private router: Router){
 
     }
 

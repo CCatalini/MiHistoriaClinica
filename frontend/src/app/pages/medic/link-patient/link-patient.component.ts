@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
-import {LinkPatientService} from "../../../services/medic/link-patient.service";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-link-patient',
@@ -14,7 +14,7 @@ export class LinkPatientComponent implements OnInit{
         codigo: '',
     }
 
-    constructor(private userService:LinkPatientService, private router: Router){
+    constructor(private userService:MedicService, private router: Router){
     }
 
     ngOnInit(): void {
