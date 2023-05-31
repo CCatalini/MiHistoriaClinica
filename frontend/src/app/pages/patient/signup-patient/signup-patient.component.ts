@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {MatSnackBar, MatSnackBarModule} from "@angular/material/snack-bar";
 import Swal from 'sweetalert2';
-import {SignupPatientService} from "../../../services/patient/signup-patient.service";
 import { Router } from '@angular/router';
+import {PatientService} from "../../../services/patient/patient.service";
 
 @Component({
   selector: 'app-signup-patient',
@@ -20,7 +20,7 @@ export class SignupPatientComponent implements OnInit{
         birthday: '',
     }
 
-    constructor(private userService:SignupPatientService, private snack:MatSnackBar, private router: Router){
+    constructor(private userService:PatientService, private snack:MatSnackBar, private router: Router){
 
     }
 

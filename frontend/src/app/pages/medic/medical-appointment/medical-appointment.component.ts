@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {CreateMedicalHistoryService} from "../../../services/medicalHistory/medicalHistory.service";
 import Swal from "sweetalert2";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-medical-appointment.service.sepc.ts',
@@ -15,7 +15,7 @@ export class MedicalAppointmentComponent {
         observations: '',
     }
 
-    constructor(private userService:CreateMedicalHistoryService){
+    constructor(private userService:MedicService){
     }
 
     ngOnInit(): void {
