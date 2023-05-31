@@ -9,7 +9,11 @@ export class HomeMedicComponent implements OnInit{
     constructor() { }
 
     ngOnInit(): void {
-    }
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
 
+        }
+    }
 
 }

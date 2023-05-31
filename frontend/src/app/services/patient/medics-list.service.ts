@@ -9,6 +9,6 @@ export class MedicsListService {
     constructor(private http: HttpClient) { }
 
     public getMedicsList() {
-        return this.http.get('http://localhost:8080/medic/getAll', {});
+        return this.http.get('http://localhost:8080/medic/getAll');
     }
 }
