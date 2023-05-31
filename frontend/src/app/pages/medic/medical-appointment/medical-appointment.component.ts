@@ -19,8 +19,12 @@ export class MedicalAppointmentComponent {
     }
 
     ngOnInit(): void {
-    }
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
 
+        }
+    }
     formSubmit(){
         console.log(this.medicalAppointment);
         if(this.medicalAppointment.appointmentReason == '' || this.medicalAppointment.appointmentReason == null){

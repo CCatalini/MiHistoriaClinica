@@ -22,6 +22,10 @@ export class CreateMedicalHistoryComponent {
     }
 
     ngOnInit(): void {
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
     }
 
     formSubmit(){

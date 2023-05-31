@@ -93,7 +93,6 @@ public class MedicController {
         return medicService.addMedicine(medicine);
     }
 
-
     @PostMapping("/addAnalysis")
    // @PreAuthorize("hasRole('MEDIC_ROLE')")
     public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
