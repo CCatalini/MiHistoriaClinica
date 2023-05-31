@@ -20,7 +20,12 @@ export class AddMedicineComponent implements OnInit{
     }
 
     ngOnInit(): void {
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
     }
+
 
     formSubmit(){
         console.log(this.medicine);
