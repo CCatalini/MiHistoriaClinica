@@ -34,7 +34,7 @@ public class PatientModel {
     @Column()
     private Date birthdate;
 
-
+//todo revisar para borrar wsta clase
     @ManyToOne
     @JoinColumn(name="role_id")
     private Role role;
@@ -42,6 +42,7 @@ public class PatientModel {
 
     @Column(name = "link_code", nullable = false, unique = true)
     private String linkCode;
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -51,9 +52,36 @@ public class PatientModel {
     )
     private List<MedicModel> medics = new ArrayList<>();
 
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    private List<MedicineModel> medicines;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "patient_analysis",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "analysis_id")
+    )
+    private List<AnalysisModel> analysis = new ArrayList<>();
 
 
 
+
+
+    public List<AnalysisModel> getAnalysis() {
+        return analysis;
+    }
+
+    public void setAnalysis(List<AnalysisModel> analysis) {
+        this.analysis = analysis;
+    }
+
+    public List<MedicineModel> getMedicines() {
+        return medicines;
+    }
+
+    public void setMedicines(List<MedicineModel> medicines) {
+        this.medicines = medicines;
+    }
 
     public List<MedicModel> getMedics() {
         return medics;

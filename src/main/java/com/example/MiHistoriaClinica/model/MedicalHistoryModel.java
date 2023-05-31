@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="medicalHistory")
 public class MedicalHistoryModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)

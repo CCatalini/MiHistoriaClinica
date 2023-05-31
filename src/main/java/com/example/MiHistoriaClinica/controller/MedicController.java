@@ -23,6 +23,7 @@ import java.util.List;
 public class MedicController {
 
     private final MedicServiceImpl medicService;
+    private final JwtGenerator jwt = new JwtGeneratorImpl();
 
     @Autowired
     public MedicController(MedicServiceImpl medicService) {
@@ -41,8 +42,9 @@ public class MedicController {
     @ResponseBody
     public ResponseEntity<TokenDTO> loginMedic(@RequestBody MedicModel medic) {
         MedicModel loggedMedic = medicService.loginMedic(medic);
-        JwtGenerator jwt = new JwtGeneratorImpl();
+
         TokenDTO token = jwt.generateToken(loggedMedic.getMedic_id().toString(),"MEDIC");
+
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 

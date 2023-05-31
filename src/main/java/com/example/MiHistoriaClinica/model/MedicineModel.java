@@ -19,7 +19,18 @@ public class MedicineModel {
 
     private String lab;
 
+    @Column(unique = true)
+    private String code;
+
     private String description;
+
+
+    @ManyToOne
+    @JoinColumn(name = "patient_id")
+    private PatientModel patient;
+
+
+
 
 
     public String getLab() {
@@ -61,4 +72,21 @@ public class MedicineModel {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public PatientModel getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientModel patient) {
+        this.patient = patient;
+    }
+
 }

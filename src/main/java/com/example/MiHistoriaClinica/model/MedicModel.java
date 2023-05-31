@@ -41,6 +41,10 @@ public class MedicModel {
     @ManyToMany(mappedBy = "medics",fetch = FetchType.EAGER)
     private List<PatientModel> patients = new ArrayList<>();
 
+
+
+
+
     public List<PatientModel> getPatients() {
         return patients;
     }

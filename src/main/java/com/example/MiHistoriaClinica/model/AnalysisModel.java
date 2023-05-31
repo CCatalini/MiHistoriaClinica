@@ -2,9 +2,13 @@ package com.example.MiHistoriaClinica.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name= "Analysis")
 public class AnalysisModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -17,6 +21,20 @@ public class AnalysisModel {
 
     private String description;
 
+    @ManyToMany(mappedBy = "analysis",fetch = FetchType.EAGER)
+    private List<PatientModel> patients = new ArrayList<>();
+
+
+
+
+
+    public List<PatientModel> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(List<PatientModel> patients) {
+        this.patients = patients;
+    }
 
     public Long getAnalysis_id() {
         return analysis_id;
