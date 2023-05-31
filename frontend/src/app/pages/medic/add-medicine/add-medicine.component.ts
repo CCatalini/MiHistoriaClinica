@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
-import {AddMedicineService} from "../../../services/medicine/add-medicine.service";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-alta-medicamento',
@@ -16,7 +16,7 @@ export class AddMedicineComponent implements OnInit{
         lab: ''
     }
 
-    constructor(private userService:AddMedicineService, private snack:MatSnackBar){
+    constructor(private userService:MedicService, private snack:MatSnackBar){
     }
 
     ngOnInit(): void {

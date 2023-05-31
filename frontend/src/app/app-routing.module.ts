@@ -16,6 +16,7 @@ import {MedicalAppointmentComponent} from "./pages/medic/medical-appointment/med
 import {LinkPatientComponent} from "./pages/medic/link-patient/link-patient.component";
 import {MedicsListComponent} from "./pages/lists/medics-list/medics-list.component";
 import {MedicinesListComponent} from "./pages/lists/medicines-list/medicines-list.component";
+import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 
 const routes: Routes = [
     {
@@ -97,7 +98,13 @@ const routes: Routes = [
       path:'medicine/getMedicinesList',
       component:MedicinesListComponent,
       pathMatch:'full'
+  },
+  {
+      path:'medicine/getMedicinesList',
+      component:GenerateLinkCodeComponent,
+      pathMatch:'full'
   }
+
 ];
 
 @NgModule({

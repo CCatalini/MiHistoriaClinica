@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
-import { PatientsListService } from '../../../services/medic/patients-list.service';
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
     selector: 'app-patients-list',
@@ -19,7 +19,7 @@ export class PatientsListComponent implements OnInit {
 
     patients: any[] = [];
 
-    constructor(private userService: PatientsListService, private router: Router) { }
+    constructor(private userService: MedicService, private router: Router) { }
 
     ngOnInit(): void {
         console.log('Hola');

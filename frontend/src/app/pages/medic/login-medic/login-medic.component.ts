@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import Swal from "sweetalert2";
-import {LoginMedicService} from "../../../services/medic/login-medic.service";
 import { Router } from '@angular/router';
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-login-medic',
@@ -14,7 +14,7 @@ export class LoginMedicComponent implements OnInit{
         password: '',
     }
 
-    constructor(private userService:LoginMedicService, private router: Router){
+    constructor(private userService:MedicService, private router: Router){
     }
 
     ngOnInit(): void {

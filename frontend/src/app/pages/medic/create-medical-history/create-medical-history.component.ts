@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import Swal from "sweetalert2";
-import {CreateMedicalHistoryService} from "../../../services/medicalHistory/medicalHistory.service";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-create-medical-history',
@@ -18,7 +18,7 @@ export class CreateMedicalHistoryComponent {
         familyMedicalHistory: ''
     }
 
-    constructor(private userService:CreateMedicalHistoryService){
+    constructor(private userService:MedicService){
     }
 
     ngOnInit(): void {
