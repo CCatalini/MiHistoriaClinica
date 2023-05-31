@@ -100,7 +100,7 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'medicine/getMedicinesList',
+      path:'patient/generateLinkcode',
       component:GenerateLinkCodeComponent,
       pathMatch:'full'
   }

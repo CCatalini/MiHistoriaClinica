@@ -31,8 +31,6 @@ public class MedicController {
         return medicService.createMedic(medic);
     }
 
-
-
     @PostMapping("/login")
     @ResponseBody
     public MedicModel loginMedic(@RequestBody MedicModel medic) {

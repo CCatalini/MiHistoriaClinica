@@ -25,6 +25,8 @@ export class MedicinesListComponent {
         this.formSubmit();
     }
 
+
+
     formSubmit() {
         this.userService.getMedicinesList().subscribe(
             (data: any) => {

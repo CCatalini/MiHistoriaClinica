@@ -46,6 +46,7 @@ public class MedicineController {
         return newMedicine;
     }
 
+
     @DeleteMapping("/deleteMedicine/{id}")
     public ResponseEntity<Object> deleteMedicine(@PathVariable Long id){
         MedicineModel medicine = medicineRepository.findById(id).orElseThrow(()

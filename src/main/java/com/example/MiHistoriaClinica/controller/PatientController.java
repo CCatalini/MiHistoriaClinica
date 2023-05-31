@@ -50,6 +50,12 @@ public class PatientController {
         String linkCode = patientService.generateLinkCode(patientId);
         return ResponseEntity.ok(linkCode);
     }
+    //todo Cami volar patientId y pasar token como header en la request, usando JwtValidator.getId(token) nos devuelve el patientId
+/*    @PostMapping("/generate-link-code")
+    public ResponseEntity<String> generateLinkCode(@RequestHeader (“Authorization”) String token) {
+        String linkCode = patientService.generateLinkCode(JwtValidator.getId(token));
+        return ResponseEntity.ok(linkCode);
+    }*/
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
