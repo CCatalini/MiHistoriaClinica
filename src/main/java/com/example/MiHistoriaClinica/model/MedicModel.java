@@ -34,11 +34,14 @@ public class MedicModel {
 
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name="role_id")
-    private Role role;
 
-    @ManyToMany(mappedBy = "medics",fetch = FetchType.EAGER)
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "patient_medic",
+            joinColumns = @JoinColumn(name = "medic_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id")
+    )
     private List<PatientModel> patients = new ArrayList<>();
 
     public List<PatientModel> getPatients() {
@@ -49,13 +52,8 @@ public class MedicModel {
         this.patients = patients;
     }
 
-    public Role getRole() {
-        return role;
-    }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+
 
     public Long getMedic_id() {
         return medic_id;

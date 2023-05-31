@@ -3,9 +3,7 @@ package com.example.MiHistoriaClinica.service;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
-import com.example.MiHistoriaClinica.model.Role;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
-import com.example.MiHistoriaClinica.repository.RoleRepository;
 import com.example.MiHistoriaClinica.service.interfaces.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +15,12 @@ import java.util.UUID;
 public class PatientServiceImpl implements PatientService {
 
     private PatientRepository patientRepository;
-    private RoleRepository roleRepository;
 
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, RoleRepository roleRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
-        this.roleRepository = roleRepository;
-    }
+   }
 
     /**
      * método para generar el código de enlace y actualizar el registro del paciente con el nuevo código
@@ -44,8 +40,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientModel createPatient(PatientModel patient) {
-        Role role = roleRepository.findByName("PATIENT_ROLE");
-        patient.setRole(role);
+
         return patientRepository.save(patient);
     }
 
