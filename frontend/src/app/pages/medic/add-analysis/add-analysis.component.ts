@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
-import {AddAnalysisService} from "../../../services/analysis/analysis.service";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
   selector: 'app-add-analysis',
@@ -15,7 +15,7 @@ export class AddAnalysisComponent {
         description: '',
     }
 
-    constructor(private userService:AddAnalysisService, private snack:MatSnackBar){
+    constructor(private userService:MedicService, private snack:MatSnackBar){
     }
 
     ngOnInit(): void {

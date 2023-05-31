@@ -29,6 +29,7 @@ import { MedicalAppointmentComponent } from './pages/medic/medical-appointment/m
 import { LinkPatientComponent } from './pages/medic/link-patient/link-patient.component';
 import { MedicsListComponent } from './pages/lists/medics-list/medics-list.component';
 import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-list.component';
+import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-l
     LinkPatientComponent,
     MedicsListComponent,
     MedicinesListComponent,
+    GenerateLinkCodeComponent,
   ],
     imports: [
         BrowserModule,
