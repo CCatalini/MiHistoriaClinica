@@ -87,6 +87,14 @@ public class MedicController {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/{medic-id}/get-patients")
+    public ResponseEntity<List<PatientModel>> getPatients(@PathVariable("medic-id") Long parameter){
+        List<PatientModel> patients = medicService.getPatientsByMedicId(parameter);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+
     @PostMapping("/addMedicine")
   //  @PreAuthorize("hasRole('MEDIC_ROLE')")
     public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {

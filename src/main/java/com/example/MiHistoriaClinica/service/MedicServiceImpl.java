@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MedicServiceImpl implements MedicService {
@@ -19,24 +20,23 @@ public class MedicServiceImpl implements MedicService {
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
-    private final RoleRepository roleRepository;
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, RoleRepository roleRepository) {
+
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
-        this.roleRepository = roleRepository;
+
     }
 
 
     @Override
     public MedicModel createMedic(MedicModel medic) {
         // Asignar rol por defecto al médico
-        Role role = roleRepository.findByName("MEDIC_ROLE");
-        medic.setRole(role);
+
 
         return medicRepository.save(medic);
 
@@ -128,9 +128,13 @@ public class MedicServiceImpl implements MedicService {
         if (patient == null) {
             throw new RuntimeException("No se pudo asociar el paciente. El código de enlace no es válido.");
         }
+
         medic.getPatients().add(patient);
+        patient.getMedics().add(medic);  // Agregar el médico a la lista de médicos del paciente
+
         medicRepository.save(medic);
-    }
+        patientRepository.save(patient);  // Guardar también al paciente para actualizar la relación
+    }//todo checkeo del que el link no exista
 
     @Override
     public MedicineModel addMedicine(MedicineModel medicine) {
@@ -145,6 +149,10 @@ public class MedicServiceImpl implements MedicService {
     @Override
     public MedicalHistoryModel createMedicalHistory(MedicalHistoryModel history) {
         return medicalHistoryRepository.save(history);
+    }
+
+    public List<PatientModel> getPatientsByMedicId(Long medicId) {
+        return medicRepository.getPatientsByMedicId(medicId);
     }
 
 }

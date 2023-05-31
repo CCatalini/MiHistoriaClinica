@@ -35,15 +35,12 @@ public class PatientModel {
     private Date birthdate;
 
 
-    @ManyToOne
-    @JoinColumn(name="role_id")
-    private Role role;
-
-
     @Column(name = "link_code", nullable = false, unique = true)
     private String linkCode;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "patient_medic",
             joinColumns = @JoinColumn(name = "patient_id"),
@@ -71,13 +68,7 @@ public class PatientModel {
         this.linkCode = linkCode;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    
 
     public Long getPatient_id() {
         return patient_id;
