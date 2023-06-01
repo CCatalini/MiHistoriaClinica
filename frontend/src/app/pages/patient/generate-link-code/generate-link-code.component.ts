@@ -1,15 +1,28 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { PatientService } from "../../../services/patient/patient.service";
 
 @Component({
-  selector: 'app-generate-link-code',
-  templateUrl: './generate-link-code.component.html',
-  styleUrls: ['./generate-link-code.component.css']
+    selector: 'app-generate-link-code',
+    templateUrl: './generate-link-code.component.html',
+    styleUrls: ['./generate-link-code.component.css']
 })
-export class GenerateLinkCodeComponent implements OnInit{
+export class GenerateLinkCodeComponent implements OnInit {
+    linkCode: string = '';
 
-  constructor() { }
+    constructor(private patientService: PatientService) { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+        this.generateLinkCode();
+    }
 
+    generateLinkCode() {
+        this.patientService.generateLinkCode().subscribe(
+            (code: any) => {
+                this.linkCode = code;
+            },
+            error => {
+                console.error('Error al generar el código:', error);
+            }
+        );
+    }
 }

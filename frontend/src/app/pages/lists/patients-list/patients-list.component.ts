@@ -26,8 +26,6 @@ export class PatientsListComponent implements OnInit {
         this.formSubmit();
     }
 
-
-
     formSubmit() {
         this.userService.getPatientsList().subscribe(
             (data: any) => {

@@ -29,8 +29,9 @@ import { MedicalAppointmentComponent } from './pages/medic/medical-appointment/m
 import { LinkPatientComponent } from './pages/medic/link-patient/link-patient.component';
 import { MedicsListComponent } from './pages/lists/medics-list/medics-list.component';
 import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-list.component';
-import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 import { MedicalHistoryListComponent } from './pages/lists/medical-history-list/medical-history-list.component';
+import { MatListModule } from '@angular/material/list';
+import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 
 @NgModule({
   declarations: [
@@ -52,8 +53,8 @@ import { MedicalHistoryListComponent } from './pages/lists/medical-history-list/
     LinkPatientComponent,
     MedicsListComponent,
     MedicinesListComponent,
-    GenerateLinkCodeComponent,
     MedicalHistoryListComponent,
+    GenerateLinkCodeComponent,
   ],
     imports: [
         BrowserModule,
@@ -68,7 +69,8 @@ import { MedicalHistoryListComponent } from './pages/lists/medical-history-list/
         MatSnackBarModule,
         MatToolbarModule,
         AppRoutingModule,
-        MatIconModule
+        MatIconModule,
+        MatListModule,
     ],
   providers: [],
   bootstrap: [AppComponent]
