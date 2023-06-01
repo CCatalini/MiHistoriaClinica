@@ -20,11 +20,11 @@ public class TestController {
         JwtGenerator jwtGenerator = new JwtGeneratorImpl();
         JwtValidator validator = new JwtValidatorImpl(jwtGenerator);
 
-        TokenDTO token = jwtGenerator.generateToken("1", "user");
+        TokenDTO token = jwtGenerator.generateToken(1L, "user");
         System.out.println(token.getToken());
 
         String role = validator.getRole(token.getToken());
-        String id = validator.getId(token.getToken());
+        Long id = validator.getId(token.getToken());
 
         System.out.println(id);
         System.out.println(role);
@@ -32,9 +32,9 @@ public class TestController {
     }
 
     @GetMapping("/test2")
-    public String test2(@RequestHeader("Authorization") String token) throws RuntimeException{
+    public Long test2(@RequestHeader("Authorization") String token) throws RuntimeException{
         JwtValidator validator = new JwtValidatorImpl(new JwtGeneratorImpl());
-        String id = validator.validateMedic(token); //Tira error (Deberia pq uso el token de un user en el test de postman)
+        Long id = validator.validateMedic(token); //Tira error (Deberia pq uso el token de un user en el test de postman)
         return id;
     }
 }
