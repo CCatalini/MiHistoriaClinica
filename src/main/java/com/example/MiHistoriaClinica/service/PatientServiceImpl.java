@@ -40,7 +40,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientModel createPatient(PatientModel patient) {
-
         return patientRepository.save(patient);
     }
 
