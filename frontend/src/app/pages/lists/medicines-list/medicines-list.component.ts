@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import {Router} from "@angular/router";
-import Swal from "sweetalert2";
-import {MedicService} from "../../../services/medic/medic.service";
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { MedicService } from '../../../services/medic/medic.service';
 
 @Component({
-  selector: 'app-medicines-list',
-  templateUrl: './medicines-list.component.html',
-  styleUrls: ['./medicines-list.component.css']
+    selector: 'app-medicines-list',
+    templateUrl: './medicines-list.component.html',
+    styleUrls: ['./medicines-list.component.css']
 })
 export class MedicinesListComponent {
     medicine = {
@@ -18,14 +18,11 @@ export class MedicinesListComponent {
 
     medicines: any[] = [];
 
-    constructor(private userService: MedicService, private router: Router) { }
+    constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
-        console.log('Hola');
         this.formSubmit();
     }
-
-
 
     formSubmit() {
         this.userService.getMedicinesList().subscribe(
@@ -43,5 +40,12 @@ export class MedicinesListComponent {
                 }
             }
         );
+    }
+
+    editMedicine(medicine: any) {
+        // Aquí puedes implementar la lógica de redireccionamiento a la página de edición
+        // Puedes utilizar el Router de Angular para navegar a una nueva ruta
+        // Por ejemplo:
+        this.router.navigate(['/medicines', medicine.id, 'edit']);
     }
 }
