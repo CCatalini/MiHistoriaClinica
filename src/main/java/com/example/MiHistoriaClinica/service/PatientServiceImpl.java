@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.dto.LoginDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
@@ -44,7 +45,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientModel loginPatient(PatientModel patient) {
+    public PatientModel loginPatient(LoginDTO patient) {
         PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
         if (result == null) {
             throw new PatientNotFoundException();
