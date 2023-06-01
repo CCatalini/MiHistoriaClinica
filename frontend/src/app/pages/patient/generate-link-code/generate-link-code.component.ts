@@ -17,8 +17,8 @@ export class GenerateLinkCodeComponent implements OnInit {
 
     generateLinkCode() {
         this.patientService.generateLinkCode().subscribe(
-            (code: any) => {
-                this.linkCode = code;
+            (response: any) => {
+                this.linkCode = response.linkCode;
             },
             error => {
                 console.error('Error al generar el código:', error);

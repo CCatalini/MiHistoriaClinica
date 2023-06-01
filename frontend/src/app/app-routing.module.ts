@@ -17,6 +17,7 @@ import {LinkPatientComponent} from "./pages/medic/link-patient/link-patient.comp
 import {MedicsListComponent} from "./pages/lists/medics-list/medics-list.component";
 import {MedicinesListComponent} from "./pages/lists/medicines-list/medicines-list.component";
 import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
+import {MedicalHistoryListComponent} from "./pages/lists/medical-history-list/medical-history-list.component";
 
 const routes: Routes = [
     {
@@ -102,6 +103,16 @@ const routes: Routes = [
   {
       path:'patient/generateLinkCode',
       component:GenerateLinkCodeComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'patient/medicalHistoryList',
+      component:MedicalHistoryListComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'patient//medicines/:id/edit',
+      component:MedicalHistoryListComponent,
       pathMatch:'full'
   }
 

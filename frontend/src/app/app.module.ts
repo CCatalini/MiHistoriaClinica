@@ -32,6 +32,7 @@ import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-l
 import { MedicalHistoryListComponent } from './pages/lists/medical-history-list/medical-history-list.component';
 import { MatListModule } from '@angular/material/list';
 import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
+import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/gene
     MedicinesListComponent,
     MedicalHistoryListComponent,
     GenerateLinkCodeComponent,
+    EditMedicineComponent,
   ],
     imports: [
         BrowserModule,
