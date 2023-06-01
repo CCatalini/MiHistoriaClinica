@@ -8,6 +8,17 @@
     border-radius: 5px;
 }
 
+.centered-text {
+    text-align: center;
+}
+
 .container {
     text-align: center;
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Añade un margen inferior opcional para separar el botón del siguiente elemento */
+}
+
