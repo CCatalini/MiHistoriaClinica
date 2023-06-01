@@ -11,7 +11,7 @@ import {MedicService} from "../../../services/medic/medic.service";
 export class LinkPatientComponent implements OnInit{
     public patient = {
         dni: '',
-        codigo: '',
+        code: '',
     }
 
     constructor(private userService:MedicService, private router: Router){
@@ -27,7 +27,7 @@ export class LinkPatientComponent implements OnInit{
 
     formSubmit(){
         console.log(this.patient);
-        if(this.patient.codigo == '' || this.patient.codigo == null){
+        if(this.patient.code == '' || this.patient.code == null){
             Swal.fire('Ingrese el código del paciente', 'El código del paciente es requisito para atenderlo.', 'warning');
             return;
         }
