@@ -13,7 +13,6 @@ export class HomePatientComponent implements OnInit {
         //verifico usuario
         if (localStorage.getItem('userType') != 'PATIENT') {
             window.location.href = '/patient/login';
-
         }
     }
 
