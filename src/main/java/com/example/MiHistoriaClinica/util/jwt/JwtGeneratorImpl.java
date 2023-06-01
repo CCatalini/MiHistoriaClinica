@@ -18,10 +18,12 @@ public class JwtGeneratorImpl implements JwtGenerator{
     private String message;
 
     static final SecretKey KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
+
     @Override
-    public TokenDTO generateToken(String id, String role) {
+    public TokenDTO generateToken(Long id, String role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", id);
+        claims.put("id", String.valueOf(id));
         claims.put("role", role);
         String jwt = "";
         jwt = Jwts.builder()

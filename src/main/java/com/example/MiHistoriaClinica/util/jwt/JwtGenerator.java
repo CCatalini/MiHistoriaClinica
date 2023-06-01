@@ -7,6 +7,6 @@ import java.util.Map;
 
 public interface JwtGenerator {
 
-    TokenDTO generateToken(String id, String role);
+    TokenDTO generateToken(Long id, String role);
     Claims getClaims(String token);
 }
