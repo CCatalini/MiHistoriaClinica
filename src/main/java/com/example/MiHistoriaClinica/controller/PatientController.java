@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.dto.LoginDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
@@ -42,11 +43,10 @@ public class PatientController {
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
-    public ResponseEntity<TokenDTO> loginPatient(@RequestBody PatientModel patient) {
-        System.out.println("ojala haya entrado xdxd");
+    public ResponseEntity<TokenDTO> loginPatient(@RequestBody LoginDTO patient) {
+
         PatientModel loggedInPatient = patientService.loginPatient(patient);
         TokenDTO token = jwt.generateToken(loggedInPatient.getPatientId(), "PATIENT");
-        System.out.println(token);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
