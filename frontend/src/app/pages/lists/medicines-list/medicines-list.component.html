@@ -1,4 +1,4 @@
-<h1 class = "text-center">Mis Pacientes</h1>
+<h1 class="text-center">Mis Pacientes</h1>
 <br>
 <table class="table table-striped">
     <thead class="table-dark">
@@ -7,14 +7,19 @@
         <th>Compuesto activo</th>
         <th>Laboratorio</th>
         <th>Descripción</th>
+        <th>Acciones</th> <!-- Agregamos una columna para las acciones -->
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let medicine of medicines">
-        <td>{{medicine.medicineName}}</td>
-        <td>{{medicine.activeIngredient}}</td>
-        <td>{{medicine.lab}}</td>
-        <td>{{medicine.description}}</td>
+        <td>{{ medicine.medicineName }}</td>
+        <td>{{ medicine.activeIngredient }}</td>
+        <td>{{ medicine.lab }}</td>
+        <td>{{ medicine.description }}</td>
+        <td>
+            <!-- Agregamos el botón para editar -->
+            <button class="btn btn-primary" (click)="editMedicine(medicine)">Editar</button>
+        </td>
     </tr>
     </tbody>
 </table>
