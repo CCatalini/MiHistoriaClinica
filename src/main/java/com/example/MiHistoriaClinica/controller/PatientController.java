@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,13 @@ import java.util.List;
 @CrossOrigin("*")
 public class PatientController {
 
-    private final PatientServiceImpl patientService;
+    private  PatientServiceImpl patientService;
+    private  JwtValidatorImpl jwtValidator;
 
     @Autowired
     public PatientController(PatientServiceImpl patientService){
         this.patientService = patientService;
+
     }
 
     @PostMapping("/signup")
@@ -40,22 +43,27 @@ public class PatientController {
         return new ResponseEntity<>(loggedInPatient, HttpStatus.OK);
     }
 
+
+
     /**
      * Este método recibe el identificador del paciente como parámetro de la URL y llama al método
      * generateLinkCode() de la capa de servicio para generar el código de enlace correspondiente.
      * Luego, devuelve el código de enlace generado como respuesta al cliente.
      */
-    @PostMapping("/{patientId}/generate-link-code")
+ /*   @PostMapping("/{patientId}/generate-link-code")
     public ResponseEntity<String> generateLinkCode(@PathVariable Long patientId) {
         String linkCode = patientService.generateLinkCode(patientId);
         return ResponseEntity.ok(linkCode);
-    }
-    //todo Cami volar patientId y pasar token como header en la request, usando JwtValidator.getId(token) nos devuelve el patientId
-/*    @PostMapping("/generate-link-code")
-    public ResponseEntity<String> generateLinkCode(@RequestHeader (“Authorization”) String token) {
-        String linkCode = patientService.generateLinkCode(JwtValidator.getId(token));
-        return ResponseEntity.ok(linkCode);
     }*/
+    //todo Cami volar patientId y pasar token como header en la request, usando JwtValidator.getId(token) nos devuelve el patientId
+    @PostMapping("/generate-link-code")
+    public ResponseEntity<String> generateLinkCode(@RequestHeader("authorization") String token) {
+        String linkCode = patientService.generateLinkCode(Long.valueOf(jwtValidator.getId(token)));
+        return ResponseEntity.ok(linkCode);
+    }
+
+
+
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
