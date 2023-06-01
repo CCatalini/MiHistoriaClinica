@@ -11,7 +11,7 @@ public class JwtValidatorImpl implements JwtValidator{
     }
 
     @Override
-    public String validateUser(String token) {
+    public Long validateUser(String token) {
 
         String role = getRole(token);
 
@@ -23,7 +23,7 @@ public class JwtValidatorImpl implements JwtValidator{
     }
 
     @Override
-    public String validateMedic(String token) {
+    public Long validateMedic(String token) {
         String role = getRole(token);
 
         if(role.equals("medic")){
@@ -42,10 +42,10 @@ public class JwtValidatorImpl implements JwtValidator{
     }
 
     @Override
-    public String getId(String token) {
+    public Long getId(String token) {
         String jwt = token.substring(7);
         Claims claims = jwtGenerator.getClaims(jwt);
 
-        return claims.get("id").toString();
+        return Long.valueOf(claims.get("id").toString());
     }
 }
