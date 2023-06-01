@@ -35,9 +35,11 @@ public class MedicModel {
     private String password;
 
 
-    @ManyToMany(mappedBy = "medics", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "medics", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<PatientModel> patients = new ArrayList<>();
+
+
 
     public List<PatientModel> getPatients() {
         return patients;
