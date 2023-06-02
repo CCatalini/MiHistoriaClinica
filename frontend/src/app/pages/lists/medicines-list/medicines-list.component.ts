@@ -43,9 +43,7 @@ export class MedicinesListComponent {
     }
 
     editMedicine(medicine: any) {
-        // Aquí puedes implementar la lógica de redireccionamiento a la página de edición
-        // Puedes utilizar el Router de Angular para navegar a una nueva ruta
-        // Por ejemplo:
-        this.router.navigate(['/medicines', medicine.id, 'edit']);
+        // Redirecciona a la página de edición del medicamento
+        this.router.navigate(['/medic/medicines', medicine.id, 'edit']);
     }
 }
