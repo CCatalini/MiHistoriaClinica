@@ -39,34 +39,22 @@ public class PatientController {
 
     @PostMapping("/login")
     @ResponseBody
-    /*
-      @param Patient, es enviado el objeto por el front
-     * En una solicitud GET, los parámetros se deben enviar en la URL, no en el cuerpo de la solicitud.
-     * Password no debería ser visible en la URL
-     * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
-     */
     public ResponseEntity<TokenDTO> loginPatient(@RequestBody PatientLoginDTO patient) {
-
         PatientModel loggedInPatient = patientService.loginPatient(patient);
         TokenDTO token = jwt.generateToken(loggedInPatient.getPatientId(), "PATIENT");
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
 
-
-    /**
-     * Este método recibe el identificador del paciente como parámetro de la URL y llama al método
-     * generateLinkCode() de la capa de servicio para generar el código de enlace correspondiente.
-     * Luego, devuelve el código de enlace generado como respuesta al cliente.
-     */
- /*   @PostMapping("/{patientId}/generate-link-code")
-    public ResponseEntity<String> generateLinkCode(@PathVariable Long patientId) {
-        String linkCode = patientService.generateLinkCode(patientId);
-        return ResponseEntity.ok(linkCode);
-    }*/
-    //todo Cami volar patientId y pasar token como header en la request, usando JwtValidator.getId(token) nos devuelve el patientId
     @PostMapping("/generate-link-code")
     public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) {
+        String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
+        return ResponseEntity.ok(linkCode);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutPatient(@RequestHeader("Authorization") String token) {
+
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
         return ResponseEntity.ok(linkCode);
     }
