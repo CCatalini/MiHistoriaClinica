@@ -27,11 +27,12 @@ export class EditMedicineComponent implements OnInit {
             .subscribe(
                 (response) => {
                     console.log('Medicamento actualizado:', response);
-                    // redirigir al usuario a otra página después de guardar los cambios.
-                    this.router.navigate(['/medicines-list']);
+                    // Redirigir al usuario a la página de lista de medicamentos después de guardar los cambios.
+                    this.router.navigate(['/medic/medicines-list']);
                 },
                 (error) => {
                     console.error('Error al actualizar el medicamento:', error);
+                    // Manejar el error de acuerdo a tus necesidades
                 }
             );
     }
