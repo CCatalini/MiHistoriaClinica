@@ -37,7 +37,7 @@ public class PatientModel {
     private Date birthdate;
 
 
-    @Column(name = "link_code", nullable = false, unique = true)
+    @Column(name = "link_code")
     private String linkCode;
 
 

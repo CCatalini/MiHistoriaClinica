@@ -1,14 +1,15 @@
 package com.example.MiHistoriaClinica.service.interfaces;
 
-import com.example.MiHistoriaClinica.dto.LoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.PatientModel;
 
 import java.util.List;
 
 public interface PatientService {
 
-    PatientModel createPatient(PatientModel patient);
-    PatientModel loginPatient(LoginDTO patient);
+    PatientModel createPatient(PatientSignupDTO patient);
+    PatientModel loginPatient(PatientLoginDTO patient);
     PatientModel getPatientById(Long id);
     PatientModel getPatientByDni(Long dni);
     List<PatientModel> getAllPatient();
