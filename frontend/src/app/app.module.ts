@@ -28,11 +28,12 @@ import { PatientsListComponent } from './pages/lists/patients-list/patients-list
 import { MedicalAppointmentComponent } from './pages/medic/medical-appointment/medical-appointment.component';
 import { LinkPatientComponent } from './pages/medic/link-patient/link-patient.component';
 import { MedicsListComponent } from './pages/lists/medics-list/medics-list.component';
-import { MedicinesListComponent } from './pages/lists/medicines-list/medicines-list.component';
+import { MedicinesListPatientComponent } from './pages/lists/medicines-list-patient/medicines-list-patient.component';
 import { MedicalHistoryListComponent } from './pages/lists/medical-history-list/medical-history-list.component';
 import { MatListModule } from '@angular/material/list';
 import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine.component';
+import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/medicines-list-medic.component';
 
 @NgModule({
   declarations: [
@@ -53,10 +54,11 @@ import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine
     MedicalAppointmentComponent,
     LinkPatientComponent,
     MedicsListComponent,
-    MedicinesListComponent,
+    MedicinesListPatientComponent,
     MedicalHistoryListComponent,
     GenerateLinkCodeComponent,
     EditMedicineComponent,
+    MedicinesListMedicComponent,
   ],
     imports: [
         BrowserModule,

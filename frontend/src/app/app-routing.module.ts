@@ -15,10 +15,11 @@ import {PatientsListComponent} from "./pages/lists/patients-list/patients-list.c
 import {MedicalAppointmentComponent} from "./pages/medic/medical-appointment/medical-appointment.component";
 import {LinkPatientComponent} from "./pages/medic/link-patient/link-patient.component";
 import {MedicsListComponent} from "./pages/lists/medics-list/medics-list.component";
-import {MedicinesListComponent} from "./pages/lists/medicines-list/medicines-list.component";
+import {MedicinesListPatientComponent} from "./pages/lists/medicines-list-patient/medicines-list-patient.component";
 import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 import {MedicalHistoryListComponent} from "./pages/lists/medical-history-list/medical-history-list.component";
 import {EditMedicineComponent} from "./pages/lists/edit-medicine/edit-medicine.component";
+import {MedicinesListMedicComponent} from "./pages/lists/medicines-list-medic/medicines-list-medic.component";
 
 const routes: Routes = [
     {
@@ -97,8 +98,13 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'medicine/getMedicinesList',
-      component:MedicinesListComponent,
+      path:'patient/medicinesList',
+      component:MedicinesListPatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/medicinesList',
+      component:MedicinesListMedicComponent,
       pathMatch:'full'
   },
   {

@@ -7,7 +7,6 @@
         <th>Compuesto activo</th>
         <th>Laboratorio</th>
         <th>Descripción</th>
-        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -16,9 +15,6 @@
         <td>{{ medicine.activeIngredient }}</td>
         <td>{{ medicine.lab }}</td>
         <td>{{ medicine.description }}</td>
-        <td>
-            <button class="btn btn-primary" (click)="editMedicine(medicine)">Editar</button>
-        </td>
     </tr>
     </tbody>
 </table>
