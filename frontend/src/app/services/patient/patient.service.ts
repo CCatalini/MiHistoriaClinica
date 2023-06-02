@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -20,9 +20,21 @@ export class PatientService {
     public getMedicsList() {
         return this.http.get('http://localhost:8080/medic/getAll');
     }
-
+/*
     public generateLinkCode(token:any) {
-        return this.http.post('http://localhost:8080/patient/generate-link-code',token);
+        return this.http.post('http://localhost:8080/patient/generate-link-code', token);
+    }
+*/
+
+    public generateLinkCode() {
+        const token = localStorage.getItem('token');
+
+        // Configurar el encabezado de autorización
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${token}`
+        });
+
+        return this.http.post('http://localhost:8080/patient/generate-link-code', null, { headers });
     }
 
     public getMedicalHistory(): Observable<any[]> {
