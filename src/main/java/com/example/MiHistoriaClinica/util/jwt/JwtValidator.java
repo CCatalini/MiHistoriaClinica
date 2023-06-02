@@ -1,13 +1,15 @@
 package com.example.MiHistoriaClinica.util.jwt;
 
+import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+
 public interface JwtValidator {
 
-    Long validateUser(String token);
+    Long validateUser(String token) throws InvalidTokenException;
 
-    Long validateMedic(String token);
+    Long validateMedic(String token) throws InvalidTokenException;
 
-    String getRole(String token);
+    String getRole(String token) throws InvalidTokenException;
 
-    Long getId(String token);
+    Long getId(String token) throws InvalidTokenException;
 
 }
