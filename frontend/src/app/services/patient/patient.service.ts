@@ -21,8 +21,8 @@ export class PatientService {
         return this.http.get('http://localhost:8080/medic/getAll');
     }
 
-    public generateLinkCode() {
-        return this.http.get('http://localhost:8080/patient/generate-link-code');
+    public generateLinkCode(token:any) {
+        return this.http.post('http://localhost:8080/patient/generate-link-code',token);
     }
 
     public getMedicalHistory(): Observable<any[]> {

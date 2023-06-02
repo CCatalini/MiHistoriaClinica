@@ -110,8 +110,13 @@ const routes: Routes = [
       component:MedicalHistoryListComponent,
       pathMatch:'full'
   },
-  {
+  { //todo ver
       path:'patient//medicines/:id/edit',
+      component:MedicalHistoryListComponent,
+      pathMatch:'full'
+  },
+  { //todo ver
+      path:'patient/medicalHistoryList',
       component:MedicalHistoryListComponent,
       pathMatch:'full'
   }
