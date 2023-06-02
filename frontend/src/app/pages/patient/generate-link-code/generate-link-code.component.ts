@@ -20,7 +20,7 @@ export class GenerateLinkCodeComponent implements OnInit {
     }
 
     generateLinkCode() {
-        this.patientService.generateLinkCode(localStorage.getItem('token')).subscribe(
+        this.patientService.generateLinkCode().subscribe(
             (response: any) => {
                 this.linkCode = response.linkCode;
             },
