@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PatientService } from "../../../services/patient/patient.service";
-import {HttpHeaders} from "@angular/common/http";
-
 
 @Component({
     selector: 'app-generate-link-code',
@@ -13,7 +11,8 @@ import {HttpHeaders} from "@angular/common/http";
 export class GenerateLinkCodeComponent implements OnInit {
     linkCode: string = '';
 
-    constructor(private patientService: PatientService) { }
+    constructor(private patientService: PatientService) {
+    }
 
     ngOnInit(): void {
         this.generateLinkCode();
@@ -21,14 +20,21 @@ export class GenerateLinkCodeComponent implements OnInit {
 
     generateLinkCode() {
         this.patientService.generateLinkCode().subscribe(
-            (response: any) => {
-                this.linkCode = response.linkCode;
+            (response: string) => {
+                this.linkCode = response;
             },
-            error => {
-                console.error('Error al generar el código:', error);
+            (error: any) => {
+                if (error instanceof ErrorEvent) {
+                    // Error de red
+                    console.error('Error de red:', error.message);
+                } else {
+                    // Error de análisis
+                    console.error('Error al analizar la respuesta del servidor:', error);
+                }
             }
         );
     }
+
 
 }
 
@@ -48,4 +54,18 @@ generateLinkCode() {
             }
         );
     }
+ */
+
+/*
+generateLinkCode() {
+        this.patientService.generateLinkCode().subscribe(
+            (response: any) => {
+                this.linkCode = response.linkCode;
+            },
+            error => {
+                console.error('Error al generar el código:', error);
+            }
+        );
+    }
+
  */
