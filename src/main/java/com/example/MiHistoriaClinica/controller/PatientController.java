@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
+import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
@@ -47,16 +48,15 @@ public class PatientController {
 
 
     @PostMapping("/generate-link-code")
-    public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
         return ResponseEntity.ok(linkCode);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logoutPatient(@RequestHeader("Authorization") String token) {
-
-        String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
-        return ResponseEntity.ok(linkCode);
+        jwt.invalidateToken(token);
+        return ResponseEntity.ok("Logout exitoso");
     }
 
 

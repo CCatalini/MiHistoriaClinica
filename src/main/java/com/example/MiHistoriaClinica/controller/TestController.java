@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.dto.TokenDTO;
+import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class TestController {
 
     @GetMapping("/test")
-    public TokenDTO test(){
+    public TokenDTO test() throws InvalidTokenException {
 
         JwtGenerator jwtGenerator = new JwtGeneratorImpl();
         JwtValidator validator = new JwtValidatorImpl(jwtGenerator);
@@ -32,7 +33,7 @@ public class TestController {
     }
 
     @GetMapping("/test2")
-    public Long test2(@RequestHeader("Authorization") String token) throws RuntimeException{
+    public Long test2(@RequestHeader("Authorization") String token) throws RuntimeException, InvalidTokenException {
         JwtValidator validator = new JwtValidatorImpl(new JwtGeneratorImpl());
         Long id = validator.validateMedic(token); //Tira error (Deberia pq uso el token de un user en el test de postman)
         return id;

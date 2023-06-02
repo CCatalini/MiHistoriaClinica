@@ -20,13 +20,18 @@ export class PatientService {
     public getMedicsList() {
         return this.http.get('http://localhost:8080/medic/getAll');
     }
+
+
 /*
     public generateLinkCode(token:any) {
         return this.http.post('http://localhost:8080/patient/generate-link-code', token);
     }
 */
 
-    public generateLinkCode() {
+    /**
+     * De esta manera el metodo espera recibir un string que manda el back en vez de un objeto JSON
+     */
+    public generateLinkCode(): Observable<string> {
         const token = localStorage.getItem('token');
 
         // Configurar el encabezado de autorización
@@ -34,7 +39,7 @@ export class PatientService {
             'Authorization': `Bearer ${token}`
         });
 
-        return this.http.post('http://localhost:8080/patient/generate-link-code', null, { headers });
+        return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, { headers });
     }
 
     public getMedicalHistory(): Observable<any[]> {

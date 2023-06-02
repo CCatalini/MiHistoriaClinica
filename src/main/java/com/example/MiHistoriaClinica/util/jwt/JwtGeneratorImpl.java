@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.util.jwt;
 
 import com.example.MiHistoriaClinica.dto.TokenDTO;
+import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -8,14 +9,14 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Array;
+import java.util.*;
 
 public class JwtGeneratorImpl implements JwtGenerator{
 
     @Value("${app.jwttoken.message}")
     private String message;
+    private  Set<String> invalidTokens = new HashSet<>();
 
     static final SecretKey KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -35,13 +36,25 @@ public class JwtGeneratorImpl implements JwtGenerator{
         return new TokenDTO(jwt);
     }
 
+
     @Override
-    public Claims getClaims(String token) {
+    public Claims getClaims(String token) throws InvalidTokenException {
+
+        if (invalidTokens.contains(token)) {
+            throw new InvalidTokenException("Token inválido");
+        }
+
         return Jwts.parserBuilder()
                 .setSigningKey(KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+
+    @Override
+    public void invalidateToken(String token) {
+        invalidTokens.add(token);
     }
 
 
