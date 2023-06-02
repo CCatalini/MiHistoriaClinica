@@ -1,12 +1,11 @@
 package com.example.MiHistoriaClinica.dto;
 
-public class LoginDTO{
+public class PatientLoginDTO {
 
     private Long dni;
-
     private String password;
 
-    public LoginDTO(Long dni, String password) {
+    public PatientLoginDTO(Long dni, String password) {
         this.dni = dni;
         this.password = password;
     }

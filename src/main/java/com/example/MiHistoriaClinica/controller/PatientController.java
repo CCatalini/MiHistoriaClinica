@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.controller;
 
-import com.example.MiHistoriaClinica.dto.LoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
@@ -20,9 +21,9 @@ import java.util.List;
 @CrossOrigin("*")
 public class PatientController {
 
-    private  PatientServiceImpl patientService;
-    private JwtGenerator jwt = new JwtGeneratorImpl();
-    private JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
+    private final PatientServiceImpl patientService;
+    private final JwtGenerator jwt = new JwtGeneratorImpl();
+    private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     @Autowired
     public PatientController(PatientServiceImpl patientService){
@@ -31,7 +32,7 @@ public class PatientController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientModel patient) {
+    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientSignupDTO patient) {
         PatientModel createdPatient = patientService.createPatient(patient);
         return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }
@@ -44,7 +45,7 @@ public class PatientController {
      * Password no debería ser visible en la URL
      * Una mejor práctica es enviar los parámetros en la solicitud POST utilizando el cuerpo de la solicitud en lugar de la URL.
      */
-    public ResponseEntity<TokenDTO> loginPatient(@RequestBody LoginDTO patient) {
+    public ResponseEntity<TokenDTO> loginPatient(@RequestBody PatientLoginDTO patient) {
 
         PatientModel loggedInPatient = patientService.loginPatient(patient);
         TokenDTO token = jwt.generateToken(loggedInPatient.getPatientId(), "PATIENT");

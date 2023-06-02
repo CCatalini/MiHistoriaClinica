@@ -1,10 +1,12 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.dto.LoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
+import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
+import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
 import com.example.MiHistoriaClinica.service.interfaces.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,14 @@ import java.util.UUID;
 @Service
 public class PatientServiceImpl implements PatientService {
 
-    private PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
+    private final CustomRepositoryAccess customRepositoryAccess;
 
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess) {
         this.patientRepository = patientRepository;
+        this.customRepositoryAccess = customRepositoryAccess;
    }
 
     /**
@@ -40,12 +44,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientModel createPatient(PatientModel patient) {
-        return patientRepository.save(patient);
+    public PatientModel createPatient(PatientSignupDTO patient) {
+        return customRepositoryAccess.saveDTO(patient);
     }
 
     @Override
-    public PatientModel loginPatient(LoginDTO patient) {
+    public PatientModel loginPatient(PatientLoginDTO patient) {
         PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
         if (result == null) {
             throw new PatientNotFoundException();
