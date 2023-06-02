@@ -5,10 +5,10 @@ import { MedicService } from '../../../services/medic/medic.service';
 
 @Component({
     selector: 'app-medicines-list',
-    templateUrl: './medicines-list.component.html',
-    styleUrls: ['./medicines-list.component.css']
+    templateUrl: './medicines-list-medic.component.html',
+    styleUrls: ['./medicines-list-medic.component.css']
 })
-export class MedicinesListComponent {
+export class MedicinesListMedicComponent {
     medicine = {
         medicineName: '',
         activeIngredient: '',
