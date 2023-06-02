@@ -1,7 +1,6 @@
 package com.example.MiHistoriaClinica.dto;
 
 public class TokenDTO {
-
     private String token;
 
     public TokenDTO(String token) {
