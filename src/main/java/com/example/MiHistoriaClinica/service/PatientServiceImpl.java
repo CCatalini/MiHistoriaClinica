@@ -4,6 +4,7 @@ import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
+import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
@@ -58,6 +59,15 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
+
+    @Override
+    public List<MedicModel> getMedicsByPatientId(Long id) {
+        return patientRepository.getMedicsByPatientId(id);
+    }
+
+
+
+
     @Override
     public PatientModel getPatientById(Long id) {
         return patientRepository.findById(id)
@@ -110,5 +120,6 @@ public class PatientServiceImpl implements PatientService {
     public void deleteAllPatient() {
         patientRepository.deleteAll();
     }
+
 
 }

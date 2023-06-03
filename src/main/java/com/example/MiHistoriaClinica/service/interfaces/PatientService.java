@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.service.interfaces;
 
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
+import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 
 import java.util.List;
@@ -19,4 +20,5 @@ public interface PatientService {
     void deleteAllPatient();
 
 
+    List<MedicModel> getMedicsByPatientId(Long id);
 }
