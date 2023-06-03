@@ -45,5 +45,6 @@ export class MedicinesListMedicComponent {
     editMedicine(medicine: any) {
         // Redirecciona a la página de edición del medicamento
         this.router.navigate(['/medic/medicines', medicine.id, 'edit']);
+        // todo no me lleva al edit de medicamentos
     }
 }
