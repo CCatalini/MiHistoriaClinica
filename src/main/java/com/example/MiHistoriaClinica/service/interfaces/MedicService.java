@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service.interfaces;
 
+import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 
 public interface MedicService {
-    MedicModel createMedic(MedicModel medic);
+    MedicModel createMedic(MedicSignupDTO medic);
     MedicModel loginMedic(MedicModel medic);
     MedicModel getMedicById(Long id);
     MedicModel getMedicByDni(Long dni);

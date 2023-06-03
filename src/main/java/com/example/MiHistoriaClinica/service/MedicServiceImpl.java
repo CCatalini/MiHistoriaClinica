@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
@@ -21,25 +22,24 @@ public class MedicServiceImpl implements MedicService {
     private final AnalysisRepository analysisRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
 
+    private final CustomRepositoryAccess customRepositoryAccess;
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository) {
+
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
 
+        this.customRepositoryAccess = customRepositoryAccess;
     }
 
 
     @Override
-    public MedicModel createMedic(MedicModel medic) {
-        // Asignar rol por defecto al médico
-
-
-        return medicRepository.save(medic);
-
+    public MedicModel createMedic(MedicSignupDTO medic) {
+       return customRepositoryAccess.saveMedicDto(medic);
     }
 
     /**

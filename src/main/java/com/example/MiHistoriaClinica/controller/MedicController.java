@@ -1,8 +1,11 @@
 package com.example.MiHistoriaClinica.controller;
 
 
+import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
+import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.service.MedicServiceImpl;
+import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +30,15 @@ public class MedicController {
 
 
     @PostMapping("/signup")
-    public MedicModel createMedic(@RequestBody MedicModel medic) {
-        return medicService.createMedic(medic);
+    public ResponseEntity<MedicModel> createMedic (@RequestBody MedicSignupDTO medicDTO) {
+
+       MedicModel createdMedic = medicService.createMedic(medicDTO);
+       return new ResponseEntity<>(createdMedic, HttpStatus.OK);
     }
+
+
+
+
 
     @PostMapping("/login")
     @ResponseBody
