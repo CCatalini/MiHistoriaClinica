@@ -1,20 +1,23 @@
 package com.example.MiHistoriaClinica.dto;
 
-
-public class PatientSignupDTO {
+public class MedicSignupDTO {
 
     private String name;
     private String lastname;
     private String password;
     private Long dni;
     private String email;
+    private Long matricula;
+    private String specialty;
 
-    public PatientSignupDTO(String name, String lastname, String password, Long dni, String email) {
+    public MedicSignupDTO(String name, String lastname, String password, Long dni, String email, Long matricula, String specialty) {
         this.name = name;
         this.lastname = lastname;
         this.password = password;
         this.dni = dni;
         this.email = email;
+        this.matricula = matricula;
+        this.specialty = specialty;
     }
 
     public String getName() {
@@ -55,5 +58,21 @@ public class PatientSignupDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(Long matricula) {
+        this.matricula = matricula;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
     }
 }
