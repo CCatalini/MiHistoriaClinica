@@ -117,9 +117,8 @@ const routes: Routes = [
       component:MedicalHistoryListComponent,
       pathMatch:'full'
   },
-  { //todo cambiar path
-      //path:'medic//medicines/:id/edit',
-      path:'medic/medicines/edit',
+  { 
+      path:'medic//medicines/:id/edit',
       component:EditMedicineComponent,
       pathMatch:'full'
   },

@@ -49,9 +49,14 @@ export class PatientService {
 
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
-        const headers = new HttpHeaders().set('Authorization', token);
+        const headers = new HttpHeaders();
+
+        if (token) {
+            headers.set('Authorization', token);
+        }
 
         return this.http.post('/logout', {}, { headers });
     }
+
 
 }
