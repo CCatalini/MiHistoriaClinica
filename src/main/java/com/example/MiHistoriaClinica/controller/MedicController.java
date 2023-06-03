@@ -37,6 +37,8 @@ public class MedicController {
         return medicService.loginMedic(medic);
     }
 
+
+
     @GetMapping("/getById/{id}")
     public MedicModel getMedicById(@PathVariable Long id) {
         return medicService.getMedicById(id);
