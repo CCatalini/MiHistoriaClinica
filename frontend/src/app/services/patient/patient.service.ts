@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from "rxjs";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
 })
 export class PatientService {
 
-    constructor(private http:HttpClient) { }
+    constructor(private http:HttpClient, private router: Router) { }
 
     public loginPatient(patient: any) {
         return this.http.post(`http://localhost:8080/patient/login`, patient);
@@ -44,6 +45,13 @@ export class PatientService {
 
     public getMedicalHistory(): Observable<any[]> {
         return this.http.get<any[]>('http://localhost:8080/patient/medical-history/getAll');
+    }
+
+    logoutPatient(): Observable<any> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders().set('Authorization', token);
+
+        return this.http.post('/logout', {}, { headers });
     }
 
 }

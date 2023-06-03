@@ -61,8 +61,6 @@ import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/
     MedicinesListMedicComponent,
   ],
     imports: [
-
-
         BrowserModule,
         RouterModule,
         FormsModule,

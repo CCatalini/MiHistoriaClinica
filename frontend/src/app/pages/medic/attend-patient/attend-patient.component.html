@@ -5,36 +5,46 @@
                 <h1 class = "text-center">Atender Paciente</h1>
                 <br><br><br>
                 <div class="options">
-                    <a routerLink="/medic/addMedicine" class="option">
+                    <div class="option">
                         <div class="option-box">
                             <img src="../../../../assets/Medicamentos.png" alt="Medicamentos">
-                            <span>Agregar Medicamento</span>
+                            <span>Medicamentos</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/addMedicine" class="btn">Agregar</a>
+                                <a routerLink="/medic/medicinesList" class="btn">Ver historial</a>
+                            </div>
                         </div>
-                    </a>
-                    <a routerLink="/medic/addAnalysis" class="option">
+                    </div>
+                    <div class="option">
                         <div class="option-box">
                             <img src="../../../../assets/Estudios.png" alt="Estudios">
-                            <span>Agregar Estudio</span>
+                            <span>Estudios</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/addAnalysis" class="btn">Agregar</a>
+                                <a routerLink="/medic/medicinesList" class="btn">Ver historial</a>
+                            </div>
                         </div>
-                    </a>
-                    <a routerLink="/medic/createMedicalHistory" class="option">
+                    </div>
+                    <div class="option">
                         <div class="option-box">
-                            <img src="../../../../assets/AgregarMH.png" alt="Pacientes">
-                            <span>Agregar Historia Clínica</span>
+                            <img src="../../../../assets/MH.png" alt="HistoriaClinica">
+                            <span>Historia Clínica</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/createMedicalHistory" class="btn">Crear</a>
+                                <a routerLink="/medic/medicalHistoryList" class="btn">Ver</a>
+                            </div>
                         </div>
-                    </a>
-                    <a routerLink="/medic/medicalAppointment" class="option">
+                    </div>
+                    <div class="option">
                         <div class="option-box">
-                            <img src="../../../../assets/ConsultaMedica.png" alt="Pacientes">
-                            <span>Agregar Consulta Médica</span>
+                            <img src="../../../../assets/AtenderPaciente.png" alt="ConsultaMedica">
+                            <span>Consulta Médica</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/medicalAppointment" class="btn">Agregar</a>
+                                <a routerLink="/medic/medicalAppointmentList" class="btn">Ver historial</a>
+                            </div>
                         </div>
-                    </a>
-                    <a routerLink="/medic/medicinesList" class="option">
-                        <div class="option-box">
-                            <img src="../../../../assets/Medicamentos.png" alt="Medicamentos">
-                            <span>Ver Medicamentos</span>
-                        </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
