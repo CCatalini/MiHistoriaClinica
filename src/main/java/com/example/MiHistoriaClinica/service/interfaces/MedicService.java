@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service.interfaces;
 
+import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public interface MedicService {
     MedicModel createMedic(MedicSignupDTO medic);
-    MedicModel loginMedic(MedicModel medic);
+    MedicModel loginMedic(MedicLoginDTO medic);
     MedicModel getMedicById(Long id);
     MedicModel getMedicByDni(Long dni);
     ArrayList<MedicModel> getAllMedic();

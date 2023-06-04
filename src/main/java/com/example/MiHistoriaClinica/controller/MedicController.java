@@ -1,10 +1,14 @@
 package com.example.MiHistoriaClinica.controller;
 
 
+import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
+import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.service.MedicServiceImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,8 @@ public class MedicController {
 
 
     private final MedicServiceImpl medicService;
+    private final JwtGenerator jwt = new JwtGeneratorImpl();
+
 
     @Autowired
     public MedicController(MedicServiceImpl medicService) {
@@ -36,15 +42,21 @@ public class MedicController {
        return new ResponseEntity<>(createdMedic, HttpStatus.OK);
     }
 
-
-
-
-
     @PostMapping("/login")
     @ResponseBody
-    public MedicModel loginMedic(@RequestBody MedicModel medic) {
-        return medicService.loginMedic(medic);
+    public ResponseEntity<TokenDTO> loginMedic (@RequestBody MedicLoginDTO medicDto){
+        MedicModel loggedInMedic = medicService.loginMedic(medicDto);
+        TokenDTO token = jwt.generateToken(loggedInMedic.getMedicId(), "MEDIC");
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutMedic(@RequestHeader("Authorization") String token){
+        jwt.invalidateToken(token);
+        return ResponseEntity.ok("Logout exitoso");
+    }
+
+
 
 
 
