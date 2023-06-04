@@ -1,14 +1,6 @@
-package com.example.MiHistoriaClinica.model;
+package com.example.MiHistoriaClinica.dto;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name="medicalHistory")
-public class MedicalHistoryModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long history_id;
+public class MedicalHistoryModelDTO {
 
     private String weight;
     private String height;
@@ -16,30 +8,14 @@ public class MedicalHistoryModel {
     private String bloodType;
     private String chronicDisease;
     private String actualMedicine;
-  //  private String familyMedicalHistory;
 
-
-    @OneToOne
-    @JoinColumn(name = "patientId")
-    private PatientModel patient;
-
-
-    public PatientModel getPatient() {
-        return patient;
-    }
-
-    public void setPatient(PatientModel patient) {
-        this.patient = patient;
-    }
-
-
-
-    public Long getHistory_id() {
-        return history_id;
-    }
-
-    public void setHistory_id(Long medicalHistory_id) {
-        this.history_id = medicalHistory_id;
+    public MedicalHistoryModelDTO(String weight, String height, String allergy, String bloodType, String chronicDisease, String actualMedicine) {
+        this.weight = weight;
+        this.height = height;
+        this.allergy = allergy;
+        this.bloodType = bloodType;
+        this.chronicDisease = chronicDisease;
+        this.actualMedicine = actualMedicine;
     }
 
     public String getWeight() {
@@ -89,17 +65,4 @@ public class MedicalHistoryModel {
     public void setActualMedicine(String actualMedicine) {
         this.actualMedicine = actualMedicine;
     }
-/*
-    public String getFamilyMedicalHistory() {
-        return familyMedicalHistory;
-    }
-
-
-    public void setFamilyMedicalHistory(String familyMedicalHistory) {
-        this.familyMedicalHistory = familyMedicalHistory;
-    }
-
- */
-
-
 }

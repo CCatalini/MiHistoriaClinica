@@ -1,7 +1,6 @@
 package com.example.MiHistoriaClinica.repository;
 
 
-import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,12 +9,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface PatientRepository extends JpaRepository<PatientModel, Long> {
-
-  //  PatientModel saveDTO(PatientSignupDTO  patient);
 
     PatientModel findByDniAndPassword(Long dni, String password);
 
@@ -24,6 +22,8 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
     void deleteByDni(Long dni);
 
     PatientModel findByLinkCode(String linkCode);
+
+
 
     /**
      * En esta consulta, estamos seleccionando los médicos (m) de la entidad PatientModel (p)

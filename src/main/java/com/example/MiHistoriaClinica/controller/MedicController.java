@@ -1,14 +1,14 @@
 package com.example.MiHistoriaClinica.controller;
 
 
-import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
-import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
-import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
-import com.example.MiHistoriaClinica.dto.TokenDTO;
+import com.example.MiHistoriaClinica.dto.*;
+import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.service.MedicServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
 import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +27,7 @@ public class MedicController {
 
     private final MedicServiceImpl medicService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
+    private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
 
     @Autowired
@@ -54,6 +55,23 @@ public class MedicController {
     public ResponseEntity<String> logoutMedic(@RequestHeader("Authorization") String token){
         jwt.invalidateToken(token);
         return ResponseEntity.ok("Logout exitoso");
+    }
+
+
+    /* TODO no se de que manera pedir el id del paciente para que llegue bien desde el front PREGUNTAR
+    *   no se si se pueden pasar dos tokens distintos
+    *   o si el medico puede elegir entre sus pacientes para levantar la historia clinica --
+    *   tiene mas sentido que sea con el que esta en la consulta*/
+    @PostMapping("/{patientId}/create-medical-history")
+    public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
+                                                                           @PathVariable("patientId") Long patientId,
+                                                                           @RequestBody MedicalHistoryModelDTO medicalHistory)
+                                                                            throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        MedicalHistoryModel createdMedicalHistory = medicService.createPatientMedicalHistory(medicId, patientId, medicalHistory);
+
+        if (createdMedicalHistory == null)      return  new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
     }
 
 
