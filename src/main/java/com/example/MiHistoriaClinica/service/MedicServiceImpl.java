@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
@@ -48,7 +49,7 @@ public class MedicServiceImpl implements MedicService {
      * Rochi lo deberia mandar como "Bearer token"
      * **/
     @Override
-    public MedicModel loginMedic(MedicModel medic) {
+    public MedicModel loginMedic(MedicLoginDTO medic) {
 
         MedicModel result = medicRepository.findByMatriculaAndPassword(medic.getMatricula(), medic.getPassword());
         if (result == null) {
