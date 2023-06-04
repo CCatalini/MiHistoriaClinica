@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
+import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
@@ -67,6 +68,14 @@ public class PatientController {
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
+    @GetMapping("/medical-history")
+    public ResponseEntity<MedicalHistoryModel> getMedicalHistory(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+
+        PatientModel thisPatient = patientService.getPatientById(jwtValidator.getId(token));
+
+        if(thisPatient.getMedicalHistory() == null) return  ResponseEntity.notFound().build();
+        else                                        return  ResponseEntity.ok(thisPatient.getMedicalHistory());
+    }
 
 
 

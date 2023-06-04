@@ -67,7 +67,6 @@ public class PatientServiceImpl implements PatientService {
 
 
 
-
     @Override
     public PatientModel getPatientById(Long id) {
         return patientRepository.findById(id)

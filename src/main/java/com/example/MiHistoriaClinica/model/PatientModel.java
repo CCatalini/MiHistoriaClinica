@@ -36,10 +36,8 @@ public class PatientModel {
     @Column()
     private Date birthdate;
 
-
     @Column(name = "link_code")
     private String linkCode;
-
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -52,6 +50,8 @@ public class PatientModel {
     private List<MedicModel> medics = new ArrayList<>();
 
 
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private MedicalHistoryModel medicalHistory;
 
 
 
@@ -71,7 +71,15 @@ public class PatientModel {
         this.linkCode = linkCode;
     }
 
-    
+    public MedicalHistoryModel getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(MedicalHistoryModel medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+
 
     public Long getPatientId() {
         return patientId;

@@ -1,11 +1,15 @@
 package com.example.MiHistoriaClinica.repository;
 
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
+import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.MedicModel;
+import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * Clase para realizar métodos personalizados
@@ -17,12 +21,14 @@ public class CustomRepositoryAccess {
     /** utiliza una instancia de PatientRepository para realizar la operación de guardado de un DTO en la tabla PatientModel con el método saveDTO.*/
     private final PatientRepository patientRepository;
     private final MedicRepository medicRepository;
+    private final MedicalHistoryRepository medicalHistoryRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
+        this.medicalHistoryRepository = medicalHistoryRepository;
     }
 
 
@@ -52,6 +58,25 @@ public class CustomRepositoryAccess {
         medicSaved.setSpecialty(medicDTO.getSpecialty());
 
         return medicRepository.save(medicSaved);
+
+    }
+
+
+
+    public MedicalHistoryModel createPatientInMedicalHistory(MedicalHistoryModelDTO medicalHistory, Optional<PatientModel> patient) {
+
+        MedicalHistoryModel historySaved = new MedicalHistoryModel();
+
+        historySaved.setWeight(medicalHistory.getWeight());
+        historySaved.setHeight(medicalHistory.getHeight());
+        historySaved.setAllergy(medicalHistory.getAllergy());
+        historySaved.setBloodType(medicalHistory.getBloodType());
+        historySaved.setActualMedicine(medicalHistory.getActualMedicine());
+        historySaved.setChronicDisease(medicalHistory.getChronicDisease());
+
+        historySaved.setPatient(patient.get());
+
+        return medicalHistoryRepository.save(historySaved);
 
     }
 }

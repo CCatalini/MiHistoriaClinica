@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.service;
 
 import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
+import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MedicServiceImpl implements MedicService {
@@ -46,7 +49,7 @@ public class MedicServiceImpl implements MedicService {
     /**
      * En vez de devolver un objeto médico, devolves un objeto que es {token: (token generado por el jwt)}
      * Rochi va a guardar ese token en el local storage y lo va a usar para hacer las peticiones a los endpoints
-     * Rochi lo deberia mandar como "Bearer token"
+     * Rochi lo debería mandar como "Bearer token"
      * **/
     @Override
     public MedicModel loginMedic(MedicLoginDTO medic) {
@@ -58,6 +61,70 @@ public class MedicServiceImpl implements MedicService {
             return result;
         }
     }
+
+
+    /**
+     * Este método recibe el código de enlace y el identificador del médico, y utiliza los repositorios de Medic y Patient
+     * para obtener los registros correspondientes.
+     * Luego, asocia al paciente al conjunto de pacientes del médico y guarda el registro del médico actualizado.
+     */
+    @Transactional
+    public void linkPatient(String linkCode, Long medicId) {
+        MedicModel medic = medicRepository.findById(medicId).orElse(null);
+        if (medic == null) {
+            throw new RuntimeException("No se pudo asociar el paciente. El médico no existe.");
+        }
+        PatientModel patient = patientRepository.findByLinkCode(linkCode);
+        if (patient == null) {
+            throw new RuntimeException("No se pudo asociar el paciente. El código de enlace no es válido.");
+        }
+
+        medic.getPatients().add(patient);
+        patient.getMedics().add(medic);  // Agregar el médico a la lista de médicos del paciente
+
+        medicRepository.save(medic);
+        patientRepository.save(patient);  // Guardar también al paciente para actualizar la relación
+    }//todo checkeo del que el link no exista
+
+    @Transactional
+    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, Long patientId, MedicalHistoryModelDTO medicalHistory){
+
+        Optional<MedicModel> medic = medicRepository.findById(medicId);
+        Optional<PatientModel> patient = patientRepository.findById(patientId);
+
+        if(medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientId))    return null;
+
+        else return customRepositoryAccess.createPatientInMedicalHistory(medicalHistory, patient);
+
+    }
+
+
+
+
+    /**
+     * este método va a obtener la historia clínica de un paciente determinado
+     * primero checkea que el médico y el paciente estén linkeados
+     */
+    public MedicalHistoryModel getPatientMedicalHistory(Long medicId, Long patientId) {
+        if (!isPatientLinked(medicId, patientId)) {
+            return null;
+        } else {
+            return Objects.requireNonNull(patientRepository.findById(patientId).orElse(null)).getMedicalHistory();
+        }
+    }
+
+
+    private boolean isPatientLinked(Long medicId, Long patientId) {
+
+        //obtengo los pacientes de este médico
+        List<PatientModel> patients = getPatientsByMedicId(medicId);
+
+        Optional<PatientModel> auxPatient = patientRepository.findById(patientId);
+
+        //checkeo si el paciente ya fue linkeado
+        return auxPatient.isPresent() && patients.contains(auxPatient.get());
+    }
+
 
     @Override
     public MedicModel getMedicById(Long id) {
@@ -98,7 +165,7 @@ public class MedicServiceImpl implements MedicService {
     @Override
     public ResponseEntity<Void> deleteMedic(Long id) {
         MedicModel medic = medicRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Doctor not found"));
+                -> new ResourceNotFoundException("Medic not found"));
         medicRepository.delete(medic);
         return ResponseEntity.noContent().build();
 
@@ -114,28 +181,7 @@ public class MedicServiceImpl implements MedicService {
         medicRepository.deleteAll();
     }
 
-    /**
-     * Este método recibe el código de enlace y el identificador del médico, y utiliza los repositorios de Medic y Patient
-     * para obtener los registros correspondientes.
-     * Luego, asocia al paciente al conjunto de pacientes del médico y guarda el registro del médico actualizado.
-     */
-    @Transactional
-    public void linkPatient(String linkCode, Long medicId) {
-        MedicModel medic = medicRepository.findById(medicId).orElse(null);
-        if (medic == null) {
-            throw new RuntimeException("No se pudo asociar el paciente. El médico no existe.");
-        }
-        PatientModel patient = patientRepository.findByLinkCode(linkCode);
-        if (patient == null) {
-            throw new RuntimeException("No se pudo asociar el paciente. El código de enlace no es válido.");
-        }
 
-        medic.getPatients().add(patient);
-        patient.getMedics().add(medic);  // Agregar el médico a la lista de médicos del paciente
-
-        medicRepository.save(medic);
-        patientRepository.save(patient);  // Guardar también al paciente para actualizar la relación
-    }//todo checkeo del que el link no exista
 
     @Override
     public MedicineModel addMedicine(MedicineModel medicine) {
