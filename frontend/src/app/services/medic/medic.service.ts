@@ -43,12 +43,10 @@ export class MedicService {
 
     logoutMedic(): Observable<any> {
         const token = localStorage.getItem('token');
-        const headers = new HttpHeaders();
-
+        let headers = new HttpHeaders();
         if (token) {
-            headers.set('Authorization', token);
+            headers = headers.set('Authorization', token);
         }
-
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
 
