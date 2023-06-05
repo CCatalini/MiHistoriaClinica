@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Observable} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +39,17 @@ export class MedicService {
 
     public createMedicalHistory(medical_history:any){
         return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medical_history);
+    }
+
+    logoutMedic(): Observable<any> {
+        const token = localStorage.getItem('token');
+        const headers = new HttpHeaders();
+
+        if (token) {
+            headers.set('Authorization', token);
+        }
+
+        return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
 
 }

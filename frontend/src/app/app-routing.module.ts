@@ -28,12 +28,12 @@ const routes: Routes = [
         pathMatch:'full'
     },
     {
-      path:'home-patient',
+      path:'patient/home',
       component:HomePatientComponent,
       pathMatch:'full'
   },
   {
-      path:'home-medic',
+      path:'medic/home',
       component:HomeMedicComponent,
       pathMatch:'full'
   },
