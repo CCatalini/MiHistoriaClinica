@@ -52,9 +52,9 @@ public class MedicController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logoutMedic(@RequestHeader("Authorization") String token){
-        jwt.invalidateToken(token);
-        return ResponseEntity.ok("Logout exitoso");
+    public ResponseEntity<Void> logoutMedic(@RequestHeader("Authorization") String token){
+
+        return jwt.invalidateToken(token);
     }
 
 

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 
 import javax.crypto.SecretKey;
 import java.sql.Array;
@@ -53,8 +54,9 @@ public class JwtGeneratorImpl implements JwtGenerator{
 
 
     @Override
-    public void invalidateToken(String token) {
-        invalidTokens.add(token);
+    public ResponseEntity<Void> invalidateToken(String token) {
+       invalidTokens.add(token);
+       return ResponseEntity.ok().build();
     }
 
 
