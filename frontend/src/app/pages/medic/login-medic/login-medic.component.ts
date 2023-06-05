@@ -35,7 +35,7 @@ export class LoginMedicComponent implements OnInit{
                 console.log(data);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userType', 'MEDIC')
-                this.router.navigate(['home-medic']);
+                this.router.navigate(['medic/home']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

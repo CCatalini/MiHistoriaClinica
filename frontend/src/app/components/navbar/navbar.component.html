@@ -1,12 +1,28 @@
 <mat-toolbar color="primary" style="width: 100%; position: fixed; top: 0;">
     <a [routerLink]="'/'" mat-icon-button class="example-icon"
        aria-label="Example icon-button with menu icon"
-       style="display: flex; justify-content: center">
+       style="display: flex; justify-content: center"
+       *ngIf="!isPatientPage() && !isMedicPage()">
+        <img src="../../../../assets/LogoHC.png" alt="Menú">
+    </a>
+    <a [routerLink]="'/patient/home'" mat-icon-button class="example-icon"
+       aria-label="Example icon-button with menu icon"
+       style="display: flex; justify-content: center"
+       *ngIf="!isPatientPage()">
         <img src="../../../../assets/LogoHC.png" alt="Menú">
     </a>
     <span>Mi Historia Clínica</span>
     <span class="example-spacer"></span>
-    <a [routerLink]="'/'" mat-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" style="font-size: 16px;" *ngIf="!isPatientHomePage()">
+    <a [routerLink]="'/'" mat-button class="example-icon favorite-icon"
+       aria-label="Example icon-button with heart icon"
+       style="font-size: 16px;"
+       *ngIf="isPatientPage()" (click)="logoutPatient()">
+        Cerrar sesión
+    </a>
+    <a [routerLink]="'/'" mat-button class="example-icon favorite-icon"
+       aria-label="Example icon-button with heart icon"
+       style="font-size: 16px;"
+       *ngIf="isMedicPage()" (click)="logoutMedic()">
         Cerrar sesión
     </a>
 </mat-toolbar>
