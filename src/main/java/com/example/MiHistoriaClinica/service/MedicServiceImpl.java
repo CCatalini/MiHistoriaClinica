@@ -87,6 +87,7 @@ public class MedicServiceImpl implements MedicService {
     }//todo checkeo del que el link no exista
 
     @Transactional
+    @Override
     public MedicalHistoryModel createPatientMedicalHistory(Long medicId, Long patientId, MedicalHistoryModelDTO medicalHistory){
 
         Optional<MedicModel> medic = medicRepository.findById(medicId);
