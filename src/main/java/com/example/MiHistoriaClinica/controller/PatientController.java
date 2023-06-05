@@ -56,14 +56,12 @@ public class PatientController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logoutPatient(@RequestHeader("Authorization") String token) {
-        jwt.invalidateToken(token);
-        return ResponseEntity.ok("Logout exitoso");
+    public ResponseEntity<Void> logoutPatient(@RequestHeader("Authorization") String token) {
+        return jwt.invalidateToken(token);
     }
 
     @GetMapping("/get-medics")
     public ResponseEntity<List<MedicModel>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-
         List<MedicModel> medics = patientService.getMedicsByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
