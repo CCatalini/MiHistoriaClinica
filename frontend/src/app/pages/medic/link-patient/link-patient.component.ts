@@ -21,7 +21,6 @@ export class LinkPatientComponent implements OnInit{
         //verifico usuario
         if (localStorage.getItem('userType') != 'MEDIC') {
             window.location.href = '/medic/login';
-
         }
     }
 

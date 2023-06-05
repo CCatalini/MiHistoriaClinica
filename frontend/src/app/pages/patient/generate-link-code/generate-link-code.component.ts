@@ -15,6 +15,10 @@ export class GenerateLinkCodeComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
         this.generateLinkCode();
     }
 
