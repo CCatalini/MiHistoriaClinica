@@ -55,7 +55,7 @@ export class PatientService {
             headers.set('Authorization', token);
         }
 
-        return this.http.post('/logout', {}, { headers });
+        return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }
 
 

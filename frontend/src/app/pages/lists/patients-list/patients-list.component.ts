@@ -22,8 +22,10 @@ export class PatientsListComponent implements OnInit {
     constructor(private userService: MedicService, private router: Router) { }
 
     ngOnInit(): void {
-        console.log('Hola');
-        this.formSubmit();
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'MEDIC') {
+            window.location.href = '/medic/login';
+        }
     }
 
     formSubmit() {

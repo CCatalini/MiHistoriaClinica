@@ -21,7 +21,10 @@ export class MedicinesListPatientComponent {
     constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
-        this.formSubmit();
+        //verifico usuario
+        if (localStorage.getItem('userType') != 'PATIENT') {
+            window.location.href = '/patient/login';
+        }
     }
 
     formSubmit() {
