@@ -24,6 +24,8 @@ export class NavbarComponent implements OnInit {
     logoutPatient(): void {
         this.patientService.logoutPatient().subscribe(
             () => {
+                localStorage.setItem('token', '');
+                localStorage.setItem('userType', '');
                 this.router.navigate(['/']);
             },
             (error) => {
@@ -35,6 +37,8 @@ export class NavbarComponent implements OnInit {
     logoutMedic(): void {
         this.medicService.logoutMedic().subscribe(
             () => {
+                localStorage.setItem('token', '');
+                localStorage.setItem('userType', '');
                 this.router.navigate(['/']);
             },
             (error) => {
