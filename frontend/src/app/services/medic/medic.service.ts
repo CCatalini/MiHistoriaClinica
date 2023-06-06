@@ -54,4 +54,7 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
 
+    public updateStatus(medicine:any){
+        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
+    }
 }

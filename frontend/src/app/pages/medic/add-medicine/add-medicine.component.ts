@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 import {MedicService} from "../../../services/medic/medic.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-alta-medicamento',
@@ -13,10 +14,11 @@ export class AddMedicineComponent implements OnInit{
         medicineName: '',
         activeIngredient: '',
         description: '',
-        lab: ''
+        lab: '',
+        status: ''
     }
 
-    constructor(private userService:MedicService, private snack:MatSnackBar){
+    constructor(private userService:MedicService, private router:Router){
     }
 
     ngOnInit(): void {
@@ -45,9 +47,13 @@ export class AddMedicineComponent implements OnInit{
             Swal.fire('Ingrese la descripción', 'La descripción es requisito para cargar el medicamento.', 'warning');
             return;
         }
+        if(this.medicine.status == '' || this.medicine.status == null){
+            Swal.fire('Ingrese el estado', 'El estado es requisito para cargar el medicamento.', 'warning');
+            return;
+        }
         this.userService.addMedicine(this.medicine).subscribe(
             (data) => {
-                console.log(data);
+                //this.router.navigate(['medic/home']);
                 Swal.fire('Medicamento guardado', 'Medicamento guardado con éxito en el sistema.', 'success');
             },(error) => {
                 console.log(error);
