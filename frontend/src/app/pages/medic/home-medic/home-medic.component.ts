@@ -12,7 +12,6 @@ export class HomeMedicComponent implements OnInit{
         //verifico usuario
         if (localStorage.getItem('userType') != 'MEDIC') {
             window.location.href = '/medic/login';
-
         }
     }
 

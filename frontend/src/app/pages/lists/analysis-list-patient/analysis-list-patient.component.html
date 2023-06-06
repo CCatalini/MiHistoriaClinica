@@ -1,0 +1,19 @@
+<h1 class="text-center">Mis Estudios</h1>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Análisis</th>
+        <th>Centro médico</th>
+        <th>Descripción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let analysis of analysisList">
+        <td>{{ analysis.name}}</td>
+        <td>{{ analysis.medicalCenter }}</td>
+        <td>{{ analysis.description }}</td>
+    </tr>
+    </tbody>
+</table>
+

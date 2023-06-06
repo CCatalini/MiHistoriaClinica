@@ -1,38 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import {Component, OnInit} from '@angular/core';
 import {MedicService} from "../../../services/medic/medic.service";
+import {Router} from "@angular/router";
+import Swal from "sweetalert2";
 
 @Component({
-    selector: 'app-medicines-list',
-    templateUrl: './medicines-list-patient.component.html',
-    styleUrls: ['./medicines-list-patient.component.css']
+  selector: 'app-analysis-list-patient',
+  templateUrl: './analysis-list-patient.component.html',
+  styleUrls: ['./analysis-list-patient.component.css']
 })
-export class MedicinesListPatientComponent implements OnInit {
-    medicine = {
-        medicineName: '',
-        activeIngredient: '',
-        lab: '',
+export class AnalysisListPatientComponent implements OnInit{
+    analysis = {
+        name: '',
+        medicalCenter: '',
         description: '',
     };
 
-    medicines: any[] = [];
+    analysisList: any[] = [];
 
     constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
-        // Verify user
+        //verifico usuario
         if (localStorage.getItem('userType') != 'PATIENT') {
-            this.router.navigate(['/patient/login']);
-        } else {
-            this.formSubmit(); // Fetch medicines list
+            window.location.href = '/patient/login';
         }
     }
 
     formSubmit() {
-        this.userService.getMedicinesList().subscribe(
+        this.userService.getAnalysisList().subscribe(
             (data: any) => {
-                this.medicines = data;
+                this.analysisList = data;
             },
             (error: any) => {
                 console.log(error);

@@ -33,6 +33,10 @@ export class MedicService {
         return this.http.get('http://localhost:8080/medicine/findAllMedicine', {});
     }
 
+    public getAnalysisList() {
+        return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
+    }
+
     public addAnalysis(analysis:any){
         return this.http.post(`http://localhost:8080/medic/addAnalysis`,analysis);
     }
