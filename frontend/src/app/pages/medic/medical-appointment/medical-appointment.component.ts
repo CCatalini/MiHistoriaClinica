@@ -38,6 +38,7 @@ export class MedicalAppointmentComponent {
             Swal.fire('Ingrese el grupo sanguíneo', 'El grupo sanguíneo es requisito.', 'warning');
             return;
         }
+        // todo Cami deberíamos tener un addMedicalAppointment en el back para ir agregando las consultas (creo?) cosa de tener por un lado la info de l ahistoria clinica y por otro la lista de consultas médicas
         this.userService.createMedicalHistory(this.medicalAppointment).subscribe(
             (data) => {
                 console.log(data);

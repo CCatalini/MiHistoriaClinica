@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit {
     }
 
     isMedicPage(): boolean {
-        return this.router.url.includes('/medic')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup')));
+        return this.router.url.includes('/medic')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup'))&&!this.router.url.includes('/patient'));
     }
 
     logoutPatient(): void {

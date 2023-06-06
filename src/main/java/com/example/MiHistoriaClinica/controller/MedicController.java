@@ -73,10 +73,6 @@ public class MedicController {
         else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
     }
 
-
-
-
-
     @GetMapping("/getById/{id}")
     public MedicModel getMedicById(@PathVariable Long id) {
         return medicService.getMedicById(id);

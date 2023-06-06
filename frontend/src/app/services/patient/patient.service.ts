@@ -22,23 +22,15 @@ export class PatientService {
         return this.http.get('http://localhost:8080/medic/getAll');
     }
 
-
-/*
-    public generateLinkCode(token:any) {
-        return this.http.post('http://localhost:8080/patient/generate-link-code', token);
-    }
-*/
-
     /**
      * De esta manera el metodo espera recibir un string que manda el back en vez de un objeto JSON
      */
     public generateLinkCode(): Observable<string> {
         const token = localStorage.getItem('token');
-
-        // Configurar el encabezado de autorización
-        const headers = new HttpHeaders({
-            'Authorization': `Bearer ${token}`
-        });
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', token);
+        }
 
         return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, { headers });
     }
@@ -49,9 +41,9 @@ export class PatientService {
 
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
-        const headers = new HttpHeaders();
+        let headers = new HttpHeaders();
         if (token) {
-            headers.set('Authorization', token);
+            headers = headers.set('Authorization', token);
         }
         return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }

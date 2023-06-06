@@ -16,29 +16,22 @@ export class GenerateLinkCodeComponent implements OnInit {
 
     ngOnInit(): void {
         //verifico usuario
-        if (localStorage.getItem('userType') != 'MEDIC') {
-            window.location.href = '/medic/login';
+        if (localStorage.getItem('userType') != 'PATIENT') {
+            window.location.href = '/patient/login';
         }
         this.generateLinkCode();
     }
 
-    generateLinkCode() {
+    generateLinkCode(): void {
         this.patientService.generateLinkCode().subscribe(
             (response: string) => {
                 this.linkCode = response;
             },
-            (error: any) => {
-                if (error instanceof ErrorEvent) {
-                    // Error de red
-                    console.error('Error de red:', error.message);
-                } else {
-                    // Error de análisis
-                    console.error('Error al analizar la respuesta del servidor:', error);
-                }
+            (error) => {
+                console.error('Error al generar el código del paciente:', error);
             }
         );
     }
-
 
 }
 

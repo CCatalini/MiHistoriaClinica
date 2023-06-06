@@ -34,6 +34,7 @@ import { MatListModule } from '@angular/material/list';
 import {GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
 import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine.component';
 import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/medicines-list-medic.component';
+import { AnalysisListPatientComponent } from './pages/lists/analysis-list-patient/analysis-list-patient.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/
     GenerateLinkCodeComponent,
     EditMedicineComponent,
     MedicinesListMedicComponent,
+    AnalysisListPatientComponent,
   ],
     imports: [
         BrowserModule,

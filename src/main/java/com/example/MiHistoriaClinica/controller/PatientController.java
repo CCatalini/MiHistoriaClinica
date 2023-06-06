@@ -49,6 +49,7 @@ public class PatientController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
+    //todo reemplazar el String por Void y modificar le código
     @PostMapping("/generate-link-code")
     public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
@@ -74,15 +75,6 @@ public class PatientController {
         if(thisPatient.getMedicalHistory() == null) return  ResponseEntity.notFound().build();
         else                                        return  ResponseEntity.ok(thisPatient.getMedicalHistory());
     }
-
-
-
-
-
-
-
-
-
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {

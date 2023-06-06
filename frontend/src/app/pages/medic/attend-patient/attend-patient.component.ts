@@ -11,8 +11,6 @@ export class AttendPatientComponent implements OnInit {
     patientId : string = '';
     constructor(private route:ActivatedRoute) { }
 
-
-    //TODO EL CODIGO HACE LO QUE SE LE CANTA EL ORTO, HAY QUE VER QUE EL QUE SE GENERA POR ACA Y MUESTRA EL FRONT SEA EL MISMO QUE GUARDA LA TABLA JUJU
     ngOnInit(): void {
         //verifico usuario
         /*if (localStorage.getItem('userType') != 'MEDIC') {
