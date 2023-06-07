@@ -7,8 +7,42 @@ import { PatientService } from "../../../services/patient/patient.service";
     styleUrls: ['./generate-link-code.component.css']
 })
 
-
 export class GenerateLinkCodeComponent implements OnInit {
+    linkCode: string = '';
+
+    constructor(private patientService: PatientService) {}
+
+    ngOnInit(): void {
+        if (localStorage.getItem('userType') != 'PATIENT') {
+            window.location.href = '/patient/login';
+        }
+        this.generateLinkCode();
+    }
+
+    generateLinkCode(): void {
+        const token = localStorage.getItem('token');
+        if (token) {
+            this.patientService.generateLinkCode(token).subscribe(
+                (response: string) => {
+                    this.linkCode = response;
+                    // Aquí puedes realizar cualquier acción adicional que necesites con el código de enlace
+                },
+                (error) => {
+                    console.error('Error al generar el código del paciente:', error);
+                }
+            );
+        } else {
+            console.error('Token no encontrado en el almacenamiento local.');
+        }
+    }
+
+
+}
+
+
+
+
+/*export class GenerateLinkCodeComponent implements OnInit {
     linkCode: string = '';
 
     constructor(private patientService: PatientService) {
@@ -34,6 +68,7 @@ export class GenerateLinkCodeComponent implements OnInit {
     }
 
 }
+*/
 
 
 /*

@@ -51,6 +51,7 @@ public class PatientController {
 
     //todo reemplazar el String por Void y modificar le código
     @PostMapping("/generate-link-code")
+    @ResponseBody
     public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
         return ResponseEntity.ok(linkCode);
