@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.util.jwt;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -40,24 +41,38 @@ public class JwtGeneratorImpl implements JwtGenerator{
 
     @Override
     public Claims getClaims(String token) throws InvalidTokenException {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException e) {
+            throw new InvalidTokenException("Token inválido");
+        }
+    }
 
-        if (invalidTokens.contains(token)) {
+
+
+    @Override
+    public ResponseEntity<Void> invalidateToken(String token) {
+        invalidTokens.add(token);
+        return ResponseEntity.ok().build();
+    }
+
+
+}
+
+
+/*
+     if (invalidTokens.contains(token)) {
             throw new InvalidTokenException("Token inválido");
         }
 
-        return Jwts.parserBuilder()
+        else return Jwts.parserBuilder()
                 .setSigningKey(KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
-
-
-    @Override
-    public ResponseEntity<Void> invalidateToken(String token) {
-       invalidTokens.add(token);
-       return ResponseEntity.ok().build();
-    }
-
-
-}
+ */

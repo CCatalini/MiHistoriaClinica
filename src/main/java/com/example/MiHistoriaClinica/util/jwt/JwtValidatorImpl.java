@@ -20,7 +20,7 @@ public class JwtValidatorImpl implements JwtValidator{
             return getId(token);
         }
 
-        throw new RuntimeException("Invalid token");
+        throw new InvalidTokenException("Invalid token");
     }
 
     @Override
@@ -31,7 +31,7 @@ public class JwtValidatorImpl implements JwtValidator{
             return getId(token);
         }
 
-        throw new RuntimeException("Invalid token");
+        throw new InvalidTokenException("Invalid token");
     }
 
     @Override

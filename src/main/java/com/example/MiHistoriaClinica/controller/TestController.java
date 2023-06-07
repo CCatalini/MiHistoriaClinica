@@ -21,7 +21,7 @@ public class TestController {
         JwtGenerator jwtGenerator = new JwtGeneratorImpl();
         JwtValidator validator = new JwtValidatorImpl(jwtGenerator);
 
-        TokenDTO token = jwtGenerator.generateToken(1L, "user");
+        TokenDTO token = jwtGenerator.generateToken(1L, "medic");
         System.out.println(token.getToken());
 
         String role = validator.getRole(token.getToken());
