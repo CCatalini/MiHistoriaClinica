@@ -119,7 +119,7 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
-      path:'patient/MedicalHistoryList',
+      path:'patient/medicalHistoryList',
       component:MedicalHistoryListComponent,
       pathMatch:'full'
   },

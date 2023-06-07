@@ -106,6 +106,7 @@ public class MedicServiceImpl implements MedicService {
      * este método va a obtener la historia clínica de un paciente determinado
      * primero checkea que el médico y el paciente estén linkeados
      */
+
     public MedicalHistoryModel getPatientMedicalHistory(Long medicId, Long patientId) {
         if (!isPatientLinked(medicId, patientId)) {
             return null;

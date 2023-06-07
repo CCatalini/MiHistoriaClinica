@@ -70,10 +70,10 @@ public class PatientController {
     @GetMapping("/medical-history")
     public ResponseEntity<MedicalHistoryModel> getMedicalHistory(@RequestHeader("Authorization") String token) throws InvalidTokenException {
 
-        PatientModel thisPatient = patientService.getPatientById(jwtValidator.getId(token));
+        MedicalHistoryModel medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
 
-        if(thisPatient.getMedicalHistory() == null) return  ResponseEntity.notFound().build();
-        else                                        return  ResponseEntity.ok(thisPatient.getMedicalHistory());
+        if(medicalHistory == null) return  ResponseEntity.notFound().build();
+        else                                        return  ResponseEntity.ok(medicalHistory);
     }
 
     @GetMapping("/getById/{id}")

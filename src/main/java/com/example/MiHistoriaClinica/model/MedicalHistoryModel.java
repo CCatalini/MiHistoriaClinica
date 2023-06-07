@@ -16,7 +16,8 @@ public class MedicalHistoryModel {
     private String bloodType;
     private String chronicDisease;
     private String actualMedicine;
-  //  private String familyMedicalHistory;
+
+    private String familyMedicalHistory;
 
 
     @OneToOne
@@ -89,7 +90,7 @@ public class MedicalHistoryModel {
     public void setActualMedicine(String actualMedicine) {
         this.actualMedicine = actualMedicine;
     }
-/*
+
     public String getFamilyMedicalHistory() {
         return familyMedicalHistory;
     }
@@ -99,7 +100,6 @@ public class MedicalHistoryModel {
         this.familyMedicalHistory = familyMedicalHistory;
     }
 
- */
 
 
 }

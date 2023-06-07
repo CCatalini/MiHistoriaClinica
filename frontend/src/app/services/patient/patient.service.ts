@@ -35,17 +35,21 @@ export class PatientService {
         return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, { headers });
     }
 
-    public getMedicalHistory(): Observable<any[]> {
-        return this.http.get<any[]>('http://localhost:8080/patient/medical-history/getAll');
+    public getMedicalHistory(token: string): Observable<string> {
+        let headers = new HttpHeaders();
+        if (token){
+            headers = headers.set('Autorization', "Bearer" + token);
+        }
+        return this.http.get<string>('http://localhost:8080/patient/medical-history');
     }
 
-    logoutPatient(): Observable<any> {
+    public logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', token);
         }
-        return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
+        return this.http.post<string>('http://localhost:8080/patient/logout', {}, { headers });
     }
 
 
