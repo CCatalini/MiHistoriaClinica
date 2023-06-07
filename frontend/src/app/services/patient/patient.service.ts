@@ -43,13 +43,13 @@ export class PatientService {
         return this.http.get<string>('http://localhost:8080/patient/medical-history');
     }
 
-    public logoutPatient(): Observable<any> {
+    logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', token);
         }
-        return this.http.post<string>('http://localhost:8080/patient/logout', {}, { headers });
+        return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }
 
 
