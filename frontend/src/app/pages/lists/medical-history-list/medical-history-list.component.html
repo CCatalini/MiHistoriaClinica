@@ -1,1 +1,35 @@
-<p>medical-history-list works!</p>
+<div class="container">
+    <h3>Mi Historia Clínica</h3>
+    <mat-list *ngIf="medicalHistory">
+        <mat-list-item>
+            <span matListItemTitle>Altura</span>
+            <span matListItemLine>{{ medicalHistory.height }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Peso</span>
+            <span matListItemLine>{{ medicalHistory.weight }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Grupo sanguíneo</span>
+            <span matListItemLine>{{ medicalHistory.bloodType }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Alergias</span>
+            <span matListItemLine>{{ medicalHistory.allergy }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Medicación crónica</span>
+            <span matListItemLine>{{ medicalHistory.actualMedicine }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Enfermedades crónicas</span>
+            <span matListItemLine>{{ medicalHistory.chronicDisease }}</span>
+        </mat-list-item>
+        <mat-list-item>
+            <span matListItemTitle>Antecedentes familiares</span>
+            <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
+        </mat-list-item>
+    </mat-list>
+</div>
+
+<!--todo podría agregar lista con medicamentos en curso debajo de la historia clínica-->

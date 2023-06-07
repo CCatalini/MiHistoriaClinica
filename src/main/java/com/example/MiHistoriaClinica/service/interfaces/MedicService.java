@@ -19,6 +19,7 @@ public interface MedicService {
     @Transactional
     MedicalHistoryModel createPatientMedicalHistory(Long medicId, Long patientId, MedicalHistoryModelDTO medicalHistory);
 
+
     MedicModel getMedicById(Long id);
     MedicModel getMedicByDni(Long dni);
     ArrayList<MedicModel> getAllMedic();
