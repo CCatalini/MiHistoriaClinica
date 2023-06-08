@@ -8,20 +8,12 @@
                 <h1 class = "text-center">Atender Paciente</h1>
                 <form  (ngSubmit) = "formSubmit()">
                     <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>DNI Paciente:</mat-label>
-                        <input required [(ngModel)] = "patient.dni" name = "dni" matInput placeholder="Ingrese el dni del paciente">
-                    </mat-form-field>
-
-                    <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Código Paciente:</mat-label>
                         <input required [(ngModel)] = "patient.code" name = "codigo" matInput placeholder="Ingrese el código del paciente">
                     </mat-form-field>
-
                     <div class = "container text-center" style="margin-top: 10px;">
                         <button class="boton">Atender</button>
-                        <button type="reset" style = "margin-left: 20px;" class="boton">Limpiar</button>
                     </div>
-
                 </form>
                 <br><br><br>
             </div>

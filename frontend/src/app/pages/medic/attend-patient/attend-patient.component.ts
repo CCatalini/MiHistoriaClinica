@@ -13,7 +13,7 @@ export class AttendPatientComponent implements OnInit {
 
     ngOnInit(): void {
         //verifico usuario
-        /*if (localStorage.getItem('userType') != 'MEDIC') {
+        if (localStorage.getItem('userType') != 'MEDIC') {
             window.location.href = '/medic/login';
         } else {
             this.route.params.subscribe(params => {
@@ -21,6 +21,10 @@ export class AttendPatientComponent implements OnInit {
                 console.log(this.patientId);
                 // Use the value of this.id as needed
             });
-        }*/
+        }
+    }
+
+    setLinkCode(): void{
+        localStorage.setItem('patientLinkCode', '');
     }
 }

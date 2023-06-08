@@ -2,6 +2,7 @@
     <div class="container">
         <div class="row mt20">
             <div class = "col-md-6 offset-md-3 text-center">
+                <br><br><br><br>
                 <h1 class = "text-center">Atender Paciente</h1>
                 <br><br><br>
                 <div class="options">
@@ -21,7 +22,7 @@
                             <span>Estudios</span>
                             <div class="option-buttons">
                                 <a routerLink="/medic/addAnalysis" class="btn">Agregar</a>
-                                <a routerLink="/medic/medicinesList" class="btn">Ver historial</a>
+                                <a routerLink="/medic/analysisList" class="btn">Ver historial</a>
                             </div>
                         </div>
                     </div>
@@ -49,4 +50,7 @@
             </div>
         </div>
     </div>
+</div>
+<div class="button-container">
+    <button class="boton" (click)="setLinkCode()">Finalizar consulta</button>
 </div>
