@@ -89,6 +89,7 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
+    // todo Cami pasar a MedicController y que retorne todos los pacientes de ese médico
     @GetMapping("/getAll")
     public ResponseEntity<List<PatientModel>> getAllPatient() {
         List<PatientModel> patients = patientService.getAllPatient();

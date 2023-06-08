@@ -10,7 +10,6 @@ import {MedicService} from "../../../services/medic/medic.service";
 })
 export class LinkPatientComponent implements OnInit{
     public patient = {
-        dni: '',
         code: '',
     }
 
@@ -30,10 +29,11 @@ export class LinkPatientComponent implements OnInit{
             Swal.fire('Ingrese el código del paciente', 'El código del paciente es requisito para atenderlo.', 'warning');
             return;
         }
-        this.userService.linkPatient(this.patient).subscribe(
+        localStorage.setItem('patientLinkCode', this.patient.code);
+        this.userService.linkPatient(this.patient.code).subscribe(
             (data) => {
                 console.log(data);
-                this.router.navigate(['medic/attend-patient']);
+                this.router.navigate(['medic/attendPatient']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

@@ -13,9 +13,17 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/login`,medic);
     }
 
-    public linkPatient(patient:any){
-        return this.http.post(`http://localhost:8080/medic/attendPatient`,patient);
+    public linkPatient(linkCode: any) {
+        const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization',"Bearer " + token);
+        }
+
+        return this.http.post(`http://localhost:8080/medic/linkPatient?linkCode=${linkCode}`, null, { headers });
     }
+
 
     public getPatientsList() {
         return this.http.get('http://localhost:8080/patient/getAll', {});

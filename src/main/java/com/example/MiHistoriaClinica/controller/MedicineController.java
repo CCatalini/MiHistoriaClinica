@@ -20,12 +20,12 @@ public class MedicineController {
     private MedicineRepository medicineRepository;
 
     @GetMapping("/findAllMedicine")
-    public List<MedicineModel> findAllMedicine () {
+    public List<MedicineModel> findAllMedicine() {
         return medicineRepository.findAll();
     }
 
     @GetMapping("/findById/{id}")
-    public MedicineModel getMedicineById (@PathVariable Long id){
+    public MedicineModel getMedicineById(@PathVariable Long id){
         return medicineRepository.findById(id).orElse(null);
     }
 

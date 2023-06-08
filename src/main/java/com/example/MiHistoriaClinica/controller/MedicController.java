@@ -9,13 +9,11 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
-import org.apache.tomcat.util.http.parser.HttpParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -115,8 +113,9 @@ public class MedicController {
      * de servicio para asociar al paciente correspondiente al médico.
      * Devuelve una respuesta vacía al cliente.
      */
-    @PostMapping("/{medicId}/link-patient")
-    public ResponseEntity<Void> linkPatient(@RequestParam String linkCode, @PathVariable Long medicId) {
+    @PostMapping("/linkPatient")
+    public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
         medicService.linkPatient(linkCode, medicId);
         return ResponseEntity.ok().build();
     }
