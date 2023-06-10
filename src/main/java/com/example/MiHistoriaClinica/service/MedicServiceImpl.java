@@ -74,10 +74,12 @@ public class MedicServiceImpl implements MedicService {
         if (medic == null) {
             throw new RuntimeException("No se pudo asociar el paciente. El médico no existe.");
         }
-        PatientModel patient = patientRepository.findByLinkCode(linkCode);
-        if (patient == null) {
+        Optional<PatientModel> patientOptional = patientRepository.findByLinkCode(linkCode);
+        if (patientOptional.isEmpty()) {
             throw new RuntimeException("No se pudo asociar el paciente. El código de enlace no es válido.");
         }
+
+        PatientModel patient = patientOptional.get();
 
         medic.getPatients().add(patient);
         patient.getMedics().add(medic);  // Agregar el médico a la lista de médicos del paciente
@@ -88,13 +90,12 @@ public class MedicServiceImpl implements MedicService {
 
     @Transactional
     @Override
-    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, Long patientId, MedicalHistoryModelDTO medicalHistory){
+    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory){
 
         Optional<MedicModel> medic = medicRepository.findById(medicId);
-        Optional<PatientModel> patient = patientRepository.findById(patientId);
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(linkCode);
 
-        if(medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientId))    return null;
-
+        if(medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, linkCode))    return null;
         else return customRepositoryAccess.createPatientInMedicalHistory(medicalHistory, patient);
 
     }
@@ -107,21 +108,21 @@ public class MedicServiceImpl implements MedicService {
      * primero checkea que el médico y el paciente estén linkeados
      */
 
-    public MedicalHistoryModel getPatientMedicalHistory(Long medicId, Long patientId) {
-        if (!isPatientLinked(medicId, patientId)) {
+    public MedicalHistoryModel getPatientMedicalHistory(Long medicId, String linkCode) {
+        if (!isPatientLinked(medicId, linkCode)) {
             return null;
         } else {
-            return Objects.requireNonNull(patientRepository.findById(patientId).orElse(null)).getMedicalHistory();
+            return Objects.requireNonNull(patientRepository.findByLinkCode(linkCode).orElse(null)).getMedicalHistory();
         }
     }
 
 
-    private boolean isPatientLinked(Long medicId, Long patientId) {
+    private boolean isPatientLinked(Long medicId, String linkCode) {
 
         //obtengo los pacientes de este médico
         List<PatientModel> patients = getPatientsByMedicId(medicId);
 
-        Optional<PatientModel> auxPatient = patientRepository.findById(patientId);
+        Optional<PatientModel> auxPatient = patientRepository.findByLinkCode(linkCode);
 
         //checkeo si el paciente ya fue linkeado
         return auxPatient.isPresent() && patients.contains(auxPatient.get());

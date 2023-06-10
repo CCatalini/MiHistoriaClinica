@@ -9,6 +9,7 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,17 +60,22 @@ public class MedicController {
     *   no se si se pueden pasar dos tokens distintos
     *   o si el medico puede elegir entre sus pacientes para levantar la historia clinica --
     *   tiene mas sentido que sea con el que esta en la consulta*/
-    @PostMapping("/{patientId}/create-medical-history")
+    @PostMapping("/create-medical-history")
     public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
-                                                                           @PathVariable("patientId") Long patientId,
+                                                                           @RequestHeader("patientLinkCode") String patientLinkCode,
                                                                            @RequestBody MedicalHistoryModelDTO medicalHistory)
-                                                                            throws InvalidTokenException {
+                                                                           throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
-        MedicalHistoryModel createdMedicalHistory = medicService.createPatientMedicalHistory(medicId, patientId, medicalHistory);
+        MedicalHistoryModel createdMedicalHistory = medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
 
-        if (createdMedicalHistory == null)      return  new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
+        if (createdMedicalHistory == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
+        }
     }
+
+
 
     @GetMapping("/getById/{id}")
     public MedicModel getMedicById(@PathVariable Long id) {

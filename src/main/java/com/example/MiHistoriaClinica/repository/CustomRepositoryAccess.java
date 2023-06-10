@@ -73,6 +73,7 @@ public class CustomRepositoryAccess {
         historySaved.setBloodType(medicalHistory.getBloodType());
         historySaved.setActualMedicine(medicalHistory.getActualMedicine());
         historySaved.setChronicDisease(medicalHistory.getChronicDisease());
+        historySaved.setFamilyMedicalHistory(medicalHistory.getFamilyMedicalHistory());
 
         historySaved.setPatient(patient.get());
 

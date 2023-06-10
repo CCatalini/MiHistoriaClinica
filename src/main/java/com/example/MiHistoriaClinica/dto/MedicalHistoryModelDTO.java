@@ -8,14 +8,16 @@ public class MedicalHistoryModelDTO {
     private String bloodType;
     private String chronicDisease;
     private String actualMedicine;
+    private String familyMedicalHistory;
 
-    public MedicalHistoryModelDTO(String weight, String height, String allergy, String bloodType, String chronicDisease, String actualMedicine) {
+    public MedicalHistoryModelDTO(String weight, String height, String allergy, String bloodType, String chronicDisease, String actualMedicine, String familyMedicalHistory) {
         this.weight = weight;
         this.height = height;
         this.allergy = allergy;
         this.bloodType = bloodType;
         this.chronicDisease = chronicDisease;
         this.actualMedicine = actualMedicine;
+        this.familyMedicalHistory = familyMedicalHistory;
     }
 
     public String getWeight() {
@@ -64,5 +66,13 @@ public class MedicalHistoryModelDTO {
 
     public void setActualMedicine(String actualMedicine) {
         this.actualMedicine = actualMedicine;
+    }
+
+    public String getFamilyMedicalHistory() {
+        return familyMedicalHistory;
+    }
+
+    public void setFamilyMedicalHistory(String familyMedicalHistory) {
+        this.familyMedicalHistory = familyMedicalHistory;
     }
 }
