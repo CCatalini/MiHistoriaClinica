@@ -17,8 +17,7 @@ public interface MedicService {
     MedicModel loginMedic(MedicLoginDTO medic);
 
     @Transactional
-    MedicalHistoryModel createPatientMedicalHistory(Long medicId, Long patientId, MedicalHistoryModelDTO medicalHistory);
-
+    MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory);
 
     MedicModel getMedicById(Long id);
     MedicModel getMedicByDni(Long dni);
@@ -30,5 +29,6 @@ public interface MedicService {
     void linkPatient(String linkCode, Long medicId);
     MedicineModel addMedicine(MedicineModel medicine);
     AnalysisModel addAnalysis(AnalysisModel analysis);
+
     MedicalHistoryModel createMedicalHistory(MedicalHistoryModel history);
 }

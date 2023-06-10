@@ -50,7 +50,7 @@ export class MedicService {
     }
 
     public createMedicalHistory(medical_history:any){
-        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medical_history);
+        return this.http.post(`http://localhost:8080/medic/create-medical-history`,medical_history);
     }
 
     logoutMedic(): Observable<any> {

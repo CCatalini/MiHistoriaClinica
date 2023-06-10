@@ -21,7 +21,7 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
 
     void deleteByDni(Long dni);
 
-    PatientModel findByLinkCode(String linkCode);
+    Optional<PatientModel> findByLinkCode(String linkCode);
 
 
 
