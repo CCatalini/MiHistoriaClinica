@@ -43,6 +43,10 @@ export class PatientService {
         return this.http.get<string>('http://localhost:8080/patient/medical-history');
     }
 
+    public getMedicinesList() {
+        return this.http.get('http://localhost:8080/patient/get-medicines', {});
+    }
+
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();

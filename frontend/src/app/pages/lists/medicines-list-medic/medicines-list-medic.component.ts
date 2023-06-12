@@ -28,21 +28,26 @@ export class MedicinesListMedicComponent {
     }
 
     formSubmit() {
-        this.userService.getMedicinesList().subscribe(
-            (data: any) => {
-                this.medicines = data;
-            },
-            (error: any) => {
-                console.log(error);
-                if (error.status === 400) {
-                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                } else if (error.status === 404) {
-                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                } else {
-                    Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+        const token = localStorage.getItem('token');
+        if (token) {
+            this.userService.getMedicinesList(token).subscribe(
+                (data: any) => {
+                    this.medicines = data;
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            // Manejar el caso en el que no se encuentre el token en el local storage
+        }
     }
 
     editMedicine(medicine: any) {
