@@ -26,6 +26,7 @@ export class NavbarComponent implements OnInit {
             () => {
                 localStorage.setItem('token', '');
                 localStorage.setItem('userType', '');
+                localStorage.setItem('patientLinkCode', '');
                 this.router.navigate(['/']);
             },
             (error) => {
@@ -39,6 +40,7 @@ export class NavbarComponent implements OnInit {
             () => {
                 localStorage.setItem('token', '');
                 localStorage.setItem('userType', '');
+                localStorage.setItem('patientLinkCode', '');
                 this.router.navigate(['/']);
             },
             (error) => {

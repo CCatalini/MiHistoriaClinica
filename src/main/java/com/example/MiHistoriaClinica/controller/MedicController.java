@@ -80,7 +80,6 @@ public class MedicController {
     }
 
 
-
     @PostMapping("/create-medicine")
     public ResponseEntity<MedicineModel> createPatientMedicine (@RequestHeader("Authorization") String token,
                                                                 @RequestHeader("patientLinkCode") String patientLinkCode,
@@ -92,11 +91,6 @@ public class MedicController {
         if(createdMedicine == null)         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         else                                return new ResponseEntity<>(createdMedicine, HttpStatus.CREATED);
     }
-
-
-
-
-
 
 
     @GetMapping("/get-patients")
