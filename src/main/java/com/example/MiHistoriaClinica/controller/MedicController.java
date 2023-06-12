@@ -56,10 +56,16 @@ public class MedicController {
     }
 
 
-    /* TODO no se de que manera pedir el id del paciente para que llegue bien desde el front PREGUNTAR
-    *   no se si se pueden pasar dos tokens distintos
-    *   o si el medico puede elegir entre sus pacientes para levantar la historia clinica --
-    *   tiene mas sentido que sea con el que esta en la consulta*/
+    /**                         MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
+
+    @PostMapping("/linkPatient")
+    public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        medicService.linkPatient(linkCode, medicId);
+        return ResponseEntity.ok().build();
+    }
+
+
     @PostMapping("/create-medical-history")
     public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
                                                                            @RequestHeader("patientLinkCode") String patientLinkCode,
@@ -68,32 +74,81 @@ public class MedicController {
         Long medicId = jwtValidator.getId(token);
         MedicalHistoryModel createdMedicalHistory = medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
 
-        if (createdMedicalHistory == null) {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
-        }
+        if (createdMedicalHistory == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
+
     }
 
 
 
-    @GetMapping("/getById/{id}")
-    public MedicModel getMedicById(@PathVariable Long id) {
-        return medicService.getMedicById(id);
+    @PostMapping("/create-medicine")
+    public ResponseEntity<MedicineModel> createPatientMedicine (@RequestHeader("Authorization") String token,
+                                                                @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                @RequestBody MedicineDTO medicine)
+                                                                throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        MedicineModel createdMedicine = medicService.createPatientMedicine(medicId, patientLinkCode, medicine);
+
+        if(createdMedicine == null)         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                return new ResponseEntity<>(createdMedicine, HttpStatus.CREATED);
     }
 
-    @GetMapping("/getByDni/{dni}")
-    public MedicModel getMedicByDni(@PathVariable Long dni){
-        return medicService.getMedicByDni(dni);
+
+
+
+
+
+
+    @GetMapping("/get-patients")
+    public ResponseEntity<List<PatientModel>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+
+        Long medicId = jwtValidator.getId(token);
+
+        List<PatientModel> patients = medicService.getPatientsByMedicId(medicId);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
+
+
+    @PostMapping("/addMedicine")
+  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
+    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
+        return medicService.addMedicine(medicine);
+    }
+
+    @PostMapping("/addAnalysis")
+   // @PreAuthorize("hasRole('MEDIC_ROLE')")
+    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
+        return medicService.addAnalysis(analysis);
+    }
+
+
+
+
+}
+
+/*
+ * METODOS QUE NO SE USAN CREO
+ *
+ *     @GetMapping("/getById/{id}")
+ *     public MedicModel getMedicById(@PathVariable Long id) {
+ *         return medicService.getMedicById(id);
+ *     }
+ *
+ *     @GetMapping("/getByDni/{dni}")
+ *     public MedicModel getMedicByDni(@PathVariable Long dni){
+ *         return medicService.getMedicByDni(dni);
+ *     }
+ *
+ *
 
     @GetMapping("/getAll")
     public ResponseEntity<List<MedicModel>> getAllMedic() {
         List<MedicModel> medics = medicService.getAllMedic();
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
-
-    @PutMapping("/update/{id}")
+ *
+ *
+ *     @PutMapping("/update/{id}")
     public MedicModel updateMedic(@PathVariable Long id, @RequestBody MedicModel newMedic) {
        return medicService.updateMedic(id, newMedic);
     }
@@ -114,43 +169,5 @@ public class MedicController {
     }
 
 
-    /**
-     * Este método recibe el código de enlace como parámetro de la solicitud y llama al método linkPatient() de la capa
-     * de servicio para asociar al paciente correspondiente al médico.
-     * Devuelve una respuesta vacía al cliente.
-     */
-    @PostMapping("/linkPatient")
-    public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {
-        Long medicId = jwtValidator.getId(token);
-        medicService.linkPatient(linkCode, medicId);
-        return ResponseEntity.ok().build();
-    }
-
-
-    @GetMapping("/{medic-id}/get-patients")
-    public ResponseEntity<List<PatientModel>> getPatients(@PathVariable("medic-id") Long parameter){
-        List<PatientModel> patients = medicService.getPatientsByMedicId(parameter);
-        return new ResponseEntity<>(patients, HttpStatus.OK);
-    }
-
-
-    @PostMapping("/addMedicine")
-  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
-        return medicService.addMedicine(medicine);
-    }
-
-    @PostMapping("/addAnalysis")
-   // @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
-        return medicService.addAnalysis(analysis);
-    }
-
-    @PostMapping("/createMedicalHistory")
-  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public MedicalHistoryModel createMedicalHistory(@RequestBody MedicalHistoryModel history){
-        return medicService.createMedicalHistory(history);
-    }
-
-
-}
+ *
+ */

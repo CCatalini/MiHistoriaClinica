@@ -2,9 +2,11 @@ package com.example.MiHistoriaClinica.repository;
 
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
+import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
+import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,13 +24,15 @@ public class CustomRepositoryAccess {
     private final PatientRepository patientRepository;
     private final MedicRepository medicRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicineRepository medicineRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
+        this.medicineRepository = medicineRepository;
     }
 
 
@@ -63,9 +67,10 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicalHistoryModel createPatientInMedicalHistory(MedicalHistoryModelDTO medicalHistory, Optional<PatientModel> patient) {
+    public MedicalHistoryModel createPatientMedicalHistory(MedicalHistoryModelDTO medicalHistory, Optional<PatientModel> patient) {
 
         MedicalHistoryModel historySaved = new MedicalHistoryModel();
+        PatientModel aux = patient.get();
 
         historySaved.setWeight(medicalHistory.getWeight());
         historySaved.setHeight(medicalHistory.getHeight());
@@ -75,9 +80,29 @@ public class CustomRepositoryAccess {
         historySaved.setChronicDisease(medicalHistory.getChronicDisease());
         historySaved.setFamilyMedicalHistory(medicalHistory.getFamilyMedicalHistory());
 
-        historySaved.setPatient(patient.get());
+        historySaved.setPatient(aux);
+        aux.setMedicalHistory(historySaved);
 
+               patientRepository.save(aux);
         return medicalHistoryRepository.save(historySaved);
 
+    }
+
+    public MedicineModel createPatientMedicine(MedicineDTO medicine, Optional<PatientModel> patient) {
+
+        MedicineModel medicineSaved = new MedicineModel();
+        PatientModel aux = patient.get();
+
+        medicineSaved.setMedicineName(medicine.getMedicineName());
+        medicineSaved.setLab(medicine.getLab());
+        medicineSaved.setStatus(medicine.getStatus());
+        medicineSaved.setDescription(medicine.getDescription());
+        medicineSaved.setActiveIngredient(medicine.getActiveIngredient());
+
+        medicineSaved.addPatient(aux);
+        aux.getMedicines().add(medicineSaved);
+
+                patientRepository.save(aux);
+        return medicineRepository.save(medicineSaved);
     }
 }

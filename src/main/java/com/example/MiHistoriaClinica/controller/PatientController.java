@@ -6,6 +6,7 @@ import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
+import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
@@ -49,7 +50,7 @@ public class PatientController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    //todo reemplazar el String por Void y modificar le código
+
     @PostMapping("/generate-link-code")
     @ResponseBody
     public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) throws InvalidTokenException {
@@ -76,6 +77,14 @@ public class PatientController {
         if(medicalHistory == null) return  ResponseEntity.notFound().build();
         else                                        return  ResponseEntity.ok(medicalHistory);
     }
+
+
+    @GetMapping("/get-medicines")
+    public ResponseEntity<List<MedicineModel>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        List<MedicineModel> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
