@@ -14,15 +14,27 @@ export class MedicService {
     }
 
     public linkPatient(linkCode: any) {
-        const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
-
+        const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization',"Bearer " + token);
         }
-
         return this.http.post(`http://localhost:8080/medic/linkPatient?linkCode=${linkCode}`, null, { headers });
     }
+
+    public addMedicine(medicine: any, patientLinkCode: string) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+            headers = headers.set('patientLinkCode', patientLinkCode);
+        }
+        const body = {
+            medicine: medicine,
+        };
+        return this.http.post('http://localhost:8080/medic/create-medicine', body, { headers });
+    }
+
 
 
     public getPatientsList() {
@@ -33,9 +45,6 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/signup`,medic);
     }
 
-    public addMedicine(medicine:any){
-        return this.http.post(`http://localhost:8080/medic/addMedicine`,medicine);
-    }
 
     public getMedicinesList() {
         return this.http.get('http://localhost:8080/medicine/findAllMedicine', {});

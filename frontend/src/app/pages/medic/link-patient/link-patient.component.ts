@@ -29,14 +29,14 @@ export class LinkPatientComponent implements OnInit{
             Swal.fire('Ingrese el código del paciente', 'El código del paciente es requisito para atenderlo.', 'warning');
             return;
         }
-        localStorage.setItem('patientLinkCode', this.patient.code);
         this.userService.linkPatient(this.patient.code).subscribe(
             (data) => {
                 console.log(data);
+                localStorage.setItem('patientLinkCode', this.patient.code);
                 this.router.navigate(['medic/attendPatient']);
             },(error) => {
                 console.log(error);
-                Swal.fire('Error', 'Existen datos erroneos.', 'error');
+                Swal.fire('Error', 'El código del paciente es incorrecto.', 'error');
             }
         )
     }
