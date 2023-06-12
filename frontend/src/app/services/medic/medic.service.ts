@@ -35,8 +35,6 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/create-medicine', body, { headers });
     }
 
-
-
     public getPatientsList() {
         return this.http.get('http://localhost:8080/patient/getAll', {});
     }
@@ -45,10 +43,15 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/signup`,medic);
     }
 
-
-    public getMedicinesList() {
-        return this.http.get('http://localhost:8080/medicine/findAllMedicine', {});
+    // todo cambiar por el metodo medic/get-medicines cuando esté listo y pasar patientLinkCode del paciente que se está atendiendo
+    public getMedicinesList(token: string) {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get('http://localhost:8080/patient/get-medicines', { headers });
     }
+
 
     public getAnalysisList() {
         return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
