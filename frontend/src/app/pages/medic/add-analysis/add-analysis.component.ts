@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 import {MedicService} from "../../../services/medic/medic.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-add-analysis',
@@ -15,8 +16,7 @@ export class AddAnalysisComponent {
         description: '',
     }
 
-    constructor(private userService:MedicService, private snack:MatSnackBar){
-    }
+    constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
         //verifico usuario
@@ -41,6 +41,7 @@ export class AddAnalysisComponent {
             (data) => {
                 console.log(data);
                 Swal.fire('Analisis guardado', 'El análisis médico fue cargado con éxito en el sistema.', 'success');
+                this.router.navigate(['medic/attendPatient']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

@@ -85,7 +85,7 @@ export class AddMedicineComponent implements OnInit {
         this.userService.addMedicine(this.medicine, this.patient.code).subscribe(
             (data) => {
                 Swal.fire('Medicamento registrado', 'Medicamento registrado con éxito en el sistema.', 'success');
-
+                this.router.navigate(['medic/attendPatient']);
             },
             (error) => {
                 console.log(error);

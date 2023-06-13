@@ -36,7 +36,7 @@ export class MedicService {
     }
 
     public getPatientsList() {
-        return this.http.get('http://localhost:8080/patient/getAll', {});
+        return this.http.get('http://localhost:8080/medic/get-patients');
     }
 
     public addMedic(medic:any){
