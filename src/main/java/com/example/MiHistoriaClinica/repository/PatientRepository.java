@@ -2,7 +2,6 @@ package com.example.MiHistoriaClinica.repository;
 
 
 import com.example.MiHistoriaClinica.model.MedicModel;
-import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,12 +32,6 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
      */
     @Query("SELECT m FROM PatientModel p JOIN p.medics m WHERE p.patientId = :patientId")
     List<MedicModel> getMedicsByPatientId(@Param("patientId") Long patientId);
-
-    /**
-     * JOIN para unir la entidad PatientModel con la lista medicines y luego filtra los resultados por el ID del paciente
-     */
-    @Query("SELECT m FROM PatientModel p JOIN p.medicines m WHERE p.patientId = :patientId")
-    List<MedicineModel> getMedicinesByPatientId(@Param("patientId") Long id);
 
 
     // void assignRole(Long patient_id, Long role_id);

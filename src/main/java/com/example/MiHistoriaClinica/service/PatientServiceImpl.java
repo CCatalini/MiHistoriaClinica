@@ -6,7 +6,6 @@ import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
-import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
@@ -67,10 +66,6 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.getMedicsByPatientId(id);
     }
 
-    @Override
-    public List<MedicineModel> getMedicinesByPatientId(Long id) {
-        return patientRepository.getMedicinesByPatientId(id);
-    }
 
 
     @Override
@@ -136,7 +131,6 @@ public class PatientServiceImpl implements PatientService {
         return thisPatient.getMedicalHistory();
 
     }
-
 
 
 }
