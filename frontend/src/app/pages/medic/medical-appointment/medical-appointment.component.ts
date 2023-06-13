@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import Swal from "sweetalert2";
 import {MedicService} from "../../../services/medic/medic.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-medical-appointment.service.sepc.ts',
@@ -15,8 +16,7 @@ export class MedicalAppointmentComponent {
         observations: '',
     }
 
-    constructor(private userService:MedicService){
-    }
+    constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
         //verifico usuario
@@ -43,6 +43,7 @@ export class MedicalAppointmentComponent {
             (data) => {
                 console.log(data);
                 Swal.fire('Consulta médica guardada', 'Consulta médica guardada con éxito en el sistema.', 'success');
+                this.router.navigate(['medic/attendPatient']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');

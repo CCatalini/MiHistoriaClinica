@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import Swal from "sweetalert2";
 import {MedicService} from "../../../services/medic/medic.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-medical-history',
@@ -18,8 +19,7 @@ export class CreateMedicalHistoryComponent {
         familyMedicalHistory: ''
     }
 
-    constructor(private userService:MedicService){
-    }
+    constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
         //verifico usuario
@@ -46,6 +46,7 @@ export class CreateMedicalHistoryComponent {
             (data) => {
                 console.log(data);
                 Swal.fire('Historia clínica guardada', 'Historia clínica guardada con éxito en el sistema.', 'success');
+                this.router.navigate(['medic/attendPatient']);
             },(error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
