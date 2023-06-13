@@ -19,6 +19,10 @@ export class CreateMedicalHistoryComponent {
         familyMedicalHistory: ''
     }
 
+    public patient = {
+        code: '',
+    };
+
     constructor(private userService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
@@ -42,9 +46,17 @@ export class CreateMedicalHistoryComponent {
             Swal.fire('Ingrese el grupo sanguíneo', 'El grupo sanguíneo es requisito.', 'warning');
             return;
         }
-        this.userService.createMedicalHistory(this.medicalHistory).subscribe(
+        this.patient.code = localStorage.getItem('patientLinkCode') || '';
+        if (!this.patient.code) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }
+        this.userService.createMedicalHistory(this.medicalHistory, this.patient.code).subscribe(
             (data) => {
-                console.log(data);
                 Swal.fire('Historia clínica guardada', 'Historia clínica guardada con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             },(error) => {
