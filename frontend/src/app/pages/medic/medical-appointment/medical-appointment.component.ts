@@ -39,7 +39,7 @@ export class MedicalAppointmentComponent {
             return;
         }
         // todo Cami deberíamos tener un addMedicalAppointment en el back para ir agregando las consultas (creo?) cosa de tener por un lado la info de l ahistoria clinica y por otro la lista de consultas médicas
-        this.userService.createMedicalHistory(this.medicalAppointment).subscribe(
+        /*this.userService.createMedicalHistory(this.medicalAppointment).subscribe(
             (data) => {
                 console.log(data);
                 Swal.fire('Consulta médica guardada', 'Consulta médica guardada con éxito en el sistema.', 'success');
@@ -48,6 +48,6 @@ export class MedicalAppointmentComponent {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
             }
-        )
+        )*/
     }
 }
