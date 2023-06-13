@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.service;
 import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
+import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
@@ -90,14 +91,24 @@ public class MedicServiceImpl implements MedicService {
 
     @Transactional
     @Override
-    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory){
+    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory) {
 
         Optional<MedicModel> medic = medicRepository.findById(medicId);
         Optional<PatientModel> patient = patientRepository.findByLinkCode(linkCode);
 
-        if(medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, linkCode))    return null;
-        else return customRepositoryAccess.createPatientInMedicalHistory(medicalHistory, patient);
+        if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, linkCode)) return null;
+        else return customRepositoryAccess.createPatientMedicalHistory(medicalHistory, patient);
 
+    }
+
+    @Override
+    public MedicineModel createPatientMedicine(Long medicId, String patientLinkCode, MedicineDTO medicine) {
+
+        Optional<MedicModel> medic = medicRepository.findById(medicId);
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
+
+        if(medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientLinkCode))    return null;
+        else    return customRepositoryAccess.createPatientMedicine(medicine, patient);
     }
 
 
@@ -107,7 +118,6 @@ public class MedicServiceImpl implements MedicService {
      * este método va a obtener la historia clínica de un paciente determinado
      * primero checkea que el médico y el paciente estén linkeados
      */
-
     public MedicalHistoryModel getPatientMedicalHistory(Long medicId, String linkCode) {
         if (!isPatientLinked(medicId, linkCode)) {
             return null;
@@ -204,5 +214,6 @@ public class MedicServiceImpl implements MedicService {
     public List<PatientModel> getPatientsByMedicId(Long medicId) {
         return medicRepository.getPatientsByMedicId(medicId);
     }
+
 
 }
