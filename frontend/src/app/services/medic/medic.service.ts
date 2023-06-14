@@ -68,13 +68,18 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/signup`,medic);
     }
 
-    // todo cambiar por el metodo medic/get-medicines cuando esté listo y pasar patientLinkCode del paciente que se está atendiendo
-    public getMedicinesList(token: string) {
-        let headers = new HttpHeaders();
-        if (token) {
-            headers = headers.set('Authorization', 'Bearer ' + token);
-        }
-        return this.http.get('http://localhost:8080/patient/get-medicines', { headers });
+    public getMedicinesList(patientLinkCode: string) {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }   let headers = new HttpHeaders();
+        headers = headers.set('patientLinkCode', linkCode);
+        return this.http.get('http://localhost:8080/medic/get-patient-medicines', { headers });
     }
 
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicService } from "../../../services/medic/medic.service";
+import {PatientService} from "../../../services/patient/patient.service";
 
 @Component({
     selector: 'app-medicines-list',
@@ -11,7 +12,7 @@ import { MedicService } from "../../../services/medic/medic.service";
 export class MedicinesListPatientComponent implements OnInit {
     medicines: any[] = [];
 
-    constructor(private userService: MedicService, private router: Router) { }
+    constructor(private userService: PatientService, private router: Router) { }
 
     updateStatus(medicine: any) {
         // Buscar el medicamento correspondiente en la lista
