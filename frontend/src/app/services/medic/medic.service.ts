@@ -60,8 +60,12 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/create-medical-history', medicalHistoryModel, {headers});
     }
 
-    public getPatientsList() {
-        return this.http.get('http://localhost:8080/medic/get-patients');
+    public getPatientsList(token: string): Observable<any[]> {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/medic/get-patients', { headers: headers });
     }
 
     public addMedic(medic:any){

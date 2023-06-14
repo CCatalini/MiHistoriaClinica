@@ -10,39 +10,44 @@ import {MedicService} from "../../../services/medic/medic.service";
 })
 export class PatientsListComponent implements OnInit {
 
-    patient = {
-        name: '',
-        lastname: '',
-        dni: '',
-        email: '',
-    };
-
     patients: any[] = [];
 
     constructor(private userService: MedicService, private router: Router) { }
 
     ngOnInit(): void {
-        //verifico usuario
+        // Verify user
         if (localStorage.getItem('userType') != 'MEDIC') {
-            window.location.href = '/medic/login';
+            this.router.navigate(['/patient/login']);
+        } else {
+            this.formSubmit(); // Creamos patients list
         }
     }
 
     formSubmit() {
-        this.userService.getPatientsList().subscribe(
-            (data: any) => {
-                this.patients = data;
-            },
-            (error: any) => {
-                console.log(error);
-                if (error.status === 400) {
-                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                } else if (error.status === 404) {
-                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                } else {
-                    Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+        const token = localStorage.getItem('token');
+        if(token) {
+            this.userService.getPatientsList(token).subscribe(
+                (data: any) => {
+                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
+                    if (Array.isArray(data)) {
+                        this.patients = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            // Manejar el caso en el que no se encuentre el token en el local storage
+        }
     }
 }
