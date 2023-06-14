@@ -108,6 +108,7 @@ public class MedicController {
         List<MedicineModel> medicines = medicService.getMedicinesByPatientLinkCode(patientLinkCode);
         if (medicines==null)    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(medicines, HttpStatus.OK);
+
     }
 
 
