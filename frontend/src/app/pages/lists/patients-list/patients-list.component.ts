@@ -17,7 +17,7 @@ export class PatientsListComponent implements OnInit {
     ngOnInit(): void {
         // Verify user
         if (localStorage.getItem('userType') != 'MEDIC') {
-            this.router.navigate(['/patient/login']);
+            this.router.navigate(['/medic/login']);
         } else {
             this.formSubmit(); // Creamos patients list
         }
