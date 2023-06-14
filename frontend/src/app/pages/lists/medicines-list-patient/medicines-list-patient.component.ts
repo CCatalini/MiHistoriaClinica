@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicService } from "../../../services/medic/medic.service";
 import {PatientService} from "../../../services/patient/patient.service";
+import {HttpClient} from "@angular/common/http";
+import {EMPTY} from "rxjs";
 
 @Component({
     selector: 'app-medicines-list',
@@ -12,16 +14,7 @@ import {PatientService} from "../../../services/patient/patient.service";
 export class MedicinesListPatientComponent implements OnInit {
     medicines: any[] = [];
 
-    constructor(private userService: PatientService, private router: Router) { }
-
-    updateStatus(medicine: any) {
-        // Buscar el medicamento correspondiente en la lista
-        const foundMedicine = this.medicines.find(m => m.id === medicine.id);
-        if (foundMedicine) {
-            // Actualizar el estado del medicamento
-            foundMedicine.status = medicine.status;
-        }
-    }
+    constructor(private userService: PatientService, private router: Router, private patientService: PatientService,private http: HttpClient) { }
 
     ngOnInit(): void {
         // Verify user
@@ -59,5 +52,32 @@ export class MedicinesListPatientComponent implements OnInit {
             // Manejar el caso en el que no se encuentre el token en el local storage
         }
     }
+
+    updateMedicineStatus(medicineId: number, status: string) {
+        const token = localStorage.getItem('token');
+        const url = `http://localhost:8080/patient/update-medicine-status/?medicineId=${medicineId}&status=${status}`;
+        const body = { status: status };
+
+        if (token) {
+            return this.http.put(url, body, {
+                headers: { Authorization: `Bearer ${token}` }
+            }).subscribe(
+                (response: any) => {
+                    console.log(response); // Verificar la respuesta del backend
+                    // Realizar cualquier acción adicional necesaria después de guardar el estado del medicamento
+                },
+                (error: any) => {
+                    console.log(error); // Verificar el error del backend
+                    // Manejar el error adecuadamente, por ejemplo, mostrar un mensaje de error al usuario
+                }
+            );
+        } else {
+            console.log('Token not found');
+            // Manejar el caso en el que no se encuentre el token en el local storage
+            return null; // Agregar esta línea para devolver un valor en este caso
+        }
+    }
+
+
 
 }
