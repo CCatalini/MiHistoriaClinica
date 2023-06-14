@@ -66,6 +66,16 @@ public class MedicController {
     }
 
 
+    @GetMapping("/get-patients")
+    public ResponseEntity<List<PatientModel>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+
+        Long medicId = jwtValidator.getId(token);
+
+        List<PatientModel> patients = medicService.getPatientsByMedicId(medicId);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
+    }
+
+
     @PostMapping("/create-medical-history")
     public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
                                                                            @RequestHeader("patientLinkCode") String patientLinkCode,
@@ -78,7 +88,6 @@ public class MedicController {
         else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
 
     }
-
 
 
     @PostMapping("/create-medicine")
@@ -94,19 +103,21 @@ public class MedicController {
     }
 
 
-
-
-
-
-
-    @GetMapping("/get-patients")
-    public ResponseEntity<List<PatientModel>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
-
-        Long medicId = jwtValidator.getId(token);
-
-        List<PatientModel> patients = medicService.getPatientsByMedicId(medicId);
-        return new ResponseEntity<>(patients, HttpStatus.OK);
+    @GetMapping("/get-patient-medicines")
+    public ResponseEntity<List<MedicineModel>> getPatientMedicines (@RequestHeader("patientLinkCode") String patientLinkCode) throws InvalidTokenException {
+        List<MedicineModel> medicines = medicService.getMedicinesByPatientLinkCode(patientLinkCode);
+        if (medicines==null)    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
+
+
+    /* TODO --> para updateMedicine se necesita la lista de medicamentos del paciente (que se obtiene con el linkcode )
+                y el id del medicamento que queremos modificar
+                yo tambien necesito el cuerpo de la medicina nueva
+     */
+
+
+
 
 
     @PostMapping("/addMedicine")
