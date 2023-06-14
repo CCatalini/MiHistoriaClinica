@@ -63,22 +63,14 @@ public class PatientController {
         return jwt.invalidateToken(token);
     }
 
+    /** OK */
     @GetMapping("/get-medics")
     public ResponseEntity<List<MedicModel>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
         List<MedicModel> medics = patientService.getMedicsByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
-    @GetMapping("/medical-history")
-    public ResponseEntity<MedicalHistoryModel> getMedicalHistory(@RequestHeader("Authorization") String token) throws InvalidTokenException {
-
-        MedicalHistoryModel medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
-
-        if(medicalHistory == null) return  ResponseEntity.notFound().build();
-        else                                        return  ResponseEntity.ok(medicalHistory);
-    }
-
-
+    /** OK */
     @GetMapping("/get-medicines")
     public ResponseEntity<List<MedicineModel>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
         List<MedicineModel> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
@@ -86,6 +78,13 @@ public class PatientController {
     }
 
 
+
+
+
+
+}
+
+/*
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
         PatientModel patient = patientService.getPatientById(id);
@@ -98,7 +97,18 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-    // todo Cami pasar a MedicController y que retorne todos los pacientes de ese médico
+        @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
+        patientService.deletePatient(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/deleteByDni/{dni}")
+    public ResponseEntity<Void> deletePatientByDni(@PathVariable Long dni) {
+        patientService.deletePatientByDni(dni);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+     // todo Cami pasar a MedicController y que retorne todos los pacientes de ese médico
     @GetMapping("/getAll")
     public ResponseEntity<List<PatientModel>> getAllPatient() {
         List<PatientModel> patients = patientService.getAllPatient();
@@ -111,17 +121,6 @@ public class PatientController {
         return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
-        patientService.deletePatient(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("/deleteByDni/{dni}")
-    public ResponseEntity<Void> deletePatientByDni(@PathVariable Long dni) {
-        patientService.deletePatientByDni(dni);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @DeleteMapping("/deleteAll")
     public ResponseEntity<Void> deleteAllPatient() {
@@ -129,5 +128,4 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-}
-
+ */
