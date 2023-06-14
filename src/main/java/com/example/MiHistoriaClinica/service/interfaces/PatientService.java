@@ -13,19 +13,26 @@ public interface PatientService {
 
     PatientModel createPatient(PatientSignupDTO patient);
     PatientModel loginPatient(PatientLoginDTO patient);
-
     List<MedicineModel> getMedicinesByPatientId(Long id);
+    List<MedicModel> getMedicsByPatientId(Long id);
+    PatientModel updatePatient(Long id, PatientModel newPatient);
+    MedicalHistoryModel getMedicalHistory(Long id);
+    MedicineModel getMedicineByMedicineId(Long medicineId);
+    void saveMedicine(MedicineModel medicine);
+
+
 
     PatientModel getPatientById(Long id);
     PatientModel getPatientByDni(Long dni);
+
+}
+
+
+/*
+
     List<PatientModel> getAllPatient();
-    PatientModel updatePatient(Long id, PatientModel newPatient);
     void deletePatient(Long id);
     void deletePatientByDni(Long dni);
     void deleteAllPatient();
 
-
-    List<MedicModel> getMedicsByPatientId(Long id);
-
-    MedicalHistoryModel getMedicalHistory(Long id);
-}
+ */
