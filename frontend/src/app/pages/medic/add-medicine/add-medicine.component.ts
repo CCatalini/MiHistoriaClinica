@@ -73,16 +73,27 @@ export class AddMedicineComponent implements OnInit {
             );
             return;
         }
-        this.patient.code = localStorage.getItem('patientLinkCode') || '';
-        if (!this.patient.code) {
-            Swal.fire(
-                'Error',
-                'No se proporcionó el código de enlace del paciente.',
-                'error'
-            );
+
+        // Check if medicalHistoryModel is defined
+        if (!this.medicine) {
+            Swal.fire('Error', 'No se proporcionó la historia médica.', 'error');
             return;
         }
-        this.userService.addMedicine(this.medicine, this.patient.code).subscribe(
+
+        // Check if userService is defined
+        if (!this.userService) {
+            Swal.fire('Error', 'No se proporcionó el servicio de usuario.', 'error');
+            return;
+        }
+
+        const addMedicineObservable = this.userService.addMedicine(this.medicine);
+
+        if (addMedicineObservable === undefined) {
+            Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
+            return;
+        }
+
+        addMedicineObservable.subscribe(
             (data) => {
                 Swal.fire('Medicamento registrado', 'Medicamento registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);

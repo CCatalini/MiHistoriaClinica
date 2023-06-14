@@ -23,17 +23,22 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/linkPatient?linkCode=${linkCode}`, null, { headers });
     }
 
-    public addMedicine(medicine: any, patientLinkCode: string) {
+    public addMedicine(medicine: any) {
         const token = localStorage.getItem('token');
-        let headers = new HttpHeaders();
+        const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }   let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-        const body = {
-            medicine: medicine,
-        };
-        return this.http.post('http://localhost:8080/medic/create-medicine', body, { headers });
+        return this.http.post('http://localhost:8080/medic/create-medicine', medicine, { headers });
     }
 
 
@@ -47,7 +52,7 @@ export class MedicService {
                 'error'
             );
             return;
-        }        let headers = new HttpHeaders();
+        }   let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
