@@ -60,8 +60,6 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/create-medical-history', medicalHistoryModel, {headers});
     }
 
-
-
     public getPatientsList() {
         return this.http.get('http://localhost:8080/medic/get-patients');
     }

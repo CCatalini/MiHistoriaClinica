@@ -43,8 +43,12 @@ export class PatientService {
         return this.http.get<string>('http://localhost:8080/patient/medical-history');
     }
 
-    public getMedicinesList() {
-        return this.http.get('http://localhost:8080/patient/get-medicines', {});
+    public getMedicinesList(token: string): Observable<any[]> {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/patient/get-medicines', { headers: headers });
     }
 
     logoutPatient(): Observable<any> {
