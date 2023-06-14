@@ -94,11 +94,6 @@ public class MedicController {
     }
 
 
-
-
-
-
-
     @GetMapping("/get-patients")
     public ResponseEntity<List<PatientModel>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
 
@@ -114,6 +109,7 @@ public class MedicController {
     public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
         return medicService.addMedicine(medicine);
     }
+
 
     @PostMapping("/addAnalysis")
    // @PreAuthorize("hasRole('MEDIC_ROLE')")

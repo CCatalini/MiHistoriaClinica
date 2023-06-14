@@ -65,14 +65,6 @@ export class AddMedicineComponent implements OnInit {
             );
             return;
         }
-        if (this.medicine.status === '' || this.medicine.status === null) {
-            Swal.fire(
-                'Ingrese el estado',
-                'El estado es requisito para cargar el medicamento.',
-                'warning'
-            );
-            return;
-        }
 
         // Check if medicalHistoryModel is defined
         if (!this.medicine) {

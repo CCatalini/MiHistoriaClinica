@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import {MedicService} from "../../../services/medic/medic.service";
+import { MedicService } from "../../../services/medic/medic.service";
 
 @Component({
     selector: 'app-medicines-list',
@@ -9,16 +9,18 @@ import {MedicService} from "../../../services/medic/medic.service";
     styleUrls: ['./medicines-list-patient.component.css']
 })
 export class MedicinesListPatientComponent implements OnInit {
-    medicine = {
-        medicineName: '',
-        activeIngredient: '',
-        lab: '',
-        description: ''
-    };
-
     medicines: any[] = [];
 
     constructor(private userService: MedicService, private router: Router) { }
+
+    updateStatus(medicine: any) {
+        // Buscar el medicamento correspondiente en la lista
+        const foundMedicine = this.medicines.find(m => m.id === medicine.id);
+        if (foundMedicine) {
+            // Actualizar el estado del medicamento
+            foundMedicine.status = medicine.status;
+        }
+    }
 
     ngOnInit(): void {
         // Verify user
@@ -34,7 +36,12 @@ export class MedicinesListPatientComponent implements OnInit {
         if (token) {
             this.userService.getMedicinesList(token).subscribe(
                 (data: any) => {
-                    this.medicines = data;
+                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
+                    if (Array.isArray(data)) {
+                        this.medicines = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
                 },
                 (error: any) => {
                     console.log(error);
@@ -52,17 +59,4 @@ export class MedicinesListPatientComponent implements OnInit {
         }
     }
 
-    // todo falta el medicService.updateStatus() del back, cambiar el html cuando esté (dejé comentada la línea)
-    /*updateStatus(medicine: any) {
-        this.medicService.updateStatus(medicine.id, medicine.status).subscribe(
-            (response: any) => {
-                // Manejar la respuesta del backend si es necesario
-                console.log('Estado actualizado correctamente');
-            },
-            (error: any) => {
-                console.log(error);
-                Swal.fire('Error', 'Se produjo un error al actualizar el estado.', 'error');
-            }
-        );
-    }*/
 }

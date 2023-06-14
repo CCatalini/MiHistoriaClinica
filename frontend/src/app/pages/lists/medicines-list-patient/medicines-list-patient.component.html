@@ -17,8 +17,7 @@
         <td>{{ medicine.lab }}</td>
         <td>{{ medicine.description }}</td>
         <td>
-<!--        <select class="form-control" [(ngModel)]="medicine.status" (change)="updateStatus(medicine)">-->
-            <select class="form-control" [(ngModel)]="medicine.status" >
+            <select class="form-control" [(ngModel)]="medicine.status" (change)="updateStatus(medicine)">
                 <option value="en curso">En curso</option>
                 <option value="pendiente">Pendiente</option>
                 <option value="finalizado">Finalizado</option>
