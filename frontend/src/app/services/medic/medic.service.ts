@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from "rxjs";
+import Swal from "sweetalert2";
 
 @Injectable({
     providedIn: 'root'
@@ -35,18 +36,26 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/create-medicine', body, { headers });
     }
 
-    public createMedicalHistory(medical_history:any, patientLinkCode: string){
+
+    public createMedicalHistory(medicalHistoryModel: any) {
         const token = localStorage.getItem('token');
-        let headers = new HttpHeaders();
+        const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }        let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-        const body = {
-            medical_history: medical_history,
-        };
-        return this.http.post('http://localhost:8080/medic/create-medical-history', body, { headers });
+        return this.http.post('http://localhost:8080/medic/create-medical-history', medicalHistoryModel, {headers});
     }
+
+
 
     public getPatientsList() {
         return this.http.get('http://localhost:8080/medic/get-patients');
