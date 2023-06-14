@@ -8,6 +8,7 @@ import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.repository.MedicineRepository;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
 import com.example.MiHistoriaClinica.service.interfaces.PatientService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,13 +24,16 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final CustomRepositoryAccess customRepositoryAccess;
+    private final MedicineRepository medicineRepository;
 
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository) {
         this.patientRepository = patientRepository;
         this.customRepositoryAccess = customRepositoryAccess;
-   }
+        this.medicineRepository = medicineRepository;
+    }
+
 
     /**
      * método para generar el código de enlace y actualizar el registro del paciente con el nuevo código
@@ -46,10 +51,12 @@ public class PatientServiceImpl implements PatientService {
         return linkCode;
     }
 
+
     @Override
     public PatientModel createPatient(PatientSignupDTO patient) {
         return customRepositoryAccess.saveDTO(patient);
     }
+
 
     @Override
     public PatientModel loginPatient(PatientLoginDTO patient) {
@@ -67,10 +74,58 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.getMedicsByPatientId(id);
     }
 
+
     @Override
     public List<MedicineModel> getMedicinesByPatientId(Long id) {
         return patientRepository.getMedicinesByPatientId(id);
     }
+
+
+    @Override
+    public PatientModel updatePatient(Long id, PatientModel newPatient) {
+        PatientModel patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+
+        patient.setName(newPatient.getName());
+        patient.setLastname(newPatient.getLastname());
+        patient.setEmail(newPatient.getEmail());
+        patient.setPassword(newPatient.getPassword());
+        patient.setDni(newPatient.getDni());
+        patient.setBirthdate(newPatient.getBirthdate());
+
+        return patientRepository.save(patient);
+    }
+
+
+    @Override
+    public MedicalHistoryModel getMedicalHistory(Long id){
+
+        PatientModel thisPatient = patientRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+
+        return thisPatient.getMedicalHistory();
+
+    }
+
+
+    @Override
+    public MedicineModel getMedicineByMedicineId(Long medicineId) {
+
+        Optional<MedicineModel> medicine = medicineRepository.findById(medicineId);
+        if (medicine.isPresent())           return medicine.get();
+        else                                return null;
+
+    }
+
+
+    @Override
+    public void saveMedicine(MedicineModel medicine) {
+        medicineRepository.save(medicine);
+    }
+
+
+
+
 
 
     @Override
@@ -89,26 +144,11 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
-    @Override
-    public List<PatientModel> getAllPatient() {
-        return patientRepository.findAll();
-    }
 
-    @Override
-    public PatientModel updatePatient(Long id, PatientModel newPatient) {
-        PatientModel patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+}
 
-        patient.setName(newPatient.getName());
-        patient.setLastname(newPatient.getLastname());
-        patient.setEmail(newPatient.getEmail());
-        patient.setPassword(newPatient.getPassword());
-        patient.setDni(newPatient.getDni());
-        patient.setBirthdate(newPatient.getBirthdate());
 
-        return patientRepository.save(patient);
-    }
-
+/*
     @Override
     public void deletePatient(Long id) {
         PatientModel patient = patientRepository.findById(id)
@@ -127,16 +167,5 @@ public class PatientServiceImpl implements PatientService {
     }
 
 
-    @Override
-    public MedicalHistoryModel getMedicalHistory(Long id){
 
-        PatientModel thisPatient = patientRepository.findById(id).
-                                   orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-
-        return thisPatient.getMedicalHistory();
-
-    }
-
-
-
-}
+ */
