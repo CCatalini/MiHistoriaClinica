@@ -64,5 +64,18 @@ export class PatientService {
         return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }
 
+    updateMedicineStatus(medicineId: number, status: string) {
+        const token = localStorage.getItem('token');
+        const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
+
+        if (token) {
+            return this.http.put(url, null, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+        } else {
+            // Manejar el caso en el que no se encuentre el token en el local storage
+            return null; // O devuelve un Observable vacío o null, dependiendo de tu necesidad
+        }
+    }
 
 }
