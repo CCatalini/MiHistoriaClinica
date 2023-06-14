@@ -18,8 +18,12 @@ export class PatientService {
         return this.http.post(`http://localhost:8080/patient/signup`,patient);
     }
 
-    public getMedicsList() {
-        return this.http.get('http://localhost:8080/medic/getAll');
+    public getMedicsList(token: string): Observable<any[]> {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/patient/get-medics', { headers: headers });
     }
 
     /**
