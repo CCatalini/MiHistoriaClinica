@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface MedicService {
     MedicModel createMedic(MedicSignupDTO medic);
@@ -21,6 +22,8 @@ public interface MedicService {
     MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory);
 
     MedicineModel createPatientMedicine(Long medicId, String patientLinkCode, MedicineDTO medicine);
+
+    List<MedicineModel> getMedicinesByPatientLinkCode(String patientLinkCode);
 
     MedicModel getMedicById(Long id);
     MedicModel getMedicByDni(Long dni);
