@@ -111,6 +111,16 @@ public class MedicServiceImpl implements MedicService {
         else    return customRepositoryAccess.createPatientMedicine(medicine, patient);
     }
 
+    @Override
+    public List<MedicineModel> getMedicinesByPatientLinkCode(String patientLinkCode) {
+
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
+        List<MedicineModel> medicines = patient.get().getMedicines();
+
+        if(medicines == null)       return null;
+        else                        return medicines;
+    }
+
 
 
 
@@ -214,6 +224,7 @@ public class MedicServiceImpl implements MedicService {
     public List<PatientModel> getPatientsByMedicId(Long medicId) {
         return medicRepository.getPatientsByMedicId(medicId);
     }
+
 
 
 }
