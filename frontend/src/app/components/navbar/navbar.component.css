@@ -30,3 +30,9 @@
     background-color: transparent;
     color: white;
 }
+
+.navbar-button {
+    margin-left: 10px; /* Ajusta el valor según sea necesario */
+    margin-right: auto;
+}
+

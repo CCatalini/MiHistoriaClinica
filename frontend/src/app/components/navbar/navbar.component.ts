@@ -49,5 +49,22 @@ export class NavbarComponent implements OnInit {
         );
     }
 
+    goBack(): void {
+            window.history.back();
+     }
+
+    isHomePage() {
+        if (this.router.url == '/patient/home' || this.router.url == '/medic/home')
+            return true;
+        else
+            return false;
+    }
+
+    isPrincipalPage(){
+        if (this.router.url == '/')
+            return true;
+        else
+            return false;
+    }
 }
 

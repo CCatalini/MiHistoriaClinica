@@ -46,7 +46,7 @@ html {
 }
 
 .boton {
-    margin-top: 10px;
+    margin-top: 0px;
     background-color: #3fb5eb;
     color: white;
     font-size: 18px;
@@ -58,5 +58,5 @@ html {
 .button-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 50px; /* Añade un margen inferior opcional para separar el botón del siguiente elemento */
+    margin-bottom: 30px; /* Añade un margen inferior opcional para separar el botón del siguiente elemento */
 }

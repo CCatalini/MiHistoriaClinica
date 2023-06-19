@@ -27,4 +27,7 @@ export class AttendPatientComponent implements OnInit {
     setLinkCode(): void{
         localStorage.setItem('patientLinkCode', '');
     }
+
+    // todo agregar metodos que traigan datos del paciente para mostrarlos en el encabezado de la pagin
+
 }
