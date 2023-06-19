@@ -15,4 +15,5 @@ export class HomeMedicComponent implements OnInit{
         }
     }
 
+    // todo agregar metodos que traigan datos del medico para mostrarlos en el encabezado de la pagin
 }

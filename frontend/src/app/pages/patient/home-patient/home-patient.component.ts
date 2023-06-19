@@ -16,4 +16,5 @@ export class HomePatientComponent implements OnInit {
         }
     }
 
+    // todo agregar metodos que traigan datos del paciente para mostrarlos en el encabezado de la pagina
 }

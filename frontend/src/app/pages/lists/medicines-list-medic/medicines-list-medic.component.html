@@ -1,5 +1,9 @@
 <h1 class="text-center">Medicamentos</h1>
 <br>
+<h5 class="text-center">Paciente:</h5>
+<h5 class="text-center">DNI:</h5>
+<h5 class="text-center">Contacto:</h5>
+<br>
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
@@ -7,8 +11,8 @@
         <th>Compuesto activo</th>
         <th>Laboratorio</th>
         <th>Descripción</th>
-        <!--<th>Estado</th>
-        <th>Acciones</th>-->
+        <th>Estado</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -16,14 +20,11 @@
         <td>{{ medicine.medicineName }}</td>
         <td>{{ medicine.activeIngredient }}</td>
         <td>{{ medicine.lab }}</td>
-<!--        todo agregar botones para editar y eso-->
         <td>{{ medicine.description }}</td>
-        <!--<td>{{ medicine.status }}</td>-->
-        <!--<td>
-            <button class="btn btn-primary" (click)="editMedicine(medicine)">Editar</button>
-        </td>-->
+        <td>{{ medicine.status }}</td>
+        <td>
+            <button class="btn btn-danger" (click)="deleteMedicine(medicine)">Eliminar</button>
+        </td>
     </tr>
     </tbody>
 </table>
-
-

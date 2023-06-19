@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {map, Observable} from "rxjs";
 import Swal from "sweetalert2";
 
 @Injectable({
@@ -39,6 +39,18 @@ export class MedicService {
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
         return this.http.post('http://localhost:8080/medic/create-medicine', medicine, { headers });
+    }
+
+    public updateMedicineStatus(medicine:any){
+        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
+    }
+
+    public deleteMedicine(id: number): Observable<any> {
+        return this.http.delete(`http://localhost:8080/deleteMedicine/${id}`).pipe(
+            map(() => {
+                Swal.fire('Eliminado', 'El medicamento ha sido eliminado correctamente.', 'success');
+            })
+        );
     }
 
 
@@ -86,7 +98,6 @@ export class MedicService {
         return this.http.get('http://localhost:8080/medic/get-patient-medicines', { headers });
     }
 
-
     public getAnalysisList() {
         return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
     }
@@ -104,7 +115,4 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
 
-    public updateStatus(medicine:any){
-        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
-    }
 }

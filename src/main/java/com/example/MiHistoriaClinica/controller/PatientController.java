@@ -96,7 +96,7 @@ public class PatientController {
 
 }
 
-/*
+/*n
     @GetMapping("/getById/{id}")
     public ResponseEntity<PatientModel> getPatientById(@PathVariable Long id) {
         PatientModel patient = patientService.getPatientById(id);
