@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {Router} from "@angular/router";
 
 @Injectable({
@@ -64,18 +64,35 @@ export class PatientService {
         return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }
 
-    updateMedicineStatus(medicineId: number, status: string) {
+    updateMedicineStatus(medicineId: number, status: string): Observable<any> {
+        console.log('medicineId:', medicineId);
+        console.log('status:', status);
+
         const token = localStorage.getItem('token');
         const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
 
         if (token) {
             return this.http.put(url, null, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: { Authorization: `Bearer ${token}` },
             });
         } else {
-            // Manejar el caso en el que no se encuentre el token en el local storage
-            return null; // O devuelve un Observable vacío o null, dependiendo de tu necesidad
+            console.log('Token not found');
+            // Return an empty observable
+            return of(null);
         }
     }
+
+    /*
+    updateMedicineStatus(medicineId: number, status: string) {
+        const url = `/update-medicine-status/${medicineId}`;
+        const body = { status: status };
+
+        return this.http.put(url, body);
+    }
+*/
+    /*updateMedicineStatus(medicineId: number, status: string) {
+        return this.http.put(`/update-medicine-status/${medicineId}?status=${status}`, {}).toPromise();
+    }*/
+
 
 }

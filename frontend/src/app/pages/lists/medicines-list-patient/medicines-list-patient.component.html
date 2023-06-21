@@ -4,6 +4,7 @@
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
+        <th>ID</th>
         <th>Medicación</th>
         <th>Compuesto activo</th>
         <th>Laboratorio</th>
@@ -13,12 +14,13 @@
     </thead>
     <tbody>
     <tr *ngFor="let medicine of medicines">
+        <td>{{ medicine.medicineId }}</td>
         <td>{{ medicine.medicineName }}</td>
         <td>{{ medicine.activeIngredient }}</td>
         <td>{{ medicine.lab }}</td>
         <td>{{ medicine.description }}</td>
         <td>
-            <select class="form-control" [(ngModel)]="medicine.status" (change)="updateMedicineStatus(medicine.id, medicine.status)">
+            <select class="form-control" [(ngModel)]="medicine.status" (change)="updateMedicineStatus(medicine.medicineId, medicine.status)">
                 <option value="en curso">En curso</option>
                 <option value="pendiente">Pendiente</option>
                 <option value="finalizado">Finalizado</option>
