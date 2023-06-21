@@ -64,7 +64,7 @@ export class PatientService {
         return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
     }
 
-    updateMedicineStatus(medicineId: number, status: string): Observable<any> {
+    /*updateMedicineStatus(medicineId: number, status: string): Observable<any> {
         console.log('medicineId:', medicineId);
         console.log('status:', status);
 
@@ -80,16 +80,15 @@ export class PatientService {
             // Return an empty observable
             return of(null);
         }
-    }
+    }*/
 
-    /*
+
     updateMedicineStatus(medicineId: number, status: string) {
         const url = `/update-medicine-status/${medicineId}`;
         const body = { status: status };
-
         return this.http.put(url, body);
     }
-*/
+
     /*updateMedicineStatus(medicineId: number, status: string) {
         return this.http.put(`/update-medicine-status/${medicineId}?status=${status}`, {}).toPromise();
     }*/
