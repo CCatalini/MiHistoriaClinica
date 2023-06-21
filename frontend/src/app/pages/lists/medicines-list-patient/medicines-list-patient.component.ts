@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicService } from "../../../services/medic/medic.service";
-import {PatientService} from "../../../services/patient/patient.service";
-import {HttpClient} from "@angular/common/http";
-import {EMPTY} from "rxjs";
+import { PatientService } from "../../../services/patient/patient.service";
+import { HttpClient } from "@angular/common/http";
+import { EMPTY } from "rxjs";
 
 @Component({
     selector: 'app-medicines-list',
@@ -14,7 +14,12 @@ import {EMPTY} from "rxjs";
 export class MedicinesListPatientComponent implements OnInit {
     medicines: any[] = [];
 
-    constructor(private userService: PatientService, private router: Router, private patientService: PatientService,private http: HttpClient) { }
+    constructor(
+        private userService: PatientService,
+        private router: Router,
+        private patientService: PatientService,
+        private http: HttpClient
+    ) { }
 
     ngOnInit(): void {
         // Verify user
@@ -29,8 +34,8 @@ export class MedicinesListPatientComponent implements OnInit {
         const token = localStorage.getItem('token');
         if (token) {
             this.userService.getMedicinesList(token).subscribe(
-                (data: any) => {
-                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
+                (data: any[]) => {
+                    console.log('Medicines List:', data.map(medicine => ({ medicineId: medicine.medicineId, status: medicine.status })));
                     if (Array.isArray(data)) {
                         this.medicines = data;
                     } else {
@@ -49,35 +54,34 @@ export class MedicinesListPatientComponent implements OnInit {
                 }
             );
         } else {
-            // Manejar el caso en el que no se encuentre el token en el local storage
+            // Handle the case where the token is not found
         }
     }
 
-    updateMedicineStatus(medicineId: number, status: string) {
+
+    updateMedicineStatus(medicineId: number, status: string): void {
+        console.log('status:', status);
+
         const token = localStorage.getItem('token');
-        const url = `http://localhost:8080/patient/update-medicine-status/?medicineId=${medicineId}&status=${status}`;
+        const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
         const body = { status: status };
 
         if (token) {
-            return this.http.put(url, body, {
+            this.http.put(url, body, {
                 headers: { Authorization: `Bearer ${token}` }
             }).subscribe(
                 (response: any) => {
-                    console.log(response); // Verificar la respuesta del backend
-                    // Realizar cualquier acción adicional necesaria después de guardar el estado del medicamento
+                    console.log(response); // Verify the backend response
+                    // Perform any additional actions required after saving the medicine status
                 },
                 (error: any) => {
-                    console.log(error); // Verificar el error del backend
-                    // Manejar el error adecuadamente, por ejemplo, mostrar un mensaje de error al usuario
+                    console.log(error); // Verify the backend error
+                    // Handle the error appropriately, for example, display an error message to the user
                 }
             );
         } else {
             console.log('Token not found');
-            // Manejar el caso en el que no se encuentre el token en el local storage
-            return null; // Agregar esta línea para devolver un valor en este caso
+            // Handle the case where the token is not found
         }
     }
-
-
-
 }
