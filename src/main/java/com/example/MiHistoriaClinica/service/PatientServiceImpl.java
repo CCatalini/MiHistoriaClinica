@@ -12,6 +12,7 @@ import com.example.MiHistoriaClinica.repository.MedicineRepository;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
 import com.example.MiHistoriaClinica.service.interfaces.PatientService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -142,7 +143,12 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
-
+    @Override
+    public PatientDTO getPatientInfo(Long patientId) {
+        ModelMapper modelMapper = new ModelMapper();
+        PatientModel patientModel = getPatientById(patientId);
+        return modelMapper.map(patientModel, PatientDTO.class);
+    }
 }
 
 

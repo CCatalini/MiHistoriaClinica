@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.repository;
 
-import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
+import com.example.MiHistoriaClinica.dto.MedicDTO;
 import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.dto.PatientDTO;
@@ -50,7 +50,7 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicModel saveMedicDto(MedicSignupDTO medicDTO) {
+    public MedicModel saveMedicDto(MedicDTO medicDTO) {
         MedicModel medicSaved = new MedicModel();
 
         medicSaved.setName(medicDTO.getName());
