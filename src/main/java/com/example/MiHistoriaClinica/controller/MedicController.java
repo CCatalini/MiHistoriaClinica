@@ -66,11 +66,12 @@ public class MedicController {
 
 
     @GetMapping("/get-patients")
-    public ResponseEntity<List<PatientModel>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+    public ResponseEntity<List<PatientDTO>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
 
-        Long medicId = jwtValidator.getId(token);
+        List<PatientDTO> patients = medicService.getPatientsDtoByMedicId(jwtValidator.getId(token));
 
-        List<PatientModel> patients = medicService.getPatientsByMedicId(medicId);
+        if(patients.isEmpty())  return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 

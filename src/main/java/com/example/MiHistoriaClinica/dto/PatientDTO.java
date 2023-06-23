@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.dto;
 
 
-public class PatientSignupDTO {
+public class PatientDTO {
 
     private String name;
     private String lastname;
@@ -9,7 +9,11 @@ public class PatientSignupDTO {
     private Long dni;
     private String email;
 
-    public PatientSignupDTO(String name, String lastname, String password, Long dni, String email) {
+    public PatientDTO() {
+        // constructor sin argumentos
+    }
+
+    public PatientDTO(String name, String lastname, String password, Long dni, String email) {
         this.name = name;
         this.lastname = lastname;
         this.password = password;
