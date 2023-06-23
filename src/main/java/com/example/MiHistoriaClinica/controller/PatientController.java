@@ -79,10 +79,10 @@ public class PatientController {
 
 
     @PutMapping("/update-medicine-status")
-    public ResponseEntity<String> updateMedicineStatus(@RequestBody MedicineModel medicine,
+    public ResponseEntity<String> updateMedicineStatus(@RequestParam("medicineId") Long medicineId,
                                                        @RequestParam("status") String status) {
 
-        //MedicineModel medicine = patientService.getMedicineByMedicineId(medicineId);
+        MedicineModel medicine = patientService.getMedicineByMedicineId(medicineId);
 
         if (medicine == null )      return new ResponseEntity<>("Medicamento no encontrado", HttpStatus.NOT_FOUND);
 
@@ -91,8 +91,6 @@ public class PatientController {
 
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
     }
-
-
 
 }
 
