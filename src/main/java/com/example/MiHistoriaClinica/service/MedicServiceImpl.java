@@ -6,6 +6,7 @@ import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.repository.*;
 import com.example.MiHistoriaClinica.service.interfaces.MedicService;
+import com.example.MiHistoriaClinica.service.interfaces.PatientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,11 @@ public class MedicServiceImpl implements MedicService {
     private final MedicalHistoryRepository medicalHistoryRepository;
 
     private final CustomRepositoryAccess customRepositoryAccess;
+    private final PatientService patientService;
 
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess) {
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess, PatientService patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
@@ -38,11 +40,12 @@ public class MedicServiceImpl implements MedicService {
         this.medicalHistoryRepository = medicalHistoryRepository;
 
         this.customRepositoryAccess = customRepositoryAccess;
+        this.patientService = patientService;
     }
 
 
     @Override
-    public MedicModel createMedic(MedicSignupDTO medic) {
+    public MedicModel createMedic(MedicDTO medic) {
        return customRepositoryAccess.saveMedicDto(medic);
     }
 
@@ -236,5 +239,16 @@ public class MedicServiceImpl implements MedicService {
     }
 
 
+    public MedicDTO getMedicInfo(Long medicId) {
 
+        ModelMapper modelMapper = new ModelMapper();
+        MedicModel medicModel = getMedicById(medicId);
+
+        return modelMapper.map(medicModel, MedicDTO.class);
+    }
+
+    public PatientDTO getPatientInfo(String patientLinkcode) {
+        PatientDTO patient = patientService.getPatientInfo(patientRepository.findByLinkCode(patientLinkcode).get().getPatientId());
+        return patient;
+    }
 }

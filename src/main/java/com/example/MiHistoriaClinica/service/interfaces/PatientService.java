@@ -25,6 +25,7 @@ public interface PatientService {
     PatientModel getPatientById(Long id);
     PatientModel getPatientByDni(Long dni);
 
+    PatientDTO getPatientInfo(Long patientId);
 }
 
 

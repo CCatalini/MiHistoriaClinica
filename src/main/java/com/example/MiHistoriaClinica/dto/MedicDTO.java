@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.dto;
 
-public class MedicSignupDTO {
+public class MedicDTO {
 
     private String name;
     private String lastname;
@@ -10,7 +10,11 @@ public class MedicSignupDTO {
     private Long matricula;
     private String specialty;
 
-    public MedicSignupDTO(String name, String lastname, String password, Long dni, String email, Long matricula, String specialty) {
+    public MedicDTO (){
+
+    }
+
+    public MedicDTO(String name, String lastname, String password, Long dni, String email, Long matricula, String specialty) {
         this.name = name;
         this.lastname = lastname;
         this.password = password;

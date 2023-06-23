@@ -9,6 +9,7 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class MedicController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<MedicModel> createMedic (@RequestBody MedicSignupDTO medicDTO) {
+    public ResponseEntity<MedicModel> createMedic (@RequestBody MedicDTO medicDTO) {
 
        MedicModel createdMedic = medicService.createMedic(medicDTO);
        return new ResponseEntity<>(createdMedic, HttpStatus.OK);
@@ -54,6 +55,13 @@ public class MedicController {
         return jwt.invalidateToken(token);
     }
 
+    @GetMapping("/get-medic-info")
+    public ResponseEntity<MedicDTO> getMedicInfo(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        MedicDTO medic = medicService.getMedicInfo(medicId);
+        return new ResponseEntity<>(medic, HttpStatus.OK);
+    }
+
 
     /**                         MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
 
@@ -64,6 +72,11 @@ public class MedicController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/get-patient-info")
+    public ResponseEntity<PatientDTO> getPatientInfo(@RequestHeader("patientLinkCode") String patientLinkcode){
+        PatientDTO patient = medicService.getPatientInfo(patientLinkcode);
+        return new ResponseEntity<>(patient, HttpStatus.OK);
+    }
 
     @GetMapping("/get-patients")
     public ResponseEntity<List<PatientDTO>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
@@ -74,7 +87,6 @@ public class MedicController {
 
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
-
 
     @PostMapping("/create-medical-history")
     public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
@@ -110,29 +122,6 @@ public class MedicController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
 
     }
-
-
-    /* TODO --> para updateMedicine se necesita la lista de medicamentos del paciente (que se obtiene con el linkcode )
-                y el id del medicamento que queremos modificar
-                yo tambien necesito el cuerpo de la medicina nueva
-     */
-
-
-
-
-
-    @PostMapping("/addMedicine")
-  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
-        return medicService.addMedicine(medicine);
-    }
-
-    @PostMapping("/addAnalysis")
-   // @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
-        return medicService.addAnalysis(analysis);
-    }
-
 
 
 
@@ -179,6 +168,20 @@ public class MedicController {
     public void deleteAllMedic(){
         medicService.deleteAllMedic();
     }
+
+*     @PostMapping("/addMedicine")
+  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
+    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
+        return medicService.addMedicine(medicine);
+    }
+
+    @PostMapping("/addAnalysis")
+   // @PreAuthorize("hasRole('MEDIC_ROLE')")
+    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
+        return medicService.addAnalysis(analysis);
+    }
+
+
 
 
  *
