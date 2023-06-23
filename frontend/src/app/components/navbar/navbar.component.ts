@@ -66,5 +66,12 @@ export class NavbarComponent implements OnInit {
         else
             return false;
     }
+
+    isAttendPatientPage(){
+        if (this.router.url == '/medic/attendPatient')
+            return true;
+        else
+            return false;
+    }
 }
 
