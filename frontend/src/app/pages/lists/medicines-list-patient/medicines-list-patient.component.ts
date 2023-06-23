@@ -61,8 +61,8 @@ export class MedicinesListPatientComponent implements OnInit {
     updateMedicineStatus(medicineId: number, status: string) {
         this.patientService.updateMedicineStatus(medicineId, status).subscribe(
             () => {
-                // Lógica adicional después de actualizar el estado del medicamento, si es necesario
                 console.log('Estado del medicamento actualizado con éxito');
+                // Realizar lógica adicional después de actualizar el estado del medicamento, si es necesario
             },
             (error: any) => {
                 console.log('Error al actualizar el estado del medicamento:', error);
@@ -71,4 +71,29 @@ export class MedicinesListPatientComponent implements OnInit {
         );
     }
 
+    /*updateMedicineStatus(medicineId: number, status: string): void {
+        console.log('status:', status);
+
+        const token = localStorage.getItem('token');
+        const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
+        const body = { status: status };
+
+        if (token) {
+            this.http.put(url, body, {
+                headers: { Authorization: `Bearer ${token}` }
+            }).subscribe(
+                (response: any) => {
+                    console.log(response); // Verify the backend response
+                    // Perform any additional actions required after saving the medicine status
+                },
+                (error: any) => {
+                    console.log(error); // Verify the backend error
+                    // Handle the error appropriately, for example, display an error message to the user
+                }
+            );
+        } else {
+            console.log('Token not found');
+            // Handle the case where the token is not found
+        }
+    }*/
 }

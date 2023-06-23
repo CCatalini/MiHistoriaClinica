@@ -30,10 +30,7 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     private fetchMedicalHistory(): void {
-        // Get the authorization token from localStorage
-        const token = localStorage.getItem('token');
-        if(token){
-            this.patientService.getMedicalHistory(token).subscribe(
+            this.patientService.getMedicalHistory().subscribe(
                 (response) => {
                     this.medicalHistory = response; // Assign the response data to medicalHistory object
                 },
@@ -41,10 +38,6 @@ export class MedicalHistoryListComponent implements OnInit {
                     console.log('Error occurred while fetching medical history:', error);
                 }
             );
-        }else{
-            console.error('Token no encontrado');
-        }
-
     }
 
 }

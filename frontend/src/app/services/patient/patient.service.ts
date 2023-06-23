@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable, of} from "rxjs";
 import {Router} from "@angular/router";
 
@@ -35,18 +35,26 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-
         return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, { headers });
     }
 
-    public getMedicalHistory(token: string): Observable<string> {
+    public getMedicalHistory(): Observable<string> {
+        const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token){
             headers = headers.set('Autorization', "Bearer " + token);
         }
-        return this.http.get<string>('http://localhost:8080/patient/medical-history');
+        return this.http.get<string>('http://localhost:8080/patient/get-medical-history',{ headers: headers });
     }
 
+    /*public getMedicalHistory(token: string): Observable<string> {
+        let headers = new HttpHeaders();
+        if (token){
+            headers = headers.set('Autorization', "Bearer " + token);
+        }
+        return this.http.get<string>('http://localhost:8080/patient/medical-history',{ headers: headers });
+    }
+*/
     public getMedicinesList(token: string): Observable<any[]> {
         let headers = new HttpHeaders();
         if (token) {
@@ -84,14 +92,14 @@ export class PatientService {
 
 
     updateMedicineStatus(medicineId: number, status: string) {
-        const url = `/update-medicine-status/${medicineId}`;
-        const body = { status: status };
-        return this.http.put(url, body);
+        let params = new HttpParams()
+            .set("medicineId", medicineId.toString())
+            .set("status", status);
+
+        return this.http.put("http://localhost:8080/patient/update-medicine-status", null, { params: params });
     }
 
     /*updateMedicineStatus(medicineId: number, status: string) {
         return this.http.put(`/update-medicine-status/${medicineId}?status=${status}`, {}).toPromise();
     }*/
-
-
 }
