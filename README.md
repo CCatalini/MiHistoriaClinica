@@ -39,7 +39,8 @@
   * Cambiar estado de estudios como paciente                            -                   - 
     --> si esta pendiente o realizado                                   -                   - 
 
-  * Filtrar listas
+  * Filtrar listas                                                      -                   -
+
     --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista de especialidades para poder filtrar
   * Agenda de turnos propios
     --> que el paciente pueda añadir su propio turno, viendo su lista de medicos y teniendo la opcion de cargar un medico nuevo 
@@ -57,11 +58,15 @@
 
 
 
-## TODO 23/06
+## TODO 
 * Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
 * Mostrar historia clínica al médico ( medic/get-medical-history , recibe patientLinkCode)
 * Borrar medicamento como médico ( medic/deleteMedicine, recibe medicineId y patientLinkCode) )
-* ABM ANALYSIS:
+* Agregar fecha de emisión a medicines, analysis y medicalAppointment ??
+* FILTRAR listas 
+  * Por nombre de medicamento, laboratorio, estado, nombre de estudio, etc
+  * Armar métodos getMedicicinesByName(), getMedicinesByStatus(), etc
+* ABM analysis:
   * Unir estudios con paciente (medic/addAnalysis idem medicines)
   * Mostrar listado de estudios (método patient/getAnalysis que recibe token y método medic/getAnalysis que recibe patientLinkCode)
   * Editar estado de estudios (método patient/update-analysis-status que recibe analysisId y status)
