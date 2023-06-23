@@ -12,7 +12,7 @@
   * medicamentos desde el medico
         --> createPatientMedicine 					                    OK	                OK
         --> getPatientMedicine						                    OK              	OK
-        --> updatePatientMedicine					                    OK
+        --> updatePatientMedicine					                    OK                  OK
         --> deletePatientMedicine
 	
   * ABM estudios desde el medico --> AnalysisModel
@@ -35,7 +35,7 @@
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
   * Ver estudios como paciente 
 
-  * Cambiar estado medicamentos desde el paciente 			            OK	              enproceso 
+  * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
   * Cambiar estado de estudios como paciente 
     --> si esta pendiente o realizado 
 
