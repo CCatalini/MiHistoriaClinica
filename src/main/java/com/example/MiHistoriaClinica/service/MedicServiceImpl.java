@@ -214,6 +214,27 @@ public class MedicServiceImpl implements MedicService {
     }
 
     @Override
+    public void deletePatientMedicine(String patientLinkCode, Long medicineId) {
+        Optional<PatientModel> patientOptional = getPatientByLinkCode(patientLinkCode);
+
+        if (patientOptional.isPresent()) {
+            PatientModel patient = patientOptional.get();
+            List<MedicineModel> medicines = patient.getMedicines();
+
+            // Encuentra la medicina con el ID proporcionado
+            MedicineModel medicineToDelete = medicines.stream()
+                    .filter(medicine -> medicine.getMedicineId().equals(medicineId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (medicineToDelete != null) {
+                medicines.remove(medicineToDelete);
+                savePatient(patient);
+            }
+        }
+    }
+
+    @Override
     public AnalysisModel addAnalysis(AnalysisModel analysis) {
         return analysisRepository.save(analysis);
     }
@@ -237,7 +258,6 @@ public class MedicServiceImpl implements MedicService {
 
         return patientDtoList;
     }
-
 
     public MedicDTO getMedicInfo(Long medicId) {
 

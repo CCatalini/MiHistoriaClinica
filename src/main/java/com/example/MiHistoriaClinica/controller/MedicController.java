@@ -117,21 +117,8 @@ public class MedicController {
     @DeleteMapping("/delete-medicine")
     public ResponseEntity<Void> deletePatientMedicine (@RequestHeader("patientLinkCode") String patientLinkCode,
                                                        @RequestParam("medicineId") Long medicineId){
-        PatientModel patient = medicService.getPatientByLinkCode(patientLinkCode).get();
-        List<MedicineModel> medicines = patient.getMedicines();
-
-        MedicineModel medicineToDelete = medicines.stream()
-                .filter(medicine -> medicine.getMedicineId().equals(medicineId))
-                .findFirst()
-                .orElse(null);
-        if (medicineToDelete == null)             return ResponseEntity.notFound().build();
-
-        medicines.remove(medicineToDelete);
-
-        medicService.savePatient(patient);
-
+        medicService.deletePatientMedicine(patientLinkCode, medicineId);
         return ResponseEntity.noContent().build();
-
     }
 
     @GetMapping("/get-patient-medicines")
