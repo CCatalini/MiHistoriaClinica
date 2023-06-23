@@ -34,6 +34,9 @@ public interface MedicService {
     void deleteAllMedic();
     void linkPatient(String linkCode, Long medicId);
     MedicineModel addMedicine(MedicineModel medicine);
+
+    void deletePatientMedicine(String patientLinkCode, Long medicineId);
+
     AnalysisModel addAnalysis(AnalysisModel analysis);
 
     MedicalHistoryModel createMedicalHistory(MedicalHistoryModel history);
