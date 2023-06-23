@@ -114,6 +114,25 @@ public class MedicController {
         else                                return new ResponseEntity<>(createdMedicine, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/delete-medicine")
+    public ResponseEntity<Void> deletePatientMedicine (@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                       @RequestParam("medicineId") Long medicineId){
+        PatientModel patient = medicService.getPatientByLinkCode(patientLinkCode).get();
+        List<MedicineModel> medicines = patient.getMedicines();
+
+        MedicineModel medicineToDelete = medicines.stream()
+                .filter(medicine -> medicine.getMedicineId().equals(medicineId))
+                .findFirst()
+                .orElse(null);
+        if (medicineToDelete == null)             return ResponseEntity.notFound().build();
+
+        medicines.remove(medicineToDelete);
+
+        medicService.savePatient(patient);
+
+        return ResponseEntity.noContent().build();
+
+    }
 
     @GetMapping("/get-patient-medicines")
     public ResponseEntity<List<MedicineModel>> getPatientMedicines (@RequestHeader("patientLinkCode") String patientLinkCode) throws InvalidTokenException {
