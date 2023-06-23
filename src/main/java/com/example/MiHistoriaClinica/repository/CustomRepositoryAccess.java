@@ -3,7 +3,7 @@ package com.example.MiHistoriaClinica.repository;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
 import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.MedicineDTO;
-import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
+import com.example.MiHistoriaClinica.dto.PatientDTO;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
@@ -36,7 +36,7 @@ public class CustomRepositoryAccess {
     }
 
 
-    public PatientModel saveDTO(PatientSignupDTO patientDTO) {
+    public PatientModel saveDTO(PatientDTO patientDTO) {
         PatientModel patientSaved = new PatientModel();
         // Establecer los valores del DTO en la entidad a guardar
         patientSaved.setName(patientDTO.getName());

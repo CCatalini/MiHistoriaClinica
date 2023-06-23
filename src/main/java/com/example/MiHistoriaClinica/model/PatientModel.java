@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -47,6 +48,7 @@ public class PatientModel {
             inverseJoinColumns = @JoinColumn(name = "medicId")
     )
     @JsonManagedReference
+    @JsonIgnoreProperties("patients")
     private List<MedicModel> medics = new ArrayList<>();
 
 

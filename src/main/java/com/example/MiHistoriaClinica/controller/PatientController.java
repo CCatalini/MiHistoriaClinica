@@ -2,11 +2,10 @@ package com.example.MiHistoriaClinica.controller;
 
 import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
-import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
+import com.example.MiHistoriaClinica.dto.PatientDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
-import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
@@ -14,7 +13,6 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
-import com.mysql.cj.x.protobuf.Mysqlx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ public class PatientController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientSignupDTO patient) {
+    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientDTO patient) {
         PatientModel createdPatient = patientService.createPatient(patient);
         return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }

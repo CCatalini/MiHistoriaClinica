@@ -1,14 +1,12 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
-import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
-import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
-import com.example.MiHistoriaClinica.dto.MedicineDTO;
+import com.example.MiHistoriaClinica.dto.*;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.repository.*;
 import com.example.MiHistoriaClinica.service.interfaces.MedicService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicServiceImpl implements MedicService {
@@ -221,8 +220,19 @@ public class MedicServiceImpl implements MedicService {
         return medicalHistoryRepository.save(history);
     }
 
-    public List<PatientModel> getPatientsByMedicId(Long medicId) {
+    public List<PatientModel> getPatientsByMedicId(Long medicId){
         return medicRepository.getPatientsByMedicId(medicId);
+    }
+
+    public List<PatientDTO> getPatientsDtoByMedicId(Long medicId) {
+        List<PatientModel> patientModels = medicRepository.getPatientsByMedicId(medicId);
+
+        ModelMapper modelMapper = new ModelMapper();
+        List<PatientDTO> patientDtoList = patientModels.stream()
+                .map(patientModel -> modelMapper.map(patientModel, PatientDTO.class))
+                .collect(Collectors.toList());
+
+        return patientDtoList;
     }
 
 
