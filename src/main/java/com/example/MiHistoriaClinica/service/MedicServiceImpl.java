@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.service;
 
 import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
-import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
+import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
@@ -91,7 +91,7 @@ public class MedicServiceImpl implements MedicService {
 
     @Transactional
     @Override
-    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory) {
+    public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory) {
 
         Optional<MedicModel> medic = medicRepository.findById(medicId);
         Optional<PatientModel> patient = patientRepository.findByLinkCode(linkCode);

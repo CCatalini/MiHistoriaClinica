@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.repository;
 
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
-import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
+import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.model.MedicModel;
@@ -67,7 +67,7 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicalHistoryModel createPatientMedicalHistory(MedicalHistoryModelDTO medicalHistory, Optional<PatientModel> patient) {
+    public MedicalHistoryModel createPatientMedicalHistory(MedicalHistoryDTO medicalHistory, Optional<PatientModel> patient) {
 
         MedicalHistoryModel historySaved = new MedicalHistoryModel();
 

@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
@@ -98,13 +99,11 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public MedicalHistoryModel getMedicalHistory(Long id){
-
+    public MedicalHistoryDTO getMedicalHistory(Long id){
         PatientModel thisPatient = patientRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
-        return thisPatient.getMedicalHistory();
-
+        return new MedicalHistoryDTO(thisPatient.getMedicalHistory());
     }
 
 

@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.service.interfaces;
 
 import com.example.MiHistoriaClinica.dto.MedicLoginDTO;
 import com.example.MiHistoriaClinica.dto.MedicSignupDTO;
-import com.example.MiHistoriaClinica.dto.MedicalHistoryModelDTO;
+import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.MedicineDTO;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
@@ -19,7 +19,7 @@ public interface MedicService {
     MedicModel loginMedic(MedicLoginDTO medic);
 
     @Transactional
-    MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryModelDTO medicalHistory);
+    MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory);
 
     MedicineModel createPatientMedicine(Long medicId, String patientLinkCode, MedicineDTO medicine);
 
