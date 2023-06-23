@@ -251,4 +251,14 @@ public class MedicServiceImpl implements MedicService {
         PatientDTO patient = patientService.getPatientInfo(patientRepository.findByLinkCode(patientLinkcode).get().getPatientId());
         return patient;
     }
+
+    public Optional<PatientModel> getPatientByLinkCode(String patientLinkCode) {
+        return patientRepository.findByLinkCode(patientLinkCode);
+    }
+
+
+
+    public void savePatient(PatientModel patient) {
+        patientRepository.save(patient);
+    }
 }
