@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.controller;
 
+import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
 import com.example.MiHistoriaClinica.dto.TokenDTO;
@@ -92,6 +93,15 @@ public class PatientController {
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
     }
 
+
+    @GetMapping("/get-medical-history")
+    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+
+        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
+       return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
+    }
+
+
 }
 
 /*n
@@ -118,8 +128,8 @@ public class PatientController {
         patientService.deletePatientByDni(dni);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-     // todo Cami pasar a MedicController y que retorne todos los pacientes de ese médico
-    @GetMapping("/getAll")
+
+
     public ResponseEntity<List<PatientModel>> getAllPatient() {
         List<PatientModel> patients = patientService.getAllPatient();
         return new ResponseEntity<>(patients, HttpStatus.OK);

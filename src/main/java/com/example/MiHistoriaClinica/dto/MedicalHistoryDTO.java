@@ -1,6 +1,8 @@
 package com.example.MiHistoriaClinica.dto;
 
-public class MedicalHistoryModelDTO {
+import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
+
+public class MedicalHistoryDTO {
 
     private String weight;
     private String height;
@@ -10,7 +12,7 @@ public class MedicalHistoryModelDTO {
     private String actualMedicine;
     private String familyMedicalHistory;
 
-    public MedicalHistoryModelDTO(String weight, String height, String allergy, String bloodType, String chronicDisease, String actualMedicine, String familyMedicalHistory) {
+    public MedicalHistoryDTO(String weight, String height, String allergy, String bloodType, String chronicDisease, String actualMedicine, String familyMedicalHistory) {
         this.weight = weight;
         this.height = height;
         this.allergy = allergy;
@@ -18,6 +20,16 @@ public class MedicalHistoryModelDTO {
         this.chronicDisease = chronicDisease;
         this.actualMedicine = actualMedicine;
         this.familyMedicalHistory = familyMedicalHistory;
+    }
+
+    public MedicalHistoryDTO(MedicalHistoryModel medicalHistoryModel) {
+        this.weight = medicalHistoryModel.getWeight();
+        this.height = medicalHistoryModel.getHeight();
+        this.allergy = medicalHistoryModel.getAllergy();
+        this.bloodType = medicalHistoryModel.getBloodType();
+        this.chronicDisease = medicalHistoryModel.getChronicDisease();
+        this.actualMedicine = medicalHistoryModel.getActualMedicine();
+        this.familyMedicalHistory = medicalHistoryModel.getFamilyMedicalHistory();
     }
 
     public String getWeight() {

@@ -8,14 +8,15 @@ import {Router} from "@angular/router";
 })
 export class PatientService {
 
-    constructor(private http:HttpClient, private router: Router) { }
+    constructor(private http: HttpClient, private router: Router) {
+    }
 
     public loginPatient(patient: any) {
         return this.http.post(`http://localhost:8080/patient/login`, patient);
     }
-    
-    public addPatient(patient:any){
-        return this.http.post(`http://localhost:8080/patient/signup`,patient);
+
+    public addPatient(patient: any) {
+        return this.http.post(`http://localhost:8080/patient/signup`, patient);
     }
 
     public getMedicsList(token: string): Observable<any[]> {
@@ -23,7 +24,7 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', 'Bearer ' + token);
         }
-        return this.http.get<any[]>('http://localhost:8080/patient/get-medics', { headers: headers });
+        return this.http.get<any[]>('http://localhost:8080/patient/get-medics', {headers: headers});
     }
 
     /**
@@ -35,32 +36,24 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, { headers });
+        return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, {headers});
     }
 
     public getMedicalHistory(): Observable<string> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
-        if (token){
-            headers = headers.set('Autorization', "Bearer " + token);
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
         }
-        return this.http.get<string>('http://localhost:8080/patient/get-medical-history',{ headers: headers });
+        return this.http.get<string>('http://localhost:8080/patient/get-medical-history', {headers: headers});
     }
 
-    /*public getMedicalHistory(token: string): Observable<string> {
-        let headers = new HttpHeaders();
-        if (token){
-            headers = headers.set('Autorization', "Bearer " + token);
-        }
-        return this.http.get<string>('http://localhost:8080/patient/medical-history',{ headers: headers });
-    }
-*/
     public getMedicinesList(token: string): Observable<any[]> {
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', 'Bearer ' + token);
         }
-        return this.http.get<any[]>('http://localhost:8080/patient/get-medicines', { headers: headers });
+        return this.http.get<any[]>('http://localhost:8080/patient/get-medicines', {headers: headers});
     }
 
     logoutPatient(): Observable<any> {
@@ -69,37 +62,15 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', token);
         }
-        return this.http.post('http://localhost:8080/patient/logout', {}, { headers });
+        return this.http.post('http://localhost:8080/patient/logout', {}, {headers});
     }
-
-    /*updateMedicineStatus(medicineId: number, status: string): Observable<any> {
-        console.log('medicineId:', medicineId);
-        console.log('status:', status);
-
-        const token = localStorage.getItem('token');
-        const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
-
-        if (token) {
-            return this.http.put(url, null, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-        } else {
-            console.log('Token not found');
-            // Return an empty observable
-            return of(null);
-        }
-    }*/
-
 
     updateMedicineStatus(medicineId: number, status: string) {
         let params = new HttpParams()
             .set("medicineId", medicineId.toString())
             .set("status", status);
 
-        return this.http.put("http://localhost:8080/patient/update-medicine-status", null, { params: params });
+        return this.http.put("http://localhost:8080/patient/update-medicine-status", null, {params: params});
     }
 
-    /*updateMedicineStatus(medicineId: number, status: string) {
-        return this.http.put(`/update-medicine-status/${medicineId}?status=${status}`, {}).toPromise();
-    }*/
 }
