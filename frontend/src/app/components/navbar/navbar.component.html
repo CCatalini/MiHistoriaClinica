@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" style="width: 100%; position: fixed; top: 0;">
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with arrow back icon" *ngIf="!(isPrincipalPage()||isHomePage())" (click)="goBack()">
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with arrow back icon" *ngIf="!(isPrincipalPage()||isHomePage()||isAttendPatientPage())" (click)="goBack()">
         <mat-icon>arrow_back</mat-icon>
     </button>
     <span>Mi Historia Clínica</span>
