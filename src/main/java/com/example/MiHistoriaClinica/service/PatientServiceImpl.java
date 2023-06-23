@@ -2,11 +2,10 @@ package com.example.MiHistoriaClinica.service;
 
 import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
-import com.example.MiHistoriaClinica.dto.PatientSignupDTO;
+import com.example.MiHistoriaClinica.dto.PatientDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.MedicModel;
-import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.MedicineRepository;
@@ -54,7 +53,7 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public PatientModel createPatient(PatientSignupDTO patient) {
+    public PatientModel createPatient(PatientDTO patient) {
         return customRepositoryAccess.saveDTO(patient);
     }
 
