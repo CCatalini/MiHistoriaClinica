@@ -78,6 +78,11 @@ public class PatientController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @GetMapping("/get-medical-history")
+    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
+        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
+    }
 
     @PutMapping("/update-medicine-status")
     public ResponseEntity<String> updateMedicineStatus(@RequestParam("medicineId") Long medicineId,
@@ -91,14 +96,6 @@ public class PatientController {
         patientService.saveMedicine(medicine);
 
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
-    }
-
-
-    @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-
-        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
-       return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
 

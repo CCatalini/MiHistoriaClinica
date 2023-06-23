@@ -30,14 +30,15 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     private fetchMedicalHistory(): void {
-            this.patientService.getMedicalHistory().subscribe(
-                (response) => {
-                    this.medicalHistory = response; // Assign the response data to medicalHistory object
-                },
-                (error) => {
-                    console.log('Error occurred while fetching medical history:', error);
-                }
-            );
+        this.patientService.getMedicalHistory().subscribe(
+            (response) => {
+                this.medicalHistory = response; // Assign the response data to medicalHistory object
+            },
+            (error) => {
+                console.log('Error occurred while fetching medical history:', error);
+            }
+        );
     }
+
 
 }

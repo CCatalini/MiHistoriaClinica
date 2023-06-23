@@ -71,29 +71,4 @@ export class MedicinesListPatientComponent implements OnInit {
         );
     }
 
-    /*updateMedicineStatus(medicineId: number, status: string): void {
-        console.log('status:', status);
-
-        const token = localStorage.getItem('token');
-        const url = `http://localhost:8080/patient/update-medicine-status?medicineId=${medicineId}&status=${status}`;
-        const body = { status: status };
-
-        if (token) {
-            this.http.put(url, body, {
-                headers: { Authorization: `Bearer ${token}` }
-            }).subscribe(
-                (response: any) => {
-                    console.log(response); // Verify the backend response
-                    // Perform any additional actions required after saving the medicine status
-                },
-                (error: any) => {
-                    console.log(error); // Verify the backend error
-                    // Handle the error appropriately, for example, display an error message to the user
-                }
-            );
-        } else {
-            console.log('Token not found');
-            // Handle the case where the token is not found
-        }
-    }*/
 }
