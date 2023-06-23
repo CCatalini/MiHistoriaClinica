@@ -13,31 +13,31 @@
         --> createPatientMedicine 					                    OK	                OK
         --> getPatientMedicine						                    OK              	OK
         --> updatePatientMedicine					                    OK                  OK
-        --> deletePatientMedicine
+        --> deletePatientMedicine                                       -                en proceso
 	
   * ABM estudios desde el medico --> AnalysisModel
-      --> createPatientAnalysis
-      --> getPatientAnalysis
-      --> updatePatientAnalysis
-      --> deletePatientAnalysis
+      --> createPatientAnalysis                                         -                en proceso
+      --> getPatientAnalysis                                            -                   -                
+      --> updatePatientAnalysis                                         -                   -
+      --> deletePatientAnalysis                                         -                   -
 
   * Altas historias clinicas ---> createPatientMedicalHistory 	        OK 	                OK
 
   * Agregar paciente --> 	LinkPatient 				                OK 	                OK
 
-  * Ver lista de pacientes desde un medico --> getPatients 		        OK	                OK
+  * Ver lista de pacientes desde un medico --> getPatients 		        OK  	            OK
   * Ver lista de medicos desde un paciente --> getMedics		        OK	                OK
 
-  * Ver y Modificar historia clinica como medico
+  * Ver y Modificar historia clinica como medico                        -                   -
   * Alta  de consulta 						                            OK	                OK
-  * Ver Historial de consulta
+  * Ver Historial de consulta                                           -                   -
 
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
-  * Ver estudios como paciente 
+  * Ver estudios como paciente                                          -                   -
 
   * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
-  * Cambiar estado de estudios como paciente 
-    --> si esta pendiente o realizado 
+  * Cambiar estado de estudios como paciente                            -                   - 
+    --> si esta pendiente o realizado                                   -                   - 
 
   * Filtrar listas
     --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista de especialidades para poder filtrar
@@ -54,3 +54,16 @@
 * Descargar historia clinica
 * creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
 (Bajo los criterios de sexo, edad) 
+
+
+
+## TODO 23/06
+* Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
+* Mostrar historia clínica al médico ( medic/get-medical-history , recibe patientLinkCode)
+* Borrar medicamento como médico ( medic/deleteMedicine, recibe medicineId y patientLinkCode) )
+* ABM ANALYSIS:
+  * Unir estudios con paciente (medic/addAnalysis idem medicines)
+  * Mostrar listado de estudios (método patient/getAnalysis que recibe token y método medic/getAnalysis que recibe patientLinkCode)
+  * Editar estado de estudios (método patient/update-analysis-status que recibe analysisId y status)
+  * Borrar estudio (método medic/deleteAnalysis que recibe patientLinkCode y analysisId)
+* 
