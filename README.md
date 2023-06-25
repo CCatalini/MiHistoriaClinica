@@ -13,7 +13,7 @@
         --> createPatientMedicine 					                    OK	                OK
         --> getPatientMedicine						                    OK              	OK
         --> updatePatientMedicine					                    OK                  OK
-        --> deletePatientMedicine                                       -                en proceso
+        --> deletePatientMedicine                                       OK                  OK
 	
   * ABM estudios desde el medico --> AnalysisModel
       --> createPatientAnalysis                                         -                en proceso
@@ -28,7 +28,7 @@
   * Ver lista de pacientes desde un medico --> getPatients 		        OK  	            OK
   * Ver lista de medicos desde un paciente --> getMedics		        OK	                OK
 
-  * Ver historia clinica como medico                                    OK 
+  * Ver historia clinica como medico                                    OK                  OK
   * Modificar historia clinica como medico                              -                   -
   * Alta  de consulta 						                            OK	                OK
   * Ver Historial de consulta                                           -                   -
@@ -61,8 +61,8 @@
 
 ## TODO 
 * Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
-* Mostrar historia clínica al médico ( medic/get-medical-history , recibe patientLinkCode)
-* Borrar medicamento como médico ( medic/deleteMedicine, recibe medicineId y patientLinkCode) )
+* Historial de consultas: mostrar listado en el front con los datos, método getMedicalAppointments(patientLinkCode) 
+para que vea el medico y getMedicalAppointments(token) para que vea el paciente
 * Agregar fecha de emisión a medicines, analysis y medicalAppointment ??
 * FILTRAR listas 
   * Por nombre de medicamento, laboratorio, estado, nombre de estudio, etc
