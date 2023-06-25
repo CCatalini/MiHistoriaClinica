@@ -52,15 +52,12 @@ export class MedicinesListMedicComponent implements OnInit {
         );
     }
 
-    deleteMedicine(medicineId: any) {
-
-        console.log(medicineId); // Verificar el valor del ID del medicamento
-         if (!medicineId) {
-             Swal.fire('Error', 'ID del medicamento no válido.', 'error');
-                     return;
-         }
-
-
+    deleteMedicine(medicine: any) {
+        console.log(medicine.medicineId); // Verificar el valor del ID del medicamento
+        if (!medicine.medicineId) {
+            Swal.fire('Error', 'ID del medicamento no válido.', 'error');
+            return;
+        }
         // Aquí debes agregar la lógica para eliminar el medicamento de la lista
         // Por ejemplo, puedes mostrar un cuadro de diálogo de confirmación antes de eliminarlo
         Swal.fire({
@@ -74,17 +71,13 @@ export class MedicinesListMedicComponent implements OnInit {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                this.userService.deleteMedicine(medicineId).subscribe(
+                this.userService.deleteMedicine(medicine.medicineId).subscribe(
                     () => {
-                        const index = this.medicines.findIndex((m) => m.id === medicineId);
+                        const index = this.medicines.findIndex((m) => m.medicineId === medicine.medicineId);
                         if (index !== -1) {
                             this.medicines.splice(index, 1);
                         }
-                        Swal.fire('Eliminado', 'El medicamento ha sido eliminado correctamente.', 'success');
                     },
-                    (error: any) => {
-                        Swal.fire('Error', 'Se produjo un error al eliminar el medicamento.', 'error');
-                    }
                 );
             }
         });
