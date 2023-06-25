@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {map, Observable} from "rxjs";
 import Swal from "sweetalert2";
 
@@ -44,15 +44,6 @@ export class MedicService {
     public updateMedicineStatus(medicine:any){
         return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
     }
-
-    public deleteMedicine(id: number): Observable<any> {
-        return this.http.delete(`http://localhost:8080/deleteMedicine/${id}`).pipe(
-            map(() => {
-                Swal.fire('Eliminado', 'El medicamento ha sido eliminado correctamente.', 'success');
-            })
-        );
-    }
-
 
     public createMedicalHistory(medicalHistoryModel: any) {
         const token = localStorage.getItem('token');
@@ -120,6 +111,25 @@ export class MedicService {
         let headers = new HttpHeaders();
         headers = headers.set('patientLinkCode', linkCode);
         return this.http.get<string>('http://localhost:8080/medic/get-medical-history', {headers: headers});
+    }
+
+    public deleteMedicine(medicineId: number) {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        const params = new HttpParams().set('medicineId', medicineId.toString());
+
+        let headers = new HttpHeaders();
+        headers = headers.set('patientLinkCode', linkCode);
+
+        return this.http.delete('http://localhost:8080/medic/delete-medicine', {params: params,headers: headers})
+            .pipe(
+                map(() => {
+                    Swal.fire(
+                        'Eliminado',
+                        'El medicamento ha sido eliminado correctamente.',
+                        'success'
+                    );
+                })
+            );
     }
 
 }

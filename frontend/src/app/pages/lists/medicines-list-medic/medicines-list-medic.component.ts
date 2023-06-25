@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicService } from '../../../services/medic/medic.service';
-import {PatientService} from "../../../services/patient/patient.service";
+import { PatientService } from "../../../services/patient/patient.service";
 
 @Component({
     selector: 'app-medicines-list',
     templateUrl: './medicines-list-medic.component.html',
     styleUrls: ['./medicines-list-medic.component.css']
 })
-export class MedicinesListMedicComponent implements OnInit{
+export class MedicinesListMedicComponent implements OnInit {
     medicines: any[] = [];
     private createGetMedicinesListObservable: boolean = false;
 
@@ -51,12 +51,6 @@ export class MedicinesListMedicComponent implements OnInit{
             }
         );
     }
-
-    /*editMedicine(medicine: any) {
-        // Redirecciona a la página de edición del medicamento
-        this.router.navigate(['/medic/medicines', medicine.id, 'edit']);
-        // todo no me lleva al edit de medicamentos
-    }*/
 
     deleteMedicine(medicine: any) {
         console.log(medicine.id); // Verificar el valor del ID del medicamento
