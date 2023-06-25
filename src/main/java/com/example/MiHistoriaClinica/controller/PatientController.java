@@ -55,12 +55,11 @@ public class PatientController {
     }
 
     @GetMapping("/get-patient-info")
-    public ResponseEntity<PatientDTO> getPatientInfo (@RequestHeader("Authorization") String token) throws InvalidTokenException {
+    public ResponseEntity<PatientDTO> getPatientInfo(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
         PatientDTO patient = patientService.getPatientInfo(patientId);
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
-
 
     @PostMapping("/generate-link-code")
     @ResponseBody
@@ -68,7 +67,6 @@ public class PatientController {
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
         return ResponseEntity.ok(linkCode);
     }
-
 
     /** OK */
     @GetMapping("/get-medics")

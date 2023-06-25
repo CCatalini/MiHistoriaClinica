@@ -25,8 +25,7 @@ export class MedicinesListMedicComponent implements OnInit{
     }
 
     formSubmit() {
-        const patientLinkCode = localStorage.getItem('patientLinkCode');
-        const createGetMedicinesListObservable = this.userService.getMedicinesList(patientLinkCode || '');
+        const createGetMedicinesListObservable = this.userService.getMedicinesList();
         if (createGetMedicinesListObservable === undefined) {
             Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
             return;

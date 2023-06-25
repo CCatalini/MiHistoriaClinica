@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import {Component, OnInit} from '@angular/core';
 import {PatientService} from "../../../services/patient/patient.service";
+import {Router} from "@angular/router";
+import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
-    selector: 'app-medical-history-list',
-    templateUrl: './medical-history-list.component.html',
-    styleUrls: ['./medical-history-list.component.css']
+  selector: 'app-medical-history-list-medic',
+  templateUrl: './medical-history-list-medic.component.html',
+  styleUrls: ['./medical-history-list-medic.component.css']
 })
-export class MedicalHistoryListComponent implements OnInit {
+export class MedicalHistoryListMedicComponent implements OnInit{
     public medicalHistory: any = {
         weight: '',
         height: '',
@@ -18,11 +19,11 @@ export class MedicalHistoryListComponent implements OnInit {
         familyMedicalHistory: ''
     };
 
-    constructor(private patientService: PatientService, private router: Router) {}
+    constructor(private medicService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
         // Verify user
-        if (localStorage.getItem('userType') != 'PATIENT') {
+        if (localStorage.getItem('userType') != 'MEDIC') {
             this.router.navigate(['/patient/login']);
         } else {
             this.fetchMedicalHistory(); // Fetch medical history data
@@ -30,7 +31,7 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     private fetchMedicalHistory(): void {
-        this.patientService.getMedicalHistory().subscribe(
+        this.medicService.getPatientMedicalHistory().subscribe(
             (response) => {
                 this.medicalHistory = response; // Assign the response data to medicalHistory object
             },
@@ -39,6 +40,4 @@ export class MedicalHistoryListComponent implements OnInit {
             }
         );
     }
-
-
 }
