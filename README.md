@@ -16,7 +16,7 @@
         --> deletePatientMedicine                                       -                en proceso
 	
   * ABM estudios desde el medico --> AnalysisModel
-      --> createPatientAnalysis                                         -                en proceso
+      --> createPatientAnalysis                                         OK                en proceso
       --> getPatientAnalysis                                            -                   -                
       --> updatePatientAnalysis                                         -                   -
       --> deletePatientAnalysis                                         -                   -

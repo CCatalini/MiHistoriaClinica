@@ -87,6 +87,10 @@ public class MedicController {
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
+
+
+    /**Métodos Medical History*/
+
     @PostMapping("/create-medical-history")
     public ResponseEntity<MedicalHistoryModel> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
                                                                            @RequestHeader("patientLinkCode") String patientLinkCode,
@@ -105,6 +109,10 @@ public class MedicController {
         MedicalHistoryDTO medicalHistory = medicService.getPatientMedicalHistory(patientLinkCode);
         return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
+
+
+
+    /**Métodos Medicine*/
 
     @PostMapping("/create-medicine")
     public ResponseEntity<MedicineModel> createPatientMedicine (@RequestHeader("Authorization") String token,
@@ -133,6 +141,22 @@ public class MedicController {
 
     }
 
+
+
+    /**Métodos Analysis*/
+
+    @PostMapping("/create-patient-analysis")
+    public ResponseEntity<AnalysisModel> createPatientAnalysis(@RequestHeader("Authorization") String token,
+                                                               @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                               @RequestBody AnalysisDTO analysisDTO)
+                                                                throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        AnalysisModel createdAnalysis = medicService.createPatientAnalysis(medicId, patientLinkCode, analysisDTO);
+
+        if (createdAnalysis == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                    return new ResponseEntity<>(createdAnalysis, HttpStatus.CREATED);
+
+    }
 
 
 }
