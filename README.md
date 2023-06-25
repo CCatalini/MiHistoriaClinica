@@ -28,7 +28,8 @@
   * Ver lista de pacientes desde un medico --> getPatients 		        OK  	            OK
   * Ver lista de medicos desde un paciente --> getMedics		        OK	                OK
 
-  * Ver y Modificar historia clinica como medico                        -                   -
+  * Ver historia clinica como medico                                    OK 
+  * Modificar historia clinica como medico                              -                   -
   * Alta  de consulta 						                            OK	                OK
   * Ver Historial de consulta                                           -                   -
 
