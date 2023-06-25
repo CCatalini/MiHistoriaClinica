@@ -34,7 +34,8 @@ import { GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/gen
 import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine.component';
 import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/medicines-list-medic.component';
 import { AnalysisListPatientComponent } from './pages/lists/analysis-list-patient/analysis-list-patient.component';
-import { MedicalHistoryListComponent } from "./pages/lists/medical-history-list/medical-history-list.component";
+import { MedicalHistoryListComponent } from "./pages/lists/medical-history-list-patient/medical-history-list.component";
+import { MedicalHistoryListMedicComponent } from './pages/lists/medical-history-list-medic/medical-history-list-medic.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { MedicalHistoryListComponent } from "./pages/lists/medical-history-list/
     MedicinesListMedicComponent,
     AnalysisListPatientComponent,
     MedicalHistoryListComponent,
+    MedicalHistoryListMedicComponent,
   ],
     imports: [
         BrowserModule,

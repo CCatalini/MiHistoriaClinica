@@ -84,9 +84,9 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/medic/signup`,medic);
     }
 
-    public getMedicinesList(patientLinkCode: string) {
+    public getMedicinesList() {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
-        if (!patientLinkCode) {
+        if (!linkCode) {
             Swal.fire(
                 'Error',
                 'No se proporcionó el código de enlace del paciente.',
@@ -113,6 +113,13 @@ export class MedicService {
             headers = headers.set('Authorization', token);
         }
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
+    }
+
+    public getPatientMedicalHistory(): Observable<string> {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        let headers = new HttpHeaders();
+        headers = headers.set('patientLinkCode', linkCode);
+        return this.http.get<string>('http://localhost:8080/medic/get-medical-history', {headers: headers});
     }
 
 }
