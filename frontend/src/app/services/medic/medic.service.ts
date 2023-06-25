@@ -117,8 +117,8 @@ export class MedicService {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
         const params = new HttpParams().set('medicineId', medicineId.toString());
 
-        let headers = new HttpHeaders();
-        headers = headers.set('patientLinkCode', linkCode);
+        let headers = new HttpHeaders()
+                            .set('patientLinkCode', linkCode);
 
         return this.http.delete('http://localhost:8080/medic/delete-medicine', {params: params,headers: headers})
             .pipe(
