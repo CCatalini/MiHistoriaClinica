@@ -55,6 +55,7 @@ public class PatientModel {
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private MedicalHistoryModel medicalHistory;
 
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "patient_medicine",
@@ -63,6 +64,16 @@ public class PatientModel {
     )
     @JsonManagedReference
     private List<MedicineModel> medicines = new ArrayList<>();
+
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "patient_analysis",
+            joinColumns = @JoinColumn(name = "patientId"),
+            inverseJoinColumns = @JoinColumn(name = "analysisId")
+    )
+    @JsonManagedReference
+    private List<AnalysisModel> analysis = new ArrayList<>();
 
 
 
@@ -99,7 +110,13 @@ public class PatientModel {
         this.medicalHistory = medicalHistory;
     }
 
+    public List<AnalysisModel> getAnalysis() {
+        return analysis;
+    }
 
+    public void setAnalysis(List<AnalysisModel> analysis) {
+        this.analysis = analysis;
+    }
 
     public Long getPatientId() {
         return patientId;

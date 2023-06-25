@@ -6,15 +6,11 @@ import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.repository.*;
 import com.example.MiHistoriaClinica.service.interfaces.MedicService;
-import com.example.MiHistoriaClinica.service.interfaces.PatientService;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,7 +27,6 @@ public class MedicServiceImpl implements MedicService {
     private final PatientServiceImpl patientService;
 
 
-
     public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
@@ -43,6 +38,8 @@ public class MedicServiceImpl implements MedicService {
         this.patientService = patientService;
     }
 
+
+    /** Métodos Médico*/
 
     @Override
     public MedicModel createMedic(MedicDTO medic) {
@@ -65,6 +62,29 @@ public class MedicServiceImpl implements MedicService {
         }
     }
 
+    @Override
+    public MedicModel getMedicById(Long id) {
+        return medicRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public MedicModel updateMedic(Long id, MedicModel newMedic) {
+        MedicModel medic = medicRepository.findById(id).orElseThrow(()
+                -> new ResourceNotFoundException("Medic not found"));
+
+        medic.setName(newMedic.getName());
+        medic.setLastname(newMedic.getLastname());
+        medic.setDni(newMedic.getDni());
+        medic.setEmail(newMedic.getEmail());
+        medic.setMatricula(newMedic.getMatricula());
+        medic.setSpecialty(newMedic.getSpecialty());
+        medic.setPassword(newMedic.getPassword());
+
+        return medicRepository.save(medic);
+    }
+
+
+    /** Metodos médico-paciente*/
 
     /**
      * Este método recibe el código de enlace y el identificador del médico, y utiliza los repositorios de Medic y Patient
@@ -91,6 +111,62 @@ public class MedicServiceImpl implements MedicService {
         patientRepository.save(patient);  // Guardar también al paciente para actualizar la relación
     }//todo checkeo del que el link no exista
 
+    private boolean isPatientLinked(Long medicId, String linkCode) {
+
+        //obtengo los pacientes de este médico
+        List<PatientModel> patients = getPatientsByMedicId(medicId);
+
+        Optional<PatientModel> auxPatient = patientRepository.findByLinkCode(linkCode);
+
+        //checkeo si el paciente ya fue linkeado
+        return auxPatient.isPresent() && patients.contains(auxPatient.get());
+    }
+
+    @Override
+    public void savePatient(PatientModel patient) {
+        patientRepository.save(patient);
+    }
+
+    @Override
+    public Optional<PatientModel> getPatientByLinkCode(String patientLinkCode) {
+        return patientRepository.findByLinkCode(patientLinkCode);
+    }
+
+    @Override
+    public List<PatientModel> getPatientsByMedicId(Long medicId){
+        return medicRepository.getPatientsByMedicId(medicId);
+    }
+
+    @Override
+    public List<PatientDTO> getPatientsDtoByMedicId(Long medicId) {
+        List<PatientModel> patientModels = medicRepository.getPatientsByMedicId(medicId);
+
+        ModelMapper modelMapper = new ModelMapper();
+        List<PatientDTO> patientDtoList = patientModels.stream()
+                .map(patientModel -> modelMapper.map(patientModel, PatientDTO.class))
+                .collect(Collectors.toList());
+
+        return patientDtoList;
+    }
+
+    @Override
+    public MedicDTO getMedicInfo(Long medicId) {
+
+        ModelMapper modelMapper = new ModelMapper();
+        MedicModel medicModel = getMedicById(medicId);
+
+        return modelMapper.map(medicModel, MedicDTO.class);
+    }
+
+    @Override
+    public PatientDTO getPatientInfo(String patientLinkcode) {
+        PatientDTO patient = patientService.getPatientInfo(patientRepository.findByLinkCode(patientLinkcode).get().getPatientId());
+        return patient;
+    }
+
+
+    /** Métodos MedicalHistory*/
+
     @Transactional
     @Override
     public MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory) {
@@ -102,6 +178,19 @@ public class MedicServiceImpl implements MedicService {
         else return customRepositoryAccess.createPatientMedicalHistory(medicalHistory, patient);
 
     }
+
+    /**
+     * este método va a obtener la historia clínica de un paciente determinado
+     * primero checkea que el médico y el paciente estén linkeados
+     */
+    @Override
+    public MedicalHistoryDTO getPatientMedicalHistory(String linkCode) {
+        PatientModel patient = patientRepository.findByLinkCode(linkCode).get();
+        return patientService.getMedicalHistory(patient.getPatientId());
+    }
+
+
+    /** Métodos Medicines*/
 
     @Override
     public MedicineModel createPatientMedicine(Long medicId, String patientLinkCode, MedicineDTO medicine) {
@@ -121,91 +210,6 @@ public class MedicServiceImpl implements MedicService {
 
         if(medicines == null)       return null;
         else                        return medicines;
-    }
-
-
-    /**
-     * este método va a obtener la historia clínica de un paciente determinado
-     * primero checkea que el médico y el paciente estén linkeados
-     */
-    public MedicalHistoryDTO getPatientMedicalHistory(String linkCode) {
-        PatientModel patient = patientRepository.findByLinkCode(linkCode).get();
-        return patientService.getMedicalHistory(patient.getPatientId());
-    }
-
-
-    private boolean isPatientLinked(Long medicId, String linkCode) {
-
-        //obtengo los pacientes de este médico
-        List<PatientModel> patients = getPatientsByMedicId(medicId);
-
-        Optional<PatientModel> auxPatient = patientRepository.findByLinkCode(linkCode);
-
-        //checkeo si el paciente ya fue linkeado
-        return auxPatient.isPresent() && patients.contains(auxPatient.get());
-    }
-
-
-    @Override
-    public MedicModel getMedicById(Long id) {
-        return medicRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public MedicModel getMedicByDni(Long dni) {
-        MedicModel medic = medicRepository.findByDni(dni);
-        if(medic == null) {
-            throw new MedicNotFoundException();
-        } else {
-            return medic;
-        }
-    }
-
-    @Override
-    public ArrayList<MedicModel> getAllMedic() {
-        return (ArrayList<MedicModel>) medicRepository.findAll();
-    }
-
-    @Override
-    public MedicModel updateMedic(Long id, MedicModel newMedic) {
-        MedicModel medic = medicRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Medic not found"));
-
-        medic.setName(newMedic.getName());
-        medic.setLastname(newMedic.getLastname());
-        medic.setDni(newMedic.getDni());
-        medic.setEmail(newMedic.getEmail());
-        medic.setMatricula(newMedic.getMatricula());
-        medic.setSpecialty(newMedic.getSpecialty());
-        medic.setPassword(newMedic.getPassword());
-
-        return medicRepository.save(medic);
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteMedic(Long id) {
-        MedicModel medic = medicRepository.findById(id).orElseThrow(()
-                -> new ResourceNotFoundException("Medic not found"));
-        medicRepository.delete(medic);
-        return ResponseEntity.noContent().build();
-
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteMedicByDni(Long dni) {
-       return medicRepository.deleteByDni(dni);
-    }
-
-    @Override
-    public void deleteAllMedic() {
-        medicRepository.deleteAll();
-    }
-
-
-
-    @Override
-    public MedicineModel addMedicine(MedicineModel medicine) {
-        return medicineRepository.save(medicine);
     }
 
     @Override
@@ -229,51 +233,17 @@ public class MedicServiceImpl implements MedicService {
         }
     }
 
-    @Override
-    public AnalysisModel addAnalysis(AnalysisModel analysis) {
-        return analysisRepository.save(analysis);
+
+    /** Métodos Analysis */
+
+    public AnalysisModel createPatientAnalysis(Long medicId, String patientLinkCode, AnalysisDTO analysisDTO) {
+
+        Optional<MedicModel> medic = medicRepository.findById(medicId);
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
+
+        if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientLinkCode)) return null;
+        else    return customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
+
     }
 
-    @Override
-    public MedicalHistoryModel createMedicalHistory(MedicalHistoryModel history) {
-        return medicalHistoryRepository.save(history);
-    }
-
-    public List<PatientModel> getPatientsByMedicId(Long medicId){
-        return medicRepository.getPatientsByMedicId(medicId);
-    }
-
-    public List<PatientDTO> getPatientsDtoByMedicId(Long medicId) {
-        List<PatientModel> patientModels = medicRepository.getPatientsByMedicId(medicId);
-
-        ModelMapper modelMapper = new ModelMapper();
-        List<PatientDTO> patientDtoList = patientModels.stream()
-                .map(patientModel -> modelMapper.map(patientModel, PatientDTO.class))
-                .collect(Collectors.toList());
-
-        return patientDtoList;
-    }
-
-    public MedicDTO getMedicInfo(Long medicId) {
-
-        ModelMapper modelMapper = new ModelMapper();
-        MedicModel medicModel = getMedicById(medicId);
-
-        return modelMapper.map(medicModel, MedicDTO.class);
-    }
-
-    public PatientDTO getPatientInfo(String patientLinkcode) {
-        PatientDTO patient = patientService.getPatientInfo(patientRepository.findByLinkCode(patientLinkcode).get().getPatientId());
-        return patient;
-    }
-
-    public Optional<PatientModel> getPatientByLinkCode(String patientLinkCode) {
-        return patientRepository.findByLinkCode(patientLinkCode);
-    }
-
-
-
-    public void savePatient(PatientModel patient) {
-        patientRepository.save(patient);
-    }
 }

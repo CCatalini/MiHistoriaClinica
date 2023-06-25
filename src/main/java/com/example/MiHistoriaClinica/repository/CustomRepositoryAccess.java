@@ -1,13 +1,7 @@
 package com.example.MiHistoriaClinica.repository;
 
-import com.example.MiHistoriaClinica.dto.MedicDTO;
-import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
-import com.example.MiHistoriaClinica.dto.MedicineDTO;
-import com.example.MiHistoriaClinica.dto.PatientDTO;
-import com.example.MiHistoriaClinica.model.MedicModel;
-import com.example.MiHistoriaClinica.model.MedicalHistoryModel;
-import com.example.MiHistoriaClinica.model.MedicineModel;
-import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.dto.*;
+import com.example.MiHistoriaClinica.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,14 +19,16 @@ public class CustomRepositoryAccess {
     private final MedicRepository medicRepository;
     private final MedicalHistoryRepository medicalHistoryRepository;
     private final MedicineRepository medicineRepository;
+    private final AnalysisRepository analysisRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
         this.medicineRepository = medicineRepository;
+        this.analysisRepository = analysisRepository;
     }
 
 
@@ -101,5 +97,19 @@ public class CustomRepositoryAccess {
 
                 patientRepository.save(aux);
         return medicineRepository.save(medicineSaved);
+    }
+
+    public AnalysisModel createPatientAnalysis(AnalysisDTO analysisDTO, Optional<PatientModel> patient) {
+        AnalysisModel analysisSaved = new AnalysisModel();
+
+        analysisSaved.setMedicalCenter(analysisDTO.getMedicalCenter());
+        analysisSaved.setDescription(analysisDTO.getDescription());
+        analysisSaved.setName(analysisDTO.getName());
+
+        analysisSaved.addPatient(patient.get());
+        patient.get().getAnalysis().add(analysisSaved);
+
+                patientRepository.save(patient.get());
+        return analysisRepository.save(analysisSaved);
     }
 }

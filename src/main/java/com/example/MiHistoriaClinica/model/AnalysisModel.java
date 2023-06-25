@@ -1,6 +1,10 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name= "Analysis")
@@ -17,6 +21,22 @@ public class AnalysisModel {
 
     private String description;
 
+
+    @ManyToMany(mappedBy = "analysis", fetch = FetchType.EAGER)
+    @JsonBackReference
+    private List<PatientModel> patients = new ArrayList<>();
+
+
+    public List<PatientModel> getPatients() {
+        return patients;
+    }
+
+    public void addPatient(PatientModel patientModel){
+        this.patients.add(patientModel);
+    }
+    public void setPatients(List<PatientModel> patients) {
+        this.patients = patients;
+    }
 
     public Long getAnalysis_id() {
         return analysis_id;
