@@ -9,7 +9,6 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -101,6 +100,11 @@ public class MedicController {
 
     }
 
+    @GetMapping("/get-medical-history")
+    public ResponseEntity<MedicalHistoryDTO> getPatientMedicalHistory(@RequestHeader("patientLinkCode") String patientLinkCode ) throws InvalidTokenException {
+        MedicalHistoryDTO medicalHistory = medicService.getPatientMedicalHistory(patientLinkCode);
+        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
+    }
 
     @PostMapping("/create-medicine")
     public ResponseEntity<MedicineModel> createPatientMedicine (@RequestHeader("Authorization") String token,
@@ -133,62 +137,3 @@ public class MedicController {
 
 }
 
-/*
- * METODOS QUE NO SE USAN CREO
- *
- *     @GetMapping("/getById/{id}")
- *     public MedicModel getMedicById(@PathVariable Long id) {
- *         return medicService.getMedicById(id);
- *     }
- *
- *     @GetMapping("/getByDni/{dni}")
- *     public MedicModel getMedicByDni(@PathVariable Long dni){
- *         return medicService.getMedicByDni(dni);
- *     }
- *
- *
-
-    @GetMapping("/getAll")
-    public ResponseEntity<List<MedicModel>> getAllMedic() {
-        List<MedicModel> medics = medicService.getAllMedic();
-        return new ResponseEntity<>(medics, HttpStatus.OK);
-    }
- *
- *
- *     @PutMapping("/update/{id}")
-    public MedicModel updateMedic(@PathVariable Long id, @RequestBody MedicModel newMedic) {
-       return medicService.updateMedic(id, newMedic);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteMedic(@PathVariable Long id) {
-        return medicService.deleteMedic(id);
-    }
-
-    @DeleteMapping("/deleteByDni/{dni}")
-    public ResponseEntity<Void> deleteMedicByDni (@PathVariable Long dni){
-        return medicService.deleteMedicByDni(dni);
-    }
-
-    @DeleteMapping("/deleteAll")
-    public void deleteAllMedic(){
-        medicService.deleteAllMedic();
-    }
-
-*     @PostMapping("/addMedicine")
-  //  @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public MedicineModel addMedicine(@RequestBody MedicineModel medicine) {
-        return medicService.addMedicine(medicine);
-    }
-
-    @PostMapping("/addAnalysis")
-   // @PreAuthorize("hasRole('MEDIC_ROLE')")
-    public AnalysisModel addAnalysis(@RequestBody AnalysisModel analysis){
-        return medicService.addAnalysis(analysis);
-    }
-
-
-
-
- *
- */
