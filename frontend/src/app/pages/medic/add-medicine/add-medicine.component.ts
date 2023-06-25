@@ -15,7 +15,7 @@ export class AddMedicineComponent implements OnInit {
         activeIngredient: '',
         description: '',
         lab: '',
-        status: '',
+        status: 'Pendiente',
     };
 
     public patient = {
