@@ -28,11 +28,11 @@ public class MedicServiceImpl implements MedicService {
     private final MedicalHistoryRepository medicalHistoryRepository;
 
     private final CustomRepositoryAccess customRepositoryAccess;
-    private final PatientService patientService;
+    private final PatientServiceImpl patientService;
 
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess, PatientService patientService) {
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
@@ -124,18 +124,13 @@ public class MedicServiceImpl implements MedicService {
     }
 
 
-
-
     /**
      * este método va a obtener la historia clínica de un paciente determinado
      * primero checkea que el médico y el paciente estén linkeados
      */
-    public MedicalHistoryModel getPatientMedicalHistory(Long medicId, String linkCode) {
-        if (!isPatientLinked(medicId, linkCode)) {
-            return null;
-        } else {
-            return Objects.requireNonNull(patientRepository.findByLinkCode(linkCode).orElse(null)).getMedicalHistory();
-        }
+    public MedicalHistoryDTO getPatientMedicalHistory(String linkCode) {
+        PatientModel patient = patientRepository.findByLinkCode(linkCode).get();
+        return patientService.getMedicalHistory(patient.getPatientId());
     }
 
 
