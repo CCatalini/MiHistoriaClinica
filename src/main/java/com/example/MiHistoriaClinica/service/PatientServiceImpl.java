@@ -152,24 +152,3 @@ public class PatientServiceImpl implements PatientService {
 }
 
 
-/*
-    @Override
-    public void deletePatient(Long id) {
-        PatientModel patient = patientRepository.findById(id)
-                               .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-        patientRepository.delete(patient);
-    }
-
-    @Override
-    public void deletePatientByDni(Long dni) {
-        patientRepository.deleteByDni(dni);
-    }
-
-    @Override
-    public void deleteAllPatient() {
-        patientRepository.deleteAll();
-    }
-
-
-
- */

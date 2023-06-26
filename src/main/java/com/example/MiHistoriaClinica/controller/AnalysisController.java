@@ -44,9 +44,15 @@ public class AnalysisController {
 
     }
 
+    @GetMapping("/medic/get-analysis")
+    public ResponseEntity<List<AnalysisModel>> getPatientAnalysisList(@RequestHeader("patientLinkCode") String patientLinkCode) {
+        List<AnalysisModel> analysisList = analysisService.getAnalyzesByPatientLinkCode(patientLinkCode);
+        if (analysisList == null)       return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return                                 new ResponseEntity<>(analysisList, HttpStatus.OK);
+    }
 
     @GetMapping("/patient/get-analysis")
-    public ResponseEntity<List<AnalysisModel>> getMyAnalyzes(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+    public ResponseEntity<List<AnalysisModel>> getMyAnalysisList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         List<AnalysisModel> analysisList = analysisService.getAnalysisByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(analysisList, HttpStatus.OK);
     }
