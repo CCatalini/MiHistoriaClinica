@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.service;
 import com.example.MiHistoriaClinica.dto.AnalysisDTO;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
+import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
 import com.example.MiHistoriaClinica.repository.AnalysisRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
@@ -29,14 +30,18 @@ public class AnalysisServiceImpl implements AnalysisService {
         this.customRepositoryAccess = customRepositoryAccess;
     }
 
+    public void saveAnalysis(AnalysisModel analysis) {
+        analysisRepository.save(analysis);
+    }
+
     @Override
     public AnalysisModel createPatientAnalysis(Long medicId, String patientLinkCode, AnalysisDTO analysisDTO) {
 
         Optional<MedicModel> medic = medicRepository.findById(medicId);
         Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
 
-        if (medic.isEmpty() || patient.isEmpty() ) return null;
-        else    return customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
+        if (medic.isEmpty() || patient.isEmpty()) return null;
+        else return customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
 
     }
 
@@ -44,4 +49,11 @@ public class AnalysisServiceImpl implements AnalysisService {
     public List<AnalysisModel> getAnalysisByPatientId(Long id) {
         return analysisRepository.getAnalysisByPatientId(id);
     }
+
+    public AnalysisModel getAnalysisByAnalysisId(Long analysisId) {
+        Optional<AnalysisModel> analysis = analysisRepository.findById(analysisId);
+        return analysis.orElse(null);
+    }
+
+
 }
