@@ -9,4 +9,8 @@ public interface AnalysisService {
     AnalysisModel createPatientAnalysis(Long medicId, String patientLinkCode, AnalysisDTO analysisDTO);
 
     List<AnalysisModel> getAnalysisByPatientId(Long id);
+
+    AnalysisModel getAnalysisByAnalysisId(Long analysisId);
+
+    void deletePatientAnalysis(String patientLinkCode, Long analysisId);
 }

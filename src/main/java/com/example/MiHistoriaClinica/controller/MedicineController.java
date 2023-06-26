@@ -62,20 +62,6 @@ public class MedicineController {
         medicineRepository.deleteAll();
     }
 
-    // todo Cami chat sugirió este método para actualizar el estado de los medicamentos, hay que acomodarlo un poco
-    /*@PutMapping("/medicines/{id}/status")
-    public ResponseEntity<String> updateMedicineStatus(@PathVariable Long id, @RequestBody String status) {
-        try {
-            MedicineModel medicine = MedicServiceImpl.findById(id);
-            if (medicine == null) {
-                return ResponseEntity.notFound().build();
-            }
-            medicine.updateStatus(status);
-            MedicServiceImpl.save(medicine);
-            return ResponseEntity.ok("Medicine status updated successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update medicine status");
-        }
-    }*/
+
 }
 

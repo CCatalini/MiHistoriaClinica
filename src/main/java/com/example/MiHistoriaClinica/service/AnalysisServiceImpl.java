@@ -22,12 +22,14 @@ public class AnalysisServiceImpl implements AnalysisService {
     private final PatientRepository patientRepository;
     private final AnalysisRepository analysisRepository;
     private final CustomRepositoryAccess customRepositoryAccess;
+    private final PatientServiceImpl patientService;
 
-    public AnalysisServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, AnalysisRepository analysisRepository, CustomRepositoryAccess customRepositoryAccess) {
+    public AnalysisServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, AnalysisRepository analysisRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.analysisRepository = analysisRepository;
         this.customRepositoryAccess = customRepositoryAccess;
+        this.patientService = patientService;
     }
 
     public void saveAnalysis(AnalysisModel analysis) {
@@ -50,10 +52,48 @@ public class AnalysisServiceImpl implements AnalysisService {
         return analysisRepository.getAnalysisByPatientId(id);
     }
 
+    @Override
     public AnalysisModel getAnalysisByAnalysisId(Long analysisId) {
         Optional<AnalysisModel> analysis = analysisRepository.findById(analysisId);
         return analysis.orElse(null);
     }
+
+    @Override
+    public void deletePatientAnalysis(String patientLinkCode, Long analysisId) {
+        Optional<PatientModel> patientModel = patientRepository.findByLinkCode(patientLinkCode);
+
+        if (patientModel.isPresent()){
+            PatientModel thisPatient = patientModel.get();
+            List<AnalysisModel> analysisList = thisPatient.getAnalysis();
+
+            AnalysisModel analysisToDelete = analysisList.stream()
+                                                        .filter(analysis -> analysis.getAnalysis_id().equals(analysisId))
+                                                        .findFirst()
+                                                        .orElse(null);
+            if (analysisToDelete != null){
+                analysisList.remove(analysisToDelete);
+                savePatient(thisPatient);
+            }
+        }
+
+    }
+
+    public List<AnalysisModel> getAnalyzesByPatientLinkCode(String patientLinkCode) {
+        Optional<PatientModel> patientModel = patientRepository.findByLinkCode(patientLinkCode);
+
+        return patientModel.get().getAnalysis();
+    }
+
+
+
+
+
+
+
+    private void savePatient(PatientModel thisPatient) {
+        patientRepository.save(thisPatient);
+    }
+
 
 
 }
