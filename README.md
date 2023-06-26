@@ -9,7 +9,7 @@
 
   * Login - Logout						                    	        OK	                OK
 
-  * medicamentos desde el medico
+  * AMB medicamentos desde el medico
         --> createPatientMedicine 					                    OK	                OK
         --> getPatientMedicine						                    OK              	OK
         --> updatePatientMedicine					                    OK                  OK
@@ -59,7 +59,8 @@
 
 
 
-## TODO 
+## TODO
+* Finalizar consulta desde paciente (método que borre el patientLinkCode)
 * Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
 * Historial de consultas: mostrar listado en el front con los datos, método getMedicalAppointments(patientLinkCode) 
 para que vea el medico y getMedicalAppointments(token) para que vea el paciente
