@@ -73,3 +73,5 @@ para que vea el medico y getMedicalAppointments(token) para que vea el paciente
   * Mostrar listado de estudios (método patient/getAnalysis que recibe token y método medic/getAnalysis que recibe patientLinkCode)
   * Editar estado de estudios (método patient/update-analysis-status que recibe analysisId y status)
   * Borrar estudio (método medic/deleteAnalysis que recibe patientLinkCode y analysisId)
+* Agregar LOGO
+* Agregar "perfil"
