@@ -143,20 +143,6 @@ public class MedicController {
 
 
 
-    /**Métodos Analysis*/
-
-    @PostMapping("/create-patient-analysis")
-    public ResponseEntity<AnalysisModel> createPatientAnalysis(@RequestHeader("Authorization") String token,
-                                                               @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                               @RequestBody AnalysisDTO analysisDTO)
-                                                                throws InvalidTokenException {
-        Long medicId = jwtValidator.getId(token);
-        AnalysisModel createdAnalysis = medicService.createPatientAnalysis(medicId, patientLinkCode, analysisDTO);
-
-        if (createdAnalysis == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        else                                    return new ResponseEntity<>(createdAnalysis, HttpStatus.CREATED);
-
-    }
 
 
 }
