@@ -87,7 +87,7 @@ export class AddMedicineComponent implements OnInit {
 
         addMedicineObservable.subscribe(
             (data) => {
-                Swal.fire('Medicamento registrado', 'Medicamento registrado con éxito en el sistema.', 'success');
+                Swal.fire('Estudio registrado', 'Estudio registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             },
             (error) => {
