@@ -30,16 +30,16 @@
   * Ver lista de medicos desde un paciente --> getMedics		        OK	                OK
 
   * Ver historia clinica como medico                                    OK                  OK
-  * Modificar historia clinica como medico                              -                   -
-  * Alta  de consulta 						                            OK	                OK
+  * Modificar historia clinica como medico                              OK                  - !!!
+  * Alta  de consulta 						                            OK	                -
   * Ver Historial de consulta                                           -                   -
 
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
-  * Ver estudios como paciente                                          -                   -
+  * Ver estudios como paciente                                          OK                  -
 
   * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
-  * Cambiar estado de estudios como paciente                            -                   - 
-    --> si esta pendiente o realizado                                   -                   - 
+  * Cambiar estado de estudios como paciente                            OK                  - 
+    --> si esta pendiente o realizado                                                       
 
   * Filtrar listas                                                      -                   -
 
