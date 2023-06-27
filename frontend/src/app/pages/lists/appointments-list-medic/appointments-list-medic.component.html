@@ -1,0 +1,24 @@
+<h1 class = "text-center">Mis Consultas Médicas</h1>
+<h5 class="text-center">Paciente:</h5>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Motivo de consulta</th>
+        <th>Síntomas</th>
+        <th>Exámen físico</th>
+        <th>Observaciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let appointment of appointments">
+        <td>{{appointment.appointmentReason}}</td>
+        <td>{{appointment.currentIllness}}</td>
+        <td>{{appointment.physicalExam}}</td>
+        <td>{{appointment.observations}}</td>
+    </tr>
+    </tbody>
+</table>
+
+
+
