@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/medicalAppointment")
 @CrossOrigin("*")
@@ -38,4 +40,31 @@ public class MedicalAppointmentController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/medic/get")
+    public ResponseEntity<List<MedicalAppointmentModel>> getPatientAppointmentList (@RequestHeader("patientLinkCode") String patientLinkCode){
+
+        List<MedicalAppointmentModel> appointmentList = medicalAppointmentService.getAppointmentListByLinkCode(patientLinkCode);
+        if (appointmentList == null || appointmentList.isEmpty())        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+

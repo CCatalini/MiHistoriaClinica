@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -24,7 +25,7 @@ public class MedicalAppointmentModel {
 
     @ManyToOne
     @JoinColumn(name = "patientId")
-    @JsonManagedReference
+    @JsonIgnore
     private PatientModel patient;
 
 
