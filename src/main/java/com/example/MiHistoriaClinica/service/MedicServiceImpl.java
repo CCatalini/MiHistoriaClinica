@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.service;
 
 import com.example.MiHistoriaClinica.dto.*;
 import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
+import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.*;
 import com.example.MiHistoriaClinica.repository.*;
@@ -164,6 +165,13 @@ public class MedicServiceImpl implements MedicService {
         return patient;
     }
 
+    public void deletePatientLinkCode(String patientLinkCode) {
+        PatientModel patient = patientRepository.findByLinkCode(patientLinkCode)
+                .orElseThrow(() -> new PatientNotFoundException());
+
+        patient.setLinkCode(null);
+        patientRepository.save(patient);
+    }
 
     /** Métodos MedicalHistory*/
 
