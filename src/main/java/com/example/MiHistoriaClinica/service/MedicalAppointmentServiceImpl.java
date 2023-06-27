@@ -10,6 +10,8 @@ import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.interfaces.MedicalAppointmentService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,4 +37,19 @@ public class MedicalAppointmentServiceImpl implements MedicalAppointmentService 
         else return customRepositoryAccess.createMedicalAppointment(appointmentDTO, patient, medic);
 
     }
+
+
+    public List<MedicalAppointmentModel> getAppointmentListByLinkCode(String patientLinkCode) {
+        Optional<PatientModel> patientModelOptional = patientRepository.findByLinkCode(patientLinkCode);
+        if (patientModelOptional.isPresent()) {
+            PatientModel patientModel = patientModelOptional.get();
+            return patientModel.getMedicalAppointments();
+        } else {
+            return new ArrayList<>(); // Devuelve una lista vacía o null según corresponda
+        }
+    }
+
+
+
+
 }

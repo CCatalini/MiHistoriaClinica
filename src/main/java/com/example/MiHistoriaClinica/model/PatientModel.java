@@ -79,7 +79,7 @@ public class PatientModel {
     private List<AnalysisModel> analysis = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<MedicalAppointmentModel> medicalAppointments;
 
