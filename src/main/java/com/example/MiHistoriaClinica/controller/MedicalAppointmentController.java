@@ -49,6 +49,13 @@ public class MedicalAppointmentController {
         else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
     }
 
+    @GetMapping("/patient/get")
+    public ResponseEntity<List<MedicalAppointmentModel>> getAppointmentList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        List<MedicalAppointmentModel> appointmentList = medicalAppointmentService.getAppointmentListById(jwtValidator.getId(token));
+        if(appointmentList == null || appointmentList.isEmpty())         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
+    }
+
 
 
 

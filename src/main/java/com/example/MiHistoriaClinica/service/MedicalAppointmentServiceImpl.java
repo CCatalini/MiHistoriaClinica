@@ -40,16 +40,17 @@ public class MedicalAppointmentServiceImpl implements MedicalAppointmentService 
 
 
     public List<MedicalAppointmentModel> getAppointmentListByLinkCode(String patientLinkCode) {
-        Optional<PatientModel> patientModelOptional = patientRepository.findByLinkCode(patientLinkCode);
-        if (patientModelOptional.isPresent()) {
-            PatientModel patientModel = patientModelOptional.get();
-            return patientModel.getMedicalAppointments();
-        } else {
-            return new ArrayList<>(); // Devuelve una lista vacía o null según corresponda
-        }
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
+        if (patient.isPresent())        return patient.get().getMedicalAppointments();
+        else                            return new ArrayList<>(); // Devuelve una lista vacía o null según corresponda
+
     }
 
 
+    public List<MedicalAppointmentModel> getAppointmentListById(Long id) {
+        Optional<PatientModel> patient = patientRepository.findById(id);
+        if (patient.isPresent())        return patient.get().getMedicalAppointments();
+        else                            return new ArrayList<>();
 
-
+    }
 }
