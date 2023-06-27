@@ -18,6 +18,9 @@ public class MedicalAppointmentModel {
     private String physicalExam;
     private String observations;
 
+    private String medicFullName;
+    private Long matricula;
+
 
     @ManyToOne
     @JoinColumn(name = "patientId")
@@ -73,5 +76,21 @@ public class MedicalAppointmentModel {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public String getMedicFullName() {
+        return medicFullName;
+    }
+
+    public void setMedicFullName(String medicFullName) {
+        this.medicFullName = medicFullName;
+    }
+
+    public Long getMatricula() {
+        return matricula;
+    }
+
+    public void setMatricula(Long matricula) {
+        this.matricula = matricula;
     }
 }

@@ -119,14 +119,18 @@ public class CustomRepositoryAccess {
     }
 
 
-    public MedicalAppointmentModel createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<PatientModel> patient) {
+    public MedicalAppointmentModel createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<PatientModel> patient, Optional<MedicModel> medic) {
         MedicalAppointmentModel medicalAppointmentSaved = new MedicalAppointmentModel();
 
         medicalAppointmentSaved.setAppointmentReason(appointmentDTO.getAppointmentReason());
         medicalAppointmentSaved.setObservations(appointmentDTO.getObservations());
         medicalAppointmentSaved.setCurrentIllness(appointmentDTO.getCurrentIllness());
         medicalAppointmentSaved.setPhysicalExam(appointmentDTO.getPhysicalExam());
+
         medicalAppointmentSaved.setPatient(patient.get());
+
+        medicalAppointmentSaved.setMedicFullName(medic.get().getName() + " " + medic.get().getLastname());
+        medicalAppointmentSaved.setMatricula(medic.get().getMatricula());
 
         return  medicalAppointmentRepository.save(medicalAppointmentSaved);
 

@@ -32,7 +32,7 @@ public class MedicalAppointmentServiceImpl implements MedicalAppointmentService 
         Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
 
         if (medic.isEmpty() || patient.isEmpty()) return null;
-        else return customRepositoryAccess.createMedicalAppointment(appointmentDTO, patient);
+        else return customRepositoryAccess.createMedicalAppointment(appointmentDTO, patient, medic);
 
     }
 }
