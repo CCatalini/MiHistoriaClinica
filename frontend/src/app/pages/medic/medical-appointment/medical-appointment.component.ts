@@ -38,16 +38,36 @@ export class MedicalAppointmentComponent {
             Swal.fire('Ingrese el grupo sanguíneo', 'El grupo sanguíneo es requisito.', 'warning');
             return;
         }
-        // todo Cami deberíamos tener un addMedicalAppointment en el back para ir agregando las consultas (creo?) cosa de tener por un lado la info de l ahistoria clinica y por otro la lista de consultas médicas
-        /*this.userService.createMedicalHistory(this.medicalAppointment).subscribe(
+
+        // Check if medicalAppointmentModel is defined
+        if (!this.medicalAppointment) {
+            Swal.fire('Error', 'No se proporcionó la historia médica.', 'error');
+            return;
+        }
+
+        // Check if userService is defined
+        if (!this.userService) {
+            Swal.fire('Error', 'No se proporcionó el servicio de usuario.', 'error');
+            return;
+        }
+
+        const addMedicalAppointmentObservable = this.userService.addMedicalAppointment(this.medicalAppointment);
+
+        if (addMedicalAppointmentObservable === undefined) {
+            Swal.fire('Error', 'El método addMedicalAppointment no devuelve un observable.', 'error');
+            return;
+        }
+
+        addMedicalAppointmentObservable.subscribe(
             (data) => {
-                console.log(data);
-                Swal.fire('Consulta médica guardada', 'Consulta médica guardada con éxito en el sistema.', 'success');
+                Swal.fire('Consulta registrada', 'Consulta registrada con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
-            },(error) => {
+            },
+            (error) => {
                 console.log(error);
-                Swal.fire('Error', 'Existen datos erroneos.', 'error');
+                Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
-        )*/
+        );
+
     }
 }

@@ -22,7 +22,6 @@ export class MedicinesListPatientComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        // Verify user
         if (localStorage.getItem('userType') != 'PATIENT') {
             this.router.navigate(['/patient/login']);
         } else {

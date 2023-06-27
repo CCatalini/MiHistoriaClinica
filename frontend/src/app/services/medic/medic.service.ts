@@ -44,7 +44,6 @@ export class MedicService {
     public addAnalysis(analysis: any) {
         const token = localStorage.getItem('token');
         const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
-
         if (!patientLinkCode) {
             Swal.fire(
                 'Error',
@@ -53,15 +52,31 @@ export class MedicService {
             );
             return throwError('No se proporcionó el código de enlace del paciente.');
         }
-
         let headers = new HttpHeaders();
-
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-
         return this.http.post(`http://localhost:8080/analysis/medic/create-patient-analysis`, analysis, { headers });
+    }
+
+    public addMedicalAppointment(appointment: any) {
+        const token = localStorage.getItem('token');
+        const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return throwError('No se proporcionó el código de enlace del paciente.');
+        }
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+            headers = headers.set('patientLinkCode', patientLinkCode);
+        }
+        return this.http.post(`http://localhost:8080/medicalAppointment/medic/create`, appointment, { headers });
     }
 
     public createMedicalHistory(medicalHistoryModel: any) {
