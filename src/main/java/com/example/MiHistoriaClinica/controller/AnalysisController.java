@@ -51,6 +51,13 @@ public class AnalysisController {
         return                                 new ResponseEntity<>(analysisList, HttpStatus.OK);
     }
 
+    @DeleteMapping("/medic/delete-analysis")
+    public ResponseEntity<Void> deletePatientAnalysis(@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                      @RequestParam("analysisId") Long analysisId){
+        analysisService.deletePatientAnalysis(patientLinkCode, analysisId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/patient/get-analysis")
     public ResponseEntity<List<AnalysisModel>> getMyAnalysisList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         List<AnalysisModel> analysisList = analysisService.getAnalysisByPatientId(jwtValidator.getId(token));
