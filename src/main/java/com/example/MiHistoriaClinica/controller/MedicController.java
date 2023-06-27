@@ -115,6 +115,17 @@ public class MedicController {
         return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
+    @PostMapping("/update-medical-history")
+    public ResponseEntity<Void> updateMedicalHistory(@RequestHeader("Authorization") String token,
+                                                                    @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                    @RequestBody MedicalHistoryDTO medicalHistory)
+            throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 
     /**Métodos Medicine*/

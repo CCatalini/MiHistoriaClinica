@@ -45,7 +45,6 @@ public class CustomRepositoryAccess {
     }
 
 
-
     public MedicModel saveMedicDto(MedicDTO medicDTO) {
         MedicModel medicSaved = new MedicModel();
 
@@ -63,22 +62,26 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicalHistoryModel createPatientMedicalHistory(MedicalHistoryDTO medicalHistory, Optional<PatientModel> patient) {
+    public MedicalHistoryModel auxMedicalHistory(Optional<PatientModel> patient, MedicalHistoryDTO update){
+        MedicalHistoryModel medicalHistory ;
 
-        MedicalHistoryModel historySaved = new MedicalHistoryModel();
+        if(patient.isPresent() && patient.get().getMedicalHistory()!= null )    medicalHistory = patient.get().getMedicalHistory();
+        else                                                                    medicalHistory = new MedicalHistoryModel();
 
-        historySaved.setWeight(medicalHistory.getWeight());
-        historySaved.setHeight(medicalHistory.getHeight());
-        historySaved.setAllergy(medicalHistory.getAllergy());
-        historySaved.setBloodType(medicalHistory.getBloodType());
-        historySaved.setActualMedicine(medicalHistory.getActualMedicine());
-        historySaved.setChronicDisease(medicalHistory.getChronicDisease());
-        historySaved.setFamilyMedicalHistory(medicalHistory.getFamilyMedicalHistory());
+        return setDatos(medicalHistory, update ,patient.get());
+    }
 
-        historySaved.setPatient(patient.get());
+    private MedicalHistoryModel setDatos(MedicalHistoryModel medicalHistory, MedicalHistoryDTO update, PatientModel patientModel) {
+        medicalHistory.setWeight(update.getWeight());
+        medicalHistory.setHeight(update.getHeight());
+        medicalHistory.setAllergy(update.getAllergy());
+        medicalHistory.setBloodType(update.getBloodType());
+        medicalHistory.setActualMedicine(update.getActualMedicine());
+        medicalHistory.setChronicDisease(update.getChronicDisease());
+        medicalHistory.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
+        medicalHistory.setPatient(patientModel);
 
-        return medicalHistoryRepository.save(historySaved);
-
+        return medicalHistoryRepository.save(medicalHistory);
     }
 
     public MedicineModel createPatientMedicine(MedicineDTO medicine, Optional<PatientModel> patient) {
@@ -112,4 +115,6 @@ public class CustomRepositoryAccess {
                 patientRepository.save(patient.get());
         return analysisRepository.save(analysisSaved);
     }
+
+
 }

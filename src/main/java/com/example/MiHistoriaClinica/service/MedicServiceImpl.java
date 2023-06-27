@@ -165,6 +165,7 @@ public class MedicServiceImpl implements MedicService {
         return patient;
     }
 
+    @Override
     public void deletePatientLinkCode(String patientLinkCode) {
         PatientModel patient = patientRepository.findByLinkCode(patientLinkCode)
                 .orElseThrow(() -> new PatientNotFoundException());
@@ -183,7 +184,7 @@ public class MedicServiceImpl implements MedicService {
         Optional<PatientModel> patient = patientRepository.findByLinkCode(linkCode);
 
         if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, linkCode)) return null;
-        else return customRepositoryAccess.createPatientMedicalHistory(medicalHistory, patient);
+        else                return customRepositoryAccess.auxMedicalHistory(patient, medicalHistory);
 
     }
 
@@ -196,8 +197,16 @@ public class MedicServiceImpl implements MedicService {
         PatientModel patient = patientRepository.findByLinkCode(linkCode).get();
         return patientService.getMedicalHistory(patient.getPatientId());
     }
+/*
+    public MedicalHistoryModel updatePatientMedicalHistory(Long medicId, String patientLinkCode, MedicalHistoryDTO update) {
+        Optional<MedicModel> medic = medicRepository.findById(medicId);
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
 
-
+        if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientLinkCode))     return  null;
+        else                                    return customRepositoryAccess.auxMedicalHistory(patient, update);
+        
+    }
+*/
     /** Métodos Medicines*/
 
     @Override
