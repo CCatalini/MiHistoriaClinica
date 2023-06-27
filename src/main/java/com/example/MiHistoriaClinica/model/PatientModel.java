@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -41,6 +42,8 @@ public class PatientModel {
     private String linkCode;
 
 
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "patient_medic",
@@ -76,7 +79,20 @@ public class PatientModel {
     private List<AnalysisModel> analysis = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "patient")
+    @JsonBackReference
+    private List<MedicalAppointmentModel> medicalAppointments;
 
+
+
+
+    public List<MedicalAppointmentModel> getMedicalAppointments() {
+        return medicalAppointments;
+    }
+
+    public void setMedicalAppointments(List<MedicalAppointmentModel> medicalAppointments) {
+        this.medicalAppointments = medicalAppointments;
+    }
 
     public List<MedicineModel> getMedicines() {
         return medicines;
