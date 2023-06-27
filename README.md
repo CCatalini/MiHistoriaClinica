@@ -15,11 +15,12 @@
         --> updatePatientMedicine					                    OK                  OK
         --> deletePatientMedicine                                       OK                  OK
 	
-  * ABM estudios desde el medico --> AnalysisModel
-      --> createPatientAnalysis                                         OK                en proceso
-      --> getPatientAnalysis                                            -                   -                
-      --> updatePatientAnalysis                                         -                   -
-      --> deletePatientAnalysis                                         -                   -
+  * ABM estudios--> AnalysisModel
+      --> createPatientAnalysis (medic)                                 OK                en proceso
+      --> getPatientAnalysis    (medic)                                 OK                   -                
+      --> getAnalysis           (patient)                               OK                   -
+      --> updateAnalysisStatus  (patient)                               OK                   -
+      --> deletePatientAnalysis (medic)                                 OK                   -
 
   * Altas historias clinicas ---> createPatientMedicalHistory 	        OK 	                OK
 

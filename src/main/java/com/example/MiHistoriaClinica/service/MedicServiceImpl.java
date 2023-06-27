@@ -234,16 +234,5 @@ public class MedicServiceImpl implements MedicService {
     }
 
 
-    /** Métodos Analysis */
-
-    public AnalysisModel createPatientAnalysis(Long medicId, String patientLinkCode, AnalysisDTO analysisDTO) {
-
-        Optional<MedicModel> medic = medicRepository.findById(medicId);
-        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
-
-        if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientLinkCode)) return null;
-        else    return customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
-
-    }
 
 }
