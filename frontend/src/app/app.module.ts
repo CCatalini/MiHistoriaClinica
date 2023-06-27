@@ -36,6 +36,7 @@ import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/
 import { AnalysisListPatientComponent } from './pages/lists/analysis-list-patient/analysis-list-patient.component';
 import { MedicalHistoryListComponent } from "./pages/lists/medical-history-list-patient/medical-history-list.component";
 import { MedicalHistoryListMedicComponent } from './pages/lists/medical-history-list-medic/medical-history-list-medic.component';
+import { AnalysisListMedicComponent } from './pages/lists/analysis-list-medic/analysis-list-medic.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { MedicalHistoryListMedicComponent } from './pages/lists/medical-history-
     AnalysisListPatientComponent,
     MedicalHistoryListComponent,
     MedicalHistoryListMedicComponent,
+    AnalysisListMedicComponent,
   ],
     imports: [
         BrowserModule,

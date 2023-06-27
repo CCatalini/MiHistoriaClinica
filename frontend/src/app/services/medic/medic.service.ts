@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {map, Observable} from "rxjs";
+import {map, Observable, throwError} from "rxjs";
 import Swal from "sweetalert2";
 
 @Injectable({
@@ -39,6 +39,29 @@ export class MedicService {
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
         return this.http.post('http://localhost:8080/medic/create-medicine', medicine, { headers });
+    }
+
+    public addAnalysis(analysis: any) {
+        const token = localStorage.getItem('token');
+        const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
+
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return throwError('No se proporcionó el código de enlace del paciente.');
+        }
+
+        let headers = new HttpHeaders();
+
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+            headers = headers.set('patientLinkCode', patientLinkCode);
+        }
+
+        return this.http.post(`http://localhost:8080/analysis/medic/create-patient-analysis`, analysis, { headers });
     }
 
     public updateMedicineStatus(medicine:any){
@@ -91,10 +114,6 @@ export class MedicService {
 
     public getAnalysisList() {
         return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
-    }
-
-    public addAnalysis(analysis:any){
-        return this.http.post(`http://localhost:8080/medic/addAnalysis`,analysis);
     }
 
     logoutMedic(): Observable<any> {

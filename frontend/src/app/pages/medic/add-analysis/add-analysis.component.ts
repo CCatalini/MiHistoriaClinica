@@ -25,7 +25,6 @@ export class AddAnalysisComponent {
         }
     }
 
-
     formSubmit(){
         console.log(this.analysis);
         if(this.analysis.name == '' || this.analysis.name == null){
@@ -37,15 +36,34 @@ export class AddAnalysisComponent {
             return;
         }
 
-        this.userService.addAnalysis(this.analysis).subscribe(
+        // Check if medicalHistoryModel is defined
+        if (!this.analysis) {
+            Swal.fire('Error', 'No se proporcionó la historia médica.', 'error');
+            return;
+        }
+
+        // Check if userService is defined
+        if (!this.userService) {
+            Swal.fire('Error', 'No se proporcionó el servicio de usuario.', 'error');
+            return;
+        }
+
+        const addAnalysisObservable = this.userService.addAnalysis(this.analysis);
+
+        if (addAnalysisObservable == undefined) {
+            Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
+            return;
+        }
+
+        addAnalysisObservable.subscribe(
             (data) => {
-                console.log(data);
-                Swal.fire('Analisis guardado', 'El análisis médico fue cargado con éxito en el sistema.', 'success');
+                Swal.fire('Estudio registrado', 'Estudio registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
-            },(error) => {
+            },
+            (error) => {
                 console.log(error);
-                Swal.fire('Error', 'Existen datos erroneos.', 'error');
+                Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
-        )
+        );
     }
 }
