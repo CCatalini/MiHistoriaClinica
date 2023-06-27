@@ -3,7 +3,6 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.dto.AnalysisDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
-import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.service.AnalysisServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
