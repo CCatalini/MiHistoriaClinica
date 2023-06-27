@@ -23,6 +23,8 @@ public interface MedicService {
     MedicDTO getMedicInfo(Long medicId);
     PatientDTO getPatientInfo(String patientLinkcode);
 
+    void deletePatientLinkCode(String patientLinkCode);
+
     @Transactional
     MedicalHistoryModel createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory);
     MedicalHistoryDTO getPatientMedicalHistory(String linkCode);
