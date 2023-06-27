@@ -87,6 +87,11 @@ public class MedicController {
         return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete-patientLinkCode")
+    public ResponseEntity<Void> deletePatientLinkCode(@RequestHeader("patientLinkCode") String patientLinkCode) {
+        medicService.deletePatientLinkCode(patientLinkCode);
+        return ResponseEntity.noContent().build();
+    }
 
 
     /**Métodos Medical History*/
