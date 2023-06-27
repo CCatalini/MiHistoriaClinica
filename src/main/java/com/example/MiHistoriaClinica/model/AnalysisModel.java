@@ -16,10 +16,9 @@ public class AnalysisModel {
 
     @Column(nullable = false)
     private String name;
-
     private String medicalCenter;
-
     private String description;
+    private String status;
 
 
     @ManyToMany(mappedBy = "analysis", fetch = FetchType.EAGER)
@@ -34,8 +33,17 @@ public class AnalysisModel {
     public void addPatient(PatientModel patientModel){
         this.patients.add(patientModel);
     }
+
     public void setPatients(List<PatientModel> patients) {
         this.patients = patients;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getAnalysis_id() {
