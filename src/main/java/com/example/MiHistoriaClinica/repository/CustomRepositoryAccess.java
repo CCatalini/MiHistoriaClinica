@@ -20,15 +20,17 @@ public class CustomRepositoryAccess {
     private final MedicalHistoryRepository medicalHistoryRepository;
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
+    private final MedicalAppointmentRepository medicalAppointmentRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalAppointmentRepository medicalAppointmentRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
         this.medicalHistoryRepository = medicalHistoryRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
+        this.medicalAppointmentRepository = medicalAppointmentRepository;
     }
 
 
@@ -117,4 +119,16 @@ public class CustomRepositoryAccess {
     }
 
 
+    public MedicalAppointmentModel createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<PatientModel> patient) {
+        MedicalAppointmentModel medicalAppointmentSaved = new MedicalAppointmentModel();
+
+        medicalAppointmentSaved.setAppointmentReason(appointmentDTO.getAppointmentReason());
+        medicalAppointmentSaved.setObservations(appointmentDTO.getObservations());
+        medicalAppointmentSaved.setCurrentIllness(appointmentDTO.getCurrentIllness());
+        medicalAppointmentSaved.setPhysicalExam(appointmentDTO.getPhysicalExam());
+        medicalAppointmentSaved.setPatient(patient.get());
+
+        return  medicalAppointmentRepository.save(medicalAppointmentSaved);
+
+    }
 }

@@ -5,15 +5,27 @@ public class AnalysisDTO {
     private String name;
     private String medicalCenter;
     private String description;
+    private String status;
 
     public AnalysisDTO(){
 
     }
 
-    public AnalysisDTO(String name, String medicalCenter, String description) {
+    public AnalysisDTO(String name, String medicalCenter, String description, String status) {
         this.name = name;
         this.medicalCenter = medicalCenter;
         this.description = description;
+        this.status = status;
+    }
+
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getName() {

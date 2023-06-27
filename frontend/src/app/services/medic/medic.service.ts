@@ -64,10 +64,6 @@ export class MedicService {
         return this.http.post(`http://localhost:8080/analysis/medic/create-patient-analysis`, analysis, { headers });
     }
 
-    public updateMedicineStatus(medicine:any){
-        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
-    }
-
     public createMedicalHistory(medicalHistoryModel: any) {
         const token = localStorage.getItem('token');
         const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
@@ -152,3 +148,9 @@ export class MedicService {
     }
 
 }
+
+/*
+    public updateMedicineStatus(medicine:any){
+        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
+    }
+ */
