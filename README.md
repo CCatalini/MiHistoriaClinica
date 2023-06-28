@@ -31,13 +31,14 @@
 
   * Ver historia clinica como medico                                    OK                  OK
   * Modificar historia clinica como medico                              OK                  - !!!
-  * Alta  de consulta 						                            OK	                -
-  * Ver Historial de consulta                                           -                   -
+  * Alta  de consulta 						                            OK	                OK
+  * Ver Historial de consulta        (como médico y como paciente)      OK                  OK como médico
+                                                                                            OK como paciente
 
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
   * Ver estudios como paciente                                          OK                  -
 
-  * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
+  * Cambiar estado medicamento desde el paciente 			            OK	                OK 
   * Cambiar estado de estudios como paciente                            OK                  - 
     --> si esta pendiente o realizado                                                       
 
@@ -46,7 +47,7 @@
     --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista de especialidades para poder filtrar
   * Agenda de turnos propios
     --> que el paciente pueda añadir su propio turno, viendo su lista de medicos y teniendo la opcion de cargar un medico nuevo 
-    --> que para el medico nuevo se muestre toda la lista de medicos ya registrados
+    -→ que para el médico nuevo se muestre toda la lista de medicos ya registrados
 
 
 

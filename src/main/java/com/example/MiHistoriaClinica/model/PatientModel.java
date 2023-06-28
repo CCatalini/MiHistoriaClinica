@@ -83,7 +83,9 @@ public class PatientModel {
     @JsonBackReference
     private List<MedicalAppointmentModel> medicalAppointments;
 
-
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<Turnos> turnos;
 
 
     public List<MedicalAppointmentModel> getMedicalAppointments() {
