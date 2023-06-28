@@ -1,20 +1,48 @@
 <h1 class="text-center">Mis Estudios</h1>
-<h5 class="text-center">Paciente:</h5>
-<br>
+
+<!--<div class="row mb-3">
+    <div class="col-12 text-center">
+        <div class="d-inline-block">
+            <p>Filtrar por estado:</p>
+            <select class="form-control" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+
+                <option value="" disabled selected>Seleccione estado</option>
+                <option value="en curso">En curso</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="finalizado">Finalizado</option>
+                <option value="santi">Sin Filtro</option>
+
+            </select>
+        </div>
+    </div>
+</div>
+<br>-->
+<!--
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
-        <th>Análisis</th>
-        <th>Centro médico</th>
+        <th>Medicación</th>
+        <th>Compuesto activo</th>
+        <th>Laboratorio</th>
         <th>Descripción</th>
+        <th>Estado</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let analysis of analysisList">
-        <td>{{ analysis.name}}</td>
-        <td>{{ analysis.medicalCenter }}</td>
+    <tr *ngFor="let analysis of analysis">
+        <td>{{ analysis.medicineName }}</td>
+        <td>{{ analysis.activeIngredient }}</td>
+        <td>{{ analysis.lab }}</td>
         <td>{{ analysis.description }}</td>
+        <td>
+            <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(medicine.medicineId, medicine.status)">
+                <option value="" disabled selected>Ingrese estado</option>
+                <option value="en curso">En curso</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="finalizado">Finalizado</option>
+            </select>
+        </td>
     </tr>
     </tbody>
 </table>
-
+-->

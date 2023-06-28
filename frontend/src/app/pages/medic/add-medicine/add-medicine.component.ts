@@ -81,13 +81,13 @@ export class AddMedicineComponent implements OnInit {
         const addMedicineObservable = this.userService.addMedicine(this.medicine);
 
         if (addMedicineObservable === undefined) {
-            Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
+            Swal.fire('Error', 'El método addMedicineObservable no devuelve un observable.', 'error');
             return;
         }
 
         addMedicineObservable.subscribe(
             (data) => {
-                Swal.fire('Estudio registrado', 'Estudio registrado con éxito en el sistema.', 'success');
+                Swal.fire('Medicamento registrado', 'Medicamento registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             },
             (error) => {
