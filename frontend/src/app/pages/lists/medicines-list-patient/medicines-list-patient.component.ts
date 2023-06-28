@@ -70,4 +70,15 @@ export class MedicinesListPatientComponent implements OnInit {
         );
     }
 
+    getMedicineByStatus(status: string){
+        this.patientService.getMedicineByStatus(status).subscribe(
+            () => {
+                console.log('Se ha filtrado con éxito');
+            },
+            (error: any) => {
+                console.log('Error al filtrar medicamentos:', error);
+            }
+        );
+    }
+
 }
