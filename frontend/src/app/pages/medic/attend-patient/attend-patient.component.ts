@@ -18,8 +18,6 @@ export class AttendPatientComponent implements OnInit {
         } else {
             this.route.params.subscribe(params => {
                 this.patientId = params['linkCode'];
-                console.log(this.patientId);
-                // Use the value of this.id as needed
             });
         }
     }
@@ -27,7 +25,5 @@ export class AttendPatientComponent implements OnInit {
     setLinkCode(): void{
         localStorage.setItem('patientLinkCode', '');
     }
-
-    // todo agregar metodos que traigan datos del paciente para mostrarlos en el encabezado de la pagin
 
 }

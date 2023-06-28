@@ -127,11 +127,19 @@ export class MedicService {
         return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
     }
 
+    public getAppointmentsList(): Observable<any[]>{
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        let headers = new HttpHeaders();
+        headers = headers.set('patientLinkCode', linkCode);
+        return this.http.get<any[]>('http://localhost:8080/medicalAppointment/medic/get', {headers: headers});
+    }
+
+
     logoutMedic(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
-            headers = headers.set('Authorization', token);
+            headers = headers.set('Authorization', 'Bearer ' + token);
         }
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
