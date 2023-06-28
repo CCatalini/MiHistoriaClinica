@@ -38,6 +38,8 @@
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
   * Ver estudios como paciente                                          OK                  -
 
+  * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
+  * Cambiar estado de estudios como paciente                            OK                  OK 
   * Cambiar estado medicamento desde el paciente 			            OK	                OK 
   * Cambiar estado de estudios como paciente                            OK                  - 
     --> si esta pendiente o realizado                                                       
@@ -64,16 +66,9 @@
 ## TODO
 * Finalizar consulta desde paciente (método que borre el patientLinkCode)
 * Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
-* Historial de consultas: mostrar listado en el front con los datos, método getMedicalAppointments(patientLinkCode) 
-para que vea el medico y getMedicalAppointments(token) para que vea el paciente
 * Agregar fecha de emisión a medicines, analysis y medicalAppointment ??
 * FILTRAR listas 
   * Por nombre de medicamento, laboratorio, estado, nombre de estudio, etc
   * Armar métodos getMedicicinesByName(), getMedicinesByStatus(), etc
-* ABM analysis:
-  * Unir estudios con paciente (medic/addAnalysis idem medicines)
-  * Mostrar listado de estudios (método patient/getAnalysis que recibe token y método medic/getAnalysis que recibe patientLinkCode)
-  * Editar estado de estudios (método patient/update-analysis-status que recibe analysisId y status)
-  * Borrar estudio (método medic/deleteAnalysis que recibe patientLinkCode y analysisId)
 * Agregar LOGO
 * Agregar "perfil"
