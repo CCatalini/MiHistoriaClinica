@@ -1,9 +1,6 @@
 package com.example.MiHistoriaClinica.controller;
 
-import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
-import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
-import com.example.MiHistoriaClinica.dto.PatientDTO;
-import com.example.MiHistoriaClinica.dto.TokenDTO;
+import com.example.MiHistoriaClinica.dto.*;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
@@ -101,6 +98,28 @@ public class PatientController {
 
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
     }
+
+
+
+    /** Métodos para agendar turnos */
+
+
+    @PostMapping("/add-turno")
+    public ResponseEntity<Void> addTurno (@RequestHeader("Authorization") String token,
+                                          @RequestParam("medicId") Long medicId,
+                                          @RequestBody TurnoDTO request) throws InvalidTokenException {
+        Long patientId = jwtValidator.getId(token);
+        patientService.addTurno(patientId, medicId, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
+
+
+
 
 
 }

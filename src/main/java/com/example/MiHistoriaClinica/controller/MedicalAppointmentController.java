@@ -33,8 +33,9 @@ public class MedicalAppointmentController {
 
     @PostMapping("/medic/create")
     public ResponseEntity<Void> createMedicalAppointment(@RequestHeader("Authorization") String tokenMedic,
-                                                                            @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                            @RequestBody MedicalAppointmentDTO appointmentDTO) throws InvalidTokenException {
+                                                         @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                         @RequestBody MedicalAppointmentDTO appointmentDTO)
+                                                         throws InvalidTokenException {
         Long medicId = jwtValidator.getId(tokenMedic);
         medicalAppointmentService.createMedicalAppointment(medicId, patientLinkCode, appointmentDTO);
 
