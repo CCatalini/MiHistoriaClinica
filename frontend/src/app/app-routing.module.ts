@@ -25,6 +25,9 @@ import {
     MedicalHistoryListMedicComponent
 } from "./pages/lists/medical-history-list-medic/medical-history-list-medic.component";
 import {AppointmentsListMedicComponent} from "./pages/lists/appointments-list-medic/appointments-list-medic.component";
+import {
+    AppointmentsListPatientComponent
+} from "./pages/lists/appointments-list-patient/appointments-list-patient.component";
 
 const routes: Routes = [
     {
@@ -142,6 +145,11 @@ const routes: Routes = [
       component:AppointmentsListMedicComponent,
       pathMatch:'full'
   },
+    {
+        path:'patient/appointmentList',
+        component:AppointmentsListPatientComponent,
+        pathMatch:'full'
+    },
 
 ];
 
