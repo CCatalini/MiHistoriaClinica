@@ -55,6 +55,12 @@
 
 
 
+TODO 28/6
+    analysis-list-medic
+    analysis-list-patient 
+
+    los dos desde el frton 
+
 
 ## Casos de Usos Deseables:
 * Descargar historia clinica

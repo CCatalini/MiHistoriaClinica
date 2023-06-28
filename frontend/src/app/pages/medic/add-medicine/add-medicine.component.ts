@@ -68,7 +68,7 @@ export class AddMedicineComponent implements OnInit {
 
         // Check if medicalHistoryModel is defined
         if (!this.medicine) {
-            Swal.fire('Error', 'No se proporcionó la historia médica.', 'error');
+            Swal.fire('Error', 'No se proporcionó el medicamento.', 'error');
             return;
         }
 
@@ -81,7 +81,7 @@ export class AddMedicineComponent implements OnInit {
         const addMedicineObservable = this.userService.addMedicine(this.medicine);
 
         if (addMedicineObservable === undefined) {
-            Swal.fire('Error', 'El método addMedicineObservable no devuelve un observable.', 'error');
+            Swal.fire('Error', 'El método createMedicine no devuelve un observable.', 'error');
             return;
         }
 
