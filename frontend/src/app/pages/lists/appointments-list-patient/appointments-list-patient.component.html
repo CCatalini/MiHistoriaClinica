@@ -4,6 +4,8 @@
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
+        <th>Nombre del médico</th>
+        <th>Matrícula</th>
         <th>Motivo de consulta</th>
         <th>Síntomas</th>
         <th>Exámen físico</th>
@@ -12,6 +14,8 @@
     </thead>
     <tbody>
     <tr *ngFor="let appointment of appointments">
+        <td>{{appointment.medicFullName}}</td>
+        <td>{{appointment.matricula}}</td>
         <td>{{appointment.appointmentReason}}</td>
         <td>{{appointment.currentIllness}}</td>
         <td>{{appointment.physicalExam}}</td>
