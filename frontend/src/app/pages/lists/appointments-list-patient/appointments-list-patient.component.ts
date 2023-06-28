@@ -25,7 +25,7 @@ export class AppointmentsListPatientComponent implements OnInit{
     formSubmit() {
         const token = localStorage.getItem('token');
         if(token) {
-            this.userService.getAppointmentsList().subscribe(
+            this.userService.getAppointmentsList(token).subscribe(
                 (data: any) => {
                     console.log(data); // Agregar este console.log para verificar la respuesta del servidor
                     if (Array.isArray(data)) {
