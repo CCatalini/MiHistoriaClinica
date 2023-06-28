@@ -71,7 +71,7 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', token);
         }
-        return this.http.get<any[]>('http://localhost:8080/medicalAppointment/medic/get', {headers: headers});
+        return this.http.get<any[]>('http://localhost:8080/medicalAppointment/patient/get', {headers: headers});
     }
 
     logoutPatient(): Observable<any> {
