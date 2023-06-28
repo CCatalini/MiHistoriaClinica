@@ -40,6 +40,9 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
     @Query("SELECT m FROM PatientModel p JOIN p.medicines m WHERE p.patientId = :patientId")
     List<MedicineModel> getMedicinesByPatientId(@Param("patientId") Long id);
 
+    @Query("SELECT m FROM PatientModel p JOIN p.medicines m WHERE p.patientId = :patientId AND m.status = :status")
+    List<MedicineModel> getMedicinesByPatientIdAndStatus(@Param("patientId") Long id,
+                                                         @Param("status") String status);
 
     // void assignRole(Long patient_id, Long role_id);
 }

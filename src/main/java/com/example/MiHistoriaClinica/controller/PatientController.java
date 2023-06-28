@@ -99,7 +99,14 @@ public class PatientController {
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
     }
 
+    @GetMapping("/getMedicineByStatus")
+    public ResponseEntity<List<MedicineModel>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
+                                                                 @RequestParam("status") String status) throws InvalidTokenException {
 
+        List<MedicineModel> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
+        return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
+
+    }
 
     /** Métodos para agendar turnos */
 
