@@ -1,4 +1,18 @@
 <h1 class="text-center">Mis Medicamentos</h1>
+
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        <div class="d-inline-block">
+            <p>Filtrar por estado:</p>
+            <select class="form-control" (change)="getMedicineByStatus($event.target.value)">
+                <option value="" disabled selected>Seleccione estado</option>
+                <option value="en curso">En curso</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="finalizado">Finalizado</option>
+            </select>
+        </div>
+    </div>
+</div>
 <br>
 <table class="table table-striped">
     <thead class="table-dark">
