@@ -3,11 +3,13 @@ package com.example.MiHistoriaClinica.service;
 import com.example.MiHistoriaClinica.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.dto.PatientDTO;
+import com.example.MiHistoriaClinica.dto.TurnoDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.repository.MedicRepository;
 import com.example.MiHistoriaClinica.repository.MedicineRepository;
 import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
@@ -26,13 +28,15 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepository patientRepository;
     private final CustomRepositoryAccess customRepositoryAccess;
     private final MedicineRepository medicineRepository;
+    private final MedicRepository medicRepository;
 
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository) {
         this.patientRepository = patientRepository;
         this.customRepositoryAccess = customRepositoryAccess;
         this.medicineRepository = medicineRepository;
+        this.medicRepository = medicRepository;
     }
 
 
@@ -148,6 +152,14 @@ public class PatientServiceImpl implements PatientService {
         ModelMapper modelMapper = new ModelMapper();
         PatientModel patientModel = getPatientById(patientId);
         return modelMapper.map(patientModel, PatientDTO.class);
+    }
+
+    public void addTurno(Long patientId, Long medicId, TurnoDTO request) {
+        PatientModel patient = patientRepository.findById(patientId).get();
+        MedicModel medic = medicRepository.findById(medicId).get();
+
+        customRepositoryAccess.addTurno(patient, medic, request);
+
     }
 }
 

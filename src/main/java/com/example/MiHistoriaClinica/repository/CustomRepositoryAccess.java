@@ -21,9 +21,10 @@ public class CustomRepositoryAccess {
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
     private final MedicalAppointmentRepository medicalAppointmentRepository;
+    private final TurnosRepository turnosRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalAppointmentRepository medicalAppointmentRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalAppointmentRepository medicalAppointmentRepository, TurnosRepository turnosRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
@@ -31,6 +32,8 @@ public class CustomRepositoryAccess {
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
         this.medicalAppointmentRepository = medicalAppointmentRepository;
+
+        this.turnosRepository = turnosRepository;
     }
 
 
@@ -133,6 +136,20 @@ public class CustomRepositoryAccess {
         medicalAppointmentSaved.setMatricula(medic.get().getMatricula());
 
         return  medicalAppointmentRepository.save(medicalAppointmentSaved);
+
+    }
+
+    public Turnos addTurno(PatientModel patient, MedicModel medic, TurnoDTO request) {
+        Turnos turnoSaved = new Turnos();
+
+        turnoSaved.setFechaTurno(request.getFechaTurno());
+        turnoSaved.setHoraTurno(request.getHoraTurno());
+
+        turnoSaved.setMedicFullName(medic.getName() + " " + medic.getLastname());
+
+        turnoSaved.setPatient(patient);
+
+        return turnosRepository.save(turnoSaved);
 
     }
 }
