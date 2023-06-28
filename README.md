@@ -16,10 +16,10 @@
         --> deletePatientMedicine                                       OK                  OK
 	
   * ABM estudios--> AnalysisModel
-      --> createPatientAnalysis (medic)                                 OK                en proceso
+      --> createPatientAnalysis (medic)                                 OK                  OK
       --> getPatientAnalysis    (medic)                                 OK                   -                
-      --> getAnalysis           (patient)                               OK                   -
-      --> updateAnalysisStatus  (patient)                               OK                   -
+      --> getAnalysis           (patient)                               OK                  OK
+      --> updateAnalysisStatus  (patient)                               OK                  OK
       --> deletePatientAnalysis (medic)                                 OK                   -
 
   * Altas historias clinicas ---> createPatientMedicalHistory 	        OK 	                OK
@@ -41,7 +41,7 @@
   * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
   * Cambiar estado de estudios como paciente                            OK                  OK 
   * Cambiar estado medicamento desde el paciente 			            OK	                OK 
-  * Cambiar estado de estudios como paciente                            OK                  - 
+  * Cambiar estado de estudios como paciente                            OK                  OK
     --> si esta pendiente o realizado                                                       
 
   * Filtrar listas                                                      OK                  OK
@@ -72,3 +72,4 @@
   * Armar métodos getMedicicinesByName(), getMedicinesByStatus(), etc
 * Agregar LOGO
 * Agregar "perfil"
+* Editar analysis que cargó un médico y no están finalizados

@@ -65,6 +65,14 @@ export class PatientService {
         return this.http.get<any[]>('http://localhost:8080/patient/get-medicines', {headers: headers});
     }
 
+    public getAnalysisList(token: string): Observable<any[]> {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/analysis/patient/get-analysis', {headers: headers});
+    }
+
     public getAppointmentsList(token: string): Observable<any[]>{
         let headers = new HttpHeaders();
         if (token) {
@@ -101,7 +109,12 @@ export class PatientService {
         return this.http.put("http://localhost:8080/patient/update-medicine-status", null, {params: params});
     }
 
+    updateAnalysisStatus(analysis_id: number, status: string) {
+        let params = new HttpParams().set("status", status);
+        let headers = new HttpHeaders().set("analysis_id", analysis_id.toString())
 
+        return this.http.put("http://localhost:8080/analysis/patient/update-analysis-status", null, {headers: headers, params: params});
+    }
 
 }
 

@@ -17,25 +17,23 @@
     </div>
 </div>
 <br>-->
-<!--
+
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
-        <th>Medicación</th>
-        <th>Compuesto activo</th>
-        <th>Laboratorio</th>
+        <th>Estudio</th>
+        <th>Centro médico</th>
         <th>Descripción</th>
         <th>Estado</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let analysis of analysis">
-        <td>{{ analysis.medicineName }}</td>
-        <td>{{ analysis.activeIngredient }}</td>
-        <td>{{ analysis.lab }}</td>
+    <tr *ngFor="let analysis of analysisList">
+        <td>{{ analysis.name }}</td>
+        <td>{{ analysis.medicalCenter }}</td>
         <td>{{ analysis.description }}</td>
         <td>
-            <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(medicine.medicineId, medicine.status)">
+            <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
                 <option value="" disabled selected>Ingrese estado</option>
                 <option value="en curso">En curso</option>
                 <option value="pendiente">Pendiente</option>
@@ -45,4 +43,4 @@
     </tr>
     </tbody>
 </table>
--->
+
