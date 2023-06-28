@@ -99,7 +99,7 @@ public class PatientController {
         return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
     }
 
-    @GetMapping("/getMedicineByStatus")
+    @GetMapping("/getMedicinesByStatus")
     public ResponseEntity<List<MedicineModel>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
                                                                  @RequestParam("status") String status) throws InvalidTokenException {
 

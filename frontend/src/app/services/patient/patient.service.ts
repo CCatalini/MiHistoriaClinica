@@ -73,6 +73,16 @@ export class PatientService {
         return this.http.get<any[]>('http://localhost:8080/medicalAppointment/patient/get', {headers: headers});
     }
 
+    getMedicinesByStatus(status: string) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        let params = new HttpParams().set("status", status);
+        return this.http.get<any[]>("http://localhost:8080/patient/getMedicinesByStatus", { headers: headers, params: params });
+    }
+
 
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
@@ -91,13 +101,19 @@ export class PatientService {
         return this.http.put("http://localhost:8080/patient/update-medicine-status", null, {params: params});
     }
 
-    getMedicineByStatus(status: string){
+
+
+}
+
+
+/*
+    getMedicinesByStatus(status: string) {
         const token = localStorage.getItem('token');
         let params = new HttpHeaders();
         if (token) {
             params = params.set('Authorization', "Bearer " + token).set("status", status);
         }
-        return this.http.put("http://localhost:8080/patient/getMedicineByStatus", null, {params: params});
+        return this.http.get<any[]>("http://localhost:8080/patient/getMedicinesByStatus", { params: params });
     }
 
-}
+ */

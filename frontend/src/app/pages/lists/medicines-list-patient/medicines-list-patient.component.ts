@@ -70,8 +70,56 @@ export class MedicinesListPatientComponent implements OnInit {
         );
     }
 
-    getMedicineByStatus(status: string){
-        this.patientService.getMedicineByStatus(status).subscribe(
+    getMedicinesByStatus(status: string) {
+
+        if(status === "santi" ) {
+            const token = localStorage.getItem('token')
+            this.patientService.getMedicinesList(token!).subscribe(
+                (data: any[]) => {
+                    console.log('Medicines List:', data.map(medicine => ({ medicineId: medicine.medicineId, status: medicine.status })));
+                    if (Array.isArray(data)) {
+                        this.medicines = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
+                }
+            );
+        } else {
+            // Handle the case where the token is not found
+            this.patientService.getMedicinesByStatus(status).subscribe(
+                (medicines: any[]) => {
+                    this.medicines = medicines;
+                    console.log('Se ha filtrado con éxito');
+                },
+                (error: any) => {
+                    console.log('Error al filtrar medicamentos:', error);
+                }
+            );
+        }
+
+
+
+
+    }
+
+
+
+}
+
+
+/* LO QUE DEJO RO
+    getMedicinesByStatus(status: string){
+        this.patientService.getMedicinesByStatus(status).subscribe(
             () => {
                 console.log('Se ha filtrado con éxito');
             },
@@ -80,5 +128,20 @@ export class MedicinesListPatientComponent implements OnInit {
             }
         );
     }
+ */
 
-}
+/*
+    getMedicinesByStatus(status: string) {
+        this.patientService.getMedicinesByStatus(status).subscribe(
+            (medicines: any[]) => {
+                // Actualiza la lista de medicamentos con la respuesta del backend
+                this.medicines = medicines;
+                console.log('Se ha filtrado con éxito');
+            },
+            (error: any) => {
+                console.log('Error al filtrar medicamentos:', error);
+            }
+        );
+    }
+
+ */

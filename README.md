@@ -44,7 +44,7 @@
   * Cambiar estado de estudios como paciente                            OK                  - 
     --> si esta pendiente o realizado                                                       
 
-  * Filtrar listas                                                      -                   -
+  * Filtrar listas                                                      OK                  OK
 
     --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista de especialidades para poder filtrar
   * Agenda de turnos propios
