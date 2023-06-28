@@ -85,6 +85,9 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.getMedicinesByPatientId(id);
     }
 
+    public List<MedicineModel> getMedicinesByStatus(Long id, String status) {
+        return patientRepository.getMedicinesByPatientIdAndStatus(id, status);
+    }
 
     @Override
     public PatientModel updatePatient(Long id, PatientModel newPatient) {
@@ -161,6 +164,8 @@ public class PatientServiceImpl implements PatientService {
         customRepositoryAccess.addTurno(patient, medic, request);
 
     }
+
+
 }
 
 
