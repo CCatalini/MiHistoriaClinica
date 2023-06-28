@@ -64,7 +64,7 @@ public class AnalysisController {
     }
 
     @PutMapping("/patient/update-analysis-status")
-    public ResponseEntity<String> updateAnalysisStatus(@RequestHeader("analysisId") Long analysisId,
+    public ResponseEntity<String> updateAnalysisStatus(@RequestHeader("analysis_id") Long analysisId,
                                                        @RequestParam("status") String status){
         AnalysisModel analysis = analysisService.getAnalysisByAnalysisId(analysisId);
         if (analysis == null)       return new ResponseEntity<>("Analysis no disponible", HttpStatus.NOT_FOUND);
