@@ -49,4 +49,32 @@ export class AnalysisListMedicComponent implements OnInit{
             }
         );
     }
+
+    deleteAnalysis(analysis: any) {
+        if (!analysis.analysis_id) {
+            Swal.fire('Error', 'ID del estudio no válido.', 'error');
+            return;
+        }
+        Swal.fire({
+            title: 'Eliminar medicamento',
+            text: '¿Estás seguro de que quieres eliminar este medicamento?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.userService.deleteAnalysis(analysis.analysis_id).subscribe(
+                    () => {
+                        const index = this.analysisList.findIndex((m) => m.analysis_id === analysis.analysis_id);
+                        if (index !== -1) {
+                            this.analysisList.splice(index, 1);
+                        }
+                    },
+                );
+            }
+        });
+    }
 }

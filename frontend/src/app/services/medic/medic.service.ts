@@ -179,10 +179,24 @@ export class MedicService {
             );
     }
 
+    public deleteAnalysis(analysis_id: number) {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+
+        const params = new HttpParams().set('analysisId', analysis_id.toString());
+        let headers = new HttpHeaders().set('patientLinkCode', linkCode);
+
+        return this.http.delete('http://localhost:8080/analysis/medic/delete-analysis', {params: params,headers: headers})
+            .pipe(
+                map(() => {
+                    Swal.fire(
+                        'Eliminado',
+                        'El estudio ha sido eliminado correctamente.',
+                        'success'
+                    );
+                })
+            );
+    }
+
 }
 
-/*
-    public updateMedicineStatus(medicine:any){
-        return this.http.post(`http://localhost:8080/medic/createMedicalHistory`,medicine);
-    }
- */
+
