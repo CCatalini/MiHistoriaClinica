@@ -20,7 +20,7 @@
       --> getPatientAnalysis    (medic)                                 OK                  OK                
       --> getAnalysis           (patient)                               OK                  OK
       --> updateAnalysisStatus  (patient)                               OK                  OK
-      --> deletePatientAnalysis (medic)                                 OK                   -
+      --> deletePatientAnalysis (medic)                                 OK                  OK
 
   * Altas historias clinicas ---> createPatientMedicalHistory 	        OK 	                OK
 
@@ -45,20 +45,15 @@
 
   * Filtrar listas                                                      OK                  OK
 
-    --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista de especialidades para poder filtrar
-  * Agenda de turnos propios
-    --> que el paciente pueda añadir su propio turno, viendo su lista de medicos y teniendo la opcion de cargar un medico nuevo 
-    -→ que para el médico nuevo se muestre toda la lista de medicos ya registrados
+  * Agenda de turnos propios                                            --                  --
 
+    --> que el paciente pueda añadir su propio turno, viendo SU lista de medicos y teniendo la opcion de cargar un medico nuevo
+    --> el método que usemos para cargar un nuevo médico debería verificar que no esté ya cargado
+    --> que para el médico nuevo se muestre toda la lista de medicos ya registrados
+    --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista para poder filtrar
 
+    
 
-
-
-TODO 28/6
-    analysis-list-medic
-    analysis-list-patient 
-
-    los dos desde el frton 
 
 
 ## Casos de Usos Deseables:
@@ -69,12 +64,9 @@ TODO 28/6
 
 
 ## TODO
-* Finalizar consulta desde paciente (método que borre el patientLinkCode)
-* Mostrar datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
-* Agregar fecha de emisión a medicines, analysis y medicalAppointment ??
-* FILTRAR listas 
-  * Por nombre de medicamento, laboratorio, estado, nombre de estudio, etc
-  * Armar métodos getMedicicinesByName(), getMedicinesByStatus(), etc
+* Mostrar PERFIL con datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
+* Agregar FECHA de emisión a medicines, analysis y medicalAppointment ??
+* FILTRAR listas por fecha
 * Agregar LOGO
-* Agregar "perfil"
 * Editar analysis que cargó un médico y no están finalizados
+* Finalizar consulta desde paciente (método que borre el patientLinkCode)

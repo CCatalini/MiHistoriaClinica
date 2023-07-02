@@ -25,6 +25,7 @@
         <th>Centro médico</th>
         <th>Descripción</th>
         <th>Estado</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -33,6 +34,9 @@
         <td>{{ analysis.medicalCenter }}</td>
         <td>{{ analysis.description }}</td>
         <td>{{ analysis.status }}</td>
+        <td>
+            <button class="btn btn-danger" (click)="deleteAnalysis(analysis)">Eliminar</button>
+        </td>
     </tr>
     </tbody>
 </table>

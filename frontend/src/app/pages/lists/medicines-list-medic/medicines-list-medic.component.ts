@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { MedicService } from '../../../services/medic/medic.service';
-import { PatientService } from "../../../services/patient/patient.service";
 
 @Component({
     selector: 'app-medicines-list',
