@@ -1,1 +1,39 @@
-<p>analysis-list-medic works!</p>
+<h1 class="text-center">Estudios</h1>
+
+<!--<div class="row mb-3">
+    <div class="col-12 text-center">
+        <div class="d-inline-block">
+            <p>Filtrar por estado:</p>
+            <select class="form-control" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+
+                <option value="" disabled selected>Seleccione estado</option>
+                <option value="en curso">En curso</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="finalizado">Finalizado</option>
+                <option value="santi">Sin Filtro</option>
+
+            </select>
+        </div>
+    </div>
+</div>
+<br>-->
+
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Estudio</th>
+        <th>Centro médico</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let analysis of analysisList">
+        <td>{{ analysis.name }}</td>
+        <td>{{ analysis.medicalCenter }}</td>
+        <td>{{ analysis.description }}</td>
+        <td>{{ analysis.status }}</td>
+    </tr>
+    </tbody>
+</table>
+
