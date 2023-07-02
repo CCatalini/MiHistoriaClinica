@@ -17,7 +17,7 @@
 	
   * ABM estudios--> AnalysisModel
       --> createPatientAnalysis (medic)                                 OK                  OK
-      --> getPatientAnalysis    (medic)                                 OK                   -                
+      --> getPatientAnalysis    (medic)                                 OK                  OK                
       --> getAnalysis           (patient)                               OK                  OK
       --> updateAnalysisStatus  (patient)                               OK                  OK
       --> deletePatientAnalysis (medic)                                 OK                   -
@@ -32,11 +32,10 @@
   * Ver historia clinica como medico                                    OK                  OK
   * Modificar historia clinica como medico                              OK                  - !!!
   * Alta  de consulta 						                            OK	                OK
-  * Ver Historial de consulta        (como médico y como paciente)      OK                  OK como médico
-                                                                                            OK como paciente
+  * Ver Historial de consulta        (como médico y como paciente)      OK                  OK 
 
   * Ver lista de medicamentos desde el paciente 			            OK	                OK
-  * Ver estudios como paciente                                          OK                  -
+  * Ver estudios como paciente                                          OK                  OK
 
   * Cambiar estado medicamentos desde el paciente 			            OK	                OK 
   * Cambiar estado de estudios como paciente                            OK                  OK 
