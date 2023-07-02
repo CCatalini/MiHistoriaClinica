@@ -21,13 +21,10 @@ import {MedicalHistoryListComponent} from "./pages/lists/medical-history-list-pa
 import {EditMedicineComponent} from "./pages/lists/edit-medicine/edit-medicine.component";
 import {MedicinesListMedicComponent} from "./pages/lists/medicines-list-medic/medicines-list-medic.component";
 import {AnalysisListPatientComponent} from "./pages/lists/analysis-list-patient/analysis-list-patient.component";
-import {
-    MedicalHistoryListMedicComponent
-} from "./pages/lists/medical-history-list-medic/medical-history-list-medic.component";
+import {MedicalHistoryListMedicComponent} from "./pages/lists/medical-history-list-medic/medical-history-list-medic.component";
 import {AppointmentsListMedicComponent} from "./pages/lists/appointments-list-medic/appointments-list-medic.component";
-import {
-    AppointmentsListPatientComponent
-} from "./pages/lists/appointments-list-patient/appointments-list-patient.component";
+import {AppointmentsListPatientComponent} from "./pages/lists/appointments-list-patient/appointments-list-patient.component";
+import {AnalysisListMedicComponent} from "./pages/lists/analysis-list-medic/analysis-list-medic.component";
 
 const routes: Routes = [
     {
@@ -121,6 +118,11 @@ const routes: Routes = [
       pathMatch:'full'
   },
   {
+      path:'medic/analysisList',
+      component:AnalysisListMedicComponent,
+      pathMatch:'full'
+  },
+  {
       path:'patient/generateLinkCode',
       component:GenerateLinkCodeComponent,
       pathMatch:'full'
@@ -150,7 +152,6 @@ const routes: Routes = [
         component:AppointmentsListPatientComponent,
         pathMatch:'full'
     },
-
 ];
 
 @NgModule({

@@ -124,7 +124,17 @@ export class MedicService {
     }
 
     public getAnalysisList() {
-        return this.http.get('http://localhost:8080/analysis/findAllAnalysis', {});
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!linkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }   let headers = new HttpHeaders();
+        headers = headers.set('patientLinkCode', linkCode);
+        return this.http.get('http://localhost:8080/analysis/medic/get-analysis', {headers});
     }
 
     public getAppointmentsList(): Observable<any[]>{
@@ -133,7 +143,6 @@ export class MedicService {
         headers = headers.set('patientLinkCode', linkCode);
         return this.http.get<any[]>('http://localhost:8080/medicalAppointment/medic/get', {headers: headers});
     }
-
 
     logoutMedic(): Observable<any> {
         const token = localStorage.getItem('token');
