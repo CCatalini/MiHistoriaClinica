@@ -38,6 +38,7 @@ import { MedicalHistoryListMedicComponent } from './pages/lists/medical-history-
 import { AnalysisListMedicComponent } from './pages/lists/analysis-list-medic/analysis-list-medic.component';
 import { AppointmentsListMedicComponent } from './pages/lists/appointments-list-medic/appointments-list-medic.component';
 import { AppointmentsListPatientComponent } from './pages/lists/appointments-list-patient/appointments-list-patient.component';
+import { EditMedicalHistoryComponent } from './pages/medic/edit-medical-history/edit-medical-history.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { AppointmentsListPatientComponent } from './pages/lists/appointments-lis
     AnalysisListMedicComponent,
     AppointmentsListMedicComponent,
     AppointmentsListPatientComponent,
+    EditMedicalHistoryComponent,
   ],
     imports: [
         BrowserModule,

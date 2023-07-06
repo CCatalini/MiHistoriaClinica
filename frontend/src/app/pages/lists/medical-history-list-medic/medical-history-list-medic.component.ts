@@ -22,7 +22,6 @@ export class MedicalHistoryListMedicComponent implements OnInit{
     constructor(private medicService: MedicService, private router: Router) {}
 
     ngOnInit(): void {
-        // Verify user
         if (localStorage.getItem('userType') != 'MEDIC') {
             this.router.navigate(['/patient/login']);
         } else {
@@ -33,7 +32,7 @@ export class MedicalHistoryListMedicComponent implements OnInit{
     private fetchMedicalHistory(): void {
         this.medicService.getPatientMedicalHistory().subscribe(
             (response) => {
-                this.medicalHistory = response; // Assign the response data to medicalHistory object
+                this.medicalHistory = response;
             },
             (error) => {
                 console.log('Error occurred while fetching medical history:', error);
