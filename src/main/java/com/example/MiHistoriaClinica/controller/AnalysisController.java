@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.dto.AnalysisDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
+import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.service.AnalysisServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -74,6 +75,15 @@ public class AnalysisController {
 
         return ResponseEntity.ok("Estado actualizado");
     }
+
+    @GetMapping("/patient/get-analysis-byStatus")
+    public ResponseEntity<List<AnalysisModel>> getAnalysisByStatus(@RequestHeader("Authorization") String token,
+                                                                   @RequestParam("status") String status) throws InvalidTokenException {
+        List<AnalysisModel> filteredAnalysis = analysisService.getAnalysisByStatus(jwtValidator.getId(token), status);
+        return new ResponseEntity<>(filteredAnalysis, HttpStatus.OK);
+    }
+
+
 
 
 }

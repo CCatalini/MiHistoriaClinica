@@ -95,5 +95,7 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
 
 
-
+    public List<AnalysisModel> getAnalysisByStatus(Long id, String status) {
+        return patientRepository.getAnalysisByPatientIdAndStatus(id, status);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.repository;
 
 
+import com.example.MiHistoriaClinica.model.AnalysisModel;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
@@ -43,6 +44,10 @@ public interface PatientRepository extends JpaRepository<PatientModel, Long> {
     @Query("SELECT m FROM PatientModel p JOIN p.medicines m WHERE p.patientId = :patientId AND m.status = :status")
     List<MedicineModel> getMedicinesByPatientIdAndStatus(@Param("patientId") Long id,
                                                          @Param("status") String status);
+
+    @Query("SELECT m FROM PatientModel p JOIN p.analysis m WHERE p.patientId = :patientId AND m.status = :status")
+    List<AnalysisModel> getAnalysisByPatientIdAndStatus(@Param("patientId") Long id,
+                                                        @Param("status") String status);
 
     // void assignRole(Long patient_id, Long role_id);
 }
