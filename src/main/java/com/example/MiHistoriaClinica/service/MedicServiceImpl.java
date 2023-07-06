@@ -251,5 +251,8 @@ public class MedicServiceImpl implements MedicService {
     }
 
 
-
+    public List<MedicineModel> getAnalysisByStatus(String patientLinkCode, String status) {
+        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
+        return patientRepository.getMedicinesByPatientIdAndStatus(patient.get().getPatientId(), status);
+    }
 }

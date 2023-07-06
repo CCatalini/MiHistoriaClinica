@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -155,6 +156,13 @@ public class MedicController {
         if (medicines==null)    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(medicines, HttpStatus.OK);
 
+    }
+
+    @GetMapping("/get-medicines-byStatus")
+    public ResponseEntity<List<MedicineModel>> getPatientMedicinesByStatus(@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                           @RequestParam("status") String status){
+       List<MedicineModel> filteredMedicines = medicService.getAnalysisByStatus(patientLinkCode, status);
+        return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
     }
 
 
