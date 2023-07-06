@@ -31,7 +31,6 @@ import { MedicsListComponent } from './pages/lists/medics-list/medics-list.compo
 import { MedicinesListPatientComponent } from './pages/lists/medicines-list-patient/medicines-list-patient.component';
 import { MatListModule } from '@angular/material/list';
 import { GenerateLinkCodeComponent} from "./pages/patient/generate-link-code/generate-link-code.component";
-import { EditMedicineComponent } from './pages/lists/edit-medicine/edit-medicine.component';
 import { MedicinesListMedicComponent } from './pages/lists/medicines-list-medic/medicines-list-medic.component';
 import { AnalysisListPatientComponent } from './pages/lists/analysis-list-patient/analysis-list-patient.component';
 import { MedicalHistoryListComponent } from "./pages/lists/medical-history-list-patient/medical-history-list.component";
@@ -61,7 +60,6 @@ import { AppointmentsListPatientComponent } from './pages/lists/appointments-lis
     MedicsListComponent,
     MedicinesListPatientComponent,
     GenerateLinkCodeComponent,
-    EditMedicineComponent,
     MedicinesListMedicComponent,
     AnalysisListPatientComponent,
     MedicalHistoryListComponent,
