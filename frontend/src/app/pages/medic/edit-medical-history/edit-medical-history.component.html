@@ -20,7 +20,7 @@
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Altura:</mat-label>
                             <input required [(ngModel)]="medicalHistoryModel.height" name="height" matInput
-                                   placeholder="Ingrese la altura">
+                                   placeholder="{{ medicalHistoryModel.height ? medicalHistoryModel.height : 'Ingrese la altura' }}">
                         </mat-form-field>
 
                         <mat-form-field class="full-width" appearance="outline">

@@ -4,9 +4,9 @@ import {Router} from "@angular/router";
 import {MedicService} from "../../../services/medic/medic.service";
 
 @Component({
-  selector: 'app-medical-history-list-medic',
-  templateUrl: './medical-history-list-medic.component.html',
-  styleUrls: ['./medical-history-list-medic.component.css']
+    selector: 'app-medical-history-list-medic',
+    templateUrl: './medical-history-list-medic.component.html',
+    styleUrls: ['./medical-history-list-medic.component.css']
 })
 export class MedicalHistoryListMedicComponent implements OnInit{
     public medicalHistory: any = {

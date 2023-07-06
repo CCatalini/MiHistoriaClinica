@@ -30,8 +30,8 @@
             <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
         </mat-list-item>
     </mat-list>
-    <button mat-button class="edit-button" [routerLink]="'/medic/edit-medicalHistory'">Editar</button>
-
+    <button mat-button class="edit-button" [routerLink]="'/medic/edit-medicalHistory'" [queryParams]="{ data: medicalHistory | json }">Editar</button>
 </div>
+
 
 <!--todo podría agregar lista con medicamentos en curso debajo de la historia clínica-->

@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {MedicService} from "../../../services/medic/medic.service";
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { MedicService } from "../../../services/medic/medic.service";
+import { Router, ActivatedRoute } from "@angular/router";
 import Swal from "sweetalert2";
 
 @Component({
-  selector: 'app-edit-medical-history',
-  templateUrl: './edit-medical-history.component.html',
-  styleUrls: ['./edit-medical-history.component.css']
+    selector: 'app-edit-medical-history',
+    templateUrl: './edit-medical-history.component.html',
+    styleUrls: ['./edit-medical-history.component.css']
 })
-export class EditMedicalHistoryComponent implements OnInit{
+export class EditMedicalHistoryComponent implements OnInit {
     public medicalHistoryModel = {
         weight: '',
         height: '',
@@ -17,17 +17,27 @@ export class EditMedicalHistoryComponent implements OnInit{
         chronicDisease: '',
         actualMedicine: '',
         familyMedicalHistory: ''
-    }
+    };
 
     public patient = {
         code: '',
     };
 
-    constructor(private userService: MedicService, private router: Router) {}
+    constructor(
+        private userService: MedicService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute
+    ) {}
 
     ngOnInit(): void {
         if (localStorage.getItem('userType') !== 'MEDIC') {
             window.location.href = '/medic/login';
+        }
+
+        // Get the data from query parameters
+        const data = this.activatedRoute.snapshot.queryParams['data'];
+        if (data) {
+            this.medicalHistoryModel = JSON.parse(data);
         }
     }
 
@@ -67,13 +77,13 @@ export class EditMedicalHistoryComponent implements OnInit{
 
         updateMedicalHistoryObservable.subscribe(
             (data) => {
-                Swal.fire('Historia clínica guardada', 'Historia clínica guardada con éxito en el sistema.', 'success');
-                this.router.navigate(['medic/attendPatient']);
-            }, (error) => {
+                Swal.fire('Historia clínica actualizada', 'Historia clínica actualizada con éxito en el sistema.', 'success');
+                this.router.navigate(['medic/medicalHistoryList']);
+            },
+            (error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
         );
     }
 }
-
