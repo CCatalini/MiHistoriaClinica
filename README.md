@@ -43,7 +43,13 @@
   * Cambiar estado de estudios como paciente                            OK                  OK
     --> si esta pendiente o realizado                                                       
 
-  * Filtrar listas                                                      OK                  OK
+  * Filtrar listas por estado                                           OK                  OK
+  --> Medicamentos como paciente                                        OK
+  --> Medicamentos como medico                                          OK
+  --> Analysis como paciente                                            OK
+  --> Análisis como médico                                              OK   
+
+
 
   * Agenda de turnos propios                                            --                  --
 
