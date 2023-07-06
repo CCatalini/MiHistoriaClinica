@@ -10,10 +10,4 @@
        *ngIf="isPatientPage()" (click)="logoutPatient()">
         Cerrar sesión
     </a>
-    <a [routerLink]="'/'" mat-button class="example-icon favorite-icon"
-       aria-label="Example icon-button with heart icon"
-       style="font-size: 16px;"
-       *ngIf="isMedicPage()" (click)="logoutMedic()">
-        Cerrar sesión
-    </a>
 </mat-toolbar>
