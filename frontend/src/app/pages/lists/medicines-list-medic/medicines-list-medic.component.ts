@@ -81,4 +81,47 @@ export class MedicinesListMedicComponent implements OnInit {
             }
         });
     }
+
+    getMedicinesByStatus(status: string) {
+        if (status === "santi") {
+            const getMedicinesListObservable = this.userService.getMedicinesList();
+            if (!getMedicinesListObservable) {
+                Swal.fire('Error', 'El método getMedicinesList no devuelve un observable.', 'error');
+                return;
+            }
+            getMedicinesListObservable?.subscribe(
+                (data: Object) => { // Change the type of 'data' to 'Object'
+                    console.log('Medicines List:', data);
+                    if (Array.isArray(data)) {
+                        this.medicines = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
+                }
+            );
+        } else {
+            this.userService.getMedicinesByStatus(status).subscribe(
+                (medicines: any[]) => {
+                    this.medicines = medicines;
+                    console.log('Se ha filtrado con éxito');
+                },
+                (error: any) => {
+                    console.log('Error al filtrar medicamentos:', error);
+                }
+            );
+        }
+    }
+
+
+
 }

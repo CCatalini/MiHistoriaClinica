@@ -106,13 +106,7 @@ export class MedicinesListPatientComponent implements OnInit {
                 }
             );
         }
-
-
-
-
     }
-
-
 
 }
 
