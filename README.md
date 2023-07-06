@@ -44,7 +44,7 @@
     --> si esta pendiente o realizado                                                       
 
   * Filtrar listas por estado                                                             
-  --> Medicamentos como paciente                                        OK
+  --> Medicamentos como paciente                                        OK                  OK
   --> Medicamentos como medico                                          OK
   --> Analysis como paciente                                            OK
   --> Análisis como médico                                              OK   
