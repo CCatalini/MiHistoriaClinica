@@ -97,6 +97,24 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/create-medical-history', medicalHistoryModel, {headers});
     }
 
+    public updateMedicalHistory(medicalHistoryModel: any) {
+        const token = localStorage.getItem('token');
+        const patientLinkCode = localStorage.getItem('patientLinkCode') || '';
+        if (!patientLinkCode) {
+            Swal.fire(
+                'Error',
+                'No se proporcionó el código de enlace del paciente.',
+                'error'
+            );
+            return;
+        }   let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+            headers = headers.set('patientLinkCode', patientLinkCode);
+        }
+        return this.http.post('http://localhost:8080/medic/update-medical-history', medicalHistoryModel, {headers});
+    }
+
     public getPatientsList(token: string): Observable<any[]> {
         let headers = new HttpHeaders();
         if (token) {

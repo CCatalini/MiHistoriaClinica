@@ -24,6 +24,7 @@ import {MedicalHistoryListMedicComponent} from "./pages/lists/medical-history-li
 import {AppointmentsListMedicComponent} from "./pages/lists/appointments-list-medic/appointments-list-medic.component";
 import {AppointmentsListPatientComponent} from "./pages/lists/appointments-list-patient/appointments-list-patient.component";
 import {AnalysisListMedicComponent} from "./pages/lists/analysis-list-medic/analysis-list-medic.component";
+import {EditMedicalHistoryComponent} from "./pages/medic/edit-medical-history/edit-medical-history.component";
 
 const routes: Routes = [
     {
@@ -141,11 +142,16 @@ const routes: Routes = [
       component:AppointmentsListMedicComponent,
       pathMatch:'full'
   },
-    {
-        path:'patient/appointmentList',
-        component:AppointmentsListPatientComponent,
-        pathMatch:'full'
-    },
+  {
+      path:'patient/appointmentList',
+      component:AppointmentsListPatientComponent,
+      pathMatch:'full'
+  },
+  {
+      path:'medic/edit-medicalHistory',
+      component:EditMedicalHistoryComponent,
+      pathMatch:'full'
+  },
 ];
 
 @NgModule({
