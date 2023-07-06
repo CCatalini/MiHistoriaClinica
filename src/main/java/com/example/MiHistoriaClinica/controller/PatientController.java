@@ -51,12 +51,15 @@ public class PatientController {
         return jwt.invalidateToken(token);
     }
 
+
     @GetMapping("/get-patient-info")
     public ResponseEntity<PatientDTO> getPatientInfo(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
         PatientDTO patient = patientService.getPatientInfo(patientId);
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
+
+
 
     @PostMapping("/generate-link-code")
     @ResponseBody
@@ -65,24 +68,22 @@ public class PatientController {
         return ResponseEntity.ok(linkCode);
     }
 
-    /** OK */
+
+    /*********      Métodos médicos     ***************/
+
     @GetMapping("/get-medics")
     public ResponseEntity<List<MedicModel>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
         List<MedicModel> medics = patientService.getMedicsByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
-    /** OK */
+
+    /********       Métodos medicamentos        ****************/
+
     @GetMapping("/get-medicines")
     public ResponseEntity<List<MedicineModel>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
         List<MedicineModel> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medicines, HttpStatus.OK);
-    }
-
-    @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
-        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
     @PutMapping("/update-medicine-status")
@@ -101,11 +102,20 @@ public class PatientController {
 
     @GetMapping("/getMedicinesByStatus")
     public ResponseEntity<List<MedicineModel>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
-                                                                 @RequestParam("status") String status) throws InvalidTokenException {
+                                                                    @RequestParam("status") String status) throws InvalidTokenException {
 
         List<MedicineModel> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
         return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
 
+    }
+
+
+    /**********     Métodos historia médica     ****************/
+
+    @GetMapping("/get-medical-history")
+    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
+        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
 
