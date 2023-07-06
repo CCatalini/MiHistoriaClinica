@@ -3,7 +3,8 @@ package com.example.MiHistoriaClinica.controller;
 import com.example.MiHistoriaClinica.dto.AnalysisDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.AnalysisModel;
-import com.example.MiHistoriaClinica.model.MedicineModel;
+import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.AnalysisServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/analysis")
@@ -22,12 +24,14 @@ import java.util.List;
 public class AnalysisController {
 
     private final AnalysisServiceImpl analysisService;
+    private final PatientRepository aux;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     @Autowired
-    public AnalysisController(AnalysisServiceImpl analysisService) {
+    public AnalysisController(AnalysisServiceImpl analysisService, PatientRepository patientRepository) {
         this.analysisService = analysisService;
+        this.aux = patientRepository;
     }
 
 
@@ -57,6 +61,16 @@ public class AnalysisController {
         analysisService.deletePatientAnalysis(patientLinkCode, analysisId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/medic/get-analysis-byStatus")
+    public ResponseEntity<List<AnalysisModel>> getPatientAnalysisByStatus(@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                          @RequestParam("status") String status){
+        Optional<PatientModel> patientModel = aux.findByLinkCode(patientLinkCode);
+        List<AnalysisModel> filteredAnalysis = analysisService.getAnalysisByStatus(patientModel.get().getPatientId(), status);
+        return new ResponseEntity<>(filteredAnalysis, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/patient/get-analysis")
     public ResponseEntity<List<AnalysisModel>> getMyAnalysisList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
