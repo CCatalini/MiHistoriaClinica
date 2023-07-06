@@ -13,12 +13,18 @@ export class NavbarComponent implements OnInit {
 
     ngOnInit(): void {}
 
-    isPatientPage(): boolean {
-        return this.router.url.includes('/patient')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup')));
-    }
-
-    isMedicPage(): boolean {
-        return this.router.url.includes('/medic')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup'))&&!this.router.url.includes('/patient'));
+    logoutMedic(): void {
+        this.medicService.logoutMedic().subscribe(
+            () => {
+                localStorage.setItem('token', '');
+                localStorage.setItem('userType', '');
+                localStorage.setItem('patientLinkCode', '');
+                this.router.navigate(['/']);
+            },
+            (error) => {
+                console.error('Error al cerrar sesión:', error);
+            }
+        );
     }
 
     logoutPatient(): void {
@@ -35,23 +41,21 @@ export class NavbarComponent implements OnInit {
         );
     }
 
-    logoutMedic(): void {
-        this.medicService.logoutMedic().subscribe(
-            () => {
-                localStorage.setItem('token', '');
-                localStorage.setItem('userType', '');
-                localStorage.setItem('patientLinkCode', '');
-                this.router.navigate(['/']);
-            },
-            (error) => {
-                console.error('Error al cerrar sesión:', error);
-            }
-        );
+    goBack(): void {
+        if (this.isMedicalHistoryListPage()) {
+            this.router.navigate(['/medic/attendPatient']);
+        } else {
+            window.history.back();
+        }
     }
 
-    goBack(): void {
-            window.history.back();
-     }
+    isPatientPage(): boolean {
+        return this.router.url.includes('/patient')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup')));
+    }
+
+    isMedicPage(): boolean {
+        return this.router.url.includes('/medic')&&(!this.router.url.includes('/login')&&(!this.router.url.includes('/signup'))&&!this.router.url.includes('/patient'));
+    }
 
     isHomePage() {
         if (this.router.url == '/patient/home' || this.router.url == '/medic/home')
@@ -69,6 +73,13 @@ export class NavbarComponent implements OnInit {
 
     isAttendPatientPage(){
         if (this.router.url == '/medic/attendPatient')
+            return true;
+        else
+            return false;
+    }
+
+    isMedicalHistoryListPage(){
+        if (this.router.url == '/medic/medicalHistoryList')
             return true;
         else
             return false;
