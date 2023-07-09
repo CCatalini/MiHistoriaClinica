@@ -45,7 +45,7 @@
 
   * Filtrar listas por estado                                                             
   --> Medicamentos como paciente                                        OK                  OK
-  --> Medicamentos como medico                                          OK
+  --> Medicamentos como medico                                          OK                  OK
   --> Analysis como paciente                                            OK
   --> Análisis como médico                                              OK   
 
