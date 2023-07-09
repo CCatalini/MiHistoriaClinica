@@ -148,6 +148,13 @@ export class MedicService {
         return this.http.get<any[]>("http://localhost:8080/medic/get-medicines-byStatus", { headers: headers, params: params });
     }
 
+    getAnalysisByStatus(status: string) {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        let headers = new HttpHeaders().set('patientLinkCode', linkCode);
+        let params = new HttpParams().set("status", status);
+        return this.http.get<any[]>("http://localhost:8080/analysis/medic/get-analysis-byStatus", { headers: headers, params: params });
+    }
+
     public getAnalysisList() {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
         if (!linkCode) {
