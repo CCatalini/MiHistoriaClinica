@@ -77,4 +77,45 @@ export class AnalysisListMedicComponent implements OnInit{
             }
         });
     }
+
+    getAnalysisByStatus(status: string) {
+        if (status === "santi") {
+            const getAnalysisListObservable = this.userService.getAnalysisList();
+            if (!getAnalysisListObservable) {
+                Swal.fire('Error', 'El método getMedicinesList no devuelve un observable.', 'error');
+                return;
+            }
+            getAnalysisListObservable?.subscribe(
+                (data: Object) => { // Change the type of 'data' to 'Object'
+                    console.log('Analysis List:', data);
+                    if (Array.isArray(data)) {
+                        this.analysisList = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
+                }
+            );
+        } else {
+            this.userService.getAnalysisByStatus(status).subscribe(
+                (analysis: any[]) => {
+                    this.analysisList = analysis;
+                    console.log('Se ha filtrado con éxito');
+                },
+                (error: any) => {
+                    console.log('Error al filtrar estudios:', error);
+                }
+            );
+        }
+    }
+
 }

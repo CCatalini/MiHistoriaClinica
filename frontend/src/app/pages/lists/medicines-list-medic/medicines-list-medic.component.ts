@@ -122,6 +122,4 @@ export class MedicinesListMedicComponent implements OnInit {
         }
     }
 
-
-
 }

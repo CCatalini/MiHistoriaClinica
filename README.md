@@ -46,8 +46,8 @@
   * Filtrar listas por estado                                                             
   --> Medicamentos como paciente                                        OK                  OK
   --> Medicamentos como medico                                          OK                  OK
-  --> Analysis como paciente                                            OK
-  --> Análisis como médico                                              OK   
+  --> Analysis como paciente                                            OK                  OK
+  --> Análisis como médico                                              OK                  OK
 
 
 
@@ -76,3 +76,4 @@
 * Agregar LOGO
 * Editar analysis que cargó un médico y no están finalizados
 * Finalizar consulta desde paciente (método que borre el patientLinkCode)
+* Al cargar un nuevo medicamento o análisis, cargar estado = "pendiente" por default
