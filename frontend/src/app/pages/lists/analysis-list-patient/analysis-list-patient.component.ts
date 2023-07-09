@@ -59,17 +59,17 @@ export class AnalysisListPatientComponent implements OnInit{
         );
     }
 
-    /*getAnalysisByStatus(status: string) {
+    getAnalysisByStatus(status: string) {
 
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.userService.getAnalysisList(token!).subscribe(
                 (data: any[]) => {
-                    console.log('Analysis List:', data.map(medicine => ({ analysis_id: analysis.analysis_id, status: analysis.status })));
+                    console.log('Analysis List:', data.map(analysis => ({ medicineId: analysis.analysis_id, status: analysis.status })));
                     if (Array.isArray(data)) {
                         this.analysisList = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de estudios válida.', 'error');
                     }
                 },
                 (error: any) => {
@@ -85,15 +85,15 @@ export class AnalysisListPatientComponent implements OnInit{
             );
         } else {
             // Handle the case where the token is not found
-            this.patientService.getMedicinesByStatus(status).subscribe(
-                (medicines: any[]) => {
-                    this.medicines = medicines;
+            this.userService.getAnalysisByStatus(status).subscribe(
+                (analysis: any[]) => {
+                    this.analysisList = analysis;
                     console.log('Se ha filtrado con éxito');
                 },
                 (error: any) => {
-                    console.log('Error al filtrar medicamentos:', error);
+                    console.log('Error al filtrar estudios:', error);
                 }
             );
         }
-    }*/
+    }
 }

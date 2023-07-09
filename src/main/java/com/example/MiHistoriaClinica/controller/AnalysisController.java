@@ -97,7 +97,4 @@ public class AnalysisController {
         return new ResponseEntity<>(filteredAnalysis, HttpStatus.OK);
     }
 
-
-
-
 }
