@@ -39,15 +39,6 @@ export class PatientService {
         return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, {headers});
     }
 
-    /*public getMedicalHistory(): Observable<string> {
-        const token = localStorage.getItem('token');
-        let headers = new HttpHeaders();
-        if (token) {
-            headers = headers.set('Authorization', "Bearer " + token);
-        }
-        return this.http.get<string>('http://localhost:8080/patient/get-medical-history', {headers: headers});
-    }*/
-
     public getMedicalHistory(): Observable<string> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
@@ -91,6 +82,15 @@ export class PatientService {
         return this.http.get<any[]>("http://localhost:8080/patient/getMedicinesByStatus", { headers: headers, params: params });
     }
 
+    getAnalysisByStatus(status: string) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        let params = new HttpParams().set("status", status);
+        return this.http.get<any[]>("http://localhost:8080/analysis/patient/get-analysis-byStatus", { headers: headers, params: params });
+    }
 
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
