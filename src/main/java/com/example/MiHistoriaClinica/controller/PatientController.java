@@ -77,6 +77,8 @@ public class PatientController {
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
+    // todo método getAllMedics() que nos devuelva la lista de todos los médicos guardados
+
 
     /********       Métodos medicamentos        ****************/
 

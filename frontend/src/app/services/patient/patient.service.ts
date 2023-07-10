@@ -27,6 +27,11 @@ export class PatientService {
         return this.http.get<any[]>('http://localhost:8080/patient/get-medics', {headers: headers});
     }
 
+    // todo
+    public getAllMedicsList() {
+        return this.http.get<any[]>('http://localhost:8080/medic/get-all');
+    }
+
     /**
      * De esta manera el metodo espera recibir un string que manda el back en vez de un objeto JSON
      */

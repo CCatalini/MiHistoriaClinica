@@ -39,6 +39,8 @@ import { AnalysisListMedicComponent } from './pages/lists/analysis-list-medic/an
 import { AppointmentsListMedicComponent } from './pages/lists/appointments-list-medic/appointments-list-medic.component';
 import { AppointmentsListPatientComponent } from './pages/lists/appointments-list-patient/appointments-list-patient.component';
 import { EditMedicalHistoryComponent } from './pages/medic/edit-medical-history/edit-medical-history.component';
+import { AddTurnoComponent } from './pages/patient/add-turno/add-turno.component';
+import { AllMedicsListComponent } from './pages/lists/all-medics-list/all-medics-list.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +71,8 @@ import { EditMedicalHistoryComponent } from './pages/medic/edit-medical-history/
     AppointmentsListMedicComponent,
     AppointmentsListPatientComponent,
     EditMedicalHistoryComponent,
+    AddTurnoComponent,
+    AllMedicsListComponent,
   ],
     imports: [
         BrowserModule,
