@@ -134,6 +134,7 @@ public class CustomRepositoryAccess {
 
         medicalAppointmentSaved.setMedicFullName(medic.get().getName() + " " + medic.get().getLastname());
         medicalAppointmentSaved.setMatricula(medic.get().getMatricula());
+        medicalAppointmentSaved.setSpecialty(medic.get().getSpecialty());
 
         return  medicalAppointmentRepository.save(medicalAppointmentSaved);
 

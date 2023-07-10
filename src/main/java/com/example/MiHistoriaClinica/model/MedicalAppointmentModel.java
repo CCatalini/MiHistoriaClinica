@@ -19,7 +19,9 @@ public class MedicalAppointmentModel {
     private String observations;
 
     private String medicFullName;
+    private String specialty;
     private Long matricula;
+
 
     // todo agregar specialty
 
@@ -91,4 +93,16 @@ public class MedicalAppointmentModel {
     public void setMatricula(Long matricula) {
         this.matricula = matricula;
     }
+
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+
+
 }
