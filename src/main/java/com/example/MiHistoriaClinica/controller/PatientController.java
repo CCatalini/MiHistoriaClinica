@@ -144,9 +144,11 @@ public class PatientController {
         return new ResponseEntity<>(misTurnos, HttpStatus.OK);
     }
 
-
-
-
+    @DeleteMapping("/delete-turno")
+    public ResponseEntity<Void> deleteTurno (@RequestParam("turnoId") Long id){
+        patientService.deleteTurno(id);
+        return ResponseEntity.ok().build();
+    }
 
 
 

@@ -171,6 +171,10 @@ public class PatientServiceImpl implements PatientService {
 
         return turnosRepository.findByPatient(patient);
     }
+
+    public void deleteTurno(Long id) {
+        turnosRepository.deleteById(id);
+    }
 }
 
 
