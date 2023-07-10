@@ -5,6 +5,7 @@
     <tr>
         <th>Nombre</th>
         <th>Apellido</th>
+        <th>Especialidad</th>
         <th>DNI</th>
         <th>Email</th>
     </tr>
@@ -13,6 +14,7 @@
     <tr *ngFor="let medic of medics">
         <td>{{medic.name}}</td>
         <td>{{medic.lastname}}</td>
+        <td>{{medic.specialty}}</td>
         <td>{{medic.dni}}</td>
         <td>{{medic.email}}</td>
     </tr>

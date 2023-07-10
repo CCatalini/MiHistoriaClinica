@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 @Table(name = "MedicalAppointment")
 public class MedicalAppointmentModel {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -22,14 +21,12 @@ public class MedicalAppointmentModel {
     private String medicFullName;
     private Long matricula;
 
+    // todo agregar specialty
 
     @ManyToOne
     @JoinColumn(name = "patientId")
     @JsonIgnore
     private PatientModel patient;
-
-
-
 
     public PatientModel getPatient() {
         return patient;
