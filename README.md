@@ -51,7 +51,8 @@
 
 
 
-  * Agenda de turnos propios                                            --                  --
+  * Agendar turnos propios                                              --                  --
+  * Listar turnos propios                                               --                  --
 
     --> que el paciente pueda añadir su propio turno, viendo SU lista de medicos y teniendo la opcion de cargar un medico nuevo
     --> el método que usemos para cargar un nuevo médico debería verificar que no esté ya cargado
