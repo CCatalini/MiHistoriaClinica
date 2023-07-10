@@ -9,10 +9,8 @@ import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
-import com.example.MiHistoriaClinica.repository.MedicRepository;
-import com.example.MiHistoriaClinica.repository.MedicineRepository;
-import com.example.MiHistoriaClinica.repository.PatientRepository;
-import com.example.MiHistoriaClinica.repository.CustomRepositoryAccess;
+import com.example.MiHistoriaClinica.model.Turnos;
+import com.example.MiHistoriaClinica.repository.*;
 import com.example.MiHistoriaClinica.service.interfaces.PatientService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +27,16 @@ public class PatientServiceImpl implements PatientService {
     private final CustomRepositoryAccess customRepositoryAccess;
     private final MedicineRepository medicineRepository;
     private final MedicRepository medicRepository;
+    private final TurnosRepository turnosRepository;
 
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository) {
         this.patientRepository = patientRepository;
         this.customRepositoryAccess = customRepositoryAccess;
         this.medicineRepository = medicineRepository;
         this.medicRepository = medicRepository;
+        this.turnosRepository = turnosRepository;
     }
 
 
@@ -166,6 +166,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
 
+    public List<Turnos> getMisTurnos(Long id) {
+        PatientModel patient = patientRepository.findById(id).get();
+
+        return turnosRepository.findByPatient(patient);
+    }
 }
 
 

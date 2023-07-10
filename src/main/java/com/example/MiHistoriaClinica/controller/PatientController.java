@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.model.Turnos;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -137,7 +138,11 @@ public class PatientController {
         return ResponseEntity.ok().build();
     }
 
-
+    @GetMapping("/get-turnos")
+    public ResponseEntity<List<Turnos>> getMisTurnos (@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        List<Turnos> misTurnos = patientService.getMisTurnos(jwtValidator.getId(token));
+        return new ResponseEntity<>(misTurnos, HttpStatus.OK);
+    }
 
 
 
