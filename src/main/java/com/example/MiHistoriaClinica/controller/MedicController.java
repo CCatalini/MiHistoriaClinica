@@ -62,6 +62,12 @@ public class MedicController {
         return new ResponseEntity<>(medic, HttpStatus.OK);
     }
 
+    @GetMapping("/get-all")
+    public ResponseEntity<List<MedicModel>> getAllMedics(){
+        List<MedicModel> medics = medicService.getAllMedics();
+        return new ResponseEntity<>(medics, HttpStatus.OK);
+    }
+
 
     /**                         MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
 

@@ -123,15 +123,16 @@ public class PatientController {
 
 
 
-    /** Métodos para agendar turnos */
+    /** Métodos para turnos */
 
 
-    @PostMapping("/add-turno")
-    public ResponseEntity<Void> addTurno (@RequestHeader("Authorization") String token,
+    @PostMapping("/create-turno")
+    public ResponseEntity<Void> createTurno (@RequestHeader("Authorization") String token,
                                           @RequestParam("medicId") Long medicId,
+                                          @RequestParam("medicalCenter") String medicalCenter,
                                           @RequestBody TurnoDTO request) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
-        patientService.addTurno(patientId, medicId, request);
+        patientService.createTurno(patientId, medicId, request, medicalCenter);
 
         return ResponseEntity.ok().build();
     }

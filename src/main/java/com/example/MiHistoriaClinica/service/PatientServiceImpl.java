@@ -157,11 +157,11 @@ public class PatientServiceImpl implements PatientService {
         return modelMapper.map(patientModel, PatientDTO.class);
     }
 
-    public void addTurno(Long patientId, Long medicId, TurnoDTO request) {
+    public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
         PatientModel patient = patientRepository.findById(patientId).get();
         MedicModel medic = medicRepository.findById(medicId).get();
 
-        customRepositoryAccess.addTurno(patient, medic, request);
+        customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
 
     }
 
