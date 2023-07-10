@@ -84,8 +84,14 @@ public class MedicServiceImpl implements MedicService {
         return medicRepository.save(medic);
     }
 
+    @Override
+    public List<MedicModel> getAllMedics() {
+        return medicRepository.findAll();
+    }
 
-    /** Metodos médico-paciente*/
+
+
+    /***********     Metodos médico-paciente     *********/
 
     /**
      * Este método recibe el código de enlace y el identificador del médico, y utiliza los repositorios de Medic y Patient
@@ -255,4 +261,6 @@ public class MedicServiceImpl implements MedicService {
         Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
         return patientRepository.getMedicinesByPatientIdAndStatus(patient.get().getPatientId(), status);
     }
+
+
 }
