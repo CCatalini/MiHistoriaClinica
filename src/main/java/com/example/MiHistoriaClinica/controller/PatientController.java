@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.model.MedicModel;
 import com.example.MiHistoriaClinica.model.MedicineModel;
 import com.example.MiHistoriaClinica.model.PatientModel;
+import com.example.MiHistoriaClinica.model.Turnos;
 import com.example.MiHistoriaClinica.service.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -123,20 +124,25 @@ public class PatientController {
 
 
 
-    /** Métodos para agendar turnos */
+    /** Métodos para turnos */
 
 
-    @PostMapping("/add-turno")
-    public ResponseEntity<Void> addTurno (@RequestHeader("Authorization") String token,
+    @PostMapping("/create-turno")
+    public ResponseEntity<Void> createTurno (@RequestHeader("Authorization") String token,
                                           @RequestParam("medicId") Long medicId,
+                                          @RequestParam("medicalCenter") String medicalCenter,
                                           @RequestBody TurnoDTO request) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
-        patientService.addTurno(patientId, medicId, request);
+        patientService.createTurno(patientId, medicId, request, medicalCenter);
 
         return ResponseEntity.ok().build();
     }
 
-
+    @GetMapping("/get-turnos")
+    public ResponseEntity<List<Turnos>> getMisTurnos (@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        List<Turnos> misTurnos = patientService.getMisTurnos(jwtValidator.getId(token));
+        return new ResponseEntity<>(misTurnos, HttpStatus.OK);
+    }
 
 
 

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "turno")
@@ -24,6 +22,9 @@ public class Turnos {
     private LocalTime horaTurno;
 
     private String medicFullName;
+    private String medicSpecialy;
+
+    private String medicalCenter;
 
     @ManyToOne
     @JoinColumn(name = "patientId")
@@ -70,5 +71,21 @@ public class Turnos {
 
     public Long getTurnoId() {
         return turnoId;
+    }
+
+    public String getMedicalCenter() {
+        return medicalCenter;
+    }
+
+    public void setMedicalCenter(String medicCenter) {
+        this.medicalCenter = medicCenter;
+    }
+
+    public String getMedicSpecialy(){
+        return medicSpecialy;
+    }
+
+    public void setMedicSpecialty(String specialty) {
+        this.medicSpecialy = specialty;
     }
 }
