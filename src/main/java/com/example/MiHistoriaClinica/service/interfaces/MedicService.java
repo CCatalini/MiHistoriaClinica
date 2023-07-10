@@ -13,6 +13,8 @@ public interface MedicService {
     MedicModel createMedic(MedicDTO medic);
     MedicModel loginMedic(MedicLoginDTO medic);
 
+    List<MedicModel> getAllMedics();
+
     void linkPatient(String linkCode, Long medicId);
     void savePatient(PatientModel patient);
 
