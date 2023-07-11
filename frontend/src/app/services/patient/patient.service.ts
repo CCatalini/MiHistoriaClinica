@@ -121,17 +121,23 @@ export class PatientService {
         return this.http.put("http://localhost:8080/analysis/patient/update-analysis-status", null, {headers: headers, params: params});
     }
 
+    addTurno(turnoDTO: any, medicId: string): Observable<any> {
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/json'
+        });
+        const token = localStorage.getItem('token');
+        headers = headers.set('Authorization', "Bearer " + token);
+        const body = {
+            fechaTurno: turnoDTO.fechaTurno,
+            horaTurno: turnoDTO.horaTurno,
+        };
+        const params = {
+            medicId: medicId,
+            medicalCenter: turnoDTO.medicalCenter
+        };
+        return this.http.post('http://localhost:8080/patient/create-turno', body, { headers: headers, params: params });
+    }
+
 }
 
 
-/*
-    getMedicinesByStatus(status: string) {
-        const token = localStorage.getItem('token');
-        let params = new HttpHeaders();
-        if (token) {
-            params = params.set('Authorization', "Bearer " + token).set("status", status);
-        }
-        return this.http.get<any[]>("http://localhost:8080/patient/getMedicinesByStatus", { params: params });
-    }
-
- */

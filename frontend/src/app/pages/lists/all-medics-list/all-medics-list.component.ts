@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {PatientService} from "../../../services/patient/patient.service";
-import {Router} from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { PatientService } from "../../../services/patient/patient.service";
+import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 
 @Component({
-  selector: 'app-all-medics-list',
-  templateUrl: './all-medics-list.component.html',
-  styleUrls: ['./all-medics-list.component.css']
+    selector: 'app-all-medics-list',
+    templateUrl: './all-medics-list.component.html',
+    styleUrls: ['./all-medics-list.component.css']
 })
-export class AllMedicsListComponent implements OnInit{
+export class AllMedicsListComponent implements OnInit {
     medics: any[] = [];
 
     constructor(private userService: PatientService, private router: Router) { }
@@ -43,5 +43,9 @@ export class AllMedicsListComponent implements OnInit{
                 }
             }
         );
+    }
+
+    redirectToAddTurno(medicId: string) {
+        this.router.navigate(['/patient/add-turno'], { queryParams: { medicId: medicId } });
     }
 }

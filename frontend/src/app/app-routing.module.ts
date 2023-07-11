@@ -160,7 +160,7 @@ const routes: Routes = [
         pathMatch:'full'
     },
     {
-        path:'patient/all-medics-list',
+        path:'patient/add-turno',
         component:AddTurnoComponent,
         pathMatch:'full'
     },
