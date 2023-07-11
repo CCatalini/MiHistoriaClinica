@@ -1,20 +1,24 @@
-<h1 class = "text-center">Mis Médicos</h1>
+<h1 class="text-center">Programar consulta médica</h1>
+<br>
+<h5 class="text-center">Seleccione el médico:</h5>
 <br>
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
         <th>Nombre</th>
         <th>Apellido</th>
-        <th>DNI</th>
-        <th>Email</th>
+        <th>Especialidad</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let medic of medics">
         <td>{{medic.name}}</td>
         <td>{{medic.lastname}}</td>
-        <td>{{medic.dni}}</td>
-        <td>{{medic.email}}</td>
+        <td>{{medic.specialty}}</td>
+        <td>
+            <button class="btn btn-primary" style="background-color: #3fb5eb;" (click)="redirectToAddTurno(medic.medicId)">Agendar turno</button>
+        </td>
     </tr>
     </tbody>
 </table>

@@ -51,8 +51,8 @@
 
 
 
-  * Agendar turnos propios                                              --                  --
-  --> createTurno                                                       OK
+  * Agendar turnos propios                                                                
+  --> createTurno                                                       OK                  --
   * Listar turnos propios                                               --                  --
 
     --> que el paciente pueda añadir su propio turno, viendo SU lista de medicos y teniendo la opcion de cargar un medico nuevo
