@@ -41,6 +41,7 @@ import { AppointmentsListPatientComponent } from './pages/lists/appointments-lis
 import { EditMedicalHistoryComponent } from './pages/medic/edit-medical-history/edit-medical-history.component';
 import { AddTurnoComponent } from './pages/patient/add-turno/add-turno.component';
 import { AllMedicsListComponent } from './pages/lists/all-medics-list/all-medics-list.component';
+import { TurnosListComponent } from './pages/lists/turnos-list/turnos-list.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { AllMedicsListComponent } from './pages/lists/all-medics-list/all-medics
     EditMedicalHistoryComponent,
     AddTurnoComponent,
     AllMedicsListComponent,
+    TurnosListComponent,
   ],
     imports: [
         BrowserModule,
