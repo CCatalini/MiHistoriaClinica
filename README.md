@@ -52,8 +52,8 @@
 
 
   * Agendar turnos propios                                                                
-  --> createTurno                                                       OK                  --
-  * Listar turnos propios                                               --                  --
+  --> createTurno                                                       OK                  OK
+  * Listar turnos propios                                               OK                  OK
 
     --> que el paciente pueda añadir su propio turno, viendo SU lista de medicos y teniendo la opcion de cargar un medico nuevo
     --> el método que usemos para cargar un nuevo médico debería verificar que no esté ya cargado
@@ -70,6 +70,8 @@
 (Bajo los criterios de sexo, edad) 
 * Filtrar médicos por especialidad
 * Filtrar consultas por estado
+* Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
+* Agregar asistencia a la lista de turnos (debería cambiar a "Presente" cuando el paciente inicie la consulta)
 
 
 

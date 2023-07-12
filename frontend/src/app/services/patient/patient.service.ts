@@ -27,7 +27,14 @@ export class PatientService {
         return this.http.get<any[]>('http://localhost:8080/patient/get-medics', {headers: headers});
     }
 
-    // todo
+    public getTurnosList(token: string): Observable<any[]> {
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/patient/get-turnos', {headers: headers});
+    }
+
     public getAllMedicsList() {
         return this.http.get<any[]>('http://localhost:8080/medic/get-all');
     }

@@ -27,6 +27,7 @@ import {AnalysisListMedicComponent} from "./pages/lists/analysis-list-medic/anal
 import {EditMedicalHistoryComponent} from "./pages/medic/edit-medical-history/edit-medical-history.component";
 import {AllMedicsListComponent} from "./pages/lists/all-medics-list/all-medics-list.component";
 import {AddTurnoComponent} from "./pages/patient/add-turno/add-turno.component";
+import {TurnosListComponent} from "./pages/lists/turnos-list/turnos-list.component";
 
 const routes: Routes = [
     {
@@ -162,6 +163,11 @@ const routes: Routes = [
     {
         path:'patient/add-turno',
         component:AddTurnoComponent,
+        pathMatch:'full'
+    },
+    {
+        path:'patient/turnos-list',
+        component:TurnosListComponent,
         pathMatch:'full'
     },
 ];
