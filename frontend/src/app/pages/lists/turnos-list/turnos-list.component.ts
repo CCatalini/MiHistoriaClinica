@@ -49,4 +49,33 @@ export class TurnosListComponent implements OnInit{
             // Manejar el caso en el que no se encuentre el token en el local storage
         }
     }
+
+    deleteTurno(turno: any) {
+        console.log(turno.turnoId); // Verificar el valor del ID del medicamento
+        if (!turno.turnoId) {
+            Swal.fire('Error', 'ID del medicamento no válido.', 'error');
+            return;
+        }
+        Swal.fire({
+            title: 'Eliminar medicamento',
+            text: '¿Estás seguro de que quieres eliminar este medicamento?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.userService.deleteTurno(turno.turnoId).subscribe(
+                    () => {
+                        const index = this.turnos.findIndex((m) => m.turnoId === turno.turnoId);
+                        if (index !== -1) {
+                            this.turnos.splice(index, 1);
+                        }
+                    },
+                );
+            }
+        });
+    }
 }

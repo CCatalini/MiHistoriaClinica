@@ -8,6 +8,7 @@
         <th>Ubicación</th>
         <th>Médico</th>
         <th>Especialidad</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -17,6 +18,9 @@
         <td>{{turno.medicalCenter}}</td>
         <td>{{turno.medicFullName}}</td>
         <td>{{turno.medicSpecialy}}</td>
+        <td>
+            <button class="btn btn-danger" (click)="deleteTurno(turno)">Eliminar</button>
+        </td>
     </tr>
     </tbody>
 </table>

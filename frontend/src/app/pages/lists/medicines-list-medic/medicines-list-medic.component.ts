@@ -57,8 +57,6 @@ export class MedicinesListMedicComponent implements OnInit {
             Swal.fire('Error', 'ID del medicamento no válido.', 'error');
             return;
         }
-        // Aquí debes agregar la lógica para eliminar el medicamento de la lista
-        // Por ejemplo, puedes mostrar un cuadro de diálogo de confirmación antes de eliminarlo
         Swal.fire({
             title: 'Eliminar medicamento',
             text: '¿Estás seguro de que quieres eliminar este medicamento?',

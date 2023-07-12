@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Observable, of} from "rxjs";
+import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
+import Swal from "sweetalert2";
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,21 @@ export class PatientService {
             headers = headers.set('Authorization', 'Bearer ' + token);
         }
         return this.http.get<any[]>('http://localhost:8080/patient/get-turnos', {headers: headers});
+    }
+
+    public deleteTurno(turnoId: number) {
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+
+        return this.http.delete('http://localhost:8080/patient/delete-turno', {params: params})
+            .pipe(
+                map(() => {
+                    Swal.fire(
+                        'Eliminado',
+                        'El turno ha sido eliminado correctamente.',
+                        'success'
+                    );
+                })
+            );
     }
 
     public getAllMedicsList() {
