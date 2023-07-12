@@ -66,21 +66,21 @@
 
 ## Casos de Usos Deseables:
 * Descargar historia clinica
-* creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
+* Creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
 (Bajo los criterios de sexo, edad) 
 * Filtrar médicos por especialidad
 * Filtrar consultas por estado
 * Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
 * Agregar asistencia a la lista de turnos (debería cambiar a "Presente" cuando el paciente inicie la consulta)
+* Mostrar la agenda con formato de calendario
+* Agregar FECHA de emisión a medicines, analysis y medicalAppointment
+* FILTRAR listas por fecha
+
 
 
 
 ## TODO
-* Mostrar PERFIL con datos de usuario (métodos getPatientDTO(token), getMedicDTO(token) )
-* Agregar FECHA de emisión a medicines, analysis y medicalAppointment 
-* FILTRAR listas por fecha
 * Agregar LOGO
-* Editar analysis que cargó un médico y no están finalizados
 * Finalizar consulta desde paciente (método que borre el patientLinkCode)
 * Al cargar un nuevo medicamento o análisis, cargar estado = "pendiente" por default
-* Agregar especialidad a medicalAppointment para poder filtrar consultas por estado
+* Agregar e* Agregar especialidad a medicalAppointment para poder filtrar consultas por estadospecialidad a medicalAppointment para poder filtrar consultas por estado
