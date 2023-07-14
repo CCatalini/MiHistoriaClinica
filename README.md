@@ -92,18 +92,16 @@
 * Al cargar un nuevo medicamento, análisis o agendar turno, cargar estado = "pendiente" por default
 * Agregar especialidad a medicalAppointment para poder filtrar consultas por estadospecialidad
 * Arreglar el generate linkCode 
+* Agregar FECHA de emisión a medicines, analysis y medicalAppointment
+* Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
 
 
 
 ## Casos de Usos Deseables:
+* Mail de confirmación al crear usuario
 * Agregar LOGO
 * Agregar perfil donde el usuario pueda modificar sus datos
 * Finalizar consulta desde paciente (método que borra el patientLinkCode está listo en back)
 * Creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
   (Bajo los criterios de sexo, edad)
-* Filtrar médicos por especialidad
-* Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
-* Agregar asistencia a la lista de turnos (debería cambiar a "Presente" cuando el paciente inicie la consulta)
-* Mostrar la agenda con formato de calendario
-* Agregar FECHA de emisión a medicines, analysis y medicalAppointment
 
