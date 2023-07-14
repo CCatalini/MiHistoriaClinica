@@ -74,38 +74,36 @@
   --> Descargar historial de consultas médicas filtradas                 --                --
 
   * Iniciar consulta desde turnos acordados                              --                --
+  --> Agregar estado a las consultas médicas (default=pendiente)         --                --
 
   * Calendarios
   --> Agenda de médicos                                                  --                --
   --> Agenda de turnos paciente (ver agendados y nuevos disponibles)     --                --
 
   * Mails
-  --> Mail de confirmación al agendar turno o estudio                    --                --
-  --> Mail de recordatorio día anterior al turno o estudio               --                --
+  --> Mail de confirmación al agendar turno o estudio                    --                ?
+  --> Mail de recordatorio día anterior al turno o estudio               --                ?
 
 
+    
 
+
+## TODO
+* Al cargar un nuevo medicamento, análisis o agendar turno, cargar estado = "pendiente" por default
+* Agregar especialidad a medicalAppointment para poder filtrar consultas por estadospecialidad
+* Arreglar el generate linkCode 
 
 
 
 ## Casos de Usos Deseables:
-
-  * Descargar historia clinica
-  * Creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
-(Bajo los criterios de sexo, edad) 
-  * Filtrar médicos por especialidad
-  * Filtrar consultas por estado
-  * Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
-  * Agregar asistencia a la lista de turnos (debería cambiar a "Presente" cuando el paciente inicie la consulta)
-  * Mostrar la agenda con formato de calendario
-  * Agregar FECHA de emisión a medicines, analysis y medicalAppointment
-  * FILTRAR listas por fecha
-
-
-.
-
-## TODO
 * Agregar LOGO
-* Finalizar consulta desde paciente (método que borre el patientLinkCode)
-* Al cargar un nuevo medicamento o análisis, cargar estado = "pendiente" por default
-* Agregar e* Agregar especialidad a medicalAppointment para poder filtrar consultas por estadospecialidad a medicalAppointment para poder filtrar consultas por estado
+* Agregar perfil donde el usuario pueda modificar sus datos
+* Finalizar consulta desde paciente (método que borra el patientLinkCode está listo en back)
+* Creación de la entidad Administrador, que se encarga del ABM de estudios y vacunas obligatorios
+  (Bajo los criterios de sexo, edad)
+* Filtrar médicos por especialidad
+* Linkear turno con consulta médica para que el paciente "inicie la consulta" desde la lista de turnos generando el linkCode
+* Agregar asistencia a la lista de turnos (debería cambiar a "Presente" cuando el paciente inicie la consulta)
+* Mostrar la agenda con formato de calendario
+* Agregar FECHA de emisión a medicines, analysis y medicalAppointment
+
