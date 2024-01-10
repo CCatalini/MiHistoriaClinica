@@ -1,0 +1,38 @@
+.example-spacer{
+    flex: 1 1 auto;
+}
+
+.active {
+    font-weight: bold;
+    background-color: #eee;
+}
+
+.mat-toolbar {
+    background-color: #3fb5eb;
+    color: white;
+    z-index: 1;
+    font-size: 30px;
+    margin-right: -16px;
+    margin-left: -16px;
+}
+
+.mat-toolbar a.example-icon img {
+    width: 40px;
+    height: 40px;
+}
+
+.mat-toolbar a:first-child {
+    display: flex;
+    align-items: center;
+}
+
+.example-icon.favorite-icon {
+    background-color: transparent;
+    color: white;
+}
+
+.navbar-button {
+    margin-left: 10px; /* Ajusta el valor según sea necesario */
+    margin-right: auto;
+}
+

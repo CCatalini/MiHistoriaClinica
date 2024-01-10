@@ -1,0 +1,58 @@
+<div class="bootstrap-wrapper">
+    <div class="container">
+        <div class="row mt20">
+            <div class = "col-md-6 offset-md-3 text-center">
+                <br><br><br><br>
+                <h1 class = "text-center">Atender Paciente</h1>
+                <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }} (DNI: {{ patient?.dni }})</h6>
+                <br>
+                <div class="options">
+                    <div class="option">
+                        <div class="option-box">
+                            <img src="../../../../assets/Medicamentos.png" alt="Medicamentos">
+                            <span>Medicamentos</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/addMedicine" class="btn">Agregar</a>
+                                <a routerLink="/medic/medicinesList" class="btn">Ver historial</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="option-box">
+                            <img src="../../../../assets/Estudios.png" alt="Estudios">
+                            <span>Estudios</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/addAnalysis" class="btn">Agregar</a>
+                                <a routerLink="/medic/analysisList" class="btn">Ver historial</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="option-box">
+                            <img src="../../../../assets/MH.png" alt="HistoriaClinica">
+                            <span>Historia Clínica</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/createMedicalHistory" class="btn">Crear</a>
+                                <a routerLink="/medic/medicalHistoryList" class="btn">Ver</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <div class="option-box">
+                            <img src="../../../../assets/MedicalAppointment.png" alt="ConsultaMedica">
+                            <span>Consulta Médica</span>
+                            <div class="option-buttons">
+                                <a routerLink="/medic/medicalAppointment" class="btn">Agregar</a>
+                                <a routerLink="/medic/appointmentList" class="btn">Ver historial</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+<div [routerLink]="'/medic/home'" class="button-container">
+    <button class="boton" (click)="setLinkCode()">Finalizar consulta</button>
+</div>

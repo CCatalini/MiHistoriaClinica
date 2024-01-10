@@ -1,0 +1,17 @@
+.boton {
+    margin-top: 10px;
+    background-color: #3fb5eb;
+    color: white;
+    font-size: 18px;
+    padding: 7px 15px;
+    border: none;
+    border-radius: 5px;
+}
+
+.container {
+    text-align: center;
+}
+
+.completed {
+    text-decoration: line-through;
+}
