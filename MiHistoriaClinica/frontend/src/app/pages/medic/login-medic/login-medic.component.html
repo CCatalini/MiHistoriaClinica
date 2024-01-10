@@ -1,0 +1,38 @@
+<div class = "bootstrap-wrapper">
+    <div class = "container">
+        <div class = "row" style = "margin-top : 20px;">
+            <div clazz = "col-md-6 offset-md-3">
+                <div class = "container text-center">
+                    <img src = "../../../../assets/Medicos.png" width = "200" height = "200">
+                </div>
+
+                <h1 class = "text-center">Inicio de sesión del médico</h1>
+                <div class="page-container" style="margin-bottom: -110px;">
+                <form  (ngSubmit) = "formSubmit()">
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Matrícula:</mat-label>
+                        <input required [(ngModel)] = "medic.matricula" name = "dni" matInput placeholder="Ingrese su matrícula">
+                    </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Contraseña:</mat-label>
+                        <input required [(ngModel)] = "medic.password" name = "password" matInput placeholder="Ingrese su contraseña" type="password">
+                    </mat-form-field>
+
+                    <div class = "container text-center">
+                        <button class="boton">Iniciar sesión</button>
+                        <button type="reset" style = "margin-left: 20px;" class="boton">Limpiar</button>
+                    </div>
+                    <a [routerLink]="'/medic/signup'" mat-button
+                       class="example-icon favorite-icon"
+                       aria-label="Example icon-button with heart icon" style="font-size: 16px;">
+                        Registrar
+                    </a>
+                </form>
+                <br><br><br>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

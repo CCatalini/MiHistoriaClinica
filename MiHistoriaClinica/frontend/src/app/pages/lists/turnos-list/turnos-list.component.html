@@ -1,0 +1,26 @@
+<h1 class = "text-center">Mis Turnos Médicos</h1>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Ubicación</th>
+        <th>Médico</th>
+        <th>Especialidad</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let turno of turnos">
+        <td>{{turno.fechaTurno}}</td>
+        <td>{{turno.horaTurno}}</td>
+        <td>{{turno.medicalCenter}}</td>
+        <td>{{turno.medicFullName}}</td>
+        <td>{{turno.medicSpecialy}}</td>
+        <td>
+            <button class="btn btn-danger" (click)="deleteTurno(turno)">Eliminar</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
