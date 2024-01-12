@@ -6,9 +6,9 @@ import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
 import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
 import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
-import com.example.MiHistoriaClinica.persistence.model.MedicModel;
-import com.example.MiHistoriaClinica.persistence.model.MedicineModel;
-import com.example.MiHistoriaClinica.persistence.model.PatientModel;
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.persistence.repository.*;
 import com.example.MiHistoriaClinica.service.PatientService;
@@ -46,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
      * @return linkCode
      */
     public String generateLinkCode(Long patientId) {
-        PatientModel patient = patientRepository.findById(patientId).orElse(null);
+        Patient patient = patientRepository.findById(patientId).orElse(null);
         if (patient == null) {
             throw new RuntimeException("No se pudo generar el código de enlace. El paciente no existe.");
         }
@@ -58,14 +58,14 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public PatientModel createPatient(PatientDTO patient) {
+    public Patient createPatient(PatientDTO patient) {
         return customRepositoryAccess.saveDTO(patient);
     }
 
 
     @Override
-    public PatientModel loginPatient(PatientLoginDTO patient) {
-        PatientModel result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
+    public Patient loginPatient(PatientLoginDTO patient) {
+        Patient result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
         if (result == null) {
             throw new PatientNotFoundException();
         } else {
@@ -75,23 +75,23 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public List<MedicModel> getMedicsByPatientId(Long id) {
+    public List<Medic> getMedicsByPatientId(Long id) {
         return patientRepository.getMedicsByPatientId(id);
     }
 
 
     @Override
-    public List<MedicineModel> getMedicinesByPatientId(Long id) {
+    public List<Medicine> getMedicinesByPatientId(Long id) {
         return patientRepository.getMedicinesByPatientId(id);
     }
 
-    public List<MedicineModel> getMedicinesByStatus(Long id, String status) {
+    public List<Medicine> getMedicinesByStatus(Long id, String status) {
         return patientRepository.getMedicinesByPatientIdAndStatus(id, status);
     }
 
     @Override
-    public PatientModel updatePatient(Long id, PatientModel newPatient) {
-        PatientModel patient = patientRepository.findById(id)
+    public Patient updatePatient(Long id, Patient newPatient) {
+        Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         patient.setName(newPatient.getName());
@@ -107,7 +107,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public MedicalHistoryDTO getMedicalHistory(Long id){
-        PatientModel thisPatient = patientRepository.findById(id).
+        Patient thisPatient = patientRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         return new MedicalHistoryDTO(thisPatient.getMedicalHistory());
@@ -115,9 +115,9 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public MedicineModel getMedicineByMedicineId(Long medicineId) {
+    public Medicine getMedicineByMedicineId(Long medicineId) {
 
-        Optional<MedicineModel> medicine = medicineRepository.findById(medicineId);
+        Optional<Medicine> medicine = medicineRepository.findById(medicineId);
         if (medicine.isPresent())           return medicine.get();
         else                                return null;
 
@@ -125,7 +125,7 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public void saveMedicine(MedicineModel medicine) {
+    public void saveMedicine(Medicine medicine) {
         medicineRepository.save(medicine);
     }
 
@@ -135,14 +135,14 @@ public class PatientServiceImpl implements PatientService {
 
 
     @Override
-    public PatientModel getPatientById(Long id) {
+    public Patient getPatientById(Long id) {
         return patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
     }
 
     @Override
-    public PatientModel getPatientByDni(Long dni) {
-        PatientModel patient = patientRepository.findByDni(dni);
+    public Patient getPatientByDni(Long dni) {
+        Patient patient = patientRepository.findByDni(dni);
         if (patient == null) {
             throw new ResourceNotFoundException("Paciente no encontrado");
         } else {
@@ -153,13 +153,13 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDTO getPatientInfo(Long patientId) {
         ModelMapper modelMapper = new ModelMapper();
-        PatientModel patientModel = getPatientById(patientId);
-        return modelMapper.map(patientModel, PatientDTO.class);
+        Patient patient = getPatientById(patientId);
+        return modelMapper.map(patient, PatientDTO.class);
     }
 
     public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
-        PatientModel patient = patientRepository.findById(patientId).get();
-        MedicModel medic = medicRepository.findById(medicId).get();
+        Patient patient = patientRepository.findById(patientId).get();
+        Medic medic = medicRepository.findById(medicId).get();
 
         customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
 
@@ -167,7 +167,7 @@ public class PatientServiceImpl implements PatientService {
 
 
     public List<Turnos> getMisTurnos(Long id) {
-        PatientModel patient = patientRepository.findById(id).get();
+        Patient patient = patientRepository.findById(id).get();
 
         return turnosRepository.findByPatient(patient);
     }

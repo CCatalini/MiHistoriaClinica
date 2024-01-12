@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name= "Analysis")
-public class AnalysisModel {
+public class Analysis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -23,18 +23,18 @@ public class AnalysisModel {
 
     @ManyToMany(mappedBy = "analysis", fetch = FetchType.EAGER)
     @JsonBackReference
-    private List<PatientModel> patients = new ArrayList<>();
+    private List<Patient> patients = new ArrayList<>();
 
 
-    public List<PatientModel> getPatients() {
+    public List<Patient> getPatients() {
         return patients;
     }
 
-    public void addPatient(PatientModel patientModel){
-        this.patients.add(patientModel);
+    public void addPatient(Patient patient){
+        this.patients.add(patient);
     }
 
-    public void setPatients(List<PatientModel> patients) {
+    public void setPatients(List<Patient> patients) {
         this.patients = patients;
     }
 

@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Patient")
-public class PatientModel {
+public class Patient {
 
 
     @Id
@@ -52,11 +52,11 @@ public class PatientModel {
     )
     @JsonManagedReference
     @JsonIgnoreProperties("patients")
-    private List<MedicModel> medics = new ArrayList<>();
+    private List<Medic> medics = new ArrayList<>();
 
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-    private MedicalHistoryModel medicalHistory;
+    private MedicalHistory medicalHistory;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -66,7 +66,7 @@ public class PatientModel {
             inverseJoinColumns = @JoinColumn(name = "medicineId")
     )
     @JsonManagedReference
-    private List<MedicineModel> medicines = new ArrayList<>();
+    private List<Medicine> medicines = new ArrayList<>();
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -76,39 +76,39 @@ public class PatientModel {
             inverseJoinColumns = @JoinColumn(name = "analysisId")
     )
     @JsonManagedReference
-    private List<AnalysisModel> analysis = new ArrayList<>();
+    private List<Analysis> analysis = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
-    private List<MedicalAppointmentModel> medicalAppointments;
+    private List<MedicalAppointment> medicalAppointments;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Turnos> turnos;
 
 
-    public List<MedicalAppointmentModel> getMedicalAppointments() {
+    public List<MedicalAppointment> getMedicalAppointments() {
         return medicalAppointments;
     }
 
-    public void setMedicalAppointments(List<MedicalAppointmentModel> medicalAppointments) {
+    public void setMedicalAppointments(List<MedicalAppointment> medicalAppointments) {
         this.medicalAppointments = medicalAppointments;
     }
 
-    public List<MedicineModel> getMedicines() {
+    public List<Medicine> getMedicines() {
         return medicines;
     }
 
-    public void setMedicines(List<MedicineModel> medicines) {
+    public void setMedicines(List<Medicine> medicines) {
         this.medicines = medicines;
     }
 
-    public List<MedicModel> getMedics() {
+    public List<Medic> getMedics() {
         return medics;
     }
 
-    public void setMedics(List<MedicModel> medics) {
+    public void setMedics(List<Medic> medics) {
         this.medics = medics;
     }
 
@@ -120,19 +120,19 @@ public class PatientModel {
         this.linkCode = linkCode;
     }
 
-    public MedicalHistoryModel getMedicalHistory() {
+    public MedicalHistory getMedicalHistory() {
         return medicalHistory;
     }
 
-    public void setMedicalHistory(MedicalHistoryModel medicalHistory) {
+    public void setMedicalHistory(MedicalHistory medicalHistory) {
         this.medicalHistory = medicalHistory;
     }
 
-    public List<AnalysisModel> getAnalysis() {
+    public List<Analysis> getAnalysis() {
         return analysis;
     }
 
-    public void setAnalysis(List<AnalysisModel> analysis) {
+    public void setAnalysis(List<Analysis> analysis) {
         this.analysis = analysis;
     }
 
@@ -201,7 +201,7 @@ public class PatientModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PatientModel patient = (PatientModel) o;
+        Patient patient = (Patient) o;
         return Objects.equals(patientId, patient.patientId);
     }
 

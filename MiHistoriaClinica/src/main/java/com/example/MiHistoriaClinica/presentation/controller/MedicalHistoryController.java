@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.presentation.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.web.bind.annotation.*;
-        import com.example.MiHistoriaClinica.persistence.model.MedicalHistoryModel;
+        import com.example.MiHistoriaClinica.persistence.model.MedicalHistory;
         import com.example.MiHistoriaClinica.persistence.repository.MedicalHistoryRepository;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class MedicalHistoryController {
     }
 
     @GetMapping("/getAll")
-    public List<MedicalHistoryModel> getAllMedicalHistory() {
+    public List<MedicalHistory> getAllMedicalHistory() {
         return medicalHistoryRepository.findAll();
     }
 }

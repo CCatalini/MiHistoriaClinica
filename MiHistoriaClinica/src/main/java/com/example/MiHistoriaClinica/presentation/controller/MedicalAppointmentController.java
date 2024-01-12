@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.presentation.dto.MedicalAppointmentDTO;
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
-import com.example.MiHistoriaClinica.persistence.model.MedicalAppointmentModel;
+import com.example.MiHistoriaClinica.persistence.model.MedicalAppointment;
 import com.example.MiHistoriaClinica.service.implementation.MedicalAppointmentServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -43,16 +43,16 @@ public class MedicalAppointmentController {
     }
 
     @GetMapping("/medic/get")
-    public ResponseEntity<List<MedicalAppointmentModel>> getPatientAppointmentList (@RequestHeader("patientLinkCode") String patientLinkCode){
+    public ResponseEntity<List<MedicalAppointment>> getPatientAppointmentList (@RequestHeader("patientLinkCode") String patientLinkCode){
 
-        List<MedicalAppointmentModel> appointmentList = medicalAppointmentService.getAppointmentListByLinkCode(patientLinkCode);
+        List<MedicalAppointment> appointmentList = medicalAppointmentService.getAppointmentListByLinkCode(patientLinkCode);
         if (appointmentList == null || appointmentList.isEmpty())        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
     }
 
     @GetMapping("/patient/get")
-    public ResponseEntity<List<MedicalAppointmentModel>> getAppointmentList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
-        List<MedicalAppointmentModel> appointmentList = medicalAppointmentService.getAppointmentListById(jwtValidator.getId(token));
+    public ResponseEntity<List<MedicalAppointment>> getAppointmentList(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        List<MedicalAppointment> appointmentList = medicalAppointmentService.getAppointmentListById(jwtValidator.getId(token));
         if(appointmentList == null || appointmentList.isEmpty())         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
     }

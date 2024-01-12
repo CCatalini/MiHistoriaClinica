@@ -38,8 +38,8 @@ public class CustomRepositoryAccess {
     }
 
 
-    public PatientModel saveDTO(PatientDTO patientDTO) {
-        PatientModel patientSaved = new PatientModel();
+    public Patient saveDTO(PatientDTO patientDTO) {
+        Patient patientSaved = new Patient();
         // Establecer los valores del DTO en la entidad a guardar
         patientSaved.setName(patientDTO.getName());
         patientSaved.setLastname(patientDTO.getLastname());
@@ -51,8 +51,8 @@ public class CustomRepositoryAccess {
     }
 
 
-    public MedicModel saveMedicDto(MedicDTO medicDTO) {
-        MedicModel medicSaved = new MedicModel();
+    public Medic saveMedicDto(MedicDTO medicDTO) {
+        Medic medicSaved = new Medic();
 
         medicSaved.setName(medicDTO.getName());
         medicSaved.setLastname(medicDTO.getLastname());
@@ -68,16 +68,16 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicalHistoryModel auxMedicalHistory(Optional<PatientModel> patient, MedicalHistoryDTO update){
-        MedicalHistoryModel medicalHistory ;
+    public MedicalHistory auxMedicalHistory(Optional<Patient> patient, MedicalHistoryDTO update){
+        MedicalHistory medicalHistory ;
 
         if(patient.isPresent() && patient.get().getMedicalHistory()!= null )    medicalHistory = patient.get().getMedicalHistory();
-        else                                                                    medicalHistory = new MedicalHistoryModel();
+        else                                                                    medicalHistory = new MedicalHistory();
 
         return setDatos(medicalHistory, update ,patient.get());
     }
 
-    private MedicalHistoryModel setDatos(MedicalHistoryModel medicalHistory, MedicalHistoryDTO update, PatientModel patientModel) {
+    private MedicalHistory setDatos(MedicalHistory medicalHistory, MedicalHistoryDTO update, Patient patient) {
         medicalHistory.setWeight(update.getWeight());
         medicalHistory.setHeight(update.getHeight());
         medicalHistory.setAllergy(update.getAllergy());
@@ -85,15 +85,15 @@ public class CustomRepositoryAccess {
         medicalHistory.setActualMedicine(update.getActualMedicine());
         medicalHistory.setChronicDisease(update.getChronicDisease());
         medicalHistory.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
-        medicalHistory.setPatient(patientModel);
+        medicalHistory.setPatient(patient);
 
         return medicalHistoryRepository.save(medicalHistory);
     }
 
-    public MedicineModel createPatientMedicine(MedicineDTO medicine, Optional<PatientModel> patient) {
+    public Medicine createPatientMedicine(MedicineDTO medicine, Optional<Patient> patient) {
 
-        MedicineModel medicineSaved = new MedicineModel();
-        PatientModel aux = patient.get();
+        Medicine medicineSaved = new Medicine();
+        Patient aux = patient.get();
 
         medicineSaved.setMedicineName(medicine.getMedicineName());
         medicineSaved.setLab(medicine.getLab());
@@ -108,8 +108,8 @@ public class CustomRepositoryAccess {
         return medicineRepository.save(medicineSaved);
     }
 
-    public AnalysisModel createPatientAnalysis(AnalysisDTO analysisDTO, Optional<PatientModel> patient) {
-        AnalysisModel analysisSaved = new AnalysisModel();
+    public Analysis createPatientAnalysis(AnalysisDTO analysisDTO, Optional<Patient> patient) {
+        Analysis analysisSaved = new Analysis();
 
         analysisSaved.setMedicalCenter(analysisDTO.getMedicalCenter());
         analysisSaved.setDescription(analysisDTO.getDescription());
@@ -123,8 +123,8 @@ public class CustomRepositoryAccess {
     }
 
 
-    public MedicalAppointmentModel createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<PatientModel> patient, Optional<MedicModel> medic) {
-        MedicalAppointmentModel medicalAppointmentSaved = new MedicalAppointmentModel();
+    public MedicalAppointment createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<Patient> patient, Optional<Medic> medic) {
+        MedicalAppointment medicalAppointmentSaved = new MedicalAppointment();
 
         medicalAppointmentSaved.setAppointmentReason(appointmentDTO.getAppointmentReason());
         medicalAppointmentSaved.setObservations(appointmentDTO.getObservations());
@@ -141,7 +141,7 @@ public class CustomRepositoryAccess {
 
     }
 
-    public Turnos createTurno(PatientModel patient, MedicModel medic, TurnoDTO request, String medicalCenter) {
+    public Turnos createTurno(Patient patient, Medic medic, TurnoDTO request, String medicalCenter) {
         Turnos turnoSaved = new Turnos();
 
         turnoSaved.setFechaTurno(request.getFechaTurno());

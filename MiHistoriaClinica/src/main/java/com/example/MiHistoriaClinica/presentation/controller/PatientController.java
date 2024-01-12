@@ -1,9 +1,9 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.exception.InvalidTokenException;
-import com.example.MiHistoriaClinica.persistence.model.MedicModel;
-import com.example.MiHistoriaClinica.persistence.model.MedicineModel;
-import com.example.MiHistoriaClinica.persistence.model.PatientModel;
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
@@ -34,15 +34,15 @@ public class PatientController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<PatientModel> createPatient(@RequestBody PatientDTO patient) {
-        PatientModel createdPatient = patientService.createPatient(patient);
+    public ResponseEntity<Patient> createPatient(@RequestBody PatientDTO patient) {
+        Patient createdPatient = patientService.createPatient(patient);
         return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<TokenDTO> loginPatient(@RequestBody PatientLoginDTO patient) {
-        PatientModel loggedInPatient = patientService.loginPatient(patient);
+        Patient loggedInPatient = patientService.loginPatient(patient);
         TokenDTO token = jwt.generateToken(loggedInPatient.getPatientId(), "PATIENT");
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
@@ -73,8 +73,8 @@ public class PatientController {
     /*********      Métodos médicos     ***************/
 
     @GetMapping("/get-medics")
-    public ResponseEntity<List<MedicModel>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        List<MedicModel> medics = patientService.getMedicsByPatientId(jwtValidator.getId(token));
+    public ResponseEntity<List<Medic>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        List<Medic> medics = patientService.getMedicsByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
@@ -84,8 +84,8 @@ public class PatientController {
     /********       Métodos medicamentos        ****************/
 
     @GetMapping("/get-medicines")
-    public ResponseEntity<List<MedicineModel>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        List<MedicineModel> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
+    public ResponseEntity<List<Medicine>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        List<Medicine> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
@@ -93,7 +93,7 @@ public class PatientController {
     public ResponseEntity<String> updateMedicineStatus(@RequestParam("medicineId") Long medicineId,
                                                        @RequestParam("status") String status) {
 
-        MedicineModel medicine = patientService.getMedicineByMedicineId(medicineId);
+        Medicine medicine = patientService.getMedicineByMedicineId(medicineId);
 
         if (medicine == null )      return new ResponseEntity<>("Medicamento no encontrado", HttpStatus.NOT_FOUND);
 
@@ -104,10 +104,10 @@ public class PatientController {
     }
 
     @GetMapping("/getMedicinesByStatus")
-    public ResponseEntity<List<MedicineModel>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
-                                                                    @RequestParam("status") String status) throws InvalidTokenException {
+    public ResponseEntity<List<Medicine>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
+                                                               @RequestParam("status") String status) throws InvalidTokenException {
 
-        List<MedicineModel> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
+        List<Medicine> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
         return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
 
     }
