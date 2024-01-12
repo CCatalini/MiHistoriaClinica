@@ -1,7 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.dto.*;
-import com.example.MiHistoriaClinica.model.*;
+
 import com.example.MiHistoriaClinica.persistence.model.MedicModel;
 import com.example.MiHistoriaClinica.persistence.model.MedicalHistoryModel;
 import com.example.MiHistoriaClinica.persistence.model.MedicineModel;
