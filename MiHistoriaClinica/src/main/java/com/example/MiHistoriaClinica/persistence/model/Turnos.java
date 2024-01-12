@@ -29,7 +29,7 @@ public class Turnos {
     @ManyToOne
     @JoinColumn(name = "patientId")
     @JsonIgnore
-    private PatientModel patient;
+    private Patient patient;
 
 
     
@@ -57,11 +57,11 @@ public class Turnos {
         this.fechaTurno = fechaTurno;
     }
 
-    public PatientModel getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientModel patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 

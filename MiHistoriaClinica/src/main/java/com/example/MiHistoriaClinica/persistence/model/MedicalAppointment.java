@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "MedicalAppointment")
-public class MedicalAppointmentModel {
+public class MedicalAppointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,13 @@ public class MedicalAppointmentModel {
     @ManyToOne
     @JoinColumn(name = "patientId")
     @JsonIgnore
-    private PatientModel patient;
+    private Patient patient;
 
-    public PatientModel getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientModel patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
 

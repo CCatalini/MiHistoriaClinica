@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "Medic")
-public class MedicModel {
+public class Medic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,15 +37,15 @@ public class MedicModel {
 
     @ManyToMany(mappedBy = "medics", cascade = CascadeType.ALL)
     @JsonBackReference
-    private List<PatientModel> patients = new ArrayList<>();
+    private List<Patient> patients = new ArrayList<>();
 
 
 
-    public List<PatientModel> getPatients() {
+    public List<Patient> getPatients() {
         return patients;
     }
 
-    public void setPatients(List<PatientModel> patients) {
+    public void setPatients(List<Patient> patients) {
         this.patients = patients;
     }
 
@@ -127,8 +127,8 @@ public class MedicModel {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MedicModel medicModel = (MedicModel) o;
-        return Objects.equals(medicId, medicModel.medicId);
+        Medic medic = (Medic) o;
+        return Objects.equals(medicId, medic.medicId);
     }
 
     @Override

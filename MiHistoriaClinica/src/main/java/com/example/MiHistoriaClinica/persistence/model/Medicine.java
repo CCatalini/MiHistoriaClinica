@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Medicine")
-public class MedicineModel {
+public class Medicine {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +26,11 @@ public class MedicineModel {
 
     @ManyToMany(mappedBy = "medicines")
     @JsonBackReference
-    private List<PatientModel> patients = new ArrayList<>();
+    private List<Patient> patients = new ArrayList<>();
 
 
 
-    public void addPatient(PatientModel patient){
+    public void addPatient(Patient patient){
         patients.add(patient);
     }
 
@@ -43,11 +43,11 @@ public class MedicineModel {
         this.status = status;
     }
 
-    public List<PatientModel> getPatients() {
+    public List<Patient> getPatients() {
         return patients;
     }
 
-    public void setPatients(List<PatientModel> patients) {
+    public void setPatients(List<Patient> patients) {
         this.patients = patients;
     }
 

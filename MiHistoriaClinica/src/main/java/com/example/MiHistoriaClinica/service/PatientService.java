@@ -3,27 +3,27 @@ package com.example.MiHistoriaClinica.service;
 import com.example.MiHistoriaClinica.presentation.dto.MedicalHistoryDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
-import com.example.MiHistoriaClinica.persistence.model.MedicModel;
-import com.example.MiHistoriaClinica.persistence.model.MedicineModel;
-import com.example.MiHistoriaClinica.persistence.model.PatientModel;
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.persistence.model.Patient;
 
 import java.util.List;
 
 public interface PatientService {
 
-    PatientModel createPatient(PatientDTO patient);
-    PatientModel loginPatient(PatientLoginDTO patient);
-    List<MedicineModel> getMedicinesByPatientId(Long id);
-    List<MedicModel> getMedicsByPatientId(Long id);
-    PatientModel updatePatient(Long id, PatientModel newPatient);
+    Patient createPatient(PatientDTO patient);
+    Patient loginPatient(PatientLoginDTO patient);
+    List<Medicine> getMedicinesByPatientId(Long id);
+    List<Medic> getMedicsByPatientId(Long id);
+    Patient updatePatient(Long id, Patient newPatient);
     MedicalHistoryDTO getMedicalHistory(Long id);
-    MedicineModel getMedicineByMedicineId(Long medicineId);
-    void saveMedicine(MedicineModel medicine);
+    Medicine getMedicineByMedicineId(Long medicineId);
+    void saveMedicine(Medicine medicine);
 
 
 
-    PatientModel getPatientById(Long id);
-    PatientModel getPatientByDni(Long dni);
+    Patient getPatientById(Long id);
+    Patient getPatientByDni(Long dni);
 
     PatientDTO getPatientInfo(Long patientId);
 }

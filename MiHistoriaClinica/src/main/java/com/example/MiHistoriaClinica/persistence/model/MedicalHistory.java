@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name="medicalHistory")
-public class MedicalHistoryModel {
+public class MedicalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -16,24 +16,21 @@ public class MedicalHistoryModel {
     private String bloodType;
     private String chronicDisease;
     private String actualMedicine;
-
     private String familyMedicalHistory;
 
 
     @OneToOne
     @JoinColumn(name = "patientId")
-    private PatientModel patient;
+    private Patient patient;
 
 
-    public PatientModel getPatient() {
+    public Patient getPatient() {
         return patient;
     }
 
-    public void setPatient(PatientModel patient) {
+    public void setPatient(Patient patient) {
         this.patient = patient;
     }
-
-
 
     public Long getHistory_id() {
         return history_id;
@@ -94,7 +91,6 @@ public class MedicalHistoryModel {
     public String getFamilyMedicalHistory() {
         return familyMedicalHistory;
     }
-
 
     public void setFamilyMedicalHistory(String familyMedicalHistory) {
         this.familyMedicalHistory = familyMedicalHistory;

@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.persistence.repository;
 
-import com.example.MiHistoriaClinica.persistence.model.MedicalAppointmentModel;
+import com.example.MiHistoriaClinica.persistence.model.MedicalAppointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppointmentModel, Long> {
+public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppointment, Long> {
 }
