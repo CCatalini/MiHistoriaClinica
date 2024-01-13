@@ -52,7 +52,6 @@ public class PatientController {
         return jwt.invalidateToken(token);
     }
 
-
     @GetMapping("/get-patient-info")
     public ResponseEntity<PatientDTO> getPatientInfo(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
@@ -60,17 +59,12 @@ public class PatientController {
         return new ResponseEntity<>(patient, HttpStatus.OK);
     }
 
-
-
     @PostMapping("/generate-link-code")
     @ResponseBody
     public ResponseEntity<String> generateLinkCode(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         String linkCode = patientService.generateLinkCode(jwtValidator.getId(token));
         return ResponseEntity.ok(linkCode);
     }
-
-
-    /*********      Métodos médicos     ***************/
 
     @GetMapping("/get-medics")
     public ResponseEntity<List<Medic>> getMedics(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
@@ -83,34 +77,7 @@ public class PatientController {
 
     /********       Métodos medicamentos        ****************/
 
-    @GetMapping("/get-medicines")
-    public ResponseEntity<List<Medicine>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        List<Medicine> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
-        return new ResponseEntity<>(medicines, HttpStatus.OK);
-    }
 
-    @PutMapping("/update-medicine-status")
-    public ResponseEntity<String> updateMedicineStatus(@RequestParam("medicineId") Long medicineId,
-                                                       @RequestParam("status") String status) {
-
-        Medicine medicine = patientService.getMedicineByMedicineId(medicineId);
-
-        if (medicine == null )      return new ResponseEntity<>("Medicamento no encontrado", HttpStatus.NOT_FOUND);
-
-        medicine.setStatus(status);
-        patientService.saveMedicine(medicine);
-
-        return ResponseEntity.ok("Estado del medicamento actualizado correctamente");
-    }
-
-    @GetMapping("/getMedicinesByStatus")
-    public ResponseEntity<List<Medicine>> getMedicinesByStatus(@RequestHeader ("Authorization") String token,
-                                                               @RequestParam("status") String status) throws InvalidTokenException {
-
-        List<Medicine> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
-        return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
-
-    }
 
 
     /**********     Métodos historia médica     ****************/
@@ -122,10 +89,7 @@ public class PatientController {
     }
 
 
-
-
-    /** Métodos para turnos */
-
+    /**********      Métodos para turnos        ****************/
 
     @PostMapping("/create-turno")
     public ResponseEntity<Void> createTurno (@RequestHeader("Authorization") String token,
