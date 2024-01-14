@@ -75,44 +75,13 @@ public class PatientController {
     // todo método getAllMedics() que nos devuelva la lista de todos los médicos guardados
 
 
-    /********       Métodos medicamentos        ****************/
-
-
-
-
     /**********     Métodos historia médica     ****************/
 
-    @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
-        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
-    }
 
 
     /**********      Métodos para turnos        ****************/
 
-    @PostMapping("/create-turno")
-    public ResponseEntity<Void> createTurno (@RequestHeader("Authorization") String token,
-                                          @RequestParam("medicId") Long medicId,
-                                          @RequestParam("medicalCenter") String medicalCenter,
-                                          @RequestBody TurnoDTO request) throws InvalidTokenException {
-        Long patientId = jwtValidator.getId(token);
-        patientService.createTurno(patientId, medicId, request, medicalCenter);
 
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/get-turnos")
-    public ResponseEntity<List<Turnos>> getMisTurnos (@RequestHeader("Authorization") String token) throws InvalidTokenException {
-        List<Turnos> misTurnos = patientService.getMisTurnos(jwtValidator.getId(token));
-        return new ResponseEntity<>(misTurnos, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete-turno")
-    public ResponseEntity<Void> deleteTurno (@RequestParam("turnoId") Long id){
-        patientService.deleteTurno(id);
-        return ResponseEntity.ok().build();
-    }
 
 
 

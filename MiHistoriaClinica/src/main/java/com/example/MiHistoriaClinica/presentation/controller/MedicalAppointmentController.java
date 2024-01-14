@@ -44,7 +44,6 @@ public class MedicalAppointmentController {
 
     @GetMapping("/medic/get")
     public ResponseEntity<List<MedicalAppointment>> getPatientAppointmentList (@RequestHeader("patientLinkCode") String patientLinkCode){
-
         List<MedicalAppointment> appointmentList = medicalAppointmentService.getAppointmentListByLinkCode(patientLinkCode);
         if (appointmentList == null || appointmentList.isEmpty())        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);

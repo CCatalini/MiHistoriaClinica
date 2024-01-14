@@ -12,6 +12,8 @@ import com.itextpdf.layout.element.Paragraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
@@ -30,6 +32,11 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     }
 
     @Override
+    public List<MedicalHistory> findAll() {
+        return medicalHistoryRepository.findAll();
+    }
+
+    @Override
     public byte[] parseMedicalHistoryToPDF(MedicalHistory historiaClinica) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 
@@ -43,6 +50,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             return new byte[0];
         }
     }
+
 
     private Document initializePdf(ByteArrayOutputStream byteArrayOutputStream) {
         PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
