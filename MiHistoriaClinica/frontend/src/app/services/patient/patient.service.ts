@@ -33,13 +33,13 @@ export class PatientService {
         if (token) {
             headers = headers.set('Authorization', 'Bearer ' + token);
         }
-        return this.http.get<any[]>('http://localhost:8080/patient/get-turnos', {headers: headers});
+        return this.http.get<any[]>('http://localhost:8080/turno/patient/get-turnos', {headers: headers});
     }
 
     public deleteTurno(turnoId: number) {
         const params = new HttpParams().set('turnoId', turnoId.toString());
 
-        return this.http.delete('http://localhost:8080/patient/delete-turno', {params: params})
+        return this.http.delete('http://localhost:8080/turno/patient/delete-turno', {params: params})
             .pipe(
                 map(() => {
                     Swal.fire(
@@ -158,7 +158,7 @@ export class PatientService {
             medicId: medicId,
             medicalCenter: turnoDTO.medicalCenter
         };
-        return this.http.post('http://localhost:8080/patient/create-turno', body, { headers: headers, params: params });
+        return this.http.post('http://localhost:8080/turno/patient/create-turno', body, { headers: headers, params: params });
     }
 
 }
