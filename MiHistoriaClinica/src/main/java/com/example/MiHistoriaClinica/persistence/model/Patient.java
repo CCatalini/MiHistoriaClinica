@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,37 +13,24 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Patient")
+@Getter
+@Setter
 public class Patient {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long patientId;
-
-    @Column()
     private String name;
-
-    @Column()
     private String lastname;
-
     @Column(nullable = false, unique = true)
     private Long dni;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
-    @Column()
     private Date birthdate;
-
     @Column(name = "link_code")
     private String linkCode;
-
-
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -78,7 +67,6 @@ public class Patient {
     @JsonManagedReference
     private List<Analysis> analysis = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<MedicalAppointment> medicalAppointments;
@@ -86,111 +74,6 @@ public class Patient {
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Turnos> turnos;
-
-
-    public List<MedicalAppointment> getMedicalAppointments() {
-        return medicalAppointments;
-    }
-
-    public void setMedicalAppointments(List<MedicalAppointment> medicalAppointments) {
-        this.medicalAppointments = medicalAppointments;
-    }
-
-    public List<Medicine> getMedicines() {
-        return medicines;
-    }
-
-    public void setMedicines(List<Medicine> medicines) {
-        this.medicines = medicines;
-    }
-
-    public List<Medic> getMedics() {
-        return medics;
-    }
-
-    public void setMedics(List<Medic> medics) {
-        this.medics = medics;
-    }
-
-    public String getLinkCode() {
-        return linkCode;
-    }
-
-    public void setLinkCode(String linkCode) {
-        this.linkCode = linkCode;
-    }
-
-    public MedicalHistory getMedicalHistory() {
-        return medicalHistory;
-    }
-
-    public void setMedicalHistory(MedicalHistory medicalHistory) {
-        this.medicalHistory = medicalHistory;
-    }
-
-    public List<Analysis> getAnalysis() {
-        return analysis;
-    }
-
-    public void setAnalysis(List<Analysis> analysis) {
-        this.analysis = analysis;
-    }
-
-    public Long getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Long patient_id) {
-        this.patientId = patient_id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public Long getDni() {
-        return dni;
-    }
-
-    public void setDni(Long dni) {
-        this.dni = dni;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
-    }
 
 
     @Override
@@ -210,31 +93,4 @@ public class Patient {
         return Objects.hash(patientId);
     }
 
-
-
-
-
 }
-
-/*
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_role",
-            // joinColumns e inverseJoinColumns definen las claves foráneas de las tablas "user" y "role" en la tabla intermedia
-            joinColumns = @JoinColumn(name = "patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private List<RoleModel> roles = new ArrayList<>();
-*/
-
-
-/*
-    public List<RoleModel> getUserRoles() {
-        return roles;
-    }
-
-    public void setUserRoles(List<RoleModel> userRoles) {
-        this.roles = userRoles;
-    }
-
- */

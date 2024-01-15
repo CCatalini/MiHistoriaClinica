@@ -70,7 +70,7 @@ public class MedicController {
     }
 
 
-    /**                         MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
+    /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
 
     @PostMapping("/linkPatient")
     public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {
