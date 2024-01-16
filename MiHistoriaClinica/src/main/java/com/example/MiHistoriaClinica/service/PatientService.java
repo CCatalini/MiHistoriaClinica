@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.presentation.dto.MedicalHistoryDTO;
+import com.example.MiHistoriaClinica.presentation.dto.MedicalFileDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
@@ -16,7 +16,7 @@ public interface PatientService {
     List<Medicine> getMedicinesByPatientId(Long id);
     List<Medic> getMedicsByPatientId(Long id);
     Patient updatePatient(Long id, Patient newPatient);
-    MedicalHistoryDTO getMedicalHistory(Long id);
+    MedicalFileDTO getMedicalHistory(Long id);
     Medicine getMedicineByMedicineId(Long medicineId);
     void saveMedicine(Medicine medicine);
 

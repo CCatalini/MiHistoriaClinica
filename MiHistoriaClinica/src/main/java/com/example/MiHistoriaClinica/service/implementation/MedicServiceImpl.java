@@ -1,11 +1,11 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
-import com.example.MiHistoriaClinica.exception.MedicNotFoundException;
-import com.example.MiHistoriaClinica.exception.PatientNotFoundException;
-import com.example.MiHistoriaClinica.exception.ResourceNotFoundException;
+import com.example.MiHistoriaClinica.util.exception.MedicNotFoundException;
+import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
+import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
+import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.repository.*;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.MedicalHistory;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.presentation.dto.*;
@@ -25,18 +25,18 @@ public class MedicServiceImpl implements MedicService {
     private final PatientRepository patientRepository;
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
-    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicalFileRepository medicalFileRepository;
 
     private final CustomRepositoryAccess customRepositoryAccess;
     private final PatientServiceImpl patientService;
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalHistoryRepository medicalHistoryRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalFileRepository medicalFileRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
-        this.medicalHistoryRepository = medicalHistoryRepository;
+        this.medicalFileRepository = medicalFileRepository;
 
         this.customRepositoryAccess = customRepositoryAccess;
         this.patientService = patientService;
@@ -181,11 +181,11 @@ public class MedicServiceImpl implements MedicService {
         patientRepository.save(patient);
     }
 
-    /** Métodos MedicalHistory*/
+    /** Métodos MedicalFile*/
 
     @Transactional
     @Override
-    public MedicalHistory createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory) {
+    public MedicalFile createPatientMedicalHistory(Long medicId, String linkCode, MedicalFileDTO medicalHistory) {
 
         Optional<Medic> medic = medicRepository.findById(medicId);
         Optional<Patient> patient = patientRepository.findByLinkCode(linkCode);
@@ -200,12 +200,12 @@ public class MedicServiceImpl implements MedicService {
      * primero checkea que el médico y el paciente estén linkeados
      */
     @Override
-    public MedicalHistoryDTO getPatientMedicalHistory(String linkCode) {
+    public MedicalFileDTO getPatientMedicalHistory(String linkCode) {
         Patient patient = patientRepository.findByLinkCode(linkCode).get();
         return patientService.getMedicalHistory(patient.getPatientId());
     }
 /*
-    public MedicalHistoryModel updatePatientMedicalHistory(Long medicId, String patientLinkCode, MedicalHistoryDTO update) {
+    public MedicalHistoryModel updatePatientMedicalHistory(Long medicId, String patientLinkCode, MedicalFileDTO update) {
         Optional<MedicModel> medic = medicRepository.findById(medicId);
         Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
 
@@ -272,7 +272,7 @@ public class MedicServiceImpl implements MedicService {
         return analysisRepository;
     }
 
-    public MedicalHistoryRepository getMedicalHistoryRepository() {
-        return medicalHistoryRepository;
+    public MedicalFileRepository getMedicalHistoryRepository() {
+        return medicalFileRepository;
     }
 }

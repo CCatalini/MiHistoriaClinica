@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;

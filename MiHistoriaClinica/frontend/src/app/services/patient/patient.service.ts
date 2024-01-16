@@ -67,13 +67,13 @@ export class PatientService {
         return this.http.post<string>('http://localhost:8080/patient/generate-link-code', null, {headers});
     }
 
-    public getMedicalHistory(): Observable<string> {
+    public getMedicalFile(): Observable<string> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        return this.http.get<string>('http://localhost:8080/patient/get-medical-history', {headers: headers});
+        return this.http.get<string>('http://localhost:8080/medical-file/get-medical-file', {headers: headers});
     }
 
     public getMedicinesList(token: string): Observable<any[]> {

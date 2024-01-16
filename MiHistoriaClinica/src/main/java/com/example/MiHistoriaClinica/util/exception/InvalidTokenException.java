@@ -1,4 +1,4 @@
-package com.example.MiHistoriaClinica.exception;
+package com.example.MiHistoriaClinica.util.exception;
 
 public class InvalidTokenException extends Throwable {
 

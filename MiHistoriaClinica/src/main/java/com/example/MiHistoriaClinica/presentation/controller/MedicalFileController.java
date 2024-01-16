@@ -1,8 +1,9 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
-import com.example.MiHistoriaClinica.presentation.dto.MedicalHistoryDTO;
-import com.example.MiHistoriaClinica.service.MedicalHistoryService;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
+import com.example.MiHistoriaClinica.presentation.dto.MedicalFileDTO;
+import com.example.MiHistoriaClinica.service.MedicalFileService;
 import com.example.MiHistoriaClinica.service.PatientService;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -13,44 +14,42 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-        import com.example.MiHistoriaClinica.persistence.model.MedicalHistory;
-        import com.example.MiHistoriaClinica.persistence.repository.MedicalHistoryRepository;
 
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/medical-history")
-public class MedicalHistoryController {
+@RequestMapping("/medical-file")
+public class MedicalFileController {
 
-    private final MedicalHistoryService medicalHistoryService;
+    private final MedicalFileService medicalFileService;
     private final PatientService patientService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     @Autowired
-    public MedicalHistoryController(MedicalHistoryService medicalHistoryService, PatientService patientService) {
-        this.medicalHistoryService = medicalHistoryService;
+    public MedicalFileController(MedicalFileService medicalFileService, PatientService patientService) {
+        this.medicalFileService = medicalFileService;
         this.patientService = patientService;
     }
 
     @GetMapping("/getAll")
-    public List<MedicalHistory> getAllMedicalHistory() {
-        return medicalHistoryService.findAll();
+    public List<MedicalFile> getAllMedicalHistory() {
+        return medicalFileService.findAll();
     }
 
-    @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalHistoryDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
-        MedicalHistoryDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
+    @GetMapping("/get-medical-file")
+    public ResponseEntity<MedicalFileDTO> getMedicalHistory(@RequestHeader("Authorization") String token ) throws InvalidTokenException {
+        MedicalFileDTO medicalHistory = patientService.getMedicalHistory(jwtValidator.getId(token));
         return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
     @GetMapping(value = "/download-pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> downloadMedicalHistory(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long id = jwtValidator.getId(token);
-        MedicalHistory medicalHistory = medicalHistoryService.getMedicalHistoryById(id);
+        MedicalFile medicalFile = medicalFileService.getMedicalHistoryById(id);
 
-        byte[]  pdfBytes = medicalHistoryService.parseMedicalHistoryToPDF(medicalHistory);
+        byte[]  pdfBytes = medicalFileService.parseMedicalHistoryToPDF(medicalFile);
 
         // Devolver la respuesta con el contenido del PDF y las cabeceras necesarias
         return ResponseEntity

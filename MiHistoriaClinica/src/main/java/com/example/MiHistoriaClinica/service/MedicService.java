@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.service;
 
 
 import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.MedicalHistory;
+import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.presentation.dto.*;
@@ -30,8 +30,8 @@ public interface MedicService {
     void deletePatientLinkCode(String patientLinkCode);
 
     @Transactional
-    MedicalHistory createPatientMedicalHistory(Long medicId, String linkCode, MedicalHistoryDTO medicalHistory);
-    MedicalHistoryDTO getPatientMedicalHistory(String linkCode);
+    MedicalFile createPatientMedicalHistory(Long medicId, String linkCode, MedicalFileDTO medicalHistory);
+    MedicalFileDTO getPatientMedicalHistory(String linkCode);
 
     Medicine createPatientMedicine(Long medicId, String patientLinkCode, MedicineDTO medicine);
     List<Medicine> getMedicinesByPatientLinkCode(String patientLinkCode);

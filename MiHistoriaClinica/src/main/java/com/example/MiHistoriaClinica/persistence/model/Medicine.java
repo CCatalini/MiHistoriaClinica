@@ -1,10 +1,13 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
+import com.example.MiHistoriaClinica.util.constant.MedicineName;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +20,13 @@ public class Medicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long medicineId;
-
-    @Column(name="medicine")
-    private String medicineName;
-    @Column(name="active_ingredient")
+    @Enumerated(EnumType.STRING)
+    private MedicineName medicineName;
     private String activeIngredient;
     private String lab;
     private String description;
     private String status;
+    @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate prescriptionDay;
 
 
     @ManyToMany(mappedBy = "medicines")

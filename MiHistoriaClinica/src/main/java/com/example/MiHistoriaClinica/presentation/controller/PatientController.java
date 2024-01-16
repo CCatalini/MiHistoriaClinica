@@ -1,10 +1,8 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
-import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;

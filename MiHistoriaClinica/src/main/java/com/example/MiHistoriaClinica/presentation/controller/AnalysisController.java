@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.presentation.dto.AnalysisDTO;
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Analysis;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;

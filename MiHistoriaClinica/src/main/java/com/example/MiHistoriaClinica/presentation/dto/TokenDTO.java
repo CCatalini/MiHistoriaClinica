@@ -1,5 +1,10 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class TokenDTO {
     private String token;
 
@@ -7,11 +12,4 @@ public class TokenDTO {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

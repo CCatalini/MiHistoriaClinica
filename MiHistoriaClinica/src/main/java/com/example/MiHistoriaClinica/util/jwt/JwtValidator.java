@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.util.jwt;
 
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 
 public interface JwtValidator {
 

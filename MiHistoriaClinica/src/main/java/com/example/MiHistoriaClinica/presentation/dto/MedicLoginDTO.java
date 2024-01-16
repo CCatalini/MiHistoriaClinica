@@ -1,5 +1,10 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class MedicLoginDTO {
 
     private Long matricula;
@@ -10,19 +15,4 @@ public class MedicLoginDTO {
         this.password = password;
     }
 
-    public Long getMatricula() {
-        return matricula;
-    }
-
-    public void setMatricula(Long matricula) {
-        this.matricula = matricula;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
