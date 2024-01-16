@@ -3,7 +3,6 @@ package com.example.MiHistoriaClinica.persistence.repository;
 
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
-import com.example.MiHistoriaClinica.util.constant.MedicineName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -96,11 +95,11 @@ public class CustomRepositoryAccess {
         Medicine medicineSaved = new Medicine();
         Patient aux = patient.get();
 
-        medicineSaved.setMedicineName(MedicineName.valueOf(medicine.getMedicineName()));
-        medicineSaved.setLab(medicine.getLab());
+        medicineSaved.setMedicineNameAndDescription(medicine.getMedicineNameAndDescription());
+        medicineSaved.setMedicineDescription(medicine.getMedicineDescription());
+        medicineSaved.setComments(medicine.getComments());
         medicineSaved.setStatus(medicine.getStatus());
-        medicineSaved.setDescription(medicine.getDescription());
-        medicineSaved.setActiveIngredient(medicine.getActiveIngredient());
+        medicineSaved.setPrescriptionDay(medicine.getPrescriptionDay());
 
         medicineSaved.addPatient(aux);
         aux.getMedicines().add(medicineSaved);
