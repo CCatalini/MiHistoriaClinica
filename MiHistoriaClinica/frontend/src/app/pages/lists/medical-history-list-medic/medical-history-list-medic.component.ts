@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {PatientService} from "../../../services/patient/patient.service";
 import {Router} from "@angular/router";
 import {MedicService} from "../../../services/medic/medic.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
     selector: 'app-medical-history-list-medic',
@@ -19,7 +19,9 @@ export class MedicalHistoryListMedicComponent implements OnInit{
         familyMedicalHistory: ''
     };
 
-    constructor(private medicService: MedicService, private router: Router) {}
+    patient : any;
+
+    constructor(private medicService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         if (localStorage.getItem('userType') != 'MEDIC') {
@@ -27,6 +29,8 @@ export class MedicalHistoryListMedicComponent implements OnInit{
         } else {
             this.fetchMedicalHistory(); // Fetch medical history data
         }
+
+        this.getPatientInfo();
     }
 
     private fetchMedicalHistory(): void {
@@ -39,4 +43,21 @@ export class MedicalHistoryListMedicComponent implements OnInit{
             }
         );
     }
+
+    getPatientInfo(): void {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+            (response: any) => {
+                this.patient = response;
+            },
+            (error: any) => {
+                console.error('Error fetching patient info:', error);
+            }
+        );
+    }
+
 }

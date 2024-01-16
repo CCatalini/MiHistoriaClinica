@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import Swal from "sweetalert2";
 import { MedicService } from "../../../services/medic/medic.service";
 import { Router } from "@angular/router";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
     selector: 'app-create-medical-history',
@@ -19,16 +20,16 @@ export class CreateMedicalHistoryComponent {
         familyMedicalHistory: ''
     }
 
-    public patient = {
-        code: '',
-    };
+    patient : any;
 
-    constructor(private userService: MedicService, private router: Router) {}
+    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         if (localStorage.getItem('userType') !== 'MEDIC') {
             window.location.href = '/medic/login';
         }
+
+        this.getPatientInfo();
     }
 
     formSubmit() {
@@ -72,6 +73,22 @@ export class CreateMedicalHistoryComponent {
             }, (error) => {
                 console.log(error);
                 Swal.fire('Error', 'Existen datos erróneos.', 'error');
+            }
+        );
+    }
+
+    getPatientInfo(): void {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+            (response: any) => {
+                this.patient = response;
+            },
+            (error: any) => {
+                console.error('Error fetching patient info:', error);
             }
         );
     }

@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import { MedicService } from '../../../services/medic/medic.service';
 import { Router } from '@angular/router';
 import {Observable} from "rxjs";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
     selector: 'app-alta-medicamento',
@@ -17,14 +18,11 @@ export class AddMedicineComponent implements OnInit {
         comments: '',
         prescriptionDay:'',
         status: 'Pendiente',
-
     };
 
-    public patient = {
-        code: '',
-    };
+    patient: any;
 
-    constructor(private userService: MedicService, private router: Router) {}
+    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         // Verifico usuario
@@ -37,6 +35,8 @@ export class AddMedicineComponent implements OnInit {
                 this.medicine.medicineName = options[0];
             }
         });
+
+        this.getPatientInfo();
 
     }
 
@@ -100,5 +100,21 @@ export class AddMedicineComponent implements OnInit {
 
     getMedicineOptions(): Observable<any> {
         return this.userService.getMedicineOptions();  // Ajusta el nombre del método según tu servicio
+    }
+
+    getPatientInfo(): void {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+            (response: any) => {
+                this.patient = response;
+            },
+            (error: any) => {
+                console.error('Error fetching patient info:', error);
+            }
+        );
     }
 }

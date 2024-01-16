@@ -3,6 +3,7 @@ import {PatientService} from "../../../services/patient/patient.service";
 import {Router} from "@angular/router";
 import {MedicService} from "../../../services/medic/medic.service";
 import Swal from "sweetalert2";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-appointments-list-medic',
@@ -12,16 +13,18 @@ import Swal from "sweetalert2";
 export class AppointmentsListMedicComponent implements OnInit{
 
     appointments: any[] = [];
+    patient: any;
 
-    constructor(private userService: MedicService, private router: Router) { }
+    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) { }
 
     ngOnInit(): void {
-        //verifico usuario
         if (localStorage.getItem('userType') != 'MEDIC') {
             this.router.navigate(['/patient/login']);
         } else {
             this.formSubmit(); // Creamos medics list
         }
+
+        this.getPatientInfo();
     }
 
     formSubmit() {
@@ -50,5 +53,21 @@ export class AppointmentsListMedicComponent implements OnInit{
         } else {
             // Manejar el caso en el que no se encuentre el token en el local storage
         }
+    }
+
+    getPatientInfo(): void {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+            (response: any) => {
+                this.patient = response;
+            },
+            (error: any) => {
+                console.error('Error fetching patient info:', error);
+            }
+        );
     }
 }
