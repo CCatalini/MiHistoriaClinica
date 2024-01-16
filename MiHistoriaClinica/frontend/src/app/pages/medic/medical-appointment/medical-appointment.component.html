@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Crear historia clínica</title>
-</head>
-
 <body>
 <div class="bootstrap-wrapper">
     <div class="container">
@@ -14,6 +10,7 @@
                     <img src="../../../../assets/MedicalAppointment.png" width="200" height="200">
                 </div>
                 <h1 class="text-center">Consulta Médica</h1>
+                <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
                 <div class="page-container" style="margin-bottom: -380px;">
                     <form (ngSubmit)="formSubmit()"  style="margin-top: 20px;">
 

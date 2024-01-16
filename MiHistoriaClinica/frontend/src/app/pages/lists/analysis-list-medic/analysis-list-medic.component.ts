@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MedicService} from "../../../services/medic/medic.service";
 import Swal from "sweetalert2";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-analysis-list-medic',
@@ -10,8 +11,9 @@ import Swal from "sweetalert2";
 })
 export class AnalysisListMedicComponent implements OnInit{
     analysisList: any[] = [];
+    patient: any;
 
-    constructor(private userService: MedicService, private router: Router) {}
+    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         //verifico usuario
@@ -20,6 +22,8 @@ export class AnalysisListMedicComponent implements OnInit{
         }else {
             this.formSubmit(); // Fetch medicines list
         }
+
+        this.getPatientInfo();
     }
 
     formSubmit() {
@@ -118,4 +122,19 @@ export class AnalysisListMedicComponent implements OnInit{
         }
     }
 
+    getPatientInfo(): void {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+            (response: any) => {
+                this.patient = response;
+            },
+            (error: any) => {
+                console.error('Error fetching patient info:', error);
+            }
+        );
+    }
 }

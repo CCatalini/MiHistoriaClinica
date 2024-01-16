@@ -1,5 +1,6 @@
 <div class="container">
-    <h3>Mi Historia Clínica</h3>
+    <h3>Historia Clínica</h3>
+    <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
     <mat-list *ngIf="medicalHistory">
         <mat-list-item>
             <span matListItemTitle>Altura</span>

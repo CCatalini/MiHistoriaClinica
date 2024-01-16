@@ -25,7 +25,6 @@ export class AttendPatientComponent implements OnInit {
                 this.patientId = params['linkCode'];
             });
 
-            // Call the method to fetch patient info
             this.getPatientInfo();
         }
     }
