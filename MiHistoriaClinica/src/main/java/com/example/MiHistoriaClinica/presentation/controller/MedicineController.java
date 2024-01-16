@@ -1,7 +1,7 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
-import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.service.implementation.MedicineServiceImpl;
+import com.example.MiHistoriaClinica.util.constant.MedicineName;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
@@ -38,9 +38,9 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Medicine>> getAllMedicines () {
-        List<Medicine> medicines = medicineService.getAllMedicines();
+    @GetMapping("/all-names")
+    public ResponseEntity<List<String>> getAllMedicinesNames () {
+        List<String> medicines = medicineService.getAllMedicinesNames();
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 

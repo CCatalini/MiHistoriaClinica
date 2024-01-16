@@ -229,8 +229,8 @@ export class MedicService {
             );
     }
 
-    public getMedicineOptions() {
-        return this.http.get('http://localhost:8080/medicine/get-all');
+    public getAllMedicineNames() {
+        return this.http.get<string[]>('http://localhost:8080/medicine/all-names');
     }
 }
 
