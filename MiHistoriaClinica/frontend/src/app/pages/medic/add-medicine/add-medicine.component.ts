@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import Swal from 'sweetalert2';
 import { MedicService } from '../../../services/medic/medic.service';
 import { Router } from '@angular/router';
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-alta-medicamento',
@@ -11,11 +12,12 @@ import { Router } from '@angular/router';
 })
 export class AddMedicineComponent implements OnInit {
     public medicine = {
-        medicineName: '',
-        activeIngredient: '',
-        description: '',
-        lab: '',
+        medicineName: null,
+        medicineDescription:'',
+        comments: '',
+        prescriptionDay:'',
         status: 'Pendiente',
+
     };
 
     public patient = {
@@ -29,35 +31,34 @@ export class AddMedicineComponent implements OnInit {
         if (localStorage.getItem('userType') !== 'MEDIC') {
             window.location.href = '/medic/login';
         }
+        this.getMedicineOptions().subscribe(options => {
+            if (options.length > 0) {
+                // Inicializa medicine.medicineName con el primer elemento de la lista
+                this.medicine.medicineName = options[0];
+            }
+        });
+
     }
 
     formSubmit() {
         console.log(this.medicine);
         if (this.medicine.medicineName === '' || this.medicine.medicineName === null) {
             Swal.fire(
-                'Ingrese el nombre del medicamento',
-                'El nombre es requisito para cargar el medicamento.',
+                'Medicamento',
+                'Seleccione un medicamento de la lista.',
                 'warning'
             );
             return;
         }
-        if (this.medicine.activeIngredient === '' || this.medicine.activeIngredient === null) {
+        if (this.medicine.comments === '' || this.medicine.comments === null) {
             Swal.fire(
-                'Ingrese el compuesto activo',
-                'El compuesto activo es requisito para cargar el medicamento.',
-                'warning'
-            );
-            return;
-        }
-        if (this.medicine.lab === '' || this.medicine.lab === null) {
-            Swal.fire(
-                'Ingrese el laboratorio',
+                'Comentarios: ',
                 'El laboratorio es requisito para cargar el medicamento.',
                 'warning'
             );
             return;
         }
-        if (this.medicine.description === '' || this.medicine.description === null) {
+        if (this.medicine.prescriptionDay === '' || this.medicine.prescriptionDay === null) {
             Swal.fire(
                 'Ingrese la descripción',
                 'La descripción es requisito para cargar el medicamento.',
@@ -95,5 +96,9 @@ export class AddMedicineComponent implements OnInit {
                 Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
         );
+    }
+
+    getMedicineOptions(): Observable<any> {
+        return this.userService.getMedicineOptions();  // Ajusta el nombre del método según tu servicio
     }
 }

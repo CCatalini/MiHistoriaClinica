@@ -1,5 +1,7 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.service.implementation.MedicineServiceImpl;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
@@ -20,17 +22,25 @@ import java.util.List;
 public class MedicineController {
 
     private final PatientServiceImpl patientService;
+    private final MedicineServiceImpl medicineService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     @Autowired
-    public MedicineController(PatientServiceImpl patientService){
+    public MedicineController(PatientServiceImpl patientService, MedicineServiceImpl medicineService){
         this.patientService = patientService;
+        this.medicineService = medicineService;
     }
 
     @GetMapping("/get-medicines")
     public ResponseEntity<List<Medicine>> getMedicines (@RequestHeader("Authorization") String token ) throws InvalidTokenException {
         List<Medicine> medicines = patientService.getMedicinesByPatientId(jwtValidator.getId(token));
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<List<Medicine>> getAllMedicines () {
+        List<Medicine> medicines = medicineService.getAllMedicines();
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 

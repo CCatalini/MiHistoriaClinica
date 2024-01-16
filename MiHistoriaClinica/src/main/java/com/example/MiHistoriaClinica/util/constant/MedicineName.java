@@ -3,7 +3,7 @@ package com.example.MiHistoriaClinica.util.constant;
 import lombok.Getter;
 
 @Getter
-public enum MedicineNameAndDescription {
+public enum MedicineName {
     PARACETAMOL("Analgésico y antipirético utilizado para aliviar el dolor y reducir la fiebre."),
     IBUPROFENO("Antiinflamatorio no esteroideo que alivia el dolor, reduce la inflamación y baja la fiebre."),
     ASPIRINA("Antiinflamatorio, analgésico y antipirético que también actúa como antiagregante plaquetario para prevenir coágulos."),
@@ -37,7 +37,7 @@ public enum MedicineNameAndDescription {
 
     private final String description;
 
-    MedicineNameAndDescription(String description) {
+    MedicineName(String description) {
         this.description = description;
     }
 
