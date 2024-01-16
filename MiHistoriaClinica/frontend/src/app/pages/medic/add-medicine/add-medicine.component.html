@@ -12,9 +12,10 @@
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Nombre del medicamento:</mat-label>
                             <mat-select required [(ngModel)]="medicine.medicineName" name="medicineName">
-                                <mat-option *ngFor="let option of getMedicineOptions() | async" [value]="option">{{ option.medicineName }}</mat-option>
+                                <mat-option *ngFor="let option of medicineOptions" [value]="option">{{ option }}</mat-option>
                             </mat-select>
                         </mat-form-field>
+
 
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Comentarios:</mat-label>

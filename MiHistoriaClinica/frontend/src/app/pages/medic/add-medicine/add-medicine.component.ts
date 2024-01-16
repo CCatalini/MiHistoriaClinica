@@ -13,7 +13,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class AddMedicineComponent implements OnInit {
     public medicine = {
-        medicineName: null,
+        medicineName: '',
         medicineDescription:'',
         comments: '',
         prescriptionDay:'',
@@ -21,6 +21,7 @@ export class AddMedicineComponent implements OnInit {
     };
 
     patient: any;
+    medicineOptions: string[] = [];
 
     constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
@@ -29,11 +30,14 @@ export class AddMedicineComponent implements OnInit {
         if (localStorage.getItem('userType') !== 'MEDIC') {
             window.location.href = '/medic/login';
         }
+
         this.getMedicineOptions().subscribe(options => {
-            if (options.length > 0) {
+            this.medicineOptions = options; // Asigna la lista de nombres a la variable
+            /*if (options.length > 0) {
                 // Inicializa medicine.medicineName con el primer elemento de la lista
                 this.medicine.medicineName = options[0];
             }
+             */
         });
 
         this.getPatientInfo();
@@ -49,15 +53,7 @@ export class AddMedicineComponent implements OnInit {
                 'warning'
             );
             return;
-        }
-        if (this.medicine.comments === '' || this.medicine.comments === null) {
-            Swal.fire(
-                'Comentarios: ',
-                'El laboratorio es requisito para cargar el medicamento.',
-                'warning'
-            );
-            return;
-        }
+        }ap
         if (this.medicine.prescriptionDay === '' || this.medicine.prescriptionDay === null) {
             Swal.fire(
                 'Ingrese la descripción',
@@ -98,9 +94,10 @@ export class AddMedicineComponent implements OnInit {
         );
     }
 
-    getMedicineOptions(): Observable<any> {
-        return this.userService.getMedicineOptions();  // Ajusta el nombre del método según tu servicio
+    getMedicineOptions(): Observable<string[]> {
+        return this.userService.getAllMedicineNames();
     }
+
 
     getPatientInfo(): void {
         const token = localStorage.getItem('token');

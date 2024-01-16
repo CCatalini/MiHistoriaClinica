@@ -2,6 +2,10 @@ package com.example.MiHistoriaClinica.util.constant;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 public enum MedicineName {
     PARACETAMOL("Analgésico y antipirético utilizado para aliviar el dolor y reducir la fiebre."),
@@ -41,5 +45,10 @@ public enum MedicineName {
         this.description = description;
     }
 
+    public static List<String> getAllMedicinesNames() {
+        return Arrays.stream(MedicineName.values())
+                .map(MedicineName::name)
+                .collect(Collectors.toList());
+    }
 }
 
