@@ -1,6 +1,6 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
-import com.example.MiHistoriaClinica.util.constant.MedicineName;
+import com.example.MiHistoriaClinica.util.constant.MedicineNameAndDescription;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,11 +20,9 @@ public class Medicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long medicineId;
-    @Enumerated(EnumType.STRING)
-    private MedicineName medicineName;
-    private String activeIngredient;
-    private String lab;
-    private String description;
+    @Enumerated(EnumType.STRING) private MedicineNameAndDescription medicineNameAndDescription;
+    private String medicineDescription;
+    private String comments;
     private String status;
     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate prescriptionDay;
 

@@ -14,10 +14,10 @@ import java.time.LocalDate;
 @Setter
 public class MedicalHistoryDTO {
 
-    private MedicalFile medicalFile;
-    private Medicine medicine;
-    private Analysis analysis;
-    private MedicalAppointment medicalAppointment;
+    private MedicalFileDTO medicalFile;
+    private MedicineDTO medicine;
+    private AnalysisDTO analysis;
+    private MedicalAppointmentDTO medicalAppointment;
     private String medicName;
     private String status;
     @DateTimeFormat(pattern = "yyyy-MM-dd")  LocalDate dateFrom;
