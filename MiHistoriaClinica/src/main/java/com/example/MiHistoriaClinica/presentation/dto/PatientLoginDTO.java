@@ -1,5 +1,10 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class PatientLoginDTO {
 
     private Long dni;
@@ -10,19 +15,4 @@ public class PatientLoginDTO {
         this.password = password;
     }
 
-    public Long getDni() {
-        return dni;
-    }
-
-    public void setDni(Long dni) {
-        this.dni = dni;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

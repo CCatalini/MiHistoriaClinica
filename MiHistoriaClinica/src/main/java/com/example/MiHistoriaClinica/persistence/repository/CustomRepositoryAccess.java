@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.persistence.repository;
 
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
+import com.example.MiHistoriaClinica.util.constant.MedicineName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,21 +16,21 @@ import java.util.Optional;
 @Repository
 public class CustomRepositoryAccess {
 
-    /** utiliza una instancia de PatientRepository para realizar la operación de guardado de un DTO en la tabla PatientModel con el método saveDTO.*/
+    /** Utiliza una instancia de PatientRepository para realizar la operación de guardado de un DTO en la tabla PatientModel con el método saveDTO.*/
     private final PatientRepository patientRepository;
     private final MedicRepository medicRepository;
-    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicalFileRepository medicalFileRepository;
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
     private final MedicalAppointmentRepository medicalAppointmentRepository;
     private final TurnosRepository turnosRepository;
 
     @Autowired
-    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalHistoryRepository medicalHistoryRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalAppointmentRepository medicalAppointmentRepository, TurnosRepository turnosRepository) {
+    public CustomRepositoryAccess(PatientRepository repository, MedicRepository medicRepository, MedicalFileRepository medicalFileRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalAppointmentRepository medicalAppointmentRepository, TurnosRepository turnosRepository) {
         this.patientRepository = repository;
 
         this.medicRepository = medicRepository;
-        this.medicalHistoryRepository = medicalHistoryRepository;
+        this.medicalFileRepository = medicalFileRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
         this.medicalAppointmentRepository = medicalAppointmentRepository;
@@ -68,26 +69,26 @@ public class CustomRepositoryAccess {
 
 
 
-    public MedicalHistory auxMedicalHistory(Optional<Patient> patient, MedicalHistoryDTO update){
-        MedicalHistory medicalHistory ;
+    public MedicalFile auxMedicalHistory(Optional<Patient> patient, MedicalFileDTO update){
+        MedicalFile medicalFile;
 
-        if(patient.isPresent() && patient.get().getMedicalHistory()!= null )    medicalHistory = patient.get().getMedicalHistory();
-        else                                                                    medicalHistory = new MedicalHistory();
+        if(patient.isPresent() && patient.get().getMedicalFile()!= null )    medicalFile = patient.get().getMedicalFile();
+        else                                                                    medicalFile = new MedicalFile();
 
-        return setDatos(medicalHistory, update ,patient.get());
+        return setDatos(medicalFile, update ,patient.get());
     }
 
-    private MedicalHistory setDatos(MedicalHistory medicalHistory, MedicalHistoryDTO update, Patient patient) {
-        medicalHistory.setWeight(update.getWeight());
-        medicalHistory.setHeight(update.getHeight());
-        medicalHistory.setAllergy(update.getAllergy());
-        medicalHistory.setBloodType(update.getBloodType());
-        medicalHistory.setActualMedicine(update.getActualMedicine());
-        medicalHistory.setChronicDisease(update.getChronicDisease());
-        medicalHistory.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
-        medicalHistory.setPatient(patient);
+    private MedicalFile setDatos(MedicalFile medicalFile, MedicalFileDTO update, Patient patient) {
+        medicalFile.setWeight(update.getWeight());
+        medicalFile.setHeight(update.getHeight());
+        medicalFile.setAllergy(update.getAllergy());
+        medicalFile.setBloodType(update.getBloodType());
+        medicalFile.setActualMedicine(update.getActualMedicine());
+        medicalFile.setChronicDisease(update.getChronicDisease());
+        medicalFile.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
+        medicalFile.setPatient(patient);
 
-        return medicalHistoryRepository.save(medicalHistory);
+        return medicalFileRepository.save(medicalFile);
     }
 
     public Medicine createPatientMedicine(MedicineDTO medicine, Optional<Patient> patient) {
@@ -95,7 +96,7 @@ public class CustomRepositoryAccess {
         Medicine medicineSaved = new Medicine();
         Patient aux = patient.get();
 
-        medicineSaved.setMedicineName(medicine.getMedicineName());
+        medicineSaved.setMedicineName(MedicineName.valueOf(medicine.getMedicineName()));
         medicineSaved.setLab(medicine.getLab());
         medicineSaved.setStatus(medicine.getStatus());
         medicineSaved.setDescription(medicine.getDescription());

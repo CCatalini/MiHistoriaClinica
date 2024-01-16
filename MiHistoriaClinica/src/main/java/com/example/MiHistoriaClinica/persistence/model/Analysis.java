@@ -16,8 +16,7 @@ public class Analysis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long analysis_id;
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false)   private String name;
     private String medicalCenter;
     private String description;
     private String status;

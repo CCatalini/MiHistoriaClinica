@@ -1,4 +1,4 @@
-package com.example.MiHistoriaClinica.exception;
+package com.example.MiHistoriaClinica.util.exception;
 
 /** Excepción personalizada para manejar errores cuando no se encuentra un recurso */
 

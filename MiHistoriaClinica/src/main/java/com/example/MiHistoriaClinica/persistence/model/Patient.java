@@ -45,7 +45,7 @@ public class Patient {
 
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-    private MedicalHistory medicalHistory;
+    private MedicalFile medicalFile;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

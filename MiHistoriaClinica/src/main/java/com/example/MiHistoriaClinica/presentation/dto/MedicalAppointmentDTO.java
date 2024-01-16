@@ -1,5 +1,10 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class MedicalAppointmentDTO {
 
     private String appointmentReason;
@@ -18,35 +23,4 @@ public class MedicalAppointmentDTO {
         this.observations = observations;
     }
 
-    public String getAppointmentReason() {
-        return appointmentReason;
-    }
-
-    public void setAppointmentReason(String appointmentReason) {
-        this.appointmentReason = appointmentReason;
-    }
-
-    public String getCurrentIllness() {
-        return currentIllness;
-    }
-
-    public void setCurrentIllness(String currentIllness) {
-        this.currentIllness = currentIllness;
-    }
-
-    public String getPhysicalExam() {
-        return physicalExam;
-    }
-
-    public void setPhysicalExam(String physicalExam) {
-        this.physicalExam = physicalExam;
-    }
-
-    public String getObservations() {
-        return observations;
-    }
-
-    public void setObservations(String observations) {
-        this.observations = observations;
-    }
 }

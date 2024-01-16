@@ -30,7 +30,7 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     private fetchMedicalHistory(): void {
-        this.patientService.getMedicalHistory().subscribe(
+        this.patientService.getMedicalFile().subscribe(
             (response) => {
                 this.medicalHistory = response; // Assign the response data to medicalHistory object
             },

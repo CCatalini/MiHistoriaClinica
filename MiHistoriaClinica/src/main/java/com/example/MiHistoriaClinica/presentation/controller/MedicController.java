@@ -1,9 +1,9 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
 
-import com.example.MiHistoriaClinica.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.MedicalHistory;
+import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.service.implementation.MedicServiceImpl;
@@ -105,28 +105,28 @@ public class MedicController {
     /**Métodos Medical History*/
 
     @PostMapping("/create-medical-history")
-    public ResponseEntity<MedicalHistory> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
-                                                                      @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                      @RequestBody MedicalHistoryDTO medicalHistory)
+    public ResponseEntity<MedicalFile> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
+                                                                   @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                   @RequestBody MedicalFileDTO medicalHistory)
                                                                            throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
-        MedicalHistory createdMedicalHistory = medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
+        MedicalFile createdMedicalFile = medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
 
-        if (createdMedicalHistory == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        else                                    return new ResponseEntity<>(createdMedicalHistory, HttpStatus.CREATED);
+        if (createdMedicalFile == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                    return new ResponseEntity<>(createdMedicalFile, HttpStatus.CREATED);
 
     }
 
     @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalHistoryDTO> getPatientMedicalHistory(@RequestHeader("patientLinkCode") String patientLinkCode ) throws InvalidTokenException {
-        MedicalHistoryDTO medicalHistory = medicService.getPatientMedicalHistory(patientLinkCode);
+    public ResponseEntity<MedicalFileDTO> getPatientMedicalHistory(@RequestHeader("patientLinkCode") String patientLinkCode ) throws InvalidTokenException {
+        MedicalFileDTO medicalHistory = medicService.getPatientMedicalHistory(patientLinkCode);
         return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
     }
 
     @PostMapping("/update-medical-history")
     public ResponseEntity<Void> updateMedicalHistory(@RequestHeader("Authorization") String token,
                                                                     @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                    @RequestBody MedicalHistoryDTO medicalHistory)
+                                                                    @RequestBody MedicalFileDTO medicalHistory)
                                                                     throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
         medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);

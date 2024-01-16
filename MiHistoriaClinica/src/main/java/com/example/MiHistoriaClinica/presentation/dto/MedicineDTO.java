@@ -1,7 +1,11 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
 import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class MedicineDTO {
 
     private String medicineName;
@@ -19,43 +23,4 @@ public class MedicineDTO {
         this.status = status;
     }
 
-    public String getMedicineName() {
-        return medicineName;
-    }
-
-    public void setMedicineName(String medicineName) {
-        this.medicineName = medicineName;
-    }
-
-    public String getActiveIngredient() {
-        return activeIngredient;
-    }
-
-    public void setActiveIngredient(String activeIngredient) {
-        this.activeIngredient = activeIngredient;
-    }
-
-    public String getLab() {
-        return lab;
-    }
-
-    public void setLab(String lab) {
-        this.lab = lab;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

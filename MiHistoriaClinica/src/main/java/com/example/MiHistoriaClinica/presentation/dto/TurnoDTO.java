@@ -1,10 +1,14 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
 import jakarta.persistence.Column;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Setter
+@Getter
 public class TurnoDTO {
 
     private LocalDate fechaTurno;
@@ -16,19 +20,4 @@ public class TurnoDTO {
         this.horaTurno = horaTurno;
     }
 
-    public LocalDate getFechaTurno() {
-        return fechaTurno;
-    }
-
-    public void setFechaTurno(LocalDate fechaTurno) {
-        this.fechaTurno = fechaTurno;
-    }
-
-    public LocalTime getHoraTurno() {
-        return horaTurno;
-    }
-
-    public void setHoraTurno(LocalTime horaTurno) {
-        this.horaTurno = horaTurno;
-    }
 }
