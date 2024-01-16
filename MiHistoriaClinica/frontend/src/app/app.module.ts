@@ -42,6 +42,8 @@ import { EditMedicalHistoryComponent } from './pages/medic/edit-medical-history/
 import { AddTurnoComponent } from './pages/patient/add-turno/add-turno.component';
 import { AllMedicsListComponent } from './pages/lists/all-medics-list/all-medics-list.component';
 import { TurnosListComponent } from './pages/lists/turnos-list/turnos-list.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -91,6 +93,8 @@ import { TurnosListComponent } from './pages/lists/turnos-list/turnos-list.compo
         AppRoutingModule,
         MatIconModule,
         MatListModule,
+        MatSelectModule,
+        MatOptionModule,
     ],
   providers: [],
   bootstrap: [AppComponent]

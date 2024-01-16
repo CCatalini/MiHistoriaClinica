@@ -229,6 +229,9 @@ export class MedicService {
             );
     }
 
+    public getMedicineOptions() {
+        return this.http.get('http://localhost:8080/medicine/get-all');
+    }
 }
 
 

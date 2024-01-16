@@ -1,38 +1,29 @@
-<div class = "bootstrap-wrapper">
-    <div class = "container">
-        <div class = "row" style = "margin-top : 70px;">
-            <div clazz = "col-md-6 offset-md-3">
+<div class="bootstrap-wrapper">
+    <div class="container">
+        <div class="row" style="margin-top: 70px;">
+            <div class="col-md-6 offset-md-3">
                 <div class="container text-center" style="margin-bottom: -10px;">
-                    <img src = "../../../../assets/Medicamentos.png" width = "200" height = "200">
+                    <img src="../../../../assets/Medicamentos.png" width="200" height="200">
                 </div>
-                <h1 class = "text-center">Añadir medicamento</h1>
+                <h1 class="text-center">Añadir medicamento</h1>
                 <div class="page-container" style="margin-bottom: -110px;">
-                    <form  (ngSubmit) = "formSubmit()">
-                        <mat-form-field class = "full-width" appearance = "outline">
+                    <form (ngSubmit)="formSubmit()">
+                        <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Nombre del medicamento:</mat-label>
-                            <input required [(ngModel)] = "medicine.medicineNameAndDescription" name = "medicineNameAndDescription" matInput placeholder="Ingrese el nombre del medicamento">
+                            <mat-select required [(ngModel)]="medicine.medicineName" name="medicineName">
+                                <mat-option *ngFor="let option of getMedicineOptions() | async" [value]="option">{{ option.medicineName }}</mat-option>
+                            </mat-select>
                         </mat-form-field>
 
-                        <mat-form-field class = "full-width" appearance = "outline">
-                            <mat-label>Compuesto activo:</mat-label>
-                            <input required [(ngModel)] = "medicine.activeIngredient" name = "activeIngredient" matInput placeholder="Ingrese el nombre del compuesto activo">
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Comentarios:</mat-label>
+                            <textarea [(ngModel)]="medicine.comments" name="comments" matInput placeholder="Ingrese comentarios"></textarea>
                         </mat-form-field>
 
-                        <mat-form-field class = "full-width" appearance = "outline">
-                            <mat-label>Laboratorio:</mat-label>
-                            <input required [(ngModel)] = "medicine.lab" name = "lab" matInput placeholder="Ingrese el nombre del laboratorio al que pertenece le medicamento">
-                        </mat-form-field>
-
-                        <mat-form-field class = "full-width" appearance = "outline">
-                            <mat-label>Descripción:</mat-label>
-                            <input [(ngModel)] = "medicine.description" name = "description" matInput placeholder="Ingrese la descripción del medicamento">
-                        </mat-form-field>
-
-                        <div class = "container text-center">
+                        <div class="container text-center">
                             <button class="boton">Añadir</button>
-                            <button type="reset" style = "margin-left: 20px;" class="boton">Limpiar</button>
+                            <button type="reset" style="margin-left: 20px;" class="boton">Limpiar</button>
                         </div>
-
                     </form>
                     <br><br><br>
                 </div>
@@ -40,5 +31,3 @@
         </div>
     </div>
 </div>
-
-
