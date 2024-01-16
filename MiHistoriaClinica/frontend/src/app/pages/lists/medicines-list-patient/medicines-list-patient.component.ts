@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { MedicService } from "../../../services/medic/medic.service";
 import { PatientService } from "../../../services/patient/patient.service";
 import { HttpClient } from "@angular/common/http";
-import { EMPTY } from "rxjs";
 
 @Component({
     selector: 'app-medicines-list',
@@ -15,9 +13,8 @@ export class MedicinesListPatientComponent implements OnInit {
     medicines: any[] = [];
 
     constructor(
-        private userService: PatientService,
-        private router: Router,
         private patientService: PatientService,
+        private router: Router,
         private http: HttpClient
     ) { }
 
@@ -32,7 +29,7 @@ export class MedicinesListPatientComponent implements OnInit {
     formSubmit() {
         const token = localStorage.getItem('token');
         if (token) {
-            this.userService.getMedicinesList(token).subscribe(
+            this.patientService.getMedicinesList(token).subscribe(
                 (data: any[]) => {
                     console.log('Medicines List:', data.map(medicine => ({ medicineId: medicine.medicineId, status: medicine.status })));
                     if (Array.isArray(data)) {
@@ -110,32 +107,3 @@ export class MedicinesListPatientComponent implements OnInit {
 
 }
 
-
-/* LO QUE DEJO RO
-    getMedicinesByStatus(status: string){
-        this.patientService.getMedicinesByStatus(status).subscribe(
-            () => {
-                console.log('Se ha filtrado con éxito');
-            },
-            (error: any) => {
-                console.log('Error al filtrar medicamentos:', error);
-            }
-        );
-    }
- */
-
-/*
-    getMedicinesByStatus(status: string) {
-        this.patientService.getMedicinesByStatus(status).subscribe(
-            (medicines: any[]) => {
-                // Actualiza la lista de medicamentos con la respuesta del backend
-                this.medicines = medicines;
-                console.log('Se ha filtrado con éxito');
-            },
-            (error: any) => {
-                console.log('Error al filtrar medicamentos:', error);
-            }
-        );
-    }
-
- */

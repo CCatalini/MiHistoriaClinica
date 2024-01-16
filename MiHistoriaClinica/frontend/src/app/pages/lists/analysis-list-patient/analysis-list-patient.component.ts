@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {MedicService} from "../../../services/medic/medic.service";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {PatientService} from "../../../services/patient/patient.service";
@@ -15,11 +14,10 @@ export class AnalysisListPatientComponent implements OnInit{
     constructor(private userService: PatientService, private router: Router) {}
 
     ngOnInit(): void {
-        //verifico usuario
         if (localStorage.getItem('userType') != 'PATIENT') {
             window.location.href = '/patient/login';
         }else {
-            this.formSubmit(); // Fetch medicines list
+            this.formSubmit();
         }
     }
 
