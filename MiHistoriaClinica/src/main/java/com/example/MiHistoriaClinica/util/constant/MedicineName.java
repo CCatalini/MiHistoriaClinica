@@ -50,5 +50,14 @@ public enum MedicineName {
                 .map(MedicineName::name)
                 .collect(Collectors.toList());
     }
+
+    public static String getMedicineDescription(String medicineName) {
+        for (MedicineName medicine : MedicineName.values()) {
+            if (medicine.name().equalsIgnoreCase(medicineName)) {
+                return medicine.getDescription();
+            }
+        }
+        return " ";
+    }
 }
 

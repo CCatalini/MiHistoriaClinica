@@ -20,8 +20,8 @@ public class Medicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long medicineId;
-    @Enumerated(EnumType.STRING) private MedicineName medicineName;
-    private String medicineDescription;
+    @Enumerated(EnumType.STRING) private MedicineName name;
+    private String description;
     private String comments;
     private String status;
     @DateTimeFormat(pattern = "yyyy-MM-dd") private LocalDate prescriptionDay;

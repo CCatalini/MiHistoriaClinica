@@ -44,6 +44,12 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
+    @GetMapping("/description")
+    public ResponseEntity<String> getMedicineDescription(@RequestParam("medicineName") String medicineName) {
+        String description = medicineService.getMedicineDescription(medicineName);
+        return new ResponseEntity<>(description, HttpStatus.OK);
+    }
+
     @PutMapping("/update-medicine-status")
     public ResponseEntity<String> updateMedicineStatus(@RequestParam("medicineId") Long medicineId,
                                                        @RequestParam("status") String status) {
