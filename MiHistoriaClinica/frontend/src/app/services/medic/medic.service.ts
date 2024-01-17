@@ -232,6 +232,12 @@ export class MedicService {
     public getAllMedicineNames() {
         return this.http.get<string[]>('http://localhost:8080/medicine/all-names');
     }
+
+    getMedicineDescription(medicineName: string): Observable<string> {
+        let params = new HttpParams().set("medicineName", medicineName);
+        return this.http.get('http://localhost:8080/medicine/description', { params, responseType: 'text' });
+    }
+
 }
 
 

@@ -21,4 +21,9 @@ public class MedicineServiceImpl implements MedicineService {
     public List<String> getAllMedicinesNames() {
         return MedicineName.getAllMedicinesNames();
     }
+
+    @Override
+    public String getMedicineDescription(String medicineName) {
+        return MedicineName.getMedicineDescription(medicineName);
+    }
 }

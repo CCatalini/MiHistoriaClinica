@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import Swal from 'sweetalert2';
 import { MedicService } from '../../../services/medic/medic.service';
 import { Router } from '@angular/router';
 import {Observable} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {formatDate} from "@angular/common";
 
 @Component({
     selector: 'app-alta-medicamento',
@@ -13,17 +14,20 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class AddMedicineComponent implements OnInit {
     public medicine = {
-        medicineName: '',
-        medicineDescription:'',
+        name: '',
+        description: '',
         comments: '',
-        prescriptionDay:'',
+        prescriptionDay: '',  // Ajusta el tipo de datos aquí
         status: 'Pendiente',
     };
 
-    patient: any;
     medicineOptions: string[] = [];
 
-    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
+    patient: any;
+
+    constructor(private userService: MedicService,
+                private router: Router,
+                private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         // Verifico usuario
@@ -31,29 +35,27 @@ export class AddMedicineComponent implements OnInit {
             window.location.href = '/medic/login';
         }
 
-        this.getMedicineOptions().subscribe(options => {
-            this.medicineOptions = options; // Asigna la lista de nombres a la variable
-            /*if (options.length > 0) {
-                // Inicializa medicine.medicineName con el primer elemento de la lista
-                this.medicine.medicineName = options[0];
-            }
-             */
+        this.getMedicineOptions().subscribe((options) => {
+            this.medicineOptions = options;
         });
+
+        this.medicine.prescriptionDay = formatDate(this.medicine.prescriptionDay, 'yyyy-MM-dd', 'en-US');
 
         this.getPatientInfo();
 
     }
 
+
     formSubmit() {
         console.log(this.medicine);
-        if (this.medicine.medicineName === '' || this.medicine.medicineName === null) {
+        if (this.medicine.name === '' || this.medicine.name === null) {
             Swal.fire(
                 'Medicamento',
                 'Seleccione un medicamento de la lista.',
                 'warning'
             );
             return;
-        }ap
+        }
         if (this.medicine.prescriptionDay === '' || this.medicine.prescriptionDay === null) {
             Swal.fire(
                 'Ingrese la descripción',
@@ -97,6 +99,27 @@ export class AddMedicineComponent implements OnInit {
     getMedicineOptions(): Observable<string[]> {
         return this.userService.getAllMedicineNames();
     }
+
+    onMedicineSelectionChange(): void {
+        const selectedMedicineName = this.medicine.name;
+        if (selectedMedicineName) {
+            // Llama al backend para obtener la descripción
+            this.userService.getMedicineDescription(selectedMedicineName).subscribe(
+                (description) => {
+                    this.medicine.description = description;
+                },
+                (error) => {
+                    console.error('Error fetching medicine description:', error);
+                    // Agregar manejo de errores aquí, por ejemplo, mostrar un mensaje al usuario
+                    // this.showErrorMessage('No se pudo obtener la descripción del medicamento.');
+                }
+            );
+        } else {
+            this.medicine.description = '';
+        }
+    }
+
+
 
 
     getPatientInfo(): void {
