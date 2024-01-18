@@ -12,8 +12,10 @@
     color: white;
     z-index: 1;
     font-size: 30px;
-    margin-right: -16px;
-    margin-left: -16px;
+}
+
+.mat-toolbar span {
+    margin-left: 20px;  /* Ajusta el valor según sea necesario */
 }
 
 .mat-toolbar a.example-icon img {
@@ -32,7 +34,7 @@
 }
 
 .navbar-button {
-    margin-left: 10px; /* Ajusta el valor según sea necesario */
-    margin-right: auto;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
