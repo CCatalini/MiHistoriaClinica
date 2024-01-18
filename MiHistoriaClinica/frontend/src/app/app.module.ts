@@ -44,6 +44,7 @@ import { AllMedicsListComponent } from './pages/lists/all-medics-list/all-medics
 import { TurnosListComponent } from './pages/lists/turnos-list/turnos-list.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MedicCalendarComponent } from './pages/medic/medic-calendar/medic-calendar.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import { MatOptionModule } from '@angular/material/core';
     AddTurnoComponent,
     AllMedicsListComponent,
     TurnosListComponent,
+    MedicCalendarComponent,
   ],
     imports: [
         BrowserModule,

@@ -14,6 +14,4 @@ export class HomeMedicComponent implements OnInit{
             window.location.href = '/medic/login';
         }
     }
-
-    // todo agregar metodos que traigan datos del medico para mostrarlos en el encabezado de la pagin
 }
