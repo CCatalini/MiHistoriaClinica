@@ -10,16 +10,16 @@ import java.time.LocalDate;
 @Setter
 public class MedicineDTO {
 
-    private MedicineName medicineName;
-    private String medicineDescription;
+    private MedicineName name;
+    private String description;
     private String comments;
     private String status;
     private LocalDate prescriptionDay;
 
 
-    public MedicineDTO(MedicineName medicineName, String comments, String status, LocalDate prescriptionDay) {
-        this.medicineName = medicineName;
-        this.medicineDescription = medicineName.getDescription();
+    public MedicineDTO(MedicineName name, String comments, String status, LocalDate prescriptionDay) {
+        this.name = MedicineName.valueOf(name.name());
+        this.description = name.getDescription();
         this.comments = comments;
         this.status = status;
         this.prescriptionDay = prescriptionDay;
