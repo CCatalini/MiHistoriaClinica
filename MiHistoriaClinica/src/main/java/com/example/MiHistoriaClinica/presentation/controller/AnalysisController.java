@@ -34,12 +34,24 @@ public class AnalysisController {
         this.aux = patientRepository;
     }
 
+    @GetMapping("/all-names")
+    public ResponseEntity<List<String>> getAllAnalysisNames(){
+        List<String> analysisNames = analysisService.getAllAnalysisNames();
+        return new ResponseEntity<>(analysisNames, HttpStatus.OK);
+    }
+
+    @GetMapping("/medicalCenter/all-names")
+    public ResponseEntity<List<String>> getAllMedicalCenters() throws InvalidTokenException {
+        List<String> analysisNames = analysisService.getAllMedicalCenters();
+        return new ResponseEntity<>(analysisNames, HttpStatus.OK);
+    }
+
 
     @PostMapping("/medic/create-patient-analysis")
     public ResponseEntity<Analysis> createPatientAnalysis(@RequestHeader("Authorization") String token,
                                                           @RequestHeader("patientLinkCode") String patientLinkCode,
                                                           @RequestBody AnalysisDTO analysisDTO)
-            throws InvalidTokenException {
+                                                          throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
         Analysis createdAnalysis = analysisService.createPatientAnalysis(medicId, patientLinkCode, analysisDTO);
 
@@ -82,7 +94,7 @@ public class AnalysisController {
     public ResponseEntity<String> updateAnalysisStatus(@RequestHeader("analysis_id") Long analysisId,
                                                        @RequestParam("status") String status){
         Analysis analysis = analysisService.getAnalysisByAnalysisId(analysisId);
-        if (analysis == null)       return new ResponseEntity<>("Analysis no disponible", HttpStatus.NOT_FOUND);
+        if (analysis == null)       return new ResponseEntity<>("AnalysisE no disponible", HttpStatus.NOT_FOUND);
 
         analysis.setStatus(status);
         analysisService.saveAnalysis(analysis);

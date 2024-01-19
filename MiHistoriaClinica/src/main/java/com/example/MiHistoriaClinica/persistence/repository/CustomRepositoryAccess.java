@@ -111,7 +111,7 @@ public class CustomRepositoryAccess {
     public Analysis createPatientAnalysis(AnalysisDTO analysisDTO, Optional<Patient> patient) {
         Analysis analysisSaved = new Analysis();
 
-        analysisSaved.setMedicalCenter(analysisDTO.getMedicalCenter());
+        analysisSaved.setMedicalCenterE(analysisDTO.getMedicalCenterE());
         analysisSaved.setDescription(analysisDTO.getDescription());
         analysisSaved.setName(analysisDTO.getName());
 
