@@ -1,5 +1,7 @@
 package com.example.MiHistoriaClinica.presentation.dto;
 
+import com.example.MiHistoriaClinica.util.constant.AnalysisE;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,18 +9,19 @@ import lombok.Setter;
 @Getter
 public class AnalysisDTO {
 
-    private String name;
-    private String medicalCenter;
+    private AnalysisE name;
+    private MedicalCenterE medicalCenterE;
     private String description;
     private String status;
+
 
     public AnalysisDTO(){
 
     }
 
-    public AnalysisDTO(String name, String medicalCenter, String description, String status) {
+    public AnalysisDTO(AnalysisE name, MedicalCenterE medicalCenter, String description, String status) {
         this.name = name;
-        this.medicalCenter = medicalCenter;
+        this.medicalCenterE = medicalCenter;
         this.description = description;
         this.status = status;
     }

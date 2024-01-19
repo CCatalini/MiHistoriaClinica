@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-public enum MedicineName {
+public enum MedicineE {
     PARACETAMOL("Analgésico y antipirético utilizado para aliviar el dolor y reducir la fiebre."),
     IBUPROFENO("Antiinflamatorio no esteroideo que alivia el dolor, reduce la inflamación y baja la fiebre."),
     ASPIRINA("Antiinflamatorio, analgésico y antipirético que también actúa como antiagregante plaquetario para prevenir coágulos."),
@@ -41,20 +41,20 @@ public enum MedicineName {
 
     private final String description;
 
-    MedicineName(String description) {
+    MedicineE(String description) {
         this.description = description;
     }
 
     public static List<String> getAllMedicinesNames() {
-        return Arrays.stream(MedicineName.values())
-                .map(MedicineName::name)
+        return Arrays.stream(MedicineE.values())
+                .map(MedicineE::name)
                 .collect(Collectors.toList());
     }
 
     public static String getMedicineDescription(String medicineName) {
-        for (MedicineName medicine : MedicineName.values()) {
-            if (medicine.name().equalsIgnoreCase(medicineName)) {
-                return medicine.getDescription();
+        for (MedicineE medicineE : MedicineE.values()) {
+            if (medicineE.name().equalsIgnoreCase(medicineName)) {
+                return medicineE.getDescription();
             }
         }
         return " ";

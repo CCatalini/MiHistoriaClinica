@@ -2,7 +2,7 @@ package com.example.MiHistoriaClinica.service.implementation;
 
 import com.example.MiHistoriaClinica.persistence.repository.MedicineRepository;
 import com.example.MiHistoriaClinica.service.MedicineService;
-import com.example.MiHistoriaClinica.util.constant.MedicineName;
+import com.example.MiHistoriaClinica.util.constant.MedicineE;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,11 +19,11 @@ public class MedicineServiceImpl implements MedicineService {
 
     @Override
     public List<String> getAllMedicinesNames() {
-        return MedicineName.getAllMedicinesNames();
+        return MedicineE.getAllMedicinesNames();
     }
 
     @Override
     public String getMedicineDescription(String medicineName) {
-        return MedicineName.getMedicineDescription(medicineName);
+        return MedicineE.getMedicineDescription(medicineName);
     }
 }

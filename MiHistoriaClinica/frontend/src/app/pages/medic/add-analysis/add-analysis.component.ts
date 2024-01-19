@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import {MedicService} from "../../../services/medic/medic.service";
 import {Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-add-analysis',
@@ -15,11 +16,16 @@ export class AddAnalysisComponent {
         name: '',
         medicalCenter: '',
         description: '',
+        status:'Pendiente',
     }
 
     patient: any;
+    analysisOptions: string[] = [];
+    medicalCenterOptions: string[] = [];
 
-    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
+    constructor(private userService: MedicService,
+                private router: Router,
+                private httpClient: HttpClient) {}
 
     ngOnInit(): void {
         //verifico usuario
@@ -27,17 +33,29 @@ export class AddAnalysisComponent {
             window.location.href = '/medic/login';
         }
 
+        this.getAnalysisOptions().subscribe((options) => {
+            this.analysisOptions = options;
+        });
+
+        this.getMedicalCenterOptions().subscribe((options) => {
+            this.medicalCenterOptions = options;
+        });
+
         this.getPatientInfo();
     }
 
     formSubmit(){
         console.log(this.analysis);
         if(this.analysis.name == '' || this.analysis.name == null){
-            Swal.fire('Ingrese el nombre del estudio', 'El nombre es requisito para cargar el estudio.', 'warning');
+            Swal.fire('Estudio',
+                      'Seleccione un estudio de la lista.',
+                      'warning');
             return;
         }
         if(this.analysis.medicalCenter == '' || this.analysis.medicalCenter == null){
-            Swal.fire('Ingrese el centro médico donde se realizará el estudio', 'El compuesto activo es requisito para cargar el medicamento.', 'warning');
+            Swal.fire('Centro Medico',
+                      'Seleccione un centro médico de la lista.',
+                      'warning');
             return;
         }
 
@@ -70,6 +88,14 @@ export class AddAnalysisComponent {
                 Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
         );
+    }
+
+    getAnalysisOptions(): Observable<string[]> {
+        return this.userService.getAllAnalysisNames();
+    }
+
+    getMedicalCenterOptions(): Observable<string[]> {
+        return this.userService.getAllMedicalCenterNames();
     }
 
     getPatientInfo(): void {
