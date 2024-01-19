@@ -95,8 +95,8 @@ public class CustomRepositoryAccess {
         Medicine medicineSaved = new Medicine();
         Patient aux = patient.get();
 
-        medicineSaved.setName(medicine.getMedicineName());
-        medicineSaved.setDescription(medicine.getMedicineDescription());
+        medicineSaved.setName(medicine.getName());
+        medicineSaved.setDescription(medicine.getDescription());
         medicineSaved.setComments(medicine.getComments());
         medicineSaved.setStatus(medicine.getStatus());
         medicineSaved.setPrescriptionDay(medicine.getPrescriptionDay());
