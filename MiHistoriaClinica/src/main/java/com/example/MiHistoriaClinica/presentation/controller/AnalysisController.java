@@ -41,9 +41,16 @@ public class AnalysisController {
     }
 
     @GetMapping("/medicalCenter/all-names")
-    public ResponseEntity<List<String>> getAllMedicalCenters() throws InvalidTokenException {
+    public ResponseEntity<List<String>> getAllMedicalCenters() {
         List<String> analysisNames = analysisService.getAllMedicalCenters();
         return new ResponseEntity<>(analysisNames, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/description")
+    public ResponseEntity<String> getAnalysisDescription(@RequestParam("analysisName") String analysisName) {
+        String description = analysisService.getAnalysisDescription(analysisName);
+        return new ResponseEntity<>(description, HttpStatus.OK);
     }
 
 

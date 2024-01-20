@@ -105,4 +105,9 @@ public class AnalysisServiceImpl implements AnalysisService {
     public List<String> getAllMedicalCenters() {
         return MedicalCenterE.getAllMedicalCenters();
     }
+
+    @Override
+    public String getAnalysisDescription(String analysisName) {
+        return AnalysisE.getAnalysisDescription(analysisName);
+    }
 }

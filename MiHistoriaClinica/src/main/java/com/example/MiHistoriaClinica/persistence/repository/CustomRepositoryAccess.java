@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.persistence.repository;
 
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
+import com.example.MiHistoriaClinica.util.constant.AnalysisE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -104,23 +105,25 @@ public class CustomRepositoryAccess {
         medicineSaved.addPatient(aux);
         aux.getMedicines().add(medicineSaved);
 
-                patientRepository.save(aux);
+               patientRepository.save(aux);
         return medicineRepository.save(medicineSaved);
     }
 
     public Analysis createPatientAnalysis(AnalysisDTO analysisDTO, Optional<Patient> patient) {
         Analysis analysisSaved = new Analysis();
 
+        AnalysisE name = AnalysisE.getEnumFromName(analysisDTO.getName());
+
+        analysisSaved.setName(name);
+        assert name != null;
+        analysisSaved.setDescription(name.getDescription());
+        analysisSaved.setStatus(analysisDTO.getStatus());
         analysisSaved.setMedicalCenterE(analysisDTO.getMedicalCenterE());
-        analysisSaved.setDescription(analysisDTO.getDescription());
-        analysisSaved.setName(analysisDTO.getName());
 
-        analysisSaved.addPatient(patient.get());
-        patient.get().getAnalysis().add(analysisSaved);
-
-                patientRepository.save(patient.get());
+               patientRepository.save(patient.get());
         return analysisRepository.save(analysisSaved);
     }
+
 
 
     public MedicalAppointment createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<Patient> patient, Optional<Medic> medic) {

@@ -13,8 +13,11 @@
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Nombre del estudio:</mat-label>
                         <mat-select
-                            [(ngModel)] = 'analysis.name'
-                            name = "name">
+                                required
+                                [(ngModel)] = 'analysis.name'
+                                name = "analysisName"
+                                (selectionChange)="onAnalysisSelectionChange()"
+                        >
                             <mat-option
                                     *ngFor = "let option of analysisOptions"
                                     [value] = "option">
@@ -25,7 +28,13 @@
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Descripción:</mat-label>
-                        <input [(ngModel)] = "analysis.description" name = "description" matInput placeholder="Ingrese la descripción del estudio">
+                        <input
+                                [(ngModel)] = "analysis.description"
+                                name = "description"
+                                matInput
+                                placeholder="Ingrese la descripción del estudio"
+                                [disabled]="true"
+                        />
                     </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
