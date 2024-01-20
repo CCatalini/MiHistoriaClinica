@@ -42,7 +42,5 @@ public interface MedicService {
     Medic updateMedic(Long id, Medic newMedic);
 
 
-
-
-
+    List<String> getAllSpecialties();
 }

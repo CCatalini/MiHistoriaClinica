@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
+import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import com.example.MiHistoriaClinica.util.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
@@ -257,22 +258,17 @@ public class MedicServiceImpl implements MedicService {
         }
     }
 
-
     public List<Medicine> getAnalysisByStatus(String patientLinkCode, String status) {
         Optional<Patient> patient = patientRepository.findByLinkCode(patientLinkCode);
         return patientRepository.getMedicinesByPatientIdAndStatus(patient.get().getPatientId(), status);
     }
 
-
-    public MedicineRepository getMedicineRepository() {
-        return medicineRepository;
-    }
-
-    public AnalysisRepository getAnalysisRepository() {
-        return analysisRepository;
-    }
-
     public MedicalFileRepository getMedicalHistoryRepository() {
         return medicalFileRepository;
+    }
+
+    @Override
+    public List<String> getAllSpecialties() {
+        return MedicalSpecialtyE.getSpecialties();
     }
 }

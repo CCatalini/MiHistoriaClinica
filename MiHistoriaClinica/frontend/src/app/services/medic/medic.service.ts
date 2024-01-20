@@ -250,6 +250,10 @@ export class MedicService {
         let params = new HttpParams().set("analysisName", analysisName);
         return this.http.get('http://localhost:8080/analysis/description', { params, responseType: 'text' });
     }
+
+    getSpecialtyOptions() {
+        return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
+    }
 }
 
 
