@@ -98,6 +98,22 @@ export class AddAnalysisComponent {
         return this.userService.getAllMedicalCenterNames();
     }
 
+    onAnalysisSelectionChange():void{
+        const selectedAnalysis = this.analysis.name;
+        if(selectedAnalysis){
+            this.userService.getAnalysisDescription(selectedAnalysis).subscribe(
+                (description)=> {
+                    this.analysis.description = description;
+                },
+                (error) => {
+                    console.error('Error fetching medicine description:', error);
+                }
+            );
+        } else {
+            this.analysis.description = '';
+        }
+    }
+
     getPatientInfo(): void {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();

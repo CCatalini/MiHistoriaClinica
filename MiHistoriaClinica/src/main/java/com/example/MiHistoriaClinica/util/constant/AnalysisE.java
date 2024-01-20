@@ -44,8 +44,10 @@ public enum AnalysisE {
                 return analysisE.getDescription();
             }
         }
-        return " ";
+        return "Análisis no encontrado";
     }
+
+
 
     public static List<String> getNames(){
         return Arrays.stream(AnalysisE.values())
@@ -55,4 +57,12 @@ public enum AnalysisE {
     }
 
 
+    public static AnalysisE getEnumFromName(String name){
+        for (AnalysisE analysisE : AnalysisE.values()) {
+            if (analysisE.getName().equalsIgnoreCase(name)) {
+                return analysisE;
+            }
+        }
+        return null;
+    }
 }

@@ -21,4 +21,6 @@ public interface AnalysisService {
     List<String> getAllAnalysisNames();
 
     List<String> getAllMedicalCenters();
+
+    String getAnalysisDescription(String analysisName);
 }

@@ -245,6 +245,11 @@ export class MedicService {
     getAllMedicalCenterNames() {
         return this.http.get<string[]>('http://localhost:8080/analysis/medicalCenter/all-names');
     }
+
+    getAnalysisDescription(analysisName: string): Observable<string> {
+        let params = new HttpParams().set("analysisName", analysisName);
+        return this.http.get('http://localhost:8080/analysis/description', { params, responseType: 'text' });
+    }
 }
 
 
