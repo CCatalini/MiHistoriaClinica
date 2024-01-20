@@ -3,6 +3,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import Swal from "sweetalert2";
 import { Router } from '@angular/router';
 import {MedicService} from "../../../services/medic/medic.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-signup-medic',
@@ -22,11 +23,17 @@ export class SignupMedicComponent implements OnInit{
         password: ''
     }
 
-    constructor(private userService:MedicService, private snack:MatSnackBar, private router: Router){
+    specialtyOptions: string[] = [];
 
-    }
+    constructor(private userService:MedicService,
+                private snack:MatSnackBar,
+                private router: Router){}
 
     ngOnInit():void{
+
+        this.getSpecialtyOptions().subscribe((options) => {
+            this.specialtyOptions = options;
+        });
     }
 
     formSubmit(){
@@ -46,5 +53,10 @@ export class SignupMedicComponent implements OnInit{
                 Swal.fire('Error', 'Existen datos erroneos.', 'error');
             }
         )
+    }
+
+
+    getSpecialtyOptions(): Observable<string[]> {
+        return this.userService.getSpecialtyOptions();
     }
 }
