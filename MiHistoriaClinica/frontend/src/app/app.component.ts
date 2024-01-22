@@ -8,11 +8,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'sign-in';
-    calendarOptions: CalendarOptions = {
-        initialView: 'dayGridMonth',
-        plugins: [dayGridPlugin]
-    };
+  calendarOptions: CalendarOptions = {
+      initialView: 'dayGridMonth',
+      plugins: [dayGridPlugin]
+  };
 }
 
 
