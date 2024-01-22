@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/medical-file")
+@CrossOrigin("*")  // Reemplaza con la URL de tu aplicación Angular
 public class MedicalFileController {
 
     private final MedicalFileService medicalFileService;
@@ -56,5 +57,11 @@ public class MedicalFileController {
                 .ok()
                 .header("Content-Disposition", "attachment; filename=historia_clinica.pdf")
                 .body(pdfBytes);
+    }
+
+
+    @GetMapping("/blood-types")
+    public ResponseEntity<List<String>> getBloodTypes() {
+        return new ResponseEntity<>(medicalFileService.getBloodTypes(), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
+import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class Medic {
     private Long dni;
     @Column (nullable = false, unique= true)
     private Long matricula;
-    private String specialty;
+    private MedicalSpecialtyE specialty;
     private String password;
 
     @ManyToMany(mappedBy = "medics", cascade = CascadeType.ALL)

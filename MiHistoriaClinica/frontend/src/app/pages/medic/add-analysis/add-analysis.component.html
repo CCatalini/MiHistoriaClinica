@@ -9,20 +9,48 @@
                 <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
                 <div class="page-container" style="margin-bottom: -110px;">
                 <form  (ngSubmit) = "formSubmit()">
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Nombre del estudio:</mat-label>
-                        <input required [(ngModel)] = "analysis.name" name = "name" matInput placeholder="Ingrese el nombre del estudio">
-                    </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Centro médico:</mat-label>
-                        <input required [(ngModel)] = "analysis.medicalCenter" name = "medicalCenter" matInput placeholder="Ingrese el centro médico donde se realizará el estudio">
+                        <mat-label>Nombre del estudio:</mat-label>
+                        <mat-select
+                                required
+                                [(ngModel)] = 'analysis.name'
+                                name = "analysisName"
+                                (selectionChange)="onAnalysisSelectionChange()"
+                        >
+                            <mat-option
+                                    *ngFor = "let option of analysisOptions"
+                                    [value] = "option">
+                                    {{ option }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Descripción:</mat-label>
-                        <input [(ngModel)] = "analysis.description" name = "description" matInput placeholder="Ingrese la descripción del estudio">
+                        <input
+                                [(ngModel)] = "analysis.description"
+                                name = "description"
+                                matInput
+                                placeholder="Ingrese la descripción del estudio"
+                                [disabled]="true"
+                        />
                     </mat-form-field>
+
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Centro médico:</mat-label>
+                        <mat-select
+                            [(ngModel)] = 'analysis.medicalCenter'
+                            name = "medicalCenter">
+                            <mat-option
+                                    *ngFor = "let option of medicalCenterOptions"
+                                    [value] = "option">
+                                    {{ option }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+
 
                     <div class = "container text-center">
                         <button class="boton">Añadir</button>
