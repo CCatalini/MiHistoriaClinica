@@ -81,11 +81,10 @@ public class MedicController {
         return new ResponseEntity<>(specialties, HttpStatus.OK);
     }
 
-    @GetMapping("/all-medics-by-specialty")
-    public ResponseEntity<List<Medic>> getMedicsBySpecialty (@RequestParam("specialty") String specialty) throws InvalidTokenException{
+    @GetMapping("/all-medics/by-specialty")
+    public ResponseEntity<List<Medic>> getMedicsBySpecialty (@RequestParam("specialty") String specialty) {
         List<Medic> filteredMedics = medicService.getMedicsBySpecialty(specialty);
         return new ResponseEntity<>(filteredMedics, HttpStatus.OK);
-
     }
 
 
@@ -106,9 +105,7 @@ public class MedicController {
 
     @GetMapping("/get-patients")
     public ResponseEntity<List<PatientDTO>> getPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
-
         List<PatientDTO> patients = medicService.getPatientsDtoByMedicId(jwtValidator.getId(token));
-
         if(patients.isEmpty())  return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(patients, HttpStatus.OK);
@@ -120,38 +117,6 @@ public class MedicController {
         return ResponseEntity.noContent().build();
     }
 
-
-    /**Métodos Medical History*/
-
-    @PostMapping("/create-medical-history")
-    public ResponseEntity<MedicalFile> createPatientMedicalHistory(@RequestHeader("Authorization") String token,
-                                                                   @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                   @RequestBody MedicalFileDTO medicalHistory)
-                                                                           throws InvalidTokenException {
-        Long medicId = jwtValidator.getId(token);
-        MedicalFile createdMedicalFile = medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
-
-        if (createdMedicalFile == null)      return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        else                                    return new ResponseEntity<>(createdMedicalFile, HttpStatus.CREATED);
-
-    }
-
-    @GetMapping("/get-medical-history")
-    public ResponseEntity<MedicalFileDTO> getPatientMedicalHistory(@RequestHeader("patientLinkCode") String patientLinkCode ) throws InvalidTokenException {
-        MedicalFileDTO medicalHistory = medicService.getPatientMedicalHistory(patientLinkCode);
-        return new ResponseEntity<>(medicalHistory, HttpStatus.OK);
-    }
-
-    @PostMapping("/update-medical-history")
-    public ResponseEntity<Void> updateMedicalHistory(@RequestHeader("Authorization") String token,
-                                                                    @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                    @RequestBody MedicalFileDTO medicalHistory)
-                                                                    throws InvalidTokenException {
-        Long medicId = jwtValidator.getId(token);
-        medicService.createPatientMedicalHistory(medicId, patientLinkCode, medicalHistory);
-
-        return ResponseEntity.ok().build();
-    }
 
 }
 
