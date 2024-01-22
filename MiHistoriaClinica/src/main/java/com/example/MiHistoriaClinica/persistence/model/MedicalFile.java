@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
+import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ public class MedicalFile implements java.io.Serializable {
     private String weight;
     private String height;
     private String allergy;
-    private String bloodType;
+    private BloodTypeE bloodType;
     private String chronicDisease;
     private String actualMedicine;
     private String familyMedicalHistory;

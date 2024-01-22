@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
+import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class Turnos {
     @Column(name = "hora_turno")
     private LocalTime horaTurno;
     private String medicFullName;
-    private String medicSpecialty;
+    private MedicalSpecialtyE medicSpecialty;
     private String medicalCenter;
 
     @ManyToOne

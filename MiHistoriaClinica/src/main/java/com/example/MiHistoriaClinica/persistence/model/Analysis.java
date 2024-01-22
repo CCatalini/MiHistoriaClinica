@@ -1,5 +1,7 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
+import com.example.MiHistoriaClinica.util.constant.AnalysisE;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,8 +18,10 @@ public class Analysis {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long analysis_id;
-    @Column(nullable = false)   private String name;
-    private String medicalCenter;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)    private AnalysisE name;
+    @Enumerated(EnumType.STRING)    private MedicalCenterE medicalCenterE;
     private String description;
     private String status;
 

@@ -9,16 +9,54 @@
                 <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
                 <div class="page-container" style="margin-bottom: -110px;">
                     <form (ngSubmit)="formSubmit()">
+
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Nombre del medicamento:</mat-label>
-                            <mat-select required [(ngModel)]="medicine.medicineName" name="medicineName">
-                                <mat-option *ngFor="let option of getMedicineOptions() | async" [value]="option">{{ option.medicineName }}</mat-option>
+                            <mat-select
+                                    required
+                                    [(ngModel)]="medicine.name"
+                                    name="medicineName"
+                                    (selectionChange)="onMedicineSelectionChange()"
+                            >
+                                <mat-option
+                                        *ngFor="let option of medicineOptions"
+                                        [value]="option">
+                                        {{ option }}
+                                </mat-option>
                             </mat-select>
+                        </mat-form-field>
+
+
+                        <!-- Agrega el campo de descripción -->
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Descripción:</mat-label>
+                            <input
+                                    [(ngModel)]="medicine.description"
+                                    name="description"
+                                    matInput
+                                    placeholder="Descripción del medicamento"
+                                    [disabled]="true"
+                            />
                         </mat-form-field>
 
                         <mat-form-field class="full-width" appearance="outline">
                             <mat-label>Comentarios:</mat-label>
-                            <textarea [(ngModel)]="medicine.comments" name="comments" matInput placeholder="Ingrese comentarios"></textarea>
+                            <textarea
+                                    [(ngModel)]="medicine.comments"
+                                    name="comments"
+                                    matInput
+                                    placeholder="Ingrese comentarios">
+                            </textarea>
+                        </mat-form-field>
+
+                        <mat-form-field class="full-width" appearance="outline">
+                            <mat-label>Fecha de prescripción:</mat-label>
+                            <input
+                                    [(ngModel)]="medicine.prescriptionDay"
+                                    name="prescriptionDay"
+                                    matInput
+                                    placeholder="Ingrese la fecha de prescripción (YYYY-MM-DD)"
+                            />
                         </mat-form-field>
 
                         <div class="container text-center">

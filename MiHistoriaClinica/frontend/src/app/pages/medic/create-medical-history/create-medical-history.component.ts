@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { MedicService } from "../../../services/medic/medic.service";
 import { Router } from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Observable} from "rxjs";
 
 @Component({
     selector: 'app-create-medical-history',
@@ -20,6 +21,7 @@ export class CreateMedicalHistoryComponent {
         familyMedicalHistory: ''
     }
 
+    bloodTypes: string[] = [];
     patient : any;
 
     constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
@@ -28,6 +30,10 @@ export class CreateMedicalHistoryComponent {
         if (localStorage.getItem('userType') !== 'MEDIC') {
             window.location.href = '/medic/login';
         }
+
+        this.getBloodTypes().subscribe((options) => {
+            this.bloodTypes= options;
+        });
 
         this.getPatientInfo();
     }
@@ -75,6 +81,10 @@ export class CreateMedicalHistoryComponent {
                 Swal.fire('Error', 'Existen datos erróneos.', 'error');
             }
         );
+    }
+
+    getBloodTypes():Observable<string[]> {
+        return this.userService.getBloodTypes();
     }
 
     getPatientInfo(): void {
