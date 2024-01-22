@@ -94,7 +94,7 @@ export class MedicService {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-        return this.http.post('http://localhost:8080/medic/create-medical-history', medicalHistoryModel, {headers});
+        return this.http.post('http://localhost:8080/medical-file/medic/create', medicalHistoryModel, {headers});
     }
 
     public updateMedicalHistory(medicalHistoryModel: any) {
@@ -112,7 +112,7 @@ export class MedicService {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-        return this.http.post('http://localhost:8080/medic/update-medical-history', medicalHistoryModel, {headers});
+        return this.http.post('http://localhost:8080/medical-file/medic/update', medicalHistoryModel, {headers});
     }
 
     public getPatientsList(token: string): Observable<any[]> {
@@ -189,7 +189,7 @@ export class MedicService {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
         let headers = new HttpHeaders();
         headers = headers.set('patientLinkCode', linkCode);
-        return this.http.get<string>('http://localhost:8080/medic/get-medical-history', {headers: headers});
+        return this.http.get<string>('http://localhost:8080/medical-file/medic/get', {headers: headers});
     }
 
     public deleteMedicine(medicineId: number) {
