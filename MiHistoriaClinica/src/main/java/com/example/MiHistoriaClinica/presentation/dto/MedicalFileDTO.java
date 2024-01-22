@@ -16,11 +16,13 @@ public class MedicalFileDTO {
     private String actualMedicine;
     private String familyMedicalHistory;
 
+    public MedicalFileDTO(){}
+
     public MedicalFileDTO(MedicalFile medicalFile) {
         this.weight = medicalFile.getWeight();
         this.height = medicalFile.getHeight();
         this.allergy = medicalFile.getAllergy();
-        this.bloodType = medicalFile.getBloodType();
+        this.bloodType = medicalFile.getBloodType().getType();
         this.chronicDisease = medicalFile.getChronicDisease();
         this.actualMedicine = medicalFile.getActualMedicine();
         this.familyMedicalHistory = medicalFile.getFamilyMedicalHistory();

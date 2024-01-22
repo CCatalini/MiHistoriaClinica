@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
+import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.repository.MedicalFileRepository;
@@ -34,6 +35,11 @@ public class MedicalFileServiceImpl implements MedicalFileService {
     @Override
     public List<MedicalFile> findAll() {
         return medicalFileRepository.findAll();
+    }
+
+    @Override
+    public List<String> getBloodTypes() {
+        return BloodTypeE.getTypes();
     }
 
     @Override

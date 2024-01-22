@@ -254,6 +254,10 @@ export class MedicService {
     getSpecialtyOptions() {
         return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
     }
+
+    getBloodTypes() {
+        return this.http.get<string[]>('http://localhost:8080/medical-file/blood-types');
+    }
 }
 
 

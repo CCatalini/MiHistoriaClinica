@@ -4,6 +4,7 @@ package com.example.MiHistoriaClinica.persistence.repository;
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.util.constant.AnalysisE;
+import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,10 +79,12 @@ public class CustomRepositoryAccess {
     }
 
     private MedicalFile setDatos(MedicalFile medicalFile, MedicalFileDTO update, Patient patient) {
+        BloodTypeE bloodType = BloodTypeE.getEnumFromName(update.getBloodType());
+
         medicalFile.setWeight(update.getWeight());
         medicalFile.setHeight(update.getHeight());
         medicalFile.setAllergy(update.getAllergy());
-        medicalFile.setBloodType(update.getBloodType());
+        medicalFile.setBloodType(bloodType);
         medicalFile.setActualMedicine(update.getActualMedicine());
         medicalFile.setChronicDisease(update.getChronicDisease());
         medicalFile.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
