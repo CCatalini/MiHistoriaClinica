@@ -271,4 +271,15 @@ public class MedicServiceImpl implements MedicService {
     public List<String> getAllSpecialties() {
         return MedicalSpecialtyE.getSpecialties();
     }
+
+    @Override
+    public List<Medic> getMedicsBySpecialty(String specialty){
+        MedicalSpecialtyE specialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
+        return medicRepository.getMedicsBySpecialty(specialtyE);
+    }
+
+
+    public void deleteMedic(Long medicId) {
+        medicRepository.deleteById(medicId);
+    }
 }
