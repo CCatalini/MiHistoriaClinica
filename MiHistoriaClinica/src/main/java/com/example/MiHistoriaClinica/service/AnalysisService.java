@@ -13,4 +13,14 @@ public interface AnalysisService {
     Analysis getAnalysisByAnalysisId(Long analysisId);
 
     void deletePatientAnalysis(String patientLinkCode, Long analysisId);
+
+    List<Analysis> getAnalyzesByPatientLinkCode(String patientLinkCode);
+
+    List<Analysis> getAnalysisByStatus(Long id, String status);
+
+    List<String> getAllAnalysisNames();
+
+    List<String> getAllMedicalCenters();
+
+    String getAnalysisDescription(String analysisName);
 }

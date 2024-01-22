@@ -3,6 +3,9 @@ package com.example.MiHistoriaClinica.persistence.repository;
 
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
+import com.example.MiHistoriaClinica.util.constant.AnalysisE;
+import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
+import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -50,9 +53,10 @@ public class CustomRepositoryAccess {
         return patientRepository.save(patientSaved);
     }
 
-
     public Medic saveMedicDto(MedicDTO medicDTO) {
         Medic medicSaved = new Medic();
+
+        MedicalSpecialtyE specialty = MedicalSpecialtyE.getEnumFromName(medicDTO.getSpecialty());
 
         medicSaved.setName(medicDTO.getName());
         medicSaved.setLastname(medicDTO.getLastname());
@@ -60,13 +64,10 @@ public class CustomRepositoryAccess {
         medicSaved.setEmail(medicDTO.getEmail());
         medicSaved.setPassword(medicDTO.getPassword());
         medicSaved.setMatricula(medicDTO.getMatricula());
-        medicSaved.setSpecialty(medicDTO.getSpecialty());
+        medicSaved.setSpecialty(specialty);
 
         return medicRepository.save(medicSaved);
-
     }
-
-
 
     public MedicalFile auxMedicalHistory(Optional<Patient> patient, MedicalFileDTO update){
         MedicalFile medicalFile;
@@ -78,10 +79,12 @@ public class CustomRepositoryAccess {
     }
 
     private MedicalFile setDatos(MedicalFile medicalFile, MedicalFileDTO update, Patient patient) {
+        BloodTypeE bloodType = BloodTypeE.getEnumFromName(update.getBloodType());
+
         medicalFile.setWeight(update.getWeight());
         medicalFile.setHeight(update.getHeight());
         medicalFile.setAllergy(update.getAllergy());
-        medicalFile.setBloodType(update.getBloodType());
+        medicalFile.setBloodType(bloodType);
         medicalFile.setActualMedicine(update.getActualMedicine());
         medicalFile.setChronicDisease(update.getChronicDisease());
         medicalFile.setFamilyMedicalHistory(update.getFamilyMedicalHistory());
@@ -95,8 +98,8 @@ public class CustomRepositoryAccess {
         Medicine medicineSaved = new Medicine();
         Patient aux = patient.get();
 
-        medicineSaved.setMedicineName(medicine.getMedicineName());
-        medicineSaved.setMedicineDescription(medicine.getMedicineDescription());
+        medicineSaved.setName(medicine.getName());
+        medicineSaved.setDescription(medicine.getDescription());
         medicineSaved.setComments(medicine.getComments());
         medicineSaved.setStatus(medicine.getStatus());
         medicineSaved.setPrescriptionDay(medicine.getPrescriptionDay());
@@ -104,24 +107,24 @@ public class CustomRepositoryAccess {
         medicineSaved.addPatient(aux);
         aux.getMedicines().add(medicineSaved);
 
-                patientRepository.save(aux);
+               patientRepository.save(aux);
         return medicineRepository.save(medicineSaved);
     }
 
     public Analysis createPatientAnalysis(AnalysisDTO analysisDTO, Optional<Patient> patient) {
         Analysis analysisSaved = new Analysis();
 
-        analysisSaved.setMedicalCenter(analysisDTO.getMedicalCenter());
-        analysisSaved.setDescription(analysisDTO.getDescription());
-        analysisSaved.setName(analysisDTO.getName());
+        AnalysisE name = AnalysisE.getEnumFromName(analysisDTO.getName());
 
-        analysisSaved.addPatient(patient.get());
-        patient.get().getAnalysis().add(analysisSaved);
+        analysisSaved.setName(name);
+        assert name != null;
+        analysisSaved.setDescription(name.getDescription());
+        analysisSaved.setStatus(analysisDTO.getStatus());
+        analysisSaved.setMedicalCenterE(analysisDTO.getMedicalCenterE());
 
-                patientRepository.save(patient.get());
+               patientRepository.save(patient.get());
         return analysisRepository.save(analysisSaved);
     }
-
 
     public MedicalAppointment createMedicalAppointment(MedicalAppointmentDTO appointmentDTO, Optional<Patient> patient, Optional<Medic> medic) {
         MedicalAppointment medicalAppointmentSaved = new MedicalAppointment();

@@ -39,7 +39,18 @@
 
                     <mat-form-field class = "full-width" appearance = "outline">
                         <mat-label>Especialidad:</mat-label>
-                        <input required [(ngModel)] = "medic.specialty" name = "specialty" matInput placeholder="Ingrese su especialidad">
+                        <mat-select
+                            required
+                            [(ngModel)] = 'medic.specialty'
+                            name = "specialty"
+                            placeholder="Elija su especialidad"
+                        >
+                            <mat-option
+                                *ngFor = "let specialty of specialtyOptions"
+                                [value] = "specialty">
+                                {{specialty}}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
 
                     <div class = "container text-center" style="margin-top: 10px;">

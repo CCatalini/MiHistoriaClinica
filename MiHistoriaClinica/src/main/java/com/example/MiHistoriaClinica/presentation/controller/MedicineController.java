@@ -1,9 +1,10 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
-import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.presentation.dto.MedicineDTO;
+import com.example.MiHistoriaClinica.service.implementation.MedicServiceImpl;
 import com.example.MiHistoriaClinica.service.implementation.MedicineServiceImpl;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
-import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -22,13 +23,15 @@ import java.util.List;
 public class MedicineController {
 
     private final PatientServiceImpl patientService;
+    private final MedicServiceImpl medicService;
     private final MedicineServiceImpl medicineService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     @Autowired
-    public MedicineController(PatientServiceImpl patientService, MedicineServiceImpl medicineService){
+    public MedicineController(PatientServiceImpl patientService, MedicServiceImpl medicService, MedicineServiceImpl medicineService){
         this.patientService = patientService;
+        this.medicService = medicService;
         this.medicineService = medicineService;
     }
 
@@ -38,10 +41,16 @@ public class MedicineController {
         return new ResponseEntity<>(medicines, HttpStatus.OK);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Medicine>> getAllMedicines () {
-        List<Medicine> medicines = medicineService.getAllMedicines();
+    @GetMapping("/all-names")
+    public ResponseEntity<List<String>> getAllMedicinesNames () {
+        List<String> medicines = medicineService.getAllMedicinesNames();
         return new ResponseEntity<>(medicines, HttpStatus.OK);
+    }
+
+    @GetMapping("/description")
+    public ResponseEntity<String> getMedicineDescription(@RequestParam("medicineName") String medicineName) {
+        String description = medicineService.getMedicineDescription(medicineName);
+        return new ResponseEntity<>(description, HttpStatus.OK);
     }
 
     @PutMapping("/update-medicine-status")
@@ -62,4 +71,39 @@ public class MedicineController {
         List<Medicine> filteredMedicines = patientService.getMedicinesByStatus(jwtValidator.getId(token), status);
         return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
     }
+
+    @PostMapping("/medic/create-medicine")
+    public ResponseEntity<Medicine> createPatientMedicine (@RequestHeader("Authorization") String token,
+                                                           @RequestHeader("patientLinkCode") String patientLinkCode,
+                                                           @RequestBody MedicineDTO medicine)
+            throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        Medicine createdMedicine = medicService.createPatientMedicine(medicId, patientLinkCode, medicine);
+
+        if(createdMedicine == null)         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        else                                return new ResponseEntity<>(createdMedicine, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/medic/delete-medicine")
+    public ResponseEntity<Void> deletePatientMedicine (@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                       @RequestParam("medicineId") Long medicineId){
+        medicService.deletePatientMedicine(patientLinkCode, medicineId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/medic/get-patient-medicines")
+    public ResponseEntity<List<Medicine>> getPatientMedicines (@RequestHeader("patientLinkCode") String patientLinkCode) throws InvalidTokenException {
+        List<Medicine> medicines = medicService.getMedicinesByPatientLinkCode(patientLinkCode);
+        if (medicines==null)    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(medicines, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/medic/get-medicines-byStatus")
+    public ResponseEntity<List<Medicine>> getPatientMedicinesByStatus(@RequestHeader("patientLinkCode") String patientLinkCode,
+                                                                      @RequestParam("status") String status){
+        List<Medicine> filteredMedicines = medicService.getAnalysisByStatus(patientLinkCode, status);
+        return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
+    }
+
 }

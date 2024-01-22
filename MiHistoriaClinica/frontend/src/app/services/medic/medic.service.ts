@@ -38,7 +38,7 @@ export class MedicService {
             headers = headers.set('Authorization', "Bearer " + token);
             headers = headers.set('patientLinkCode', patientLinkCode);
         }
-        return this.http.post('http://localhost:8080/medic/create-medicine', medicine, { headers });
+        return this.http.post('http://localhost:8080/medicine/medic/create-medicine', medicine, { headers });
     }
 
     public addAnalysis(analysis: any) {
@@ -138,14 +138,14 @@ export class MedicService {
             return;
         }   let headers = new HttpHeaders();
         headers = headers.set('patientLinkCode', linkCode);
-        return this.http.get('http://localhost:8080/medic/get-patient-medicines', { headers });
+        return this.http.get('http://localhost:8080/medicine/medic/get-patient-medicines', { headers });
     }
 
     getMedicinesByStatus(status: string) {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
         let headers = new HttpHeaders().set('patientLinkCode', linkCode);
         let params = new HttpParams().set("status", status);
-        return this.http.get<any[]>("http://localhost:8080/medic/get-medicines-byStatus", { headers: headers, params: params });
+        return this.http.get<any[]>("http://localhost:8080/medicine/medic/get-medicines-byStatus", { headers: headers, params: params });
     }
 
     getAnalysisByStatus(status: string) {
@@ -199,7 +199,7 @@ export class MedicService {
         let headers = new HttpHeaders()
                             .set('patientLinkCode', linkCode);
 
-        return this.http.delete('http://localhost:8080/medic/delete-medicine', {params: params,headers: headers})
+        return this.http.delete('http://localhost:8080/medicine/medic/delete-medicine', {params: params,headers: headers})
             .pipe(
                 map(() => {
                     Swal.fire(
@@ -229,8 +229,34 @@ export class MedicService {
             );
     }
 
-    public getMedicineOptions() {
-        return this.http.get('http://localhost:8080/medicine/get-all');
+    public getAllMedicineNames() {
+        return this.http.get<string[]>('http://localhost:8080/medicine/all-names');
+    }
+
+    getMedicineDescription(medicineName: string): Observable<string> {
+        let params = new HttpParams().set("medicineName", medicineName);
+        return this.http.get('http://localhost:8080/medicine/description', { params, responseType: 'text' });
+    }
+
+    getAllAnalysisNames() {
+        return this.http.get<string[]>('http://localhost:8080/analysis/all-names');
+    }
+
+    getAllMedicalCenterNames() {
+        return this.http.get<string[]>('http://localhost:8080/analysis/medicalCenter/all-names');
+    }
+
+    getAnalysisDescription(analysisName: string): Observable<string> {
+        let params = new HttpParams().set("analysisName", analysisName);
+        return this.http.get('http://localhost:8080/analysis/description', { params, responseType: 'text' });
+    }
+
+    getSpecialtyOptions() {
+        return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
+    }
+
+    getBloodTypes() {
+        return this.http.get<string[]>('http://localhost:8080/medical-file/blood-types');
     }
 }
 
