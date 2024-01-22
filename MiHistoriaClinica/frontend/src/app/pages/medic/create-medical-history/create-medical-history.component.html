@@ -32,8 +32,17 @@
 
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>Grupo sanguíneo:</mat-label>
-                        <input required [(ngModel)]="medicalHistoryModel.bloodType" name="bloodType" matInput
-                               placeholder="Ingrese el grupo sanguíneo">
+                        <mat-select
+                            required
+                            [(ngModel)]="medicalHistoryModel.bloodType"
+                            name="bloodType"
+                            >
+                            <mat-option
+                                *ngFor="let bloodType of bloodTypes"
+                                [value]="bloodType">
+                                {{ bloodType }}
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
 
                     <mat-form-field class="full-width" appearance="outline">

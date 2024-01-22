@@ -69,6 +69,12 @@ public class MedicController {
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
+    @GetMapping("/all-specialties")
+    public ResponseEntity<List<String>> getAllSpecialties(){
+        List<String> specialties = medicService.getAllSpecialties();
+        return new ResponseEntity<>(specialties, HttpStatus.OK);
+    }
+
 
     /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
 
@@ -133,48 +139,6 @@ public class MedicController {
 
         return ResponseEntity.ok().build();
     }
-
-
-
-    /**Métodos Medicine*/
-
-    @PostMapping("/create-medicine")
-    public ResponseEntity<Medicine> createPatientMedicine (@RequestHeader("Authorization") String token,
-                                                           @RequestHeader("patientLinkCode") String patientLinkCode,
-                                                           @RequestBody MedicineDTO medicine)
-                                                                throws InvalidTokenException {
-        Long medicId = jwtValidator.getId(token);
-        Medicine createdMedicine = medicService.createPatientMedicine(medicId, patientLinkCode, medicine);
-
-        if(createdMedicine == null)         return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        else                                return new ResponseEntity<>(createdMedicine, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/delete-medicine")
-    public ResponseEntity<Void> deletePatientMedicine (@RequestHeader("patientLinkCode") String patientLinkCode,
-                                                       @RequestParam("medicineId") Long medicineId){
-        medicService.deletePatientMedicine(patientLinkCode, medicineId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/get-patient-medicines")
-    public ResponseEntity<List<Medicine>> getPatientMedicines (@RequestHeader("patientLinkCode") String patientLinkCode) throws InvalidTokenException {
-        List<Medicine> medicines = medicService.getMedicinesByPatientLinkCode(patientLinkCode);
-        if (medicines==null)    return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(medicines, HttpStatus.OK);
-
-    }
-
-    @GetMapping("/get-medicines-byStatus")
-    public ResponseEntity<List<Medicine>> getPatientMedicinesByStatus(@RequestHeader("patientLinkCode") String patientLinkCode,
-                                                                      @RequestParam("status") String status){
-       List<Medicine> filteredMedicines = medicService.getAnalysisByStatus(patientLinkCode, status);
-        return new ResponseEntity<>(filteredMedicines, HttpStatus.OK);
-    }
-
-
-
-
 
 }
 

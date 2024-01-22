@@ -9,6 +9,8 @@ import com.example.MiHistoriaClinica.persistence.repository.CustomRepositoryAcce
 import com.example.MiHistoriaClinica.persistence.repository.MedicRepository;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.AnalysisService;
+import com.example.MiHistoriaClinica.util.constant.AnalysisE;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,6 +79,7 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     }
 
+    @Override
     public List<Analysis> getAnalyzesByPatientLinkCode(String patientLinkCode) {
         Optional<Patient> patientModel = patientRepository.findByLinkCode(patientLinkCode);
 
@@ -84,17 +87,27 @@ public class AnalysisServiceImpl implements AnalysisService {
     }
 
 
-
-
-
-
-
     private void savePatient(Patient thisPatient) {
         patientRepository.save(thisPatient);
     }
 
-
+    @Override
     public List<Analysis> getAnalysisByStatus(Long id, String status) {
         return patientRepository.getAnalysisByPatientIdAndStatus(id, status);
+    }
+
+    @Override
+    public List<String> getAllAnalysisNames() {
+        return AnalysisE.getNames();
+    }
+
+    @Override
+    public List<String> getAllMedicalCenters() {
+        return MedicalCenterE.getAllMedicalCenters();
+    }
+
+    @Override
+    public String getAnalysisDescription(String analysisName) {
+        return AnalysisE.getAnalysisDescription(analysisName);
     }
 }

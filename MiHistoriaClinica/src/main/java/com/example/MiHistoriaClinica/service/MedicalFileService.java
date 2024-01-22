@@ -10,4 +10,6 @@ public interface MedicalFileService {
     byte[] parseMedicalHistoryToPDF(MedicalFile medicalFile);
 
     List<MedicalFile> findAll();
+
+    List<String> getBloodTypes();
 }
