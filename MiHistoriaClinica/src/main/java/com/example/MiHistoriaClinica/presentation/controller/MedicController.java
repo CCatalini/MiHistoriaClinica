@@ -4,7 +4,6 @@ package com.example.MiHistoriaClinica.presentation.controller;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
-import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.service.implementation.MedicServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
@@ -56,6 +55,13 @@ public class MedicController {
         return jwt.invalidateToken(token);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMedic(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        medicService.deleteMedic(medicId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/get-medic-info")
     public ResponseEntity<MedicDTO> getMedicInfo(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
@@ -73,6 +79,13 @@ public class MedicController {
     public ResponseEntity<List<String>> getAllSpecialties(){
         List<String> specialties = medicService.getAllSpecialties();
         return new ResponseEntity<>(specialties, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-medics-by-specialty")
+    public ResponseEntity<List<Medic>> getMedicsBySpecialty (@RequestParam("specialty") String specialty) throws InvalidTokenException{
+        List<Medic> filteredMedics = medicService.getMedicsBySpecialty(specialty);
+        return new ResponseEntity<>(filteredMedics, HttpStatus.OK);
+
     }
 
 
