@@ -1,11 +1,13 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.presentation.dto.MedicalFileDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
+import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
 
 import java.util.List;
 
@@ -26,6 +28,14 @@ public interface PatientService {
     Patient getPatientByDni(Long dni);
 
     PatientDTO getPatientInfo(Long patientId);
+
+    void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter);
+
+    List<Turnos> getMisTurnos(Long id);
+
+    void deleteTurno(Long id);
+
+    List<Medic> getMedicsBySpecialty(Long id, String specialty);
 }
 
 
