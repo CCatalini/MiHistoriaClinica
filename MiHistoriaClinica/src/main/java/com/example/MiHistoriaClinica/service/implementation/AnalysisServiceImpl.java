@@ -110,4 +110,9 @@ public class AnalysisServiceImpl implements AnalysisService {
     public String getAnalysisDescription(String analysisName) {
         return AnalysisE.getAnalysisDescription(analysisName);
     }
+
+    public List<Analysis> getAnalysisByMedicalCenter(Long patientId, String medicalCenter) {
+        MedicalCenterE medicalCenterE = MedicalCenterE.getEnumFromName(medicalCenter);
+        return patientRepository.getAnalysisByPatientIdAndMedicalCenter(patientId, medicalCenterE);
+    }
 }

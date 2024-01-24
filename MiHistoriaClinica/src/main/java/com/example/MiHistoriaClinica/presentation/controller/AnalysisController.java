@@ -116,4 +116,11 @@ public class AnalysisController {
         return new ResponseEntity<>(filteredAnalysis, HttpStatus.OK);
     }
 
+    @GetMapping("/patient/get-analysis-by-medicalCenter")
+    public ResponseEntity<List<Analysis>> getAnalysisByMedicalCenter(@RequestHeader("Authorization") String token,
+                                                                     @RequestParam("medicalCenter") String medicalCenter) throws InvalidTokenException {
+        List<Analysis> filteredAnalysis = analysisService.getAnalysisByMedicalCenter(jwtValidator.getId(token), medicalCenter);
+        return new ResponseEntity<>(filteredAnalysis, HttpStatus.OK);
+    }
+
 }
