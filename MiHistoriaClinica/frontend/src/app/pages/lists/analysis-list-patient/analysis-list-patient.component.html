@@ -22,7 +22,6 @@
     <thead class="table-dark">
     <tr>
         <th>Estudio</th>
-        <th>Centro médico</th>
         <th>Descripción</th>
         <th>Estado</th>
     </tr>
@@ -30,7 +29,6 @@
     <tbody>
     <tr *ngFor="let analysis of analysisList">
         <td>{{ analysis.name }}</td>
-        <td>{{ analysis.medicalCenter }}</td>
         <td>{{ analysis.description }}</td>
         <td>
             <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
