@@ -43,4 +43,6 @@ public interface MedicService {
 
 
     List<String> getAllSpecialties();
+
+    List<Medic> getMedicsBySpecialty(String specialty);
 }

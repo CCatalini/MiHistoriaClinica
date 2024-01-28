@@ -28,4 +28,12 @@ public enum MedicalCenterE {
                 .collect(Collectors.toList());
     }
 
+    public static MedicalCenterE getEnumFromName(String medicalCenter) {
+        for (MedicalCenterE medicalCenterE : MedicalCenterE.values()) {
+            if (medicalCenterE.getName().equalsIgnoreCase(medicalCenter)) {
+                return medicalCenterE;
+            }
+        }
+        return null;
+    }
 }

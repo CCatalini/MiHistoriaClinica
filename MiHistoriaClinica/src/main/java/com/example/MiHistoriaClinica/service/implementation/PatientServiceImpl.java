@@ -4,6 +4,7 @@ import com.example.MiHistoriaClinica.presentation.dto.MedicalFileDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
 import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
+import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
@@ -29,7 +30,6 @@ public class PatientServiceImpl implements PatientService {
     private final MedicRepository medicRepository;
     private final TurnosRepository turnosRepository;
 
-
     @Autowired
     public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository) {
         this.patientRepository = patientRepository;
@@ -39,10 +39,8 @@ public class PatientServiceImpl implements PatientService {
         this.turnosRepository = turnosRepository;
     }
 
-
     /**
-     * método para generar el código de enlace y actualizar el registro del paciente con el nuevo código
-     * @param patientId
+     * Método para generar el código de enlace y actualizar el registro del paciente con el nuevo código
      * @return linkCode
      */
     public String generateLinkCode(Long patientId) {
@@ -56,12 +54,10 @@ public class PatientServiceImpl implements PatientService {
         return linkCode;
     }
 
-
     @Override
     public Patient createPatient(PatientDTO patient) {
         return customRepositoryAccess.saveDTO(patient);
     }
-
 
     @Override
     public Patient loginPatient(PatientLoginDTO patient) {
@@ -73,12 +69,10 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
-
     @Override
     public List<Medic> getMedicsByPatientId(Long id) {
         return patientRepository.getMedicsByPatientId(id);
     }
-
 
     @Override
     public List<Medicine> getMedicinesByPatientId(Long id) {
@@ -104,35 +98,23 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.save(patient);
     }
 
-
     @Override
     public MedicalFileDTO getMedicalHistory(Long id){
         Patient thisPatient = patientRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-
         return new MedicalFileDTO(thisPatient.getMedicalFile());
     }
 
-
     @Override
     public Medicine getMedicineByMedicineId(Long medicineId) {
-
         Optional<Medicine> medicine = medicineRepository.findById(medicineId);
-        if (medicine.isPresent())           return medicine.get();
-        else                                return null;
-
+        return medicine.orElse(null);
     }
-
 
     @Override
     public void saveMedicine(Medicine medicine) {
         medicineRepository.save(medicine);
     }
-
-
-
-
-
 
     @Override
     public Patient getPatientById(Long id) {
@@ -157,24 +139,32 @@ public class PatientServiceImpl implements PatientService {
         return modelMapper.map(patient, PatientDTO.class);
     }
 
+    @Override
     public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
         Patient patient = patientRepository.findById(patientId).get();
         Medic medic = medicRepository.findById(medicId).get();
-
         customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
-
     }
 
-
+    @Override
     public List<Turnos> getMisTurnos(Long id) {
         Patient patient = patientRepository.findById(id).get();
-
         return turnosRepository.findByPatient(patient);
     }
 
+    @Override
     public void deleteTurno(Long id) {
         turnosRepository.deleteById(id);
     }
+
+    @Override
+    public List<Medic> getMedicsBySpecialty(Long id, String specialty) {
+        MedicalSpecialtyE medicalSpecialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
+        return patientRepository.getMedicsBySpecialty(id, medicalSpecialtyE);
+    }
+
+
+
 }
 
 
