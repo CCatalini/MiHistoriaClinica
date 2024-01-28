@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.util.constant.AnalysisE;
 import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -113,16 +114,19 @@ public class CustomRepositoryAccess {
 
     public Analysis createPatientAnalysis(AnalysisDTO analysisDTO, Optional<Patient> patient) {
         Analysis analysisSaved = new Analysis();
-
+        Patient aux = patient.get();
         AnalysisE name = AnalysisE.getEnumFromName(analysisDTO.getName());
+        MedicalCenterE medicalCenter = MedicalCenterE.getEnumFromName(analysisDTO.getMedicalCenterE());
 
         analysisSaved.setName(name);
         assert name != null;
         analysisSaved.setDescription(name.getDescription());
         analysisSaved.setStatus(analysisDTO.getStatus());
-        analysisSaved.setMedicalCenterE(analysisDTO.getMedicalCenterE());
+        analysisSaved.setMedicalCenterE(medicalCenter);
 
-               patientRepository.save(patient.get());
+        aux.getAnalysis().add(analysisSaved);
+
+               patientRepository.save(aux);
         return analysisRepository.save(analysisSaved);
     }
 

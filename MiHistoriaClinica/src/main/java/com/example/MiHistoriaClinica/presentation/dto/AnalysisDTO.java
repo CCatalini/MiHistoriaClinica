@@ -9,7 +9,7 @@ import lombok.Setter;
 public class AnalysisDTO {
 
     private String name;
-    private MedicalCenterE medicalCenterE;
+    private String medicalCenterE;
     private String description;
     private String status;
 
@@ -18,9 +18,9 @@ public class AnalysisDTO {
 
     }
 
-    public AnalysisDTO(String name, MedicalCenterE medicalCenter, String description, String status) {
+    public AnalysisDTO(String name, String medicalCenter, String description, String status) {
         this.name = name;
-        this.medicalCenterE = MedicalCenterE.valueOf(medicalCenter.name());;
+        this.medicalCenterE = medicalCenter;
         this.description = description;
         this.status = status;
     }

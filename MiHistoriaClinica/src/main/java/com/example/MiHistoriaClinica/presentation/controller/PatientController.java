@@ -70,4 +70,10 @@ public class PatientController {
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
+    @GetMapping("/get-medics-by-specialty")
+    public ResponseEntity<List<Medic>> getMedicsBySpecialty(@RequestHeader("Authorization") String token, @RequestParam("specialty") String specialty) throws InvalidTokenException {
+        List<Medic> medics = patientService.getMedicsBySpecialty(jwtValidator.getId(token), specialty);
+        return new ResponseEntity<>(medics, HttpStatus.OK);
+    }
+
 }
