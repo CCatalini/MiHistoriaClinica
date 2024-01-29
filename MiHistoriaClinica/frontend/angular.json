@@ -56,14 +56,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "sign-in:build:development"
+            "browserTarget": "sign-in:build:development"
           },
           "configurations": {
             "production": {
-              "buildTarget": "sign-in:build:production"
+              "browserTarget": "sign-in:build:production"
             },
             "development": {
-              "buildTarget": "sign-in:build:development"
+              "browserTarget": "sign-in:build:development"
             }
           },
           "defaultConfiguration": "development"
