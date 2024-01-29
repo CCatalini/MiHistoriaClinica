@@ -1,9 +1,22 @@
-#calendar {
-    font-family: 'Roboto', 'Helvetica Neue', sans-serif;
-    width: 500px;
-    height: 500px;
+
+.text-center {
     margin-top: 50px;
-    margin-bottom: auto;
+    margin-bottom: 30px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 900px;
+    height: 500px;
+    margin: 0;
+}
+
+full-calendar {
+    width: 70%;
+    max-width: 800px;
+    height: 500px;
 }
 
 /*.css del fullcalendar:
