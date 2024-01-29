@@ -22,8 +22,6 @@
     <thead class="table-dark">
     <tr>
         <th>Medicación</th>
-        <th>Compuesto activo</th>
-        <th>Laboratorio</th>
         <th>Descripción</th>
         <th>Estado</th>
         <th>Acciones</th>
@@ -31,9 +29,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let medicine of medicines">
-        <td>{{ medicine.medicineName }}</td>
-        <td>{{ medicine.activeIngredient }}</td>
-        <td>{{ medicine.lab }}</td>
+        <td>{{ medicine.name }}</td>
         <td>{{ medicine.description }}</td>
         <td>{{ medicine.status }}</td>
         <td>

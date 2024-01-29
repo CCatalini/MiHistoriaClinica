@@ -1,5 +1,24 @@
-<h1 class = "text-center">Mis Médicos</h1>
+<h1 class="text-center">Mis Médicos</h1>
+
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Filtro por especialidad:</mat-label>
+            <mat-select
+                    [(ngModel)]="medic.specialty"
+                    name="medicSpecialty"
+                    (selectionChange)="getMedicsBySpecialty()"
+                    class="custom-mat-select"
+            >
+                <mat-option *ngFor="let option of specialtyOptions" [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</div>
 <br>
+
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
@@ -11,7 +30,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let medic of medics">
+    <tr *ngFor="let medic of medicsList">
         <td>{{medic.name}}</td>
         <td>{{medic.lastname}}</td>
         <td>{{medic.specialty}}</td>

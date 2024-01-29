@@ -120,6 +120,20 @@ export class PatientService {
         return this.http.get<any[]>("http://localhost:8080/analysis/patient/get-analysis-byStatus", { headers: headers, params: params });
     }
 
+    getMedicsBySpecialty(specialty: string) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', "Bearer " + token);
+        }
+        let params = new HttpParams().set("specialty", specialty);
+        return this.http.get<any[]>("http://localhost:8080/patient/get-medics-by-specialty", { headers: headers, params: params });
+    }
+
+    public getAllSpecialties() {
+        return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
+    }
+
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
