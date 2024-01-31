@@ -80,21 +80,6 @@ public class MedicalFileController {
     }
 
 
-    @GetMapping(value = "/download-pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> downloadMedicalHistory(@RequestHeader("Authorization") String token) throws InvalidTokenException {
-        Long id = jwtValidator.getId(token);
-        MedicalFile medicalFile = medicalFileService.getMedicalHistoryById(id);
-
-        byte[]  pdfBytes = medicalFileService.parseMedicalHistoryToPDF(medicalFile);
-
-        // Devolver la respuesta con el contenido del PDF y las cabeceras necesarias
-        return ResponseEntity
-                .ok()
-                .header("Content-Disposition", "attachment; filename=historia_clinica.pdf")
-                .body(pdfBytes);
-    }
-
-
     @GetMapping("/blood-types")
     public ResponseEntity<List<String>> getBloodTypes() {
         return new ResponseEntity<>(medicalFileService.getBloodTypes(), HttpStatus.OK);

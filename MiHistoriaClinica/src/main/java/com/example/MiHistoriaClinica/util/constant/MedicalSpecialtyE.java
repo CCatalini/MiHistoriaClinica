@@ -27,7 +27,8 @@ public enum MedicalSpecialtyE {
     GINECOLOGIA("Ginecología"),
     MEDICINA_INTERNA("Medicina Interna"),
     CIRUGIA_GENERAL("Cirugía General"),
-    ANESTESIOLOGIA("Anestesiología");
+    ANESTESIOLOGIA("Anestesiología"),
+    MEDICINA_CLINICA("Medicina Clínica");
 
     private final String name;
 

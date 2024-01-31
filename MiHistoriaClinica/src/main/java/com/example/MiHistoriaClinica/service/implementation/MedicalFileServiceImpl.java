@@ -25,9 +25,8 @@ public class MedicalFileServiceImpl implements MedicalFileService {
         this.medicalFileRepository = medicalFileRepository;
     }
 
-
     @Override
-    public MedicalFile getMedicalHistoryById(Long id) {
+    public MedicalFile getMedicalFileById(Long id) {
         return medicalFileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la historia clínica con id: " + id + "."));
     }
@@ -42,33 +41,9 @@ public class MedicalFileServiceImpl implements MedicalFileService {
         return BloodTypeE.getTypes();
     }
 
-    @Override
-    public byte[] parseMedicalHistoryToPDF(MedicalFile historiaClinica) {
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-
-            Document document = initializePdf(byteArrayOutputStream);
-            addMedicalHistoryContent(document, historiaClinica);
-            document.close();
-
-            return byteArrayOutputStream.toByteArray(); // Devolver el contenido del PDF
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
 
 
-    private Document initializePdf(ByteArrayOutputStream byteArrayOutputStream) {
-        PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
-        PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-        return new Document(pdfDocument);
-    }
 
-    private void addMedicalHistoryContent(Document document, MedicalFile medicalFile) {
-        document.add(new Paragraph("Historia Clínica"));
-        document.add(new Paragraph("Paciente: " + medicalFile.getPatient().getName() + " " + medicalFile.getPatient().getLastname()));
-        document.add(new Paragraph("DNI: " + medicalFile.getPatient().getDni()));
-    }
 
 
 }
