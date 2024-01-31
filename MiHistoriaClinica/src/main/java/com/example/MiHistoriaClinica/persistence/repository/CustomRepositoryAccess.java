@@ -102,7 +102,7 @@ public class CustomRepositoryAccess {
         medicineSaved.setName(medicine.getName());
         medicineSaved.setDescription(medicine.getDescription());
         medicineSaved.setComments(medicine.getComments());
-        medicineSaved.setStatus(medicine.getStatus());
+        medicineSaved.setStatus("Pendiente");
         medicineSaved.setPrescriptionDay(medicine.getPrescriptionDay());
 
         medicineSaved.addPatient(aux);
@@ -121,7 +121,7 @@ public class CustomRepositoryAccess {
         analysisSaved.setName(name);
         assert name != null;
         analysisSaved.setDescription(name.getDescription());
-        analysisSaved.setStatus(analysisDTO.getStatus());
+        analysisSaved.setStatus("Pendiente");
         analysisSaved.setMedicalCenterE(medicalCenter);
 
         aux.getAnalysis().add(analysisSaved);
@@ -164,4 +164,5 @@ public class CustomRepositoryAccess {
         return turnosRepository.save(turnoSaved);
 
     }
+
 }

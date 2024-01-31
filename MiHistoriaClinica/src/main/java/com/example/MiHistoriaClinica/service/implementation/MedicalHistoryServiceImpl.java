@@ -5,16 +5,24 @@ import com.example.MiHistoriaClinica.persistence.repository.MedicalFileRepositor
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.MedicalHistoryService;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
+import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
+import com.itextpdf.layout.element.LineSeparator;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
+import com.itextpdf.layout.property.UnitValue;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,8 +31,32 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private final MedicalFileRepository medicalFileRepository;
     private final PatientRepository patientRepository;
     private final MedicalAppointmentServiceImpl medicalAppointmentService;
+    Style titleStyle = new Style()
+            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
+            .setFontSize(20)
+            .setBold()
+            .setFontColor(DeviceRgb.BLACK);
+    Style subtitleStyle = new Style()
+            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
+            .setFontSize(16)
+            .setBold()
+            .setFontColor(DeviceRgb.BLACK);
+    Style columnsStyle = new Style()
+            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
+            .setFontSize(12)
+            .setBold()
+            .setFontColor(DeviceRgb.BLACK);
+    Style bodyStyle = new Style()
+            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
+            .setFontSize(12)
+            .setFontColor(DeviceRgb.BLACK);
+    Style contentTableStyle = new Style()
+            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
+            .setFontSize(10)
+            .setFontColor(DeviceRgb.BLACK);
 
-    public MedicalHistoryServiceImpl(MedicalFileRepository medicalFileRepository, PatientRepository patientRepository, MedicalAppointmentServiceImpl medicalAppointmentService) {
+
+    public MedicalHistoryServiceImpl(MedicalFileRepository medicalFileRepository, PatientRepository patientRepository, MedicalAppointmentServiceImpl medicalAppointmentService) throws IOException {
         this.medicalFileRepository = medicalFileRepository;
         this.patientRepository = patientRepository;
         this.medicalAppointmentService = medicalAppointmentService;
@@ -47,6 +79,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private Document initializePdf(ByteArrayOutputStream byteArrayOutputStream) {
         PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+        pdfDocument.setDefaultPageSize(PageSize.A4);
         return new Document(pdfDocument);
     }
 
@@ -77,9 +110,9 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private void addPatientContent(Document document, Long id){
         Patient patient = patientRepository.findById(id).orElseThrow();
 
-        document.add(new Paragraph("Historia Clínica"));
-        document.add(new Paragraph("Paciente: " + patient.getName() + " " + patient.getLastname()));
-        document.add(new Paragraph("DNI: " + patient.getDni()));
+        document.add(new Paragraph("Mi Historia Clinica").addStyle(titleStyle));
+        document.add(new Paragraph("Paciente: " + patient.getName() + " " + patient.getLastname()).addStyle(subtitleStyle));
+        document.add(new Paragraph("Dni: " + patient.getDni()).addStyle(subtitleStyle));
     }
 
     private void addMedicalFileContent(Document document, Long id) {
@@ -87,61 +120,66 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
                 () -> new ResourceNotFoundException("No se encontró el archivo médico con id: " + id)
         );
 
-        document.add(new Paragraph("Peso: " + medicalFile.getWeight() + " kg"));
-        document.add(new Paragraph("Altura: " + medicalFile.getHeight() + " cm"));
-        document.add(new Paragraph("Tipo de sangre: " + medicalFile.getBloodType()));
-        document.add(new Paragraph("Alergias: " + medicalFile.getAllergy()));
-        document.add(new Paragraph("Enfermedades crónicas: " + medicalFile.getChronicDisease()));
-        document.add(new Paragraph("Medicamentos actuales: " + medicalFile.getActualMedicine()));
-        document.add(new Paragraph("Antecedentes familiares: " + medicalFile.getFamilyMedicalHistory()));
+        document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+        document.add(new Paragraph("Archivo Medico").addStyle(subtitleStyle));
+
+        document.add(new Paragraph("Peso: " + medicalFile.getWeight() + " kg").addStyle(bodyStyle));
+        document.add(new Paragraph("Altura: " + medicalFile.getHeight() + " cm").addStyle(bodyStyle));
+        document.add(new Paragraph("Tipo de sangre: " + medicalFile.getBloodType()).addStyle(bodyStyle));
+        document.add(new Paragraph("Alergias: " + medicalFile.getAllergy()).addStyle(bodyStyle));
+        document.add(new Paragraph("Enfermedades cronicas: " + medicalFile.getChronicDisease()).addStyle(bodyStyle));
+        document.add(new Paragraph("Medicamentos actuales: " + medicalFile.getActualMedicine()).addStyle(bodyStyle));
+        document.add(new Paragraph("Antecedentes familiares: " + medicalFile.getFamilyMedicalHistory()).addStyle(bodyStyle));
     }
 
     private void addMedicinesContent(Document document, Long id)  {
-        List<Medicine> medicineList = patientRepository.getMedicinesByPatientIdAndStatus(id, "Finalizado");
+        List<Medicine> medicineList = patientRepository.getMedicinesByPatientId(id);
 
         if (!medicineList.isEmpty()) {
-            // Agregar encabezado de la tabla
-            Table table = new Table(4); // 4 columnas para Nombre, Dosis, Fecha de Inicio, Fecha de Finalización
+            Table table = new Table(5);
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            // Agregar encabezados de columna
-            table.addHeaderCell("Nombre");
-            table.addHeaderCell("Descripción");
-            table.addHeaderCell("Fecha de Prescripción");
-            table.addHeaderCell("Comentarios");
+            table.addHeaderCell("Nombre").addStyle(columnsStyle);
+            table.addHeaderCell("Descripción").addStyle(columnsStyle);
+            table.addHeaderCell("Fecha de Prescripción").addStyle(columnsStyle);
+            table.addHeaderCell("Comentarios").addStyle(columnsStyle);
+            table.addHeaderCell("Estado").addStyle(columnsStyle);
 
-            // Agregar filas de datos
             for (Medicine medicine : medicineList) {
-                table.addCell(String.valueOf(medicine.getName()));
-                table.addCell(medicine.getDescription());
-                table.addCell(String.valueOf(medicine.getPrescriptionDay()));
-                table.addCell(medicine.getComments());
+                table.addCell(String.valueOf(medicine.getName())).addStyle(contentTableStyle);
+                table.addCell(medicine.getDescription()).addStyle(contentTableStyle);
+                table.addCell(String.valueOf(medicine.getPrescriptionDay())).addStyle(contentTableStyle);
+                table.addCell(medicine.getComments()).addStyle(contentTableStyle);
+                table.addCell(medicine.getStatus()).addStyle(contentTableStyle);
             }
 
-            // Agregar la tabla al documento
-            document.add(new Paragraph("Medicamentos Finalizados").setBold());
+            document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+            document.add(new Paragraph("Medicamentos").addStyle(subtitleStyle));
             document.add(table);
         }
     }
 
     private void addAnalysisContent(Document document, Long id){
-        List<Analysis> analysisList = patientRepository.getAnalysisByPatientIdAndStatus(id, "Finalizado");
+        List<Analysis> analysisList = patientRepository.getAnalysisByPatientId(id);
 
         if(!analysisList.isEmpty()){
-            Table table = new Table(3);
+            Table table = new Table(4);
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            table.addHeaderCell("Análisis");
-            table.addHeaderCell("Descripción");
-            table.addHeaderCell("Centro Médico");
+            table.addHeaderCell("Analisis").addStyle(columnsStyle);
+            table.addHeaderCell("Descripcion").addStyle(columnsStyle);
+            table.addHeaderCell("Centro Medico").addStyle(columnsStyle);
+            table.addHeaderCell("Estado").addStyle(columnsStyle);
 
             for(Analysis analysis : analysisList){
-                table.addCell(analysis.getName().getName());
-                table.addCell(analysis.getDescription());
-                table.addCell(analysis.getMedicalCenterE().getName());
+                table.addCell(analysis.getName().getName()).addStyle(contentTableStyle);
+                table.addCell(analysis.getDescription()).addStyle(contentTableStyle);
+                table.addCell(analysis.getMedicalCenterE().getName()).addStyle(contentTableStyle);
+                table.addCell(analysis.getStatus()).addStyle(contentTableStyle);
             }
 
-            document.add(new Paragraph("Análisis Finalizados").setBold());
+            document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+            document.add(new Paragraph("Analisis").addStyle(subtitleStyle));
             document.add(table);
         }
     }
@@ -153,21 +191,22 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             Table table = new Table(5);
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            table.addHeaderCell("Motivo de Consulta");
-            table.addHeaderCell("Enfermedad Actual");
-            table.addHeaderCell("Examen Físico");
-            table.addHeaderCell("Observaciones");
-            table.addHeaderCell("Médico");
+            table.addHeaderCell("Motivo de Consulta").addStyle(columnsStyle);
+            table.addHeaderCell("Enfermedad Actual").addStyle(columnsStyle);
+            table.addHeaderCell("Examen Fisico").addStyle(columnsStyle);
+            table.addHeaderCell("Observaciones").addStyle(columnsStyle);
+            table.addHeaderCell("Medico").addStyle(columnsStyle);
 
             for(MedicalAppointment appointment : appointments){
-                table.addCell(appointment.getAppointmentReason());
-                table.addCell(appointment.getCurrentIllness());
-                table.addCell(appointment.getPhysicalExam());
-                table.addCell(appointment.getObservations());
-                table.addCell(appointment.getMedicFullName());
+                table.addCell(appointment.getAppointmentReason()).addStyle(contentTableStyle);
+                table.addCell(appointment.getCurrentIllness()).addStyle(contentTableStyle);
+                table.addCell(appointment.getPhysicalExam()).addStyle(contentTableStyle);
+                table.addCell(appointment.getObservations()).addStyle(contentTableStyle);
+                table.addCell(appointment.getMedicFullName()).addStyle(contentTableStyle);
             }
 
-            document.add(new Paragraph("Citas Médicas").setBold());
+            document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+            document.add(new Paragraph("Consultas Medicas").addStyle(subtitleStyle));
             document.add(table);
         }
     }
