@@ -58,7 +58,6 @@ export class AnalysisListPatientComponent implements OnInit{
     }
 
     getAnalysisByStatus(status: string) {
-
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.userService.getAnalysisList(token!).subscribe(

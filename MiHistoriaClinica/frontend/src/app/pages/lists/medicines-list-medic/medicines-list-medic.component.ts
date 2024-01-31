@@ -35,7 +35,7 @@ export class MedicinesListMedicComponent implements OnInit {
         }
         createGetMedicinesListObservable.subscribe(
             (data: any) => {
-                console.log(data); // Agregar este console.log para verificar la respuesta del servidor
+                console.log(data);
                 if (Array.isArray(data)) {
                     this.medicines = data;
                 } else {

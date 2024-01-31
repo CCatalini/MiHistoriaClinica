@@ -1,0 +1,8 @@
+.custom-mat-select-panel {
+    width: 200px; /* Ajusta el ancho según tus necesidades */
+}
+
+/* Aplica el ancho al menú desplegable y al panel de opciones */
+.custom-mat-select .mat-select-panel {
+    max-width: 200px; /* También establece un ancho máximo si lo deseas */
+}

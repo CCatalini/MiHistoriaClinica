@@ -3,10 +3,9 @@
 <div class="row mb-3">
     <div class="col-12 text-center">
         <div class="d-inline-block">
-            <p>Filtrar por estado:</p>
             <select class="form-control" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
 
-                <option value="" disabled selected>Seleccione estado</option>
+                <option value="" disabled selected>Filtro por estado</option>
                 <option value="en curso">En curso</option>
                 <option value="pendiente">Pendiente</option>
                 <option value="finalizado">Finalizado</option>
@@ -22,7 +21,6 @@
     <thead class="table-dark">
     <tr>
         <th>Estudio</th>
-        <th>Centro médico</th>
         <th>Descripción</th>
         <th>Estado</th>
     </tr>
@@ -30,7 +28,6 @@
     <tbody>
     <tr *ngFor="let analysis of analysisList">
         <td>{{ analysis.name }}</td>
-        <td>{{ analysis.medicalCenter }}</td>
         <td>{{ analysis.description }}</td>
         <td>
             <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
