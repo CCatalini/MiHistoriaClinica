@@ -5,9 +5,7 @@ import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import java.util.List;
 
 public interface MedicalFileService {
-    MedicalFile getMedicalHistoryById(Long id);
-
-    byte[] parseMedicalHistoryToPDF(MedicalFile medicalFile);
+    MedicalFile getMedicalFileById(Long id);
 
     List<MedicalFile> findAll();
 
