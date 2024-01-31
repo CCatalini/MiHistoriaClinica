@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
 
 @Component({
   selector: 'app-root',
@@ -8,10 +6,5 @@ import dayGridPlugin from '@fullcalendar/daygrid';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  calendarOptions: CalendarOptions = {
-      initialView: 'dayGridMonth',
-      plugins: [dayGridPlugin]
-  };
+  title = 'sign-in';
 }
-
-
