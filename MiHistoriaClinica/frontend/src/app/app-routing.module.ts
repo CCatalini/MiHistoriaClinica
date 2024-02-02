@@ -28,6 +28,7 @@ import {EditMedicalHistoryComponent} from "./pages/medic/edit-medical-history/ed
 import {AllMedicsListComponent} from "./pages/lists/all-medics-list/all-medics-list.component";
 import {AddTurnoComponent} from "./pages/patient/add-turno/add-turno.component";
 import {TurnosListComponent} from "./pages/lists/turnos-list/turnos-list.component";
+import {MedicCalendarComponent} from "./pages/medic/medic-calendar/medic-calendar.component";
 
 const routes: Routes = [
     {
@@ -170,6 +171,12 @@ const routes: Routes = [
         component:TurnosListComponent,
         pathMatch:'full'
     },
+    {
+        path: 'medic/calendar',
+        component:MedicCalendarComponent,
+        pathMatch:'full'
+    }
+
 ];
 
 @NgModule({
