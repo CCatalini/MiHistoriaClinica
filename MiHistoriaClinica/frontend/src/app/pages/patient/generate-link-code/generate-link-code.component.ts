@@ -29,6 +29,7 @@ export class GenerateLinkCodeComponent implements OnInit {
             }
         );
     }
+
 }
 
 
