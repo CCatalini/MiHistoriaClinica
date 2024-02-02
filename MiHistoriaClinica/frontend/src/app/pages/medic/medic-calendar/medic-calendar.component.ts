@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {CalendarOptions} from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import esLocale from '@fullcalendar/core/locales/es';
 
 @Component({
   selector: 'app-medic-calendar',
   templateUrl: './medic-calendar.component.html',
   styleUrls: ['./medic-calendar.component.css']
 })
+
 export class MedicCalendarComponent implements OnInit{
 
     my_events : any = [
@@ -19,6 +21,7 @@ export class MedicCalendarComponent implements OnInit{
         initialView: 'dayGridMonth',
         events: this.my_events,
         eventClick: this.handleClick.bind(this),
+        locale: esLocale,
         plugins: [dayGridPlugin]
     };
 
