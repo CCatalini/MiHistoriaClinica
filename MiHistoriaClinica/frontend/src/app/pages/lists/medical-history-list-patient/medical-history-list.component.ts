@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { Router } from "@angular/router";
 import {PatientService} from "../../../services/patient/patient.service";
 import Swal from "sweetalert2";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
     selector: 'app-medical-history-list',
     templateUrl: './medical-history-list.component.html',
-    styleUrls: ['./medical-history-list.component.css']
+    styleUrls: ['./medical-history-list.component.css'],
 })
+
 export class MedicalHistoryListComponent implements OnInit {
     public medicalHistory: any = {
         weight: '',
@@ -19,18 +21,29 @@ export class MedicalHistoryListComponent implements OnInit {
         familyMedicalHistory: ''
     };
 
+    downloadList: FormGroup;
+
     medicines: any[] = [];
     analysisList: any[] = [];
 
-    constructor(private patientService: PatientService, private router: Router) {}
+    constructor(private patientService: PatientService, private router: Router, private formBuilder: FormBuilder) {
+        this.downloadList = this.formBuilder.group({
+            fichaMedica: false,
+            medicamentos: false,
+            estudios: false,
+        });
+    }
 
     ngOnInit(): void {
-        // Verify user
-        if (localStorage.getItem('userType') != 'PATIENT') {
+        if (localStorage.getItem('userType') !== 'PATIENT') {
             this.router.navigate(['/patient/login']);
         } else {
             this.formSubmit(); // Fetch medical history data
         }
+
+        this.downloadList.valueChanges.subscribe(() => {
+            this.logSelectedOptions();
+        });
     }
 
     private formSubmit(): void {
@@ -97,7 +110,6 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     getMedicinesByStatus(status: string) {
-
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.patientService.getMedicinesList(token!).subscribe(
@@ -147,7 +159,6 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     getAnalysisByStatus(status: string) {
-
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.patientService.getAnalysisList(token!).subscribe(
@@ -171,7 +182,6 @@ export class MedicalHistoryListComponent implements OnInit {
                 }
             );
         } else {
-            // Handle the case where the token is not found
             this.patientService.getAnalysisByStatus(status).subscribe(
                 (analysis: any[]) => {
                     this.analysisList = analysis;
@@ -183,4 +193,15 @@ export class MedicalHistoryListComponent implements OnInit {
             );
         }
     }
+
+    downloadMedicalHistory(): void {
+        // Código para llamar el método
+    }
+
+    logSelectedOptions() {
+        const downloadListForm = this.downloadList.value;
+        const selectedOptions = Object.keys(downloadListForm).filter(option => downloadListForm[option]);
+        console.log('Opciones de descarga seleccionadas:', selectedOptions);
+    }
+
 }
