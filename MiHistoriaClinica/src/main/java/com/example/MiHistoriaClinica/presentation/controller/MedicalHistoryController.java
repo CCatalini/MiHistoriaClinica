@@ -24,7 +24,6 @@ public class MedicalHistoryController {
 
     }
 
-
     @GetMapping(value = "/download-pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> downloadMedicalHistory(@RequestHeader("Authorization") String token,
                                                          @RequestParam(required = false) boolean includeMedicalFile,
