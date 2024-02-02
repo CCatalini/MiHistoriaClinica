@@ -176,6 +176,7 @@ const routes: Routes = [
         component:MedicCalendarComponent,
         pathMatch:'full'
     }
+
 ];
 
 @NgModule({
