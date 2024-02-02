@@ -7,6 +7,7 @@
         <p><mat-checkbox formControlName="fichaMedica">Ficha médica</mat-checkbox></p>
         <p><mat-checkbox formControlName="medicamentos">Medicamentos</mat-checkbox></p>
         <p><mat-checkbox formControlName="estudios">Estudios</mat-checkbox></p>
+        <p><mat-checkbox formControlName="consutlasMedicas">Consultas médicas</mat-checkbox></p>
     </section>
     <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
     <br><br>
@@ -60,7 +61,7 @@
     <tr *ngFor="let medicine of medicines">
         <td>{{ medicine.name }}</td>
         <td>{{ medicine.description }}</td>
-        <td>{{ medicine.status }}</td> <!-- Muestra el estado actual sin un selector -->
+        <td>{{ medicine.status }}</td>
     </tr>
     </tbody>
 </table>
@@ -80,11 +81,40 @@
     <tr *ngFor="let analysis of analysisList">
         <td>{{ analysis.name }}</td>
         <td>{{ analysis.description }}</td>
-        <td>{{ analysis.status }}</td> <!-- Muestra el estado actual sin un selector -->
+        <td>{{ analysis.status }}</td>
     </tr>
     </tbody>
 </table>
 <br><br>
+
+<h2 class = "text-center">Mis Consultas Médicas</h2>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Nombre del médico</th>
+        <th>Matrícula</th>
+        <th>Especialidad</th>
+        <th>Motivo de consulta</th>
+        <th>Síntomas</th>
+        <th>Exámen físico</th>
+        <th>Observaciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let appointment of appointments">
+        <td>{{appointment.medicFullName}}</td>
+        <td>{{appointment.matricula}}</td>
+        <td>{{appointment.specialty}}</td>
+        <td>{{appointment.appointmentReason}}</td>
+        <td>{{appointment.currentIllness}}</td>
+        <td>{{appointment.physicalExam}}</td>
+        <td>{{appointment.observations}}</td>
+    </tr>
+    </tbody>
+</table>
+<br><br>
+
 
 
 
