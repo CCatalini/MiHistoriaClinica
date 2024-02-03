@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
+import com.example.MiHistoriaClinica.service.implementation.EmailService;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
@@ -28,14 +29,8 @@ public class PatientController {
     @Autowired
     public PatientController(PatientServiceImpl patientService){
         this.patientService = patientService;
-
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<Patient> createPatient(@RequestBody PatientDTO patient) {
-        Patient createdPatient = patientService.createPatient(patient);
-        return new ResponseEntity<>(createdPatient, HttpStatus.CREATED);
-    }
 
     @PostMapping("/login")
     @ResponseBody

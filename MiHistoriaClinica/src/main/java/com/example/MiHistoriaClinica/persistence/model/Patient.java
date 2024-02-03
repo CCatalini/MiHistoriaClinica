@@ -18,19 +18,16 @@ import java.util.Objects;
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long patientId;
+    @Column(unique = true, nullable = false)    private Long patientId;
+
     private String name;
     private String lastname;
-    @Column(nullable = false, unique = true)
-    private Long dni;
-    @Column(nullable = false, unique = true)
-    private String email;
-    @Column(nullable = false)
-    private String password;
+    @Column(nullable = false, unique = true)    private Long dni;
+    @Column(nullable = false, unique = true)    private String email;
+    @Column(name = "email_confirmed")           private boolean emailConfirmed;
+    @Column(nullable = false)                   private String password;
     private Date birthdate;
-    @Column(name = "link_code")
-    private String linkCode;
+    @Column(name = "link_code")                 private String linkCode;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

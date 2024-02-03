@@ -7,8 +7,14 @@ import org.springframework.http.ResponseEntity;
 
 public interface JwtGenerator {
 
+
     TokenDTO generateToken(Long id, String role);
+
     Claims getClaims(String token) throws InvalidTokenException;
 
     ResponseEntity<Void> invalidateToken(String token);
+
+    TokenDTO generateTokenWithEmail(String email, String patient, boolean b);
+
+    String getEmailFromToken(String token);
 }

@@ -1,13 +1,11 @@
 package com.example.MiHistoriaClinica.persistence.repository;
 
 
-import com.example.MiHistoriaClinica.persistence.model.Analysis;
-import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.Medicine;
-import com.example.MiHistoriaClinica.persistence.model.Patient;
+import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,9 +21,14 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Patient findByDni(Long dni);
 
-    void deleteByDni(Long dni);
+    Patient findByEmail(String email);
 
     Optional<Patient> findByLinkCode(String linkCode);
+
+    @Modifying
+    @Query("UPDATE Patient p SET p.emailConfirmed = :emailConfirmed WHERE p.patientId = :patientId")
+    void setEmailConfirmed(@Param("patientId") Long patientId, @Param("emailConfirmed") boolean emailConfirmed);
+
 
 
 
@@ -62,6 +65,13 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT m FROM Patient p JOIN p.analysis m WHERE p.patientId = :patientId")
     List<Analysis> getAnalysisByPatientId(@Param("patientId") Long id);
 
+    @Query("SELECT p.medicalFile FROM Patient p WHERE p.patientId = :patientId")
+    MedicalFile getMedicalFileByPatientId(@Param("patientId") Long patientId);
+
+
+
 
     // void assignRole(Long patient_id, Long role_id);
 }
+
+
