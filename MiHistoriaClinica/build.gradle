@@ -30,6 +30,9 @@ dependencies {
     implementation 'com.itextpdf:itext7-core:7.1.15'
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    implementation 'com.sendgrid:sendgrid-java:4.10.1'
+
 }
 
 tasks.named('test') {

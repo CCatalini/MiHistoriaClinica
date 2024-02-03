@@ -116,9 +116,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     }
 
     private void addMedicalFileContent(Document document, Long id) {
-        MedicalFile medicalFile = medicalFileRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("No se encontró el archivo médico con id: " + id)
-        );
+        MedicalFile medicalFile = patientRepository.getMedicalFileByPatientId(id);
 
         document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
         document.add(new Paragraph("Archivo Medico").addStyle(subtitleStyle));

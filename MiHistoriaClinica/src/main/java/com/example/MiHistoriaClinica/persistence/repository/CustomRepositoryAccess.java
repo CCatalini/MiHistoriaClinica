@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.persistence.repository;
 
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.presentation.dto.*;
+import com.example.MiHistoriaClinica.service.implementation.EmailService;
 import com.example.MiHistoriaClinica.util.constant.AnalysisE;
 import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
 import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
@@ -42,16 +43,26 @@ public class CustomRepositoryAccess {
     }
 
 
+
     public Patient saveDTO(PatientDTO patientDTO) {
         Patient patientSaved = new Patient();
-        // Establecer los valores del DTO en la entidad a guardar
+
         patientSaved.setName(patientDTO.getName());
         patientSaved.setLastname(patientDTO.getLastname());
         patientSaved.setPassword(patientDTO.getPassword());
         patientSaved.setDni(patientDTO.getDni());
         patientSaved.setEmail(patientDTO.getEmail());
+        patientSaved.setEmailConfirmed(false);
+        patientRepository.save(patientSaved);
 
-        return patientRepository.save(patientSaved);
+        return patientSaved;
+    }
+
+    private String generateConfirmationLink(String email) {
+        // Puedes utilizar alguna lógica para generar un token único
+        // En este ejemplo, simplemente concatenamos el email y un timestamp
+        long timestamp = System.currentTimeMillis();
+        return "http://tu-aplicacion.com/confirmar-correo?token=" + email + "_" + timestamp;
     }
 
     public Medic saveMedicDto(MedicDTO medicDTO) {

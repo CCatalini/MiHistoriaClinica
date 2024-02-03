@@ -17,8 +17,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
 
     @Value("${app.jwttoken.message}")
     private String message;
-    private  Set<String> invalidTokens = new HashSet<>();
-
+    private final Set<String> invalidTokens = new HashSet<>();
     static final SecretKey KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 
@@ -27,13 +26,14 @@ public class JwtGeneratorImpl implements JwtGenerator{
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", String.valueOf(id));
         claims.put("role", role);
-        String jwt = "";
-        jwt = Jwts.builder()
+
+        String jwt = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // token valid for 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // token válido por 24 horas
                 .signWith(KEY)
                 .compact();
+
         return new TokenDTO(jwt);
     }
 
@@ -51,27 +51,39 @@ public class JwtGeneratorImpl implements JwtGenerator{
         }
     }
 
-
-
     @Override
     public ResponseEntity<Void> invalidateToken(String token) {
         invalidTokens.add(token);
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public TokenDTO generateTokenWithEmail(String email, String role, boolean emailConfirmed) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", String.valueOf(email));
+        claims.put("role", role);
+        claims.put("emailConfirmed", emailConfirmed);
 
-}
+        String jwt = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // token válido por 24 horas
+                .signWith(KEY)
+                .compact();
 
+        return new TokenDTO(jwt);
+    }
 
-/*
-     if (invalidTokens.contains(token)) {
-            throw new InvalidTokenException("Token inválido");
-        }
-
-        else return Jwts.parserBuilder()
+    @Override
+    public String getEmailFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+
+        return claims.get("email", String.class);
     }
- */
+
+
+}

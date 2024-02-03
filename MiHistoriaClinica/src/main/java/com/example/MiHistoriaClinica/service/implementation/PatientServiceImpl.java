@@ -13,8 +13,11 @@ import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.persistence.repository.*;
 import com.example.MiHistoriaClinica.service.PatientService;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +32,11 @@ public class PatientServiceImpl implements PatientService {
     private final MedicineRepository medicineRepository;
     private final MedicRepository medicRepository;
     private final TurnosRepository turnosRepository;
+    private final JwtGenerator jwt = new JwtGeneratorImpl();
+
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository, EmailService emailService) {
         this.patientRepository = patientRepository;
         this.customRepositoryAccess = customRepositoryAccess;
         this.medicineRepository = medicineRepository;
@@ -53,6 +58,17 @@ public class PatientServiceImpl implements PatientService {
         patientRepository.save(patient);
         return linkCode;
     }
+
+
+/*
+    public ResponseEntity<String> confirmAccount(Long patientId) {
+        patientRepository.setEmailConfirmed(patientId, true);
+        return null;
+    }
+
+
+
+ */
 
     @Override
     public Patient createPatient(PatientDTO patient) {
@@ -162,7 +178,6 @@ public class PatientServiceImpl implements PatientService {
         MedicalSpecialtyE medicalSpecialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
         return patientRepository.getMedicsBySpecialty(id, medicalSpecialtyE);
     }
-
 
 
 }

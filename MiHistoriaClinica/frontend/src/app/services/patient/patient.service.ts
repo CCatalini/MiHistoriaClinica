@@ -17,8 +17,10 @@ export class PatientService {
     }
 
     public addPatient(patient: any) {
-        return this.http.post(`http://localhost:8080/patient/signup`, patient);
+        return this.http.post(`http://localhost:8080/auth/patient/register`, patient);
     }
+
+    
 
     public getMedicsList(token: string): Observable<any[]> {
         let headers = new HttpHeaders();
