@@ -16,5 +16,4 @@ public interface JwtGenerator {
 
     TokenDTO generateTokenWithEmail(String email, String patient, boolean b);
 
-    String getEmailFromToken(String token);
 }

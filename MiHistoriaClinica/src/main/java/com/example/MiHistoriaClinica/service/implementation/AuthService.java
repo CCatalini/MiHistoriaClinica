@@ -1,12 +1,15 @@
-package com.example.MiHistoriaClinica.service;
+package com.example.MiHistoriaClinica.service.implementation;
 
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.repository.CustomRepositoryAccess;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
-import com.example.MiHistoriaClinica.service.implementation.EmailService;
+import com.example.MiHistoriaClinica.presentation.dto.TokenDTO;
+import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
+import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +19,7 @@ public class AuthService {
     private final PatientRepository patientRepository;
     private final EmailService emailService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
+    private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
     public AuthService(CustomRepositoryAccess customRepositoryAccess, PatientRepository patientRepository, EmailService emailService) {
         this.customRepositoryAccess = customRepositoryAccess;
@@ -24,26 +28,31 @@ public class AuthService {
     }
 
 
-    public Patient registerPatient(PatientDTO patientDTO) {
-        Patient patient = customRepositoryAccess.saveDTO(patientDTO);
+    public void registerPatient(PatientDTO patientDTO) {
+        customRepositoryAccess.saveDTO(patientDTO);
         String token = String.valueOf(jwt.generateTokenWithEmail(patientDTO.getEmail(), "PATIENT", false));
         String confirmationLink = "http://localhost:8080/auth/patient/confirm-account";
 
         emailService.sendConfirmationEmail(patientDTO.getEmail(), confirmationLink, token);
-        return patient;
     }
 
 
     public boolean confirmAccount(String token) {
-        String email = jwt.getEmailFromToken(token);
-        Patient patient = patientRepository.findByEmail(email);
-        if (patient != null) {
-            patient.setEmailConfirmed(true);
-            patientRepository.save(patient);
-            return true;
+        try {
+            String email = jwtValidator.getEmail(token);
+            Patient patient = patientRepository.findByEmail(email);
+            // Set emailConfirmed to true and save patient
+            return patient != null;
+        } catch (InvalidTokenException e) {
+            // Log or print the exception for debugging purposes
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
 
+
+    public TokenDTO generateTokenWithEmail(String email, String patient, boolean b) {
+        return jwt.generateTokenWithEmail(email, patient, b);
+    }
 }

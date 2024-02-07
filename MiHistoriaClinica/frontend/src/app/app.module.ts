@@ -46,6 +46,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MedicCalendarComponent } from './pages/medic/medic-calendar/medic-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { ConfirmationComponent } from './pages/confirmation/confirmation.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -79,6 +80,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
     AllMedicsListComponent,
     TurnosListComponent,
     MedicCalendarComponent,
+    ConfirmationComponent,
   ],
     imports: [
         BrowserModule,

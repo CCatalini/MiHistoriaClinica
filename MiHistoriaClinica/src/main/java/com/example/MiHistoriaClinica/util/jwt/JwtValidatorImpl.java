@@ -49,4 +49,12 @@ public class JwtValidatorImpl implements JwtValidator{
 
         return Long.valueOf(claims.get("id").toString());
     }
+
+    @Override
+    public String getEmail(String token) throws InvalidTokenException {
+        String jwt = token.substring(7);
+        Claims claims = jwtGenerator.getClaims(jwt);
+
+        return claims.get("email").toString();
+    }
 }

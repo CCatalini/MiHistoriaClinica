@@ -12,4 +12,6 @@ public interface JwtValidator {
 
     Long getId(String token) throws InvalidTokenException;
 
+    String getEmail(String token) throws InvalidTokenException;
+
 }
