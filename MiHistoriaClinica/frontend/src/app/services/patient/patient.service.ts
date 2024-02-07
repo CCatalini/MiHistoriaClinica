@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {map, Observable, of} from "rxjs";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
@@ -175,6 +175,21 @@ export class PatientService {
             medicalCenter: turnoDTO.medicalCenter
         };
         return this.http.post('http://localhost:8080/turno/patient/create-turno', body, { headers: headers, params: params });
+    }
+
+    downloadMedicalHistory(token: string, includeMedicalFile: boolean, includeAnalysis: boolean, includeMedications: boolean, includeAppointments: boolean): Observable<HttpResponse<Blob>> {
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        });
+
+        const params = new HttpParams()
+            .set('includeMedicalFile', includeMedicalFile.toString())
+            .set('includeAnalysis', includeAnalysis.toString())
+            .set('includeMedications', includeMedications.toString())
+            .set('includeAppointments', includeAppointments.toString());
+
+        return this.http.get('http://localhost:8080/medical-history/download-pdf', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
     }
 
 }

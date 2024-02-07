@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router } from "@angular/router";
 import {PatientService} from "../../../services/patient/patient.service";
 import Swal from "sweetalert2";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
     selector: 'app-medical-history-list',
     templateUrl: './medical-history-list.component.html',
-    styleUrls: ['./medical-history-list.component.css']
+    styleUrls: ['./medical-history-list.component.css'],
 })
+
 export class MedicalHistoryListComponent implements OnInit {
     public medicalHistory: any = {
         weight: '',
@@ -19,17 +22,26 @@ export class MedicalHistoryListComponent implements OnInit {
         familyMedicalHistory: ''
     };
 
+    downloadList: FormGroup;
+
     medicines: any[] = [];
     analysisList: any[] = [];
+    appointments: any[] = [];
 
-    constructor(private patientService: PatientService, private router: Router) {}
+    constructor(private patientService: PatientService, private router: Router, private formBuilder: FormBuilder) {
+        this.downloadList = this.formBuilder.group({
+            fichaMedica: false,
+            medicamentos: false,
+            estudios: false,
+            consultasMedicas: false,
+        });
+    }
 
     ngOnInit(): void {
-        // Verify user
-        if (localStorage.getItem('userType') != 'PATIENT') {
+        if (localStorage.getItem('userType') !== 'PATIENT') {
             this.router.navigate(['/patient/login']);
         } else {
-            this.formSubmit(); // Fetch medical history data
+            this.formSubmit();
         }
     }
 
@@ -80,6 +92,26 @@ export class MedicalHistoryListComponent implements OnInit {
                     }
                 }
             );
+            this.patientService.getAppointmentsList(token).subscribe(
+                (data: any) => {
+                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
+                    if (Array.isArray(data)) {
+                        this.appointments = data;
+                    } else {
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    }
+                },
+                (error: any) => {
+                    console.log(error);
+                    if (error.status === 400) {
+                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
+                    } else if (error.status === 404) {
+                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
+                    } else {
+                        Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
+                    }
+                }
+            );
         } else {
             // Handle the case where the token is not found
         }
@@ -97,7 +129,6 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     getMedicinesByStatus(status: string) {
-
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.patientService.getMedicinesList(token!).subscribe(
@@ -147,7 +178,6 @@ export class MedicalHistoryListComponent implements OnInit {
     }
 
     getAnalysisByStatus(status: string) {
-
         if(status === "santi" ) {
             const token = localStorage.getItem('token')
             this.patientService.getAnalysisList(token!).subscribe(
@@ -171,7 +201,6 @@ export class MedicalHistoryListComponent implements OnInit {
                 }
             );
         } else {
-            // Handle the case where the token is not found
             this.patientService.getAnalysisByStatus(status).subscribe(
                 (analysis: any[]) => {
                     this.analysisList = analysis;
@@ -183,4 +212,46 @@ export class MedicalHistoryListComponent implements OnInit {
             );
         }
     }
+
+    downloadMedicalHistory(): void {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const includeMedicalFile = this.downloadList.get('fichaMedica')?.value || false;
+            const includeMedications = this.downloadList.get('medicamentos')?.value || false;
+            const includeAnalysis = this.downloadList.get('estudios')?.value || false;
+            const includeAppointments = this.downloadList.get('consultasMedicas')?.value || false;
+
+            console.log(`includeMedicalFile: ${includeMedicalFile}, includeMedications: ${includeMedications}, includeAnalysis: ${includeAnalysis}, includeAppointments: ${includeAppointments}`);
+
+            this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments)
+                .subscribe((response: HttpResponse<Blob>) => {
+                    const arrayBuffer = response.body!;
+                    const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+
+                    // Abrir una nueva ventana con el contenido del Blob
+                    const newWindow = window.open('', '_blank');
+                    if (newWindow) {
+                        newWindow.document.write('<html><head><title>Historia Clínica</title></head><body>');
+
+                        // Crear un objeto URL para el Blob
+                        const blobUrl = URL.createObjectURL(blob);
+
+                        // Insertar un enlace para descargar el PDF
+                        newWindow.document.write(`<a href="${blobUrl}" download="historia_clinica.pdf">Descargar Historia Clínica</a>`);
+
+                        // Cerrar la ventana después de abrir el enlace
+                        newWindow.document.write('</body></html>');
+                        newWindow.document.close();
+
+                        // Liberar recursos después de abrir la ventana
+                        URL.revokeObjectURL(blobUrl);
+                    } else {
+                        console.error('No se pudo abrir la ventana emergente.');
+                    }
+                }, (error) => {
+                    console.error('Error al descargar el historial médico:', error);
+                });
+        }
+    }
+
 }

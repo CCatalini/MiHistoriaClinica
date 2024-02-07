@@ -3,5 +3,34 @@
 }
 
 .container {
-    margin-top: 1000px;
+    margin-top: 1400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.downloadList h4 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.downloadList mat-checkbox {
+    margin-bottom: 1px;
+    margin: -13px 0;
+    display: flex;
+}
+
+.boton {
+    background-color: #3fb5eb;
+    color: white;
+    font-size: 16px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
 }
