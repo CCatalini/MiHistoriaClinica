@@ -15,8 +15,6 @@ import java.util.*;
 
 public class JwtGeneratorImpl implements JwtGenerator{
 
-    @Value("${app.jwttoken.message}")
-    private String message;
     private final Set<String> invalidTokens = new HashSet<>();
     static final SecretKey KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
@@ -74,16 +72,7 @@ public class JwtGeneratorImpl implements JwtGenerator{
         return new TokenDTO(jwt);
     }
 
-    @Override
-    public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
 
-        return claims.get("email", String.class);
-    }
 
 
 }

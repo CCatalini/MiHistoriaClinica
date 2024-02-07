@@ -2,10 +2,12 @@ package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
-import com.example.MiHistoriaClinica.service.AuthService;
-import com.example.MiHistoriaClinica.service.implementation.EmailService;
-import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
+import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
+import com.example.MiHistoriaClinica.presentation.dto.TokenDTO;
+import com.example.MiHistoriaClinica.service.implementation.AuthService;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
+import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
+import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,31 +24,18 @@ public class AuthController {
     }
 
     @PostMapping("/patient/register")
-    public ResponseEntity<Patient> registerPatient(@RequestBody PatientDTO patientDTO) {
-        Patient patientCreated = authService.registerPatient(patientDTO);
-        return new ResponseEntity<>(patientCreated, HttpStatus.CREATED);
+    @ResponseBody
+    public ResponseEntity<TokenDTO> registerPatient(@RequestBody PatientDTO patientDTO) {
+        authService.registerPatient(patientDTO);
+        TokenDTO token = authService.generateTokenWithEmail(patientDTO.getEmail(), "PATIENT", false);
+        return new ResponseEntity<>(token, HttpStatus.CREATED);
     }
-
 
     @GetMapping("/patient/confirm-account")
-    public String confirmAccount(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = extractToken(authorizationHeader);
+    public ResponseEntity<String> confirmAccount(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         if (authService.confirmAccount(token)) {
-            return "redirect:http://localhost:4200/patient/login";
+            return ResponseEntity.ok("Account confirmed successfully");
         }
-        return "redirect:http://localhost:4200/";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Token");
     }
-
-    private String extractToken(String authorizationHeader) {
-        // Ajusta la lógica para extraer el token del encabezado "Authorization"
-        // Por ejemplo, puedes hacer un split para obtener el token si está en el formato "Bearer token"
-        String[] parts = authorizationHeader.split(" ");
-        if (parts.length == 2 && "Bearer".equals(parts[0])) {
-            return parts[1];
-        }
-        return null;
-    }
-
-
-
 }
