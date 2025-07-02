@@ -32,7 +32,7 @@ export class PatientsListComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.patients = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de pacientes válida.', 'error');
                     }
                 },
                 (error: any) => {

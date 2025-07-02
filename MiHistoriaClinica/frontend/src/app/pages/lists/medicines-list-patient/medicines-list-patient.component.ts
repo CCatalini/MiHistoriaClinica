@@ -35,7 +35,7 @@ export class MedicinesListPatientComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.medicines = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida (5).', 'error');
                     }
                 },
                 (error: any) => {
@@ -77,7 +77,7 @@ export class MedicinesListPatientComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.medicines = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida (6).', 'error');
                     }
                 },
                 (error: any) => {

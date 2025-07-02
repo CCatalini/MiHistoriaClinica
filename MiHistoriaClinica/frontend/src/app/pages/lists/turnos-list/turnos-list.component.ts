@@ -31,7 +31,7 @@ export class TurnosListComponent implements OnInit{
                     if (Array.isArray(data)) {
                         this.turnos = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
                     }
                 },
                 (error: any) => {
