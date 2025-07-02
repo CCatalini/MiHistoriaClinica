@@ -63,7 +63,7 @@ export class MedicalHistoryListComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.medicines = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentosválida (1).', 'error');
                     }
                 },
                 (error: any) => {
@@ -98,7 +98,7 @@ export class MedicalHistoryListComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.appointments = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
                     }
                 },
                 (error: any) => {
@@ -137,7 +137,7 @@ export class MedicalHistoryListComponent implements OnInit {
                     if (Array.isArray(data)) {
                         this.medicines = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida (2).', 'error');
                     }
                 },
                 (error: any) => {

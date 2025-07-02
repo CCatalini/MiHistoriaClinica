@@ -38,7 +38,7 @@ export class AnalysisListMedicComponent implements OnInit{
                 if (Array.isArray(data)) {
                     this.analysisList = data;
                 } else {
-                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de estudios válida.', 'error');
                 }
             },
             (error: any) => {
@@ -95,7 +95,7 @@ export class AnalysisListMedicComponent implements OnInit{
                     if (Array.isArray(data)) {
                         this.analysisList = data;
                     } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de estudios válida.', 'error');
                     }
                 },
                 (error: any) => {
