@@ -1,5 +1,55 @@
-<h1 class = "text-center">Calendario</h1>
-<body>
-<!--<div id="calendar"></div>-->
-<full-calendar [options]="calendarOptions"></full-calendar>
-</body>
+<h1 class="text-center">Calendario</h1>
+<div class="container-fluid mb-3">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <button class="btn btn-primary custom-blue" (click)="showModal = true">Agregar turnos disponibles</button>
+    </div>
+  </div>
+</div>
+<div class="full-calendar-wrapper position-relative">
+  <full-calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+<!-- Modal para agregar turnos disponibles -->
+<div class="modal-backdrop show" *ngIf="showModal"></div>
+<div class="modal show d-block" tabindex="-1" *ngIf="showModal">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar turnos disponibles</h5>
+        <button type="button" class="close" aria-label="Close" (click)="showModal = false" style="font-size:2rem;line-height:1;color:#000;background:transparent;border:none;outline:none;">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="addAvailableSlots(); showModal = false" class="row g-3">
+          <div class="col-12 col-md-6">
+            <label>Días de atención:</label>
+            <div *ngFor="let day of daysOfWeek">
+              <input type="checkbox"
+                     [checked]="availableDays.includes(day.value)"
+                     (change)="onDayCheckboxChange($event, day.value)" /> {{day.name}}
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label>Hora inicio:</label>
+            <input type="time" class="form-control mb-2" [(ngModel)]="startTime" name="startTime">
+            <label>Hora fin:</label>
+            <input type="time" class="form-control mb-2" [(ngModel)]="endTime" name="endTime">
+            <label>Duración (min):</label>
+            <input type="number" class="form-control mb-2" [(ngModel)]="slotDuration" name="slotDuration" min="5" step="5">
+            <label>Centro médico:</label>
+            <select class="form-control mb-2" [(ngModel)]="medicalCenter" name="medicalCenter">
+              <option value="" disabled selected>Seleccione un centro médico</option>
+              <option *ngFor="let option of medicalCenterOptions" [value]="option">{{ option }}</option>
+            </select>
+          </div>
+          <div class="col-12 d-flex justify-content-center gap-3 mt-3">
+            <button type="submit" class="btn btn-primary custom-blue">Aceptar</button>
+            <button type="button" class="btn btn-secondary" (click)="showModal = false">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
