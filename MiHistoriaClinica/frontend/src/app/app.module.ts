@@ -47,6 +47,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MedicCalendarComponent } from './pages/medic/medic-calendar/medic-calendar.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -100,7 +102,9 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
         MatSelectModule,
         MatOptionModule,
         FullCalendarModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
   providers: [],
   bootstrap: [AppComponent]
