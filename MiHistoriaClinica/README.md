@@ -142,8 +142,10 @@ El frontend estará disponible en:
 
                                                                         BACK              FRONT
   * Agregar nuevos filtros para sacar turnos
+  OBS: los filtros podemos hacerlos desde el front directamente
   --> Por rangos de fechas                                               --                --
-  --> Por especialidad de médico                                         --                --
+  --> Por especialidad                                                   --                OK
+  --> Por médico                                                         --                OK
   --> Por centro médico                                                  --                --
 
   * Descargar 
@@ -154,8 +156,12 @@ El frontend estará disponible en:
   --> Agregar estado a las consultas médicas (default=pendiente)         --                --
 
   * Calendarios
-  --> Agenda de médicos                                                  --                --
-  --> Agenda de turnos paciente (ver agendados y nuevos disponibles)     --                --
+  Agenda de médicos 
+  --> Asignar horarios disponibles de atención                           --                --
+  --> Ver turnos reservados y disponibles                                --                --
+  Agenda de pacientes
+  --> Ver turnos agendados en calendario                                 --                --
+  --> Ver calendario con turnos disponibles a la hora de programar uno   --                --
 
   * Mails
   --> Mail de confirmación al agendar turno o estudio                    --                ?
