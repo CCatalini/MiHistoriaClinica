@@ -10,6 +10,11 @@ import Swal from "sweetalert2";
 })
 export class AllMedicsListComponent implements OnInit {
     medics: any[] = [];
+    filteredMedics: any[] = [];
+    specialties: string[] = [];
+    selectedSpecialty: string = '';
+    selectedName: string = '';
+    names: string[] = [];
 
     constructor(private userService: PatientService, private router: Router) { }
 
@@ -19,21 +24,25 @@ export class AllMedicsListComponent implements OnInit {
             this.router.navigate(['/patient/login']);
         } else {
             this.formSubmit(); // Creamos medics list
+            this.userService.getAllSpecialties().subscribe((data: any) => {
+                this.specialties = data;
+            });
         }
     }
 
     formSubmit() {
         this.userService.getAllMedicsList().subscribe(
             (data: any) => {
-                console.log(data); // Agregar este console.log para verificar la respuesta del servidor
                 if (Array.isArray(data)) {
                     this.medics = data;
+                    this.filteredMedics = data;
+                    this.updateSpecialties();
+                    this.updateNames();
                 } else {
-                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida.', 'error');
+                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de médicos válida.', 'error');
                 }
             },
             (error: any) => {
-                console.log(error);
                 if (error.status === 400) {
                     Swal.fire('Error', 'Existen datos erróneos.', 'error');
                 } else if (error.status === 404) {
@@ -43,6 +52,45 @@ export class AllMedicsListComponent implements OnInit {
                 }
             }
         );
+    }
+
+    filterMedics() {
+        this.filteredMedics = this.medics.filter(medic => {
+            const specialtyMatch = this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true;
+            const nameMatch = this.selectedName ? medic.name === this.selectedName : true;
+            return specialtyMatch && nameMatch;
+        });
+        this.updateSpecialties();
+        this.updateNames();
+    }
+
+    updateSpecialties() {
+        // Especialidades presentes en la lista filtrada
+        this.specialties = Array.from(new Set(this.medics
+            .filter(medic => {
+                const nameMatch = this.selectedName ? medic.name === this.selectedName : true;
+                return nameMatch;
+            })
+            .map((m: any) => m.specialty)));
+    }
+
+    updateNames() {
+        // Nombres presentes en la lista filtrada
+        this.names = Array.from(new Set(this.medics
+            .filter(medic => {
+                const specialtyMatch = this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true;
+                return specialtyMatch;
+            })
+            .map((m: any) => m.name)));
+    }
+
+    onSpecialtyChange() {
+        this.selectedName = '';
+        this.filterMedics();
+    }
+
+    onNameChange() {
+        this.filterMedics();
     }
 
     redirectToAddTurno(medicId: string) {
