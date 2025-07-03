@@ -24,6 +24,7 @@ export class AddMedicineComponent implements OnInit {
     medicineOptions: string[] = [];
 
     patient: any;
+    today: Date = new Date();
 
     constructor(private userService: MedicService,
                 private router: Router,

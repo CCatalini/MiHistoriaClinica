@@ -50,13 +50,18 @@
                         </mat-form-field>
 
                         <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Fecha de prescripción:</mat-label>
+                            <mat-label>Inicio del tratamiento:</mat-label>
                             <input
                                     [(ngModel)]="medicine.prescriptionDay"
                                     name="prescriptionDay"
                                     matInput
-                                    placeholder="Ingrese la fecha de prescripción (YYYY-MM-DD)"
+                                    [matDatepicker]="picker"
+                                    [min]="today"
+                                    placeholder="Seleccione la fecha de inicio del tratamiento"
+                                    required
                             />
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
 
                         <div class="container text-center">
