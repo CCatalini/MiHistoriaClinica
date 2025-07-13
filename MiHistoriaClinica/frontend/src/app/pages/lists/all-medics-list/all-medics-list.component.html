@@ -120,7 +120,9 @@
         <td>{{turno.fechaTurno | date:'dd/MM/yyyy'}}</td>
         <td>{{turno.horaTurno}}</td>
         <td>
-            <button class="btn btn-primary" style="background-color: #3fb5eb;" (click)="redirectToAddTurno(turno.medicId)">Agendar turno</button>
+            <button class="btn btn-primary" style="background-color: #3fb5eb;" (click)="redirectToAddTurno(turno.medicId)">
+                <i class="fas fa-calendar-plus"></i> Agendar turno
+            </button>
         </td>
     </tr>
     </tbody>
