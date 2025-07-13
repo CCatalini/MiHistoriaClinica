@@ -11,6 +11,7 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
 import com.example.MiHistoriaClinica.presentation.dto.ScheduleDTO;
+import com.example.MiHistoriaClinica.presentation.dto.PatientQueueDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -124,6 +125,13 @@ public class MedicController {
         Long medicId = jwtValidator.getId(token);
         medicService.createSchedule(medicId, scheduleDTO);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/upcoming-patients")
+    public ResponseEntity<List<PatientQueueDTO>> getUpcomingPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<PatientQueueDTO> list = medicService.getUpcomingPatients(medicId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 

@@ -49,4 +49,5 @@ public interface MedicService {
 
     void createSchedule(Long medicId, ScheduleDTO scheduleDTO);
     List<Turnos> getAvailableTurnos(Long medicId);
+    List<PatientQueueDTO> getUpcomingPatients(Long medicId);
 }
