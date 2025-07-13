@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import com.example.MiHistoriaClinica.presentation.dto.MedicTurnosDTO;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -177,6 +178,25 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<Turnos> getAvailableTurnosByMedic(Long medicId) {
         return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+    }
+
+    @Override
+    public List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDate(String specialty, String dateIso) {
+        java.time.LocalDate date = java.time.LocalDate.parse(dateIso);
+        com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
+        List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoAndAvailableTrue(specEnum, date);
+
+        java.util.Map<Long, MedicTurnosDTO> map = new java.util.HashMap<>();
+
+        for (Turnos t : turnos) {
+            MedicTurnosDTO dto = map.computeIfAbsent(
+                    t.getMedic().getMedicId(),
+                    id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
+            );
+            dto.getAvailableTimes().add(t.getHoraTurno());
+        }
+
+        return new java.util.ArrayList<>(map.values());
     }
 
 

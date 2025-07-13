@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.MiHistoriaClinica.presentation.dto.MedicTurnosDTO;
 
 @RestController
 @RequestMapping("/turno")
@@ -39,6 +40,13 @@ public class TurnosController {
     public ResponseEntity<List<Turnos>> getAvailableTurnos (@RequestParam("medicId") Long medicId) {
         List<Turnos> available = patientService.getAvailableTurnosByMedic(medicId);
         return new ResponseEntity<>(available, HttpStatus.OK);
+    }
+
+    @GetMapping("/patient/available-by-specialty")
+    public ResponseEntity<List<MedicTurnosDTO>> getAvailableBySpecialty(@RequestParam("specialty") String specialty,
+                                                                       @RequestParam("date") String date){
+        List<MedicTurnosDTO> result = patientService.searchAvailableTurnosBySpecialtyAndDate(specialty, date);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/patient/get-turnos")

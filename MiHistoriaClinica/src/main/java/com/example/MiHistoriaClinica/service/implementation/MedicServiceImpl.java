@@ -365,6 +365,22 @@ public class MedicServiceImpl implements MedicService {
         return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
     }
 
+    @Override
+    public List<PatientQueueDTO> getUpcomingPatients(Long medicId) {
+        List<Turnos> turnos = turnosRepository.findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(medicId);
+        List<PatientQueueDTO> list = new java.util.ArrayList<>();
+        for (Turnos t : turnos) {
+            if (t.getPatient() == null) continue; // seguridad
+            list.add(new PatientQueueDTO(
+                    t.getTurnoId(),
+                    t.getPatient().getName() + " " + t.getPatient().getLastname(),
+                    t.getFechaTurno(),
+                    t.getHoraTurno()
+            ));
+        }
+        return list;
+    }
+
 
     public void deleteMedic(Long medicId) {
         medicRepository.deleteById(medicId);
