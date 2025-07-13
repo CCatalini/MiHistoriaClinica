@@ -29,13 +29,15 @@ public interface PatientService {
 
     PatientDTO getPatientInfo(Long patientId);
 
-    void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter);
+    void reserveTurno(Long patientId, Long turnoId);
 
     List<Turnos> getMisTurnos(Long id);
 
     void deleteTurno(Long id);
 
     List<Medic> getMedicsBySpecialty(Long id, String specialty);
+
+    List<Turnos> getAvailableTurnosByMedic(Long medicId);
 }
 
 

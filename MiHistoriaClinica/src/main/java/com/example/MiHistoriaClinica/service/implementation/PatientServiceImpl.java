@@ -140,10 +140,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
-        Patient patient = patientRepository.findById(patientId).get();
-        Medic medic = medicRepository.findById(medicId).get();
-        customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
+    public void reserveTurno(Long patientId, Long turnoId) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+
+        if (!turno.isAvailable()) {
+            throw new RuntimeException("Turno no disponible");
+        }
+
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
+
+        turno.setPatient(patient);
+        turno.setAvailable(false);
+
+        turnosRepository.save(turno);
     }
 
     @Override
@@ -163,6 +174,10 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.getMedicsBySpecialty(id, medicalSpecialtyE);
     }
 
+    @Override
+    public List<Turnos> getAvailableTurnosByMedic(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+    }
 
 
 }
