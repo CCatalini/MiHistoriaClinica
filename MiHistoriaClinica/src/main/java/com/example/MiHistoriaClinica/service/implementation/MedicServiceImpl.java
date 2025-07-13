@@ -6,9 +6,6 @@ import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.repository.*;
-import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.Medicine;
-import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import com.example.MiHistoriaClinica.service.MedicService;
 import org.modelmapper.ModelMapper;
@@ -18,6 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
+import com.example.MiHistoriaClinica.presentation.dto.ScheduleDTO;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.persistence.model.Patient;
 
 @Service
 public class MedicServiceImpl implements MedicService {
@@ -27,17 +30,26 @@ public class MedicServiceImpl implements MedicService {
     private final MedicineRepository medicineRepository;
     private final AnalysisRepository analysisRepository;
     private final MedicalFileRepository medicalFileRepository;
+    private final TurnosRepository turnosRepository;
 
     private final CustomRepositoryAccess customRepositoryAccess;
     private final PatientServiceImpl patientService;
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalFileRepository medicalFileRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
+    public MedicServiceImpl(MedicRepository medicRepository,
+                           PatientRepository patientRepository,
+                           MedicineRepository medicineRepository,
+                           AnalysisRepository analysisRepository,
+                           MedicalFileRepository medicalFileRepository,
+                           TurnosRepository turnosRepository,
+                           CustomRepositoryAccess customRepositoryAccess,
+                           PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
         this.medicineRepository = medicineRepository;
         this.analysisRepository = analysisRepository;
         this.medicalFileRepository = medicalFileRepository;
+        this.turnosRepository = turnosRepository;
 
         this.customRepositoryAccess = customRepositoryAccess;
         this.patientService = patientService;
@@ -276,6 +288,81 @@ public class MedicServiceImpl implements MedicService {
     public List<Medic> getMedicsBySpecialty(String specialty){
         MedicalSpecialtyE specialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
         return medicRepository.getMedicsBySpecialty(specialtyE);
+    }
+
+    /**
+     * Crear turnos disponibles según la configuración recibida.
+     */
+    @Override
+    public void createSchedule(Long medicId, ScheduleDTO scheduleDTO) {
+        Medic medic = medicRepository.findById(medicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
+
+        // ---  Validaciones básicas  ---
+        if (scheduleDTO.getStartDate() == null || scheduleDTO.getEndDate() == null) {
+            throw new IllegalArgumentException("Se debe especificar startDate y endDate");
+        }
+        if (scheduleDTO.getStartTime() == null || scheduleDTO.getEndTime() == null) {
+            throw new IllegalArgumentException("Se debe especificar el rango horario");
+        }
+
+        // validar rango permitido 08:00-20:00
+        java.time.LocalTime allowedStart = java.time.LocalTime.of(8, 0);
+        java.time.LocalTime allowedEnd = java.time.LocalTime.of(20, 0);
+        if (scheduleDTO.getStartTime().isBefore(allowedStart) || scheduleDTO.getEndTime().isAfter(allowedEnd)) {
+            throw new IllegalArgumentException("El rango horario permitido es de 08:00 a 20:00 hs");
+        }
+
+        // validar duración
+        int duration = scheduleDTO.getDurationMinutes();
+        java.util.List<Integer> validDurations = java.util.Arrays.asList(15, 30, 45, 60);
+        if (!validDurations.contains(duration)) {
+            throw new IllegalArgumentException("La duración debe ser 15, 30, 45 o 60 minutos");
+        }
+
+        final int GAP_MINUTES = 5; // espacio entre turnos
+
+        java.time.LocalTime breakStart = java.time.LocalTime.of(13, 0);
+        java.time.LocalTime breakEnd = java.time.LocalTime.of(14, 0);
+
+        // Recorrer el rango de fechas
+        for (java.time.LocalDate currentDate = scheduleDTO.getStartDate();
+             !currentDate.isAfter(scheduleDTO.getEndDate());
+             currentDate = currentDate.plusDays(1)) {
+            // Verificar si el día de la semana está en la configuración
+            if (!scheduleDTO.getDaysOfWeek().contains(currentDate.getDayOfWeek())) {
+                continue;
+            }
+            java.time.LocalTime currentTime = scheduleDTO.getStartTime();
+            while (!currentTime.isAfter(scheduleDTO.getEndTime().minusMinutes(duration))) {
+
+                // saltar si el turno cae en el descanso
+                boolean overlapsBreak = (currentTime.isBefore(breakEnd) && currentTime.plusMinutes(duration).isAfter(breakStart));
+                if (overlapsBreak) {
+                    currentTime = breakEnd; // saltamos al final del descanso
+                    continue;
+                }
+
+                // Crear bloque disponible
+                Turnos turno = new Turnos();
+                turno.setFechaTurno(currentDate);
+                turno.setHoraTurno(currentTime);
+                turno.setMedic(medic);
+                turno.setMedicFullName(medic.getName() + " " + medic.getLastname());
+                turno.setMedicSpecialty(medic.getSpecialty());
+                turno.setMedicalCenter(scheduleDTO.getMedicalCenter());
+                turno.setAvailable(true);
+                turnosRepository.save(turno);
+
+                // avanzar tiempo: duración + gap
+                currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
+            }
+        }
+    }
+
+    @Override
+    public List<Turnos> getAvailableTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
     }
 
 

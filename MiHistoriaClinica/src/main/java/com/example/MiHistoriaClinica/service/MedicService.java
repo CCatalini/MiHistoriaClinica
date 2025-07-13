@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.MedicalFile;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.presentation.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,4 +46,7 @@ public interface MedicService {
     List<String> getAllSpecialties();
 
     List<Medic> getMedicsBySpecialty(String specialty);
+
+    void createSchedule(Long medicId, ScheduleDTO scheduleDTO);
+    List<Turnos> getAvailableTurnos(Long medicId);
 }

@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,13 +22,22 @@ public class Turnos {
     private LocalDate fechaTurno;
     @Column(name = "hora_turno")
     private LocalTime horaTurno;
+
     private String medicFullName;
     private MedicalSpecialtyE medicSpecialty;
-    private String medicalCenter;
+    @Enumerated(EnumType.STRING)
+    private MedicalCenterE medicalCenter;
 
     @ManyToOne
     @JoinColumn(name = "patientId")
     @JsonIgnore
     private Patient patient;
+
+    @ManyToOne
+    @JoinColumn(name = "medicId")
+    @JsonIgnore
+    private Medic medic;
+
+    private boolean available = true;
 
 }

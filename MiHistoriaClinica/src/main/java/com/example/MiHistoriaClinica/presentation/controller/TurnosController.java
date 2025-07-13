@@ -2,7 +2,6 @@ package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
-import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -28,15 +27,18 @@ public class TurnosController {
     }
 
 
-    @PostMapping("/patient/create-turno")
-    public ResponseEntity<Void> createTurno (@RequestHeader("Authorization") String token,
-                                             @RequestParam("medicId") Long medicId,
-                                             @RequestParam("medicalCenter") String medicalCenter,
-                                             @RequestBody TurnoDTO request) throws InvalidTokenException {
+    @PostMapping("/patient/reserve-turno")
+    public ResponseEntity<Void> reserveTurno (@RequestHeader("Authorization") String token,
+                                             @RequestParam("turnoId") Long turnoId) throws InvalidTokenException {
         Long patientId = jwtValidator.getId(token);
-        patientService.createTurno(patientId, medicId, request, medicalCenter);
-
+        patientService.reserveTurno(patientId, turnoId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/patient/available")
+    public ResponseEntity<List<Turnos>> getAvailableTurnos (@RequestParam("medicId") Long medicId) {
+        List<Turnos> available = patientService.getAvailableTurnosByMedic(medicId);
+        return new ResponseEntity<>(available, HttpStatus.OK);
     }
 
     @GetMapping("/patient/get-turnos")
