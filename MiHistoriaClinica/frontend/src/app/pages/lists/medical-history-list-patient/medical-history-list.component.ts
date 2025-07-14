@@ -224,32 +224,26 @@ export class MedicalHistoryListComponent implements OnInit {
             console.log(`includeMedicalFile: ${includeMedicalFile}, includeMedications: ${includeMedications}, includeAnalysis: ${includeAnalysis}, includeAppointments: ${includeAppointments}`);
 
             this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments)
-                .subscribe((response: HttpResponse<Blob>) => {
-                    const arrayBuffer = response.body!;
-                    const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                .subscribe({
+                    next: (response: HttpResponse<Blob>) => {
+                        const blob = response.body!;
 
-                    // Abrir una nueva ventana con el contenido del Blob
-                    const newWindow = window.open('', '_blank');
-                    if (newWindow) {
-                        newWindow.document.write('<html><head><title>Historia Clínica</title></head><body>');
+                        if (blob.size === 0) {
+                            Swal.fire('Error', 'No se pudo generar el PDF. Intente nuevamente más tarde.', 'error');
+                            return;
+                        }
 
-                        // Crear un objeto URL para el Blob
-                        const blobUrl = URL.createObjectURL(blob);
-
-                        // Insertar un enlace para descargar el PDF
-                        newWindow.document.write(`<a href="${blobUrl}" download="historia_clinica.pdf">Descargar Historia Clínica</a>`);
-
-                        // Cerrar la ventana después de abrir el enlace
-                        newWindow.document.write('</body></html>');
-                        newWindow.document.close();
-
-                        // Liberar recursos después de abrir la ventana
-                        URL.revokeObjectURL(blobUrl);
-                    } else {
-                        console.error('No se pudo abrir la ventana emergente.');
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'historia_clinica.pdf';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                    },
+                    error: (error) => {
+                        console.error('Error al descargar el historial médico:', error);
+                        Swal.fire('Error', 'Error al descargar la historia clínica.', 'error');
                     }
-                }, (error) => {
-                    console.error('Error al descargar el historial médico:', error);
                 });
         }
     }

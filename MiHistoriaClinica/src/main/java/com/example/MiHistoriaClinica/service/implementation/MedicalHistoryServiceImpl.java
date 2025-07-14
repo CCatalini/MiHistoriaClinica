@@ -31,29 +31,48 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private final MedicalFileRepository medicalFileRepository;
     private final PatientRepository patientRepository;
     private final MedicalAppointmentServiceImpl medicalAppointmentService;
-    Style titleStyle = new Style()
-            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
-            .setFontSize(20)
-            .setBold()
-            .setFontColor(DeviceRgb.BLACK);
-    Style subtitleStyle = new Style()
-            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
-            .setFontSize(16)
-            .setBold()
-            .setFontColor(DeviceRgb.BLACK);
-    Style columnsStyle = new Style()
-            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
-            .setFontSize(12)
-            .setBold()
-            .setFontColor(DeviceRgb.BLACK);
-    Style bodyStyle = new Style()
-            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
-            .setFontSize(12)
-            .setFontColor(DeviceRgb.BLACK);
-    Style contentTableStyle = new Style()
-            .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, "UTF-8", true))
-            .setFontSize(10)
-            .setFontColor(DeviceRgb.BLACK);
+    // Estas variables NO deben compartirse entre distintas generaciones de PDF porque los objetos pueden quedar enlazados a un documento previo.
+    // Se inicializan en cada llamada a createPdf() mediante resetStyles().
+    private Style titleStyle;
+    private Style subtitleStyle;
+    private Style columnsStyle;
+    private Style bodyStyle;
+    private Style contentTableStyle;
+
+    private void resetStyles() throws IOException {
+        titleStyle = new Style()
+                .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, com.itextpdf.io.font.PdfEncodings.WINANSI, true))
+                .setFontSize(20)
+                .setBold()
+                .setFontColor(DeviceRgb.BLACK)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+
+        subtitleStyle = new Style()
+                .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, com.itextpdf.io.font.PdfEncodings.WINANSI, true))
+                .setFontSize(16)
+                .setBold()
+                .setFontColor(DeviceRgb.BLACK)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.LEFT);
+
+        columnsStyle = new Style()
+                .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, com.itextpdf.io.font.PdfEncodings.WINANSI, true))
+                .setFontSize(14)
+                .setBold()
+                .setFontColor(DeviceRgb.BLACK)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+
+        bodyStyle = new Style()
+                .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, com.itextpdf.io.font.PdfEncodings.WINANSI, true))
+                .setFontSize(12)
+                .setFontColor(DeviceRgb.BLACK)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.LEFT);
+
+        contentTableStyle = new Style()
+                .setFont(PdfFontFactory.createFont(FontConstants.TIMES_ROMAN, com.itextpdf.io.font.PdfEncodings.WINANSI, true))
+                .setFontSize(10)
+                .setFontColor(DeviceRgb.BLACK)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.CENTER);
+    }
 
 
     public MedicalHistoryServiceImpl(MedicalFileRepository medicalFileRepository, PatientRepository patientRepository, MedicalAppointmentServiceImpl medicalAppointmentService) throws IOException {
@@ -66,6 +85,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     @Override
     public byte[] createPdf(Long id, boolean includeMedicalFile, boolean includeAnalysis, boolean includeMedications, boolean includeAppointments) {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            resetStyles();
             Document document = initializePdf(byteArrayOutputStream);
             addContentToPdf(document, id, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments);
             document.close();
@@ -110,26 +130,37 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private void addPatientContent(Document document, Long id){
         Patient patient = patientRepository.findById(id).orElseThrow();
 
-        document.add(new Paragraph("Mi Historia Clinica").addStyle(titleStyle));
-        document.add(new Paragraph("Paciente: " + patient.getName() + " " + patient.getLastname()).addStyle(subtitleStyle));
-        document.add(new Paragraph("Dni: " + patient.getDni()).addStyle(subtitleStyle));
+        document.add(new Paragraph("Mi Historia Clínica").addStyle(titleStyle));
+
+        // Separador superior
+        document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+
+        // Información alineada a la izquierda
+        document.add(new Paragraph("Paciente: " + patient.getName() + " " + patient.getLastname())
+                .addStyle(subtitleStyle)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.LEFT));
+
+        document.add(new Paragraph("DNI: " + patient.getDni())
+                .addStyle(subtitleStyle)
+                .setTextAlignment(com.itextpdf.layout.property.TextAlignment.LEFT));
+
+        // Separador inferior
+        document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
     }
 
     private void addMedicalFileContent(Document document, Long id) {
-        MedicalFile medicalFile = medicalFileRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("No se encontró el archivo médico con id: " + id)
-        );
+        medicalFileRepository.findById(id).ifPresent(medicalFile -> {
+            document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
+            document.add(new Paragraph("Archivo Médico").addStyle(subtitleStyle));
 
-        document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
-        document.add(new Paragraph("Archivo Medico").addStyle(subtitleStyle));
-
-        document.add(new Paragraph("Peso: " + medicalFile.getWeight() + " kg").addStyle(bodyStyle));
-        document.add(new Paragraph("Altura: " + medicalFile.getHeight() + " cm").addStyle(bodyStyle));
-        document.add(new Paragraph("Tipo de sangre: " + medicalFile.getBloodType()).addStyle(bodyStyle));
-        document.add(new Paragraph("Alergias: " + medicalFile.getAllergy()).addStyle(bodyStyle));
-        document.add(new Paragraph("Enfermedades cronicas: " + medicalFile.getChronicDisease()).addStyle(bodyStyle));
-        document.add(new Paragraph("Medicamentos actuales: " + medicalFile.getActualMedicine()).addStyle(bodyStyle));
-        document.add(new Paragraph("Antecedentes familiares: " + medicalFile.getFamilyMedicalHistory()).addStyle(bodyStyle));
+            document.add(new Paragraph("Peso: " + medicalFile.getWeight() + " kg").addStyle(bodyStyle));
+            document.add(new Paragraph("Altura: " + medicalFile.getHeight() + " cm").addStyle(bodyStyle));
+            document.add(new Paragraph("Tipo de sangre: " + medicalFile.getBloodType()).addStyle(bodyStyle));
+            document.add(new Paragraph("Alergias: " + medicalFile.getAllergy()).addStyle(bodyStyle));
+            document.add(new Paragraph("Enfermedades crónicas: " + medicalFile.getChronicDisease()).addStyle(bodyStyle));
+            document.add(new Paragraph("Medicamentos actuales: " + medicalFile.getActualMedicine()).addStyle(bodyStyle));
+            document.add(new Paragraph("Antecedentes familiares: " + medicalFile.getFamilyMedicalHistory()).addStyle(bodyStyle));
+        });
     }
 
     private void addMedicinesContent(Document document, Long id)  {
@@ -137,11 +168,12 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
         if (!medicineList.isEmpty()) {
             Table table = new Table(5);
+            table.useAllAvailableWidth();
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
             table.addHeaderCell("Nombre").addStyle(columnsStyle);
             table.addHeaderCell("Descripción").addStyle(columnsStyle);
-            table.addHeaderCell("Fecha de Prescripción").addStyle(columnsStyle);
+            table.addHeaderCell("Fecha de prescripción").addStyle(columnsStyle);
             table.addHeaderCell("Comentarios").addStyle(columnsStyle);
             table.addHeaderCell("Estado").addStyle(columnsStyle);
 
@@ -164,11 +196,12 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
         if(!analysisList.isEmpty()){
             Table table = new Table(4);
+            table.useAllAvailableWidth();
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
-            table.addHeaderCell("Analisis").addStyle(columnsStyle);
-            table.addHeaderCell("Descripcion").addStyle(columnsStyle);
-            table.addHeaderCell("Centro Medico").addStyle(columnsStyle);
+            table.addHeaderCell("Análisis").addStyle(columnsStyle);
+            table.addHeaderCell("Descripción").addStyle(columnsStyle);
+            table.addHeaderCell("Centro Médico").addStyle(columnsStyle);
             table.addHeaderCell("Estado").addStyle(columnsStyle);
 
             for(Analysis analysis : analysisList){
@@ -179,7 +212,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             }
 
             document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
-            document.add(new Paragraph("Analisis").addStyle(subtitleStyle));
+            document.add(new Paragraph("Análisis").addStyle(subtitleStyle));
             document.add(table);
         }
     }
@@ -189,13 +222,14 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
         if(!appointments.isEmpty()){
             Table table = new Table(5);
+            table.useAllAvailableWidth();
             table.setHorizontalAlignment(HorizontalAlignment.CENTER);
 
             table.addHeaderCell("Motivo de Consulta").addStyle(columnsStyle);
             table.addHeaderCell("Enfermedad Actual").addStyle(columnsStyle);
-            table.addHeaderCell("Examen Fisico").addStyle(columnsStyle);
+            table.addHeaderCell("Examen Físico").addStyle(columnsStyle);
             table.addHeaderCell("Observaciones").addStyle(columnsStyle);
-            table.addHeaderCell("Medico").addStyle(columnsStyle);
+            table.addHeaderCell("Médico").addStyle(columnsStyle);
 
             for(MedicalAppointment appointment : appointments){
                 table.addCell(appointment.getAppointmentReason()).addStyle(contentTableStyle);
@@ -206,7 +240,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             }
 
             document.add(new LineSeparator(new SolidLine()).setMarginTop(5).setMarginBottom(5));
-            document.add(new Paragraph("Consultas Medicas").addStyle(subtitleStyle));
+            document.add(new Paragraph("Consultas Médicas").addStyle(subtitleStyle));
             document.add(table);
         }
     }
