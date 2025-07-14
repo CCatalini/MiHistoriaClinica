@@ -213,6 +213,30 @@ export class MedicalHistoryListComponent implements OnInit {
         }
     }
 
+    /* ---------------------------------------------
+     *  Helpers: visibility of sections on the page
+     * --------------------------------------------- */
+    get hasSelection(): boolean {
+        const { fichaMedica, medicamentos, estudios, consultasMedicas } = this.downloadList.value;
+        return fichaMedica || medicamentos || estudios || consultasMedicas;
+    }
+
+    get showMedicalFile(): boolean {
+        return !this.hasSelection || this.downloadList.get('fichaMedica')?.value;
+    }
+
+    get showMedicines(): boolean {
+        return !this.hasSelection || this.downloadList.get('medicamentos')?.value;
+    }
+
+    get showAnalysis(): boolean {
+        return !this.hasSelection || this.downloadList.get('estudios')?.value;
+    }
+
+    get showAppointments(): boolean {
+        return !this.hasSelection || this.downloadList.get('consultasMedicas')?.value;
+    }
+
     downloadMedicalHistory(): void {
         const token = localStorage.getItem('token');
         if (token) {

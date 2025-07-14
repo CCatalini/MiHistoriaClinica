@@ -1,19 +1,24 @@
 <div class="container">
-    <h1 class="text-center">Mi Historia Clínica</h1>
-    <br>
+    <div class="title-box">
+        <h1>Mi Historia Clínica</h1>
+    </div>
 
     <section class="downloadList" [formGroup]="downloadList">
-        <h4>Ingrese los datos que desea descargar:</h4>
-        <p><mat-checkbox formControlName="fichaMedica">Ficha médica</mat-checkbox></p>
-        <p><mat-checkbox formControlName="medicamentos">Medicamentos</mat-checkbox></p>
-        <p><mat-checkbox formControlName="estudios">Estudios</mat-checkbox></p>
-        <p><mat-checkbox formControlName="consultasMedicas">Consultas médicas</mat-checkbox></p>
+        <h4>Seleccione secciones para visualizar/descargar:</h4>
+        <div class="filters-row">
+            <mat-checkbox formControlName="fichaMedica">Ficha médica</mat-checkbox>
+            <mat-checkbox formControlName="medicamentos">Medicamentos</mat-checkbox>
+            <mat-checkbox formControlName="estudios">Estudios</mat-checkbox>
+            <mat-checkbox formControlName="consultasMedicas">Consultas médicas</mat-checkbox>
+        </div>
     </section>
-    <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
+    <div class="button-container">
+        <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
+    </div>
     <br><br>
 
-    <h2 class="text-center">Ficha Médica</h2>
-    <mat-list *ngIf="medicalHistory">
+    <div *ngIf="showMedicalFile" class="medical-file-section">
+        <h2 class="text-center">Ficha Médica</h2>
         <mat-list *ngIf="medicalHistory">
             <mat-list-item>
                 <span matListItemTitle>Altura</span>
@@ -43,10 +48,12 @@
                 <span matListItemTitle>Antecedentes familiares</span>
                 <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
             </mat-list-item>
-        </mat-list>    </mat-list>
+        </mat-list>
+    </div>
 </div>
 <br>
 
+<div *ngIf="showMedicines" class="medicines-section">
 <h2 class="text-center">Medicamentos</h2>
 <br>
 <table class="table table-striped">
@@ -65,8 +72,10 @@
     </tr>
     </tbody>
 </table>
+</div>
 <br><br>
 
+<div *ngIf="showAnalysis" class="analysis-section">
 <h2 class="text-center">Estudios</h2>
 <br>
 <table class="table table-striped">
@@ -85,8 +94,10 @@
     </tr>
     </tbody>
 </table>
+</div>
 <br><br>
 
+<div *ngIf="showAppointments" class="appointments-section">
 <h2 class = "text-center">Mis Consultas Médicas</h2>
 <br>
 <table class="table table-striped">
@@ -113,6 +124,7 @@
     </tr>
     </tbody>
 </table>
+</div>
 <br><br>
 
 
