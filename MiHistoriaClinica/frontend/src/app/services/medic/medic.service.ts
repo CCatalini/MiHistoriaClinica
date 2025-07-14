@@ -260,11 +260,15 @@ export class MedicService {
     }
 
     getAvailableTurnos(medicId: string) {
-        return this.http.get<any[]>(`http://localhost:8080/turno/patient/available?medicId=${medicId}`);
+        return this.http.get<any[]>(`http://localhost:8080/medic/available-turnos?medicId=${medicId}`);
     }
 
     getAllTurnosByMedic(medicId: string) {
-        return this.http.get<any[]>(`http://localhost:8080/turno/medic/all?medicId=${medicId}`);
+        return this.http.get<any[]>(`http://localhost:8080/medic/all-turnos?medicId=${medicId}`);
+    }
+
+    getReservedTurnos(medicId: string) {
+        return this.http.get<any[]>(`http://localhost:8080/medic/reserved-turnos?medicId=${medicId}`);
     }
 
     createSchedule(scheduleDTO: any) {
