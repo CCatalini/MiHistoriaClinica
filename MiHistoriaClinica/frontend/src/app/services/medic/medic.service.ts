@@ -194,8 +194,8 @@ export class MedicService {
 
     public deleteMedicine(medicineId: number) {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
-        const params = new HttpParams().set('medicineId', medicineId.toString());
 
+        const params = new HttpParams().set('medicineId', medicineId.toString());
         let headers = new HttpHeaders()
                             .set('patientLinkCode', linkCode);
 
@@ -261,6 +261,10 @@ export class MedicService {
 
     getAvailableTurnos(medicId: string) {
         return this.http.get<any[]>(`http://localhost:8080/turno/patient/available?medicId=${medicId}`);
+    }
+
+    getAllTurnosByMedic(medicId: string) {
+        return this.http.get<any[]>(`http://localhost:8080/turno/medic/all?medicId=${medicId}`);
     }
 
     createSchedule(scheduleDTO: any) {
