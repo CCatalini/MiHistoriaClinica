@@ -1,3 +1,43 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin-top: 64px; /* Altura del navbar */
+  padding-bottom: 32px;
+  padding-top: 16px;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  display: block;
+  padding-left: 40px !important;
+  padding-right: 40px !important;
+}
+
+.main-content .row,
+.main-content .col-12,
+.main-content .col-md-4,
+.main-content .table {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.main-content .table {
+  table-layout: auto;
+}
+
+.main-content select,
+.main-content button,
+.main-content input {
+  width: 100%;
+  max-width: 100%;
+}
+
 .date-button {
   transition: all 0.3s ease;
   border: 2px solid #3fb5eb;
