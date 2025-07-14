@@ -31,6 +31,15 @@ export class AllMedicsListComponent implements OnInit {
     itemsPerPage: number = 10;
     totalPages: number = 1;
 
+    medicalCenters: string[] = [
+        'Hospital Austral',
+        'Consultorios Escobar',
+        'Consultorios Champagnat',
+        'Hospital Aleman',
+        'Hospital Italiano'
+    ];
+    selectedMedicalCenter: string = '';
+
     constructor(private userService: PatientService, private router: Router) { }
 
     ngOnInit(): void {
@@ -132,10 +141,11 @@ export class AllMedicsListComponent implements OnInit {
         this.filteredTurnos = this.availableTurnos.filter(turno => {
             const specialtyMatch = this.selectedSpecialty ? turno.specialty === this.selectedSpecialty : true;
             const nameMatch = this.selectedName ? turno.medicName.includes(this.selectedName) : true;
+            const centerMatch = this.selectedMedicalCenter ? turno.medicalCenter === this.selectedMedicalCenter : true;
             const dateMatch = this.selectedDateRange.start && this.selectedDateRange.end ? 
                 turno.fechaTurno >= this.selectedDateRange.start && turno.fechaTurno <= this.selectedDateRange.end : true;
             
-            return specialtyMatch && nameMatch && dateMatch;
+            return specialtyMatch && nameMatch && centerMatch && dateMatch;
         });
         
         // Calcular paginación después de filtrar
@@ -327,6 +337,10 @@ export class AllMedicsListComponent implements OnInit {
 
     onNameChange() {
         this.filterMedics();
+    }
+
+    onMedicalCenterChange() {
+        this.filterTurnos();
     }
 
     selectDate(date: string) {
