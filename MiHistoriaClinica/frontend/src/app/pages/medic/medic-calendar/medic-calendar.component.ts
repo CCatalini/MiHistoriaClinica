@@ -43,6 +43,16 @@ export class MedicCalendarComponent implements OnInit{
     slotDuration: number = 30;
     medicalCenter: string = '';
     medicalCenterOptions: string[] = [];
+    // Mapeo de nombre legible a nombre de enum para MedicalCenterE
+    medicalCenterEnumMap: {[key: string]: string} = {
+      "Sede Principal - Hospital Universitario Austral": "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL",
+      "Centro de especialidad Officia": "CENTRO_ESPECIALIDAD_OFFICIA",
+      "Centro de especialidad Champagnat": "CENTRO_ESPECIALIDAD_CHAMPAGNAT",
+      "Centro de especialidad Lujan": "CENTRO_ESPECIALIDAD_LUJAN"
+    };
+
+    // Opciones fijas para duración
+    durationOptions: number[] = [15, 30, 45, 60];
 
     constructor(private medicService: MedicService) {}
 
@@ -53,6 +63,25 @@ export class MedicCalendarComponent implements OnInit{
         this.medicService.getAllMedicalCenterNames().subscribe((options: string[]) => {
             this.medicalCenterOptions = options;
         });
+        this.loadAvailableTurnos();
+    }
+
+    loadAvailableTurnos() {
+        const medicId = localStorage.getItem('userId');
+        if (!medicId) return;
+        this.medicService.getAvailableTurnos(medicId).subscribe({
+            next: (turnos: any[]) => {
+                this.my_events = turnos.map(turno => ({
+                    title: `Disponible (${turno.medicalCenter})`,
+                    date: turno.fechaTurno + 'T' + turno.horaTurno,
+                    color: '#4caf50'
+                }));
+                this.calendarOptions.events = [...this.my_events];
+            },
+            error: (err) => {
+                console.error('Error al cargar turnos disponibles', err);
+            }
+        });
     }
 
     handleClick(arg:any){
@@ -61,35 +90,45 @@ export class MedicCalendarComponent implements OnInit{
     }
 
     addAvailableSlots() {
-        // Por simplicidad, agregamos los turnos para la próxima semana
+        // Mapear daysOfWeek seleccionados a formato backend
+        const dayMap: any = {
+            '1': 'MONDAY',
+            '2': 'TUESDAY',
+            '3': 'WEDNESDAY',
+            '4': 'THURSDAY',
+            '5': 'FRIDAY',
+            '6': 'SATURDAY',
+            '0': 'SUNDAY'
+        };
+        const selectedDays = this.availableDays.map(d => dayMap[d]);
+        // Calcular fechas de inicio y fin (próxima semana)
         const today = new Date();
         const nextMonday = new Date(today);
         nextMonday.setDate(today.getDate() + ((8 - today.getDay()) % 7));
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(nextMonday);
-            date.setDate(nextMonday.getDate() + i);
-            const dayOfWeek = date.getDay().toString();
-            if (this.availableDays.includes(dayOfWeek)) {
-                // Generar slots para este día
-                const [startHour, startMinute] = this.startTime.split(':').map(Number);
-                const [endHour, endMinute] = this.endTime.split(':').map(Number);
-                let slot = new Date(date);
-                slot.setHours(startHour, startMinute, 0, 0);
-                const endSlot = new Date(date);
-                endSlot.setHours(endHour, endMinute, 0, 0);
-                while (slot < endSlot) {
-                    const slotStr = slot.toISOString().slice(0, 16);
-                    this.my_events.push({
-                        title: `Disponible (${this.medicalCenter})`,
-                        date: slotStr,
-                        color: '#4caf50'
-                    });
-                    slot = new Date(slot.getTime() + this.slotDuration * 60000);
-                }
+        const startDate = new Date(nextMonday);
+        const endDate = new Date(nextMonday);
+        endDate.setDate(startDate.getDate() + 6);
+        // Construir objeto para backend
+        const scheduleDTO = {
+            startDate: startDate.toISOString().slice(0, 10),
+            endDate: endDate.toISOString().slice(0, 10),
+            daysOfWeek: selectedDays,
+            startTime: this.startTime,
+            endTime: this.endTime,
+            durationMinutes: this.slotDuration,
+            medicalCenter: this.medicalCenterEnumMap[this.medicalCenter]
+        };
+        this.medicService.createSchedule(scheduleDTO).subscribe({
+            next: () => {
+                // Opcional: mostrar mensaje de éxito
+                this.showModal = false;
+                this.loadAvailableTurnos();
+            },
+            error: (err) => {
+                // Opcional: mostrar error
+                console.error(err);
             }
-        }
-        // Actualizar el calendario
-        this.calendarOptions.events = [...this.my_events];
+        });
     }
 
     onDayCheckboxChange(event: any, value: string) {
