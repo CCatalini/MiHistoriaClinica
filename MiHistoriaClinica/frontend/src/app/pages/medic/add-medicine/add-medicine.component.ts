@@ -59,8 +59,8 @@ export class AddMedicineComponent implements OnInit {
         }
         if (this.medicine.prescriptionDay === '' || this.medicine.prescriptionDay === null) {
             Swal.fire(
-                'Ingrese la descripción',
-                'La descripción es requisito para cargar el medicamento.',
+                'Ingrese la fecha de inicio del tratamiento',
+                'La fecha de inicio es obligatoria para cargar el medicamento.',
                 'warning'
             );
             return;

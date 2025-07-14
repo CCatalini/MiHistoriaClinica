@@ -33,15 +33,15 @@ export class MedicalAppointmentComponent {
     formSubmit(){
         console.log(this.medicalAppointment);
         if(this.medicalAppointment.appointmentReason == '' || this.medicalAppointment.appointmentReason == null){
-            Swal.fire('Ingrese peso en kg', 'El pes es requisito.', 'warning');
+            Swal.fire('Ingrese el motivo de consulta', 'El motivo de consulta es obligatorio.', 'warning');
             return;
         }
         if(this.medicalAppointment.currentIllness == '' || this.medicalAppointment.currentIllness == null){
-            Swal.fire('Ingrese su altura', 'La altura es requisito.', 'warning');
+            Swal.fire('Ingrese la enfermedad actual', 'La enfermedad actual es obligatoria.', 'warning');
             return;
         }
         if(this.medicalAppointment.physicalExam == '' || this.medicalAppointment.physicalExam == null){
-            Swal.fire('Ingrese el grupo sanguíneo', 'El grupo sanguíneo es requisito.', 'warning');
+            Swal.fire('Ingrese el examen físico', 'El examen físico es obligatorio.', 'warning');
             return;
         }
 
