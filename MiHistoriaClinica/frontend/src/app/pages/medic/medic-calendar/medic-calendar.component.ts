@@ -69,17 +69,27 @@ export class MedicCalendarComponent implements OnInit{
     loadAvailableTurnos() {
         const medicId = localStorage.getItem('userId');
         if (!medicId) return;
-        this.medicService.getAvailableTurnos(medicId).subscribe({
+        this.medicService.getAllTurnosByMedic(medicId).subscribe({
             next: (turnos: any[]) => {
-                this.my_events = turnos.map(turno => ({
-                    title: `Disponible (${turno.medicalCenter})`,
-                    date: turno.fechaTurno + 'T' + turno.horaTurno,
-                    color: '#4caf50'
-                }));
+                this.my_events = turnos.map(turno => {
+                    if (turno.available) {
+                        return {
+                            title: `Disponible (${turno.medicalCenter})`,
+                            date: turno.fechaTurno + 'T' + turno.horaTurno,
+                            color: '#4caf50'
+                        };
+                    } else {
+                        return {
+                            title: `Reservado: ${turno.patient ? turno.patient.name + ' ' + turno.patient.lastname : ''}`,
+                            date: turno.fechaTurno + 'T' + turno.horaTurno,
+                            color: '#ff9800'
+                        };
+                    }
+                });
                 this.calendarOptions.events = [...this.my_events];
             },
             error: (err) => {
-                console.error('Error al cargar turnos disponibles', err);
+                console.error('Error al cargar turnos', err);
             }
         });
     }
