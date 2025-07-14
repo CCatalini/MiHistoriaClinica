@@ -381,6 +381,15 @@ public class MedicServiceImpl implements MedicService {
         return list;
     }
 
+    @Override
+    public List<Turnos> getAllTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicId(medicId);
+    }
+
+    @Override
+    public List<Turnos> getReservedTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(medicId);
+    }
 
     public void deleteMedic(Long medicId) {
         medicRepository.deleteById(medicId);

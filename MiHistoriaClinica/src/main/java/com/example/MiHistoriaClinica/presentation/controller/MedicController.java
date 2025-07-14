@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
 
 
 @RestController
@@ -89,8 +90,32 @@ public class MedicController {
         return new ResponseEntity<>(filteredMedics, HttpStatus.OK);
     }
 
+    @GetMapping("/all-turnos")
+    public ResponseEntity<List<Turnos>> getAllTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getAllTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
 
-    /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
+    @GetMapping("/available-turnos")
+    public ResponseEntity<List<Turnos>> getAvailableTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getAvailableTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
+
+    @GetMapping("/reserved-turnos")
+    public ResponseEntity<List<Turnos>> getReservedTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getReservedTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
+
+
+    /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENT                                                  */
 
     @PostMapping("/linkPatient")
     public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {

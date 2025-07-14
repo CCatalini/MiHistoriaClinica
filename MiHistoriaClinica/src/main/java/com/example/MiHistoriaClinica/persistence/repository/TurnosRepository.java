@@ -15,4 +15,5 @@ public interface TurnosRepository extends JpaRepository<Turnos, Long> {
     List<Turnos> findByMedic_MedicIdAndAvailableTrue(Long medicId);
     List<Turnos> findByMedicSpecialtyAndFechaTurnoAndAvailableTrue(MedicalSpecialtyE specialty, java.time.LocalDate fechaTurno);
     List<Turnos> findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(Long medicId);
+    List<Turnos> findByMedic_MedicId(Long medicId);
 }
