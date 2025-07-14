@@ -37,7 +37,10 @@
             <label>Hora fin:</label>
             <input type="time" class="form-control mb-2" [(ngModel)]="endTime" name="endTime">
             <label>Duración (min):</label>
-            <input type="number" class="form-control mb-2" [(ngModel)]="slotDuration" name="slotDuration" min="5" step="5">
+            <select class="form-control mb-2" [(ngModel)]="slotDuration" name="slotDuration">
+              <option value="" disabled selected>Seleccione duración</option>
+              <option *ngFor="let d of durationOptions" [value]="d">{{ d }} minutos</option>
+            </select>
             <label>Centro médico:</label>
             <select class="form-control mb-2" [(ngModel)]="medicalCenter" name="medicalCenter">
               <option value="" disabled selected>Seleccione un centro médico</option>

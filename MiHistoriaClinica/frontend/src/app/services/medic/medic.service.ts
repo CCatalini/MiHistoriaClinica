@@ -258,6 +258,19 @@ export class MedicService {
     getBloodTypes() {
         return this.http.get<string[]>('http://localhost:8080/medical-file/blood-types');
     }
+
+    getAvailableTurnos(medicId: string) {
+        return this.http.get<any[]>(`http://localhost:8080/turno/patient/available?medicId=${medicId}`);
+    }
+
+    createSchedule(scheduleDTO: any) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.post('http://localhost:8080/medic/create-schedule', scheduleDTO, { headers });
+    }
 }
 
 
