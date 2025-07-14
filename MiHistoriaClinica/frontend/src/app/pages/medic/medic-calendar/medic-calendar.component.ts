@@ -3,6 +3,7 @@ import {CalendarOptions} from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import esLocale from '@fullcalendar/core/locales/es';
 import { MedicService } from '../../../services/medic/medic.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-medic-calendar',
@@ -69,23 +70,22 @@ export class MedicCalendarComponent implements OnInit{
     loadAvailableTurnos() {
         const medicId = localStorage.getItem('userId');
         if (!medicId) return;
-        this.medicService.getAllTurnosByMedic(medicId).subscribe({
-            next: (turnos: any[]) => {
-                this.my_events = turnos.map(turno => {
-                    if (turno.available) {
-                        return {
-                            title: `Disponible (${turno.medicalCenter})`,
-                            date: turno.fechaTurno + 'T' + turno.horaTurno,
-                            color: '#4caf50'
-                        };
-                    } else {
-                        return {
-                            title: `Reservado: ${turno.patient ? turno.patient.name + ' ' + turno.patient.lastname : ''}`,
-                            date: turno.fechaTurno + 'T' + turno.horaTurno,
-                            color: '#ff9800'
-                        };
-                    }
-                });
+        forkJoin({
+            disponibles: this.medicService.getAvailableTurnos(medicId),
+            reservados: this.medicService.getReservedTurnos(medicId)
+        }).subscribe({
+            next: ({disponibles, reservados}) => {
+                const eventosDisponibles = disponibles.map(turno => ({
+                    title: `Disponible (${turno.medicalCenter})`,
+                    date: turno.fechaTurno + 'T' + turno.horaTurno,
+                    color: '#4caf50'
+                }));
+                const eventosReservados = reservados.map(turno => ({
+                    title: `Reservado: ${turno.patient ? turno.patient.name + ' ' + turno.patient.lastname : ''}`,
+                    date: turno.fechaTurno + 'T' + turno.horaTurno,
+                    color: '#ff9800'
+                }));
+                this.my_events = [...eventosDisponibles, ...eventosReservados];
                 this.calendarOptions.events = [...this.my_events];
             },
             error: (err) => {
