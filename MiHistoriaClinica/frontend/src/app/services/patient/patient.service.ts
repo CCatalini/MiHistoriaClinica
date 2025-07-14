@@ -177,7 +177,6 @@ export class PatientService {
 
     downloadMedicalHistory(token: string, includeMedicalFile: boolean, includeAnalysis: boolean, includeMedications: boolean, includeAppointments: boolean): Observable<HttpResponse<Blob>> {
         const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token
         });
 
