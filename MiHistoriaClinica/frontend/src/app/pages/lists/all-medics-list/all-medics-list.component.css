@@ -1,0 +1,89 @@
+.date-button {
+  transition: all 0.3s ease;
+  border: 2px solid #3fb5eb;
+  color: #3fb5eb;
+  background-color: white;
+}
+
+.date-button:hover {
+  background-color: #3fb5eb;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(63, 181, 235, 0.3);
+}
+
+.date-button.active {
+  background-color: #3fb5eb;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(63, 181, 235, 0.3);
+  border-width: 3px;
+}
+
+.date-button:active {
+  transform: translateY(0);
+}
+
+/* Estilos para la paginación */
+.pagination .page-link {
+  border-radius: 0.375rem;
+  margin: 0 2px;
+  transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+  color: #1976d2;
+  transform: translateY(-1px);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #3fb5eb;
+  border-color: #3fb5eb;
+  color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #6c757d;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+}
+
+.pagination .page-item.disabled .page-link:hover {
+  background-color: white;
+  border-color: #dee2e6;
+  color: #6c757d;
+  transform: none;
+}
+
+/* Responsive para paginación */
+@media (max-width: 768px) {
+  .pagination .page-link {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .pagination .page-link {
+    padding: 0.25rem 0.375rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .date-button {
+    width: 100px !important;
+    height: 70px !important;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .date-button {
+    width: 80px !important;
+    height: 60px !important;
+    font-size: 0.8rem;
+  }
+}
