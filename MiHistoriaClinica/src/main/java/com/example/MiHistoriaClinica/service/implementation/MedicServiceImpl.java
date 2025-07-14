@@ -299,9 +299,6 @@ public class MedicServiceImpl implements MedicService {
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
 
         // ---  Validaciones básicas  ---
-        if (scheduleDTO.getStartDate() == null || scheduleDTO.getEndDate() == null) {
-            throw new IllegalArgumentException("Se debe especificar startDate y endDate");
-        }
         if (scheduleDTO.getStartTime() == null || scheduleDTO.getEndTime() == null) {
             throw new IllegalArgumentException("Se debe especificar el rango horario");
         }
@@ -325,9 +322,13 @@ public class MedicServiceImpl implements MedicService {
         java.time.LocalTime breakStart = java.time.LocalTime.of(13, 0);
         java.time.LocalTime breakEnd = java.time.LocalTime.of(14, 0);
 
+        // Determinar rango: startIter = startDate o hoy. endIter = startIter + 1 mes - 1 día
+         java.time.LocalDate startIter = scheduleDTO.getStartDate() != null ? scheduleDTO.getStartDate() : java.time.LocalDate.now();
+         java.time.LocalDate endIter = startIter.plusMonths(1).minusDays(1);
+
         // Recorrer el rango de fechas
-        for (java.time.LocalDate currentDate = scheduleDTO.getStartDate();
-             !currentDate.isAfter(scheduleDTO.getEndDate());
+        for (java.time.LocalDate currentDate = startIter;
+             !currentDate.isAfter(endIter);
              currentDate = currentDate.plusDays(1)) {
             // Verificar si el día de la semana está en la configuración
             if (!scheduleDTO.getDaysOfWeek().contains(currentDate.getDayOfWeek())) {
@@ -341,6 +342,13 @@ public class MedicServiceImpl implements MedicService {
                 if (overlapsBreak) {
                     currentTime = breakEnd; // saltamos al final del descanso
                     continue;
+                }
+
+                // validar superposición con otros centros u horarios previos
+                boolean exists = turnosRepository.existsByMedic_MedicIdAndFechaTurnoAndHoraTurno(medicId, currentDate, currentTime);
+                if (exists) {
+                    currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
+                    continue; // ya existe un turno en ese horario (en cualquier centro)
                 }
 
                 // Crear bloque disponible
