@@ -134,6 +134,16 @@ export class PatientService {
         return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
     }
 
+    public getTurnosBySpecialty(specialty: string, date: string) {
+        let params = new HttpParams().set("specialty", specialty).set("date", date);
+        return this.http.get<any[]>("http://localhost:8080/turno/patient/available-by-specialty", { params: params });
+    }
+
+    public getTurnosBySpecialtyRange(specialty: string, startDate: string) {
+        let params = new HttpParams().set("specialty", specialty).set("startDate", startDate);
+        return this.http.get<any[]>("http://localhost:8080/turno/patient/available-by-specialty-range", { params: params });
+    }
+
     logoutPatient(): Observable<any> {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
