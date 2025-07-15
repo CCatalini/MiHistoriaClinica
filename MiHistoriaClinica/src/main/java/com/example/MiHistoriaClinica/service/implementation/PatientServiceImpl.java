@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import com.example.MiHistoriaClinica.presentation.dto.MedicTurnosDTO;
+import com.example.MiHistoriaClinica.presentation.dto.TurnoDisponibleDTO;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -193,7 +194,10 @@ public class PatientServiceImpl implements PatientService {
                     t.getMedic().getMedicId(),
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
             );
-            dto.getAvailableTimes().add(t.getHoraTurno());
+            dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getFechaTurno().toString(),
+                t.getHoraTurno().toString()
+            ));
         }
 
         return new java.util.ArrayList<>(map.values());
@@ -213,7 +217,10 @@ public class PatientServiceImpl implements PatientService {
                     t.getMedic().getMedicId(),
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
             );
-            dto.getAvailableTimes().add(t.getHoraTurno());
+            dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getFechaTurno().toString(),
+                t.getHoraTurno().toString()
+            ));
         }
 
         return new java.util.ArrayList<>(map.values());
