@@ -148,9 +148,13 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     filterTurnos() {
-        this.filteredTurnos = this.availableTurnos.slice();
-        console.log('Turnos disponibles:', this.availableTurnos);
-        console.log('Turnos filtrados:', this.filteredTurnos);
+        this.filteredTurnos = this.availableTurnos.filter(turno => {
+            const nameMatch = this.selectedName ? turno.medicName === this.selectedName : true;
+            const centerMatch = this.selectedMedicalCenter ? turno.medicalCenter === this.selectedMedicalCenter : true;
+            const dateMatch = this.selectedDateRange.start && this.selectedDateRange.end ? 
+                turno.fechaTurno >= this.selectedDateRange.start && turno.fechaTurno <= this.selectedDateRange.end : true;
+            return nameMatch && centerMatch && dateMatch;
+        });
         this.calculatePagination();
     }
 
@@ -221,13 +225,20 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     updateNames() {
-        // Nombres presentes en la lista filtrada
-        this.names = Array.from(new Set(this.medics
-            .filter(medic => {
-                const specialtyMatch = this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true;
-                return specialtyMatch;
-            })
-            .map((m: any) => m.name)));
+        if (this.selectedSpecialty) {
+            const today = new Date().toISOString().split('T')[0];
+            this.userService.getMedicsWithAvailableTurnosBySpecialty(this.selectedSpecialty, today).subscribe((medics: string[]) => {
+                this.names = medics;
+                console.log('Nombres de médicos en filtro (desde backend):', this.names);
+            });
+        } else {
+            // Si no hay especialidad seleccionada, mostrar todos los médicos con turnos disponibles
+            this.names = Array.from(new Set(this.availableTurnos
+                .map((t: any) => t.medicName && t.medicName.trim())
+                .filter((name: string | undefined) => !!name)
+            ));
+            console.log('Nombres de médicos en filtro:', this.names);
+        }
     }
 
     getAvailableDates() {
@@ -332,7 +343,6 @@ export class AllMedicsListComponent implements OnInit {
     onSpecialtyChange() {
         this.selectedName = '';
         this.filteredMedics = this.medics.filter(medic => this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true);
-        this.updateNames();
         if (this.selectedSpecialty) {
             // Pedir turnos al backend por especialidad y rango de 30 días desde hoy
             const today = new Date().toISOString().split('T')[0];
@@ -353,12 +363,14 @@ export class AllMedicsListComponent implements OnInit {
                     }
                 });
                 this.availableTurnos = turnos;
+                this.updateNames(); // <-- Aquí se actualiza el filtro de médicos
                 this.filterTurnos();
             });
         } else {
             this.availableTurnos = [];
             this.filteredTurnos = [];
             this.totalPages = 1;
+            this.updateNames();
         }
     }
 

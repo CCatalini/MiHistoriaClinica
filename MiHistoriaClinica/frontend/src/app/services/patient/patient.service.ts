@@ -199,6 +199,11 @@ export class PatientService {
         return this.http.get('http://localhost:8080/medical-history/download-pdf', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
     }
 
+    public getMedicsWithAvailableTurnosBySpecialty(specialty: string, startDate: string) {
+        let params = new HttpParams().set("specialty", specialty).set("startDate", startDate);
+        return this.http.get<string[]>("http://localhost:8080/turno/patient/medics-with-available-turnos", { params: params });
+    }
+
 }
 
 
