@@ -1,23 +1,36 @@
 <h1 class="text-center">Calendario</h1>
+
+<!-- Leyenda de colores actualizada -->
 <div class="container mb-2">
   <div class="row justify-content-center">
     <div class="col-auto">
-      <span style="display:inline-block;width:18px;height:18px;background:#4caf50;margin-right:6px;border-radius:3px;"></span> Disponible
+      <span style="display:inline-block;width:18px;height:18px;background:#4caf50;margin-right:6px;border-radius:3px;"></span> Solo disponibles
     </div>
     <div class="col-auto">
-      <span style="display:inline-block;width:18px;height:18px;background:#ff9800;margin-right:6px;border-radius:3px;"></span> Reservado
+      <span style="display:inline-block;width:18px;height:18px;background:#ff9800;margin-right:6px;border-radius:3px;"></span> Mixto (disponibles y reservados)
+    </div>
+    <div class="col-auto">
+      <span style="display:inline-block;width:18px;height:18px;background:#ff5722;margin-right:6px;border-radius:3px;"></span> Solo reservados
     </div>
   </div>
 </div>
+
 <div class="container-fluid mb-3">
   <div class="row justify-content-center">
     <div class="col-auto">
       <button class="btn btn-primary custom-blue" (click)="showModal = true">Agregar turnos disponibles</button>
     </div>
+    <div class="col-auto">
+      <button class="btn btn-secondary" (click)="forceRefreshCalendar()">🔄 Actualizar calendario</button>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-warning" (click)="loadTestData()">📋 Cargar datos de prueba</button>
+    </div>
   </div>
 </div>
+
 <div class="full-calendar-wrapper position-relative">
-<full-calendar [options]="calendarOptions"></full-calendar>
+  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>
 
 <!-- Modal para agregar turnos disponibles -->
@@ -32,7 +45,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="addAvailableSlots(); showModal = false" class="row g-3">
+        <form (ngSubmit)="addAvailableSlots()" class="row g-3">
           <div class="col-12 col-md-6">
             <label>Días de atención:</label>
             <div *ngFor="let day of daysOfWeek">
@@ -43,25 +56,135 @@
           </div>
           <div class="col-12 col-md-6">
             <label>Hora inicio:</label>
-            <input type="time" class="form-control mb-2" [(ngModel)]="startTime" name="startTime">
+            <input type="time" class="form-control mb-2" [(ngModel)]="startTime" name="startTime" required>
             <label>Hora fin:</label>
-            <input type="time" class="form-control mb-2" [(ngModel)]="endTime" name="endTime">
+            <input type="time" class="form-control mb-2" [(ngModel)]="endTime" name="endTime" required>
             <label>Duración (min):</label>
-            <select class="form-control mb-2" [(ngModel)]="slotDuration" name="slotDuration">
+            <select class="form-control mb-2" [(ngModel)]="slotDuration" name="slotDuration" required>
               <option value="" disabled selected>Seleccione duración</option>
               <option *ngFor="let d of durationOptions" [value]="d">{{ d }} minutos</option>
             </select>
             <label>Centro médico:</label>
-            <select class="form-control mb-2" [(ngModel)]="medicalCenter" name="medicalCenter">
+            <select class="form-control mb-2" [(ngModel)]="medicalCenter" name="medicalCenter" required>
               <option value="" disabled selected>Seleccione un centro médico</option>
               <option *ngFor="let option of medicalCenterOptions" [value]="option">{{ option }}</option>
             </select>
           </div>
           <div class="col-12 d-flex justify-content-center gap-3 mt-3">
-            <button type="submit" class="btn btn-primary custom-blue">Aceptar</button>
+            <button type="submit" class="btn btn-primary custom-blue" [disabled]="!startTime || !endTime || !medicalCenter || availableDays.length === 0">Aceptar</button>
             <button type="button" class="btn btn-secondary" (click)="showModal = false">Cancelar</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para vista detallada de turnos -->
+<div class="modal-backdrop show" *ngIf="showDetailModal"></div>
+<div class="modal show d-block" tabindex="-1" *ngIf="showDetailModal">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Turnos para {{ selectedDate | date:'fullDate':'es' }}</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeDetailModal()" style="font-size:2rem;line-height:1;color:#000;background:transparent;border:none;outline:none;">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Filtros de vista -->
+        <div class="row mb-3">
+          <div class="col-12 col-md-6">
+            <label class="form-label">Filtrar por estado:</label>
+            <select class="form-select" [(ngModel)]="viewType">
+              <option value="all">Todos los turnos</option>
+              <option value="available">Solo disponibles</option>
+              <option value="reserved">Solo reservados</option>
+            </select>
+          </div>
+          <div class="col-12 col-md-6 d-flex align-items-end">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectAllVisible()">
+                Seleccionar todos
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" (click)="deselectAllVisible()">
+                Deseleccionar todos
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen de selección -->
+        <div class="alert alert-info" *ngIf="selectedTurnos.length > 0">
+          <strong>{{ selectedTurnos.length }}</strong> turno(s) seleccionado(s)
+        </div>
+
+        <!-- Lista de turnos -->
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th width="50">
+                  <input type="checkbox" class="form-check-input" 
+                         [checked]="areAllVisibleTurnosSelected()"
+                         (change)="onMasterCheckboxChange($event)">
+                </th>
+                <th>Hora</th>
+                <th>Centro Médico</th>
+                <th>Estado</th>
+                <th>Paciente</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let turno of getFilteredTurnos()" 
+                  [class.table-success]="turno.available" 
+                  [class.table-warning]="!turno.available">
+                <td>
+                  <input type="checkbox" class="form-check-input" 
+                         [checked]="isTurnoSelected(turno)"
+                         (change)="onTurnoSelectionChange(turno, $event)">
+                </td>
+                <td>{{ turno.horaTurno }}</td>
+                <td>{{ turno.medicalCenter }}</td>
+                <td>
+                  <span class="badge" [class.bg-success]="turno.available" [class.bg-warning]="!turno.available">
+                    {{ turno.available ? 'Disponible' : 'Reservado' }}
+                  </span>
+                </td>
+                <td>
+                  <span *ngIf="turno.patient">
+                    {{ turno.patient.name }} {{ turno.patient.lastname }}
+                  </span>
+                  <span *ngIf="!turno.patient" class="text-muted">-</span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-outline-primary" *ngIf="turno.available">
+                    <i class="fas fa-eye"></i> Ver
+                  </button>
+                  <button class="btn btn-sm btn-outline-info" *ngIf="!turno.available">
+                    <i class="fas fa-user"></i> Paciente
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mensaje cuando no hay turnos -->
+        <div class="alert alert-info text-center" *ngIf="getFilteredTurnos().length === 0">
+          <i class="fas fa-info-circle"></i> No hay turnos que mostrar con el filtro seleccionado.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" 
+                (click)="processSelectedTurnos()" 
+                [disabled]="selectedTurnos.length === 0">
+          <i class="fas fa-check"></i> Procesar seleccionados ({{ selectedTurnos.length }})
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
       </div>
     </div>
   </div>
