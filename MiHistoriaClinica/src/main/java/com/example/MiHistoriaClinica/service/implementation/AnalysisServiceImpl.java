@@ -9,8 +9,10 @@ import com.example.MiHistoriaClinica.persistence.repository.CustomRepositoryAcce
 import com.example.MiHistoriaClinica.persistence.repository.MedicRepository;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.AnalysisService;
+import com.example.MiHistoriaClinica.service.EmailService;
 import com.example.MiHistoriaClinica.util.constant.AnalysisE;
 import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,9 @@ public class AnalysisServiceImpl implements AnalysisService {
     private final AnalysisRepository analysisRepository;
     private final CustomRepositoryAccess customRepositoryAccess;
     private final PatientServiceImpl patientService;
+    
+    @Autowired
+    private EmailService emailService;
 
     public AnalysisServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, AnalysisRepository analysisRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
@@ -44,8 +49,20 @@ public class AnalysisServiceImpl implements AnalysisService {
         Optional<Patient> patient = patientRepository.findByLinkCode(patientLinkCode);
 
         if (medic.isEmpty() || patient.isEmpty()) return null;
-        else return customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
-
+        
+        Analysis createdAnalysis = customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
+        
+        // Enviar email de confirmación
+        if (createdAnalysis != null && patient.isPresent()) {
+            try {
+                emailService.sendAnalysisConfirmationEmail(patient.get(), createdAnalysis);
+            } catch (Exception e) {
+                // Log error pero no fallar la operación
+                System.err.println("Error enviando email de confirmación de análisis: " + e.getMessage());
+            }
+        }
+        
+        return createdAnalysis;
     }
 
     @Override
