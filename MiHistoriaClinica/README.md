@@ -143,21 +143,21 @@ El frontend estará disponible en:
                                                                         BACK              FRONT
   * Agregar nuevos filtros para sacar turnos
   OBS: los filtros podemos hacerlos desde el front directamente
-  --> Por rangos de fechas                                               --                --
-  --> Por especialidad                                                   --                OK
-  --> Por médico                                                         --                OK
-  --> Por centro médico                                                  --                --
+  --> Por rangos de fechas                                               Ok                OK
+  --> Por especialidad                                                   OK                OK
+  --> Por médico                                                         OK                OK
+  --> Por centro médico                                                  OK                OK
 
   * Descargar 
-  --> Descargar historia general                                         --                --          
-  --> Descargar historial de consultas médicas filtradas                 --                --
+  --> Descargar historia general                                         OK                OK          
+  --> Descargar historial de consultas médicas filtradas                 OK                OK
 
   * Iniciar consulta desde turnos acordados                              --                --
   --> Agregar estado a las consultas médicas (default=pendiente)         --                --
 
   * Calendarios
   Agenda de médicos 
-  --> Asignar horarios disponibles de atención                           --                --
+  --> Asignar horarios disponibles de atención                           OK                OK
   --> Ver turnos reservados y disponibles                                --                --
   Agenda de pacientes
   --> Ver turnos agendados en calendario                                 --                --
