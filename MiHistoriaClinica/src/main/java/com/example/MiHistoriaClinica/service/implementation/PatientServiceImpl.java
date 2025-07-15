@@ -13,6 +13,7 @@ import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.persistence.repository.*;
 import com.example.MiHistoriaClinica.service.PatientService;
+import com.example.MiHistoriaClinica.service.EmailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class PatientServiceImpl implements PatientService {
     private final MedicineRepository medicineRepository;
     private final MedicRepository medicRepository;
     private final TurnosRepository turnosRepository;
+    
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository) {
@@ -156,6 +160,14 @@ public class PatientServiceImpl implements PatientService {
         turno.setAvailable(false);
 
         turnosRepository.save(turno);
+        
+        // Enviar email de confirmación
+        try {
+            emailService.sendTurnoConfirmationEmail(patient, turno);
+        } catch (Exception e) {
+            // Log error pero no fallar la operación
+            System.err.println("Error enviando email de confirmación: " + e.getMessage());
+        }
     }
 
     @Override
