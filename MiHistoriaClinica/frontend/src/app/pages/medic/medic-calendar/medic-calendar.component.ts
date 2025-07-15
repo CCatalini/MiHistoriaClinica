@@ -21,7 +21,9 @@ export class MedicCalendarComponent implements OnInit{
 
     calendarOptions: CalendarOptions = {
         initialView: 'dayGridMonth',
-        events: this.my_events,
+        events: [
+            { title: 'Test', start: '2025-07-14T09:30:00', color: '#4caf50', allDay: false }
+        ],
         eventClick: this.handleClick.bind(this),
         locale: esLocale,
         plugins: [dayGridPlugin]
@@ -68,6 +70,7 @@ export class MedicCalendarComponent implements OnInit{
     }
 
     loadAvailableTurnos() {
+        console.log('Ejecutando loadAvailableTurnos');
         const medicId = localStorage.getItem('userId');
         if (!medicId) return;
         forkJoin({
@@ -75,16 +78,26 @@ export class MedicCalendarComponent implements OnInit{
             reservados: this.medicService.getReservedTurnos(medicId)
         }).subscribe({
             next: ({disponibles, reservados}) => {
-                const eventosDisponibles = disponibles.map(turno => ({
-                    title: `Disponible (${turno.medicalCenter})`,
-                    date: turno.fechaTurno + 'T' + turno.horaTurno,
-                    color: '#4caf50'
-                }));
-                const eventosReservados = reservados.map(turno => ({
-                    title: `Reservado: ${turno.patient ? turno.patient.name + ' ' + turno.patient.lastname : ''}`,
-                    date: turno.fechaTurno + 'T' + turno.horaTurno,
-                    color: '#ff9800'
-                }));
+                console.log('Turnos disponibles del backend:', disponibles);
+                console.log('Turnos reservados del backend:', reservados);
+                const eventosDisponibles = disponibles.map(turno => {
+                    const event = {
+                        title: `Disponible (${turno.medicalCenter})`,
+                        start: `${turno.fechaTurno}T${turno.horaTurno}`,
+                        color: '#4caf50',
+                        allDay: false
+                    };
+                    return event;
+                });
+                const eventosReservados = reservados.map(turno => {
+                    const event = {
+                        title: `Reservado: ${turno.patient ? turno.patient.name + ' ' + turno.patient.lastname : ''}`,
+                        start: `${turno.fechaTurno}T${turno.horaTurno}`,
+                        color: '#ff9800',
+                        allDay: false
+                    };
+                    return event;
+                });
                 this.my_events = [...eventosDisponibles, ...eventosReservados];
                 this.calendarOptions.events = [...this.my_events];
             },
@@ -94,9 +107,8 @@ export class MedicCalendarComponent implements OnInit{
         });
     }
 
-    handleClick(arg:any){
-        console.log(arg);
-        console.log(arg.event._def.title);
+    handleClick(arg: any) {
+        alert('Evento: ' + arg.event.title);
     }
 
     addAvailableSlots() {
