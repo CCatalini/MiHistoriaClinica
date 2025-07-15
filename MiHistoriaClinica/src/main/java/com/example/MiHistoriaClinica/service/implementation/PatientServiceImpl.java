@@ -226,6 +226,18 @@ public class PatientServiceImpl implements PatientService {
         return new java.util.ArrayList<>(map.values());
     }
 
+    public List<String> getMedicsWithAvailableTurnosBySpecialty(String specialty, String startDateIso) {
+        java.time.LocalDate startDate = java.time.LocalDate.parse(startDateIso);
+        java.time.LocalDate endDate = startDate.plusDays(29);
+        com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
+        List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoBetweenAndAvailableTrue(specEnum, startDate, endDate);
+        java.util.Set<String> medics = new java.util.HashSet<>();
+        for (Turnos t : turnos) {
+            medics.add(t.getMedic().getName() + " " + t.getMedic().getLastname());
+        }
+        return new java.util.ArrayList<>(medics);
+    }
+
 
 }
 
