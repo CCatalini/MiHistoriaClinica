@@ -14,9 +14,7 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
      */
     @Query("SELECT a FROM Patient p JOIN p.analysis a WHERE p.patientId = :patientId")
     List<Analysis> getAnalysisByPatientId(@Param("patientId") Long id);
-
-
-
-
-
+    
+    // Método para recordatorios - buscar análisis por estado
+    List<Analysis> findByStatus(String status);
 }

@@ -30,6 +30,16 @@ dependencies {
     implementation 'com.itextpdf:itext7-core:7.1.15'
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    // SendGrid email service
+    implementation 'com.sendgrid:sendgrid-java:4.9.3'
+    
+    // Spring Boot Mail and Thymeleaf for email templates
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    
+    // Scheduling support
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
 }
 
 tasks.named('test') {

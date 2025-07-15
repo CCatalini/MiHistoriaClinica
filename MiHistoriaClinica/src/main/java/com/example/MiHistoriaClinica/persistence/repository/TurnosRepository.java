@@ -18,4 +18,7 @@ public interface TurnosRepository extends JpaRepository<Turnos, Long> {
     List<Turnos> findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(Long medicId);
     List<Turnos> findByMedic_MedicId(Long medicId);
     boolean existsByMedic_MedicIdAndFechaTurnoAndHoraTurno(Long medicId, java.time.LocalDate fechaTurno, java.time.LocalTime horaTurno);
+    
+    // Método para recordatorios - buscar turnos reservados para una fecha específica
+    List<Turnos> findByFechaTurnoAndAvailableFalse(java.time.LocalDate fechaTurno);
 }
