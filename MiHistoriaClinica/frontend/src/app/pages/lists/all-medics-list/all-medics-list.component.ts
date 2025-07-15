@@ -57,6 +57,10 @@ export class AllMedicsListComponent implements OnInit {
                     this.updateNames();
                 }
             });
+            // Cargar centros médicos usando el mismo endpoint que el calendario del médico
+            this.userService.getAllMedicalCenterNames().subscribe((centers: string[]) => {
+                this.medicalCenters = centers;
+            });
             // Inicializar turnos vacíos
             this.availableTurnos = [];
             this.filteredTurnos = [];
