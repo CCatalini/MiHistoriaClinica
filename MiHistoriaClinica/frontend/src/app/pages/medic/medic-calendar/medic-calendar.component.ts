@@ -21,12 +21,14 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     my_events : any = [];
     allTurnos: any[] = [];
     selectedTurnos: any[] = [];
+    currentView: string = 'dayGridMonth';
 
     calendarOptions: CalendarOptions = {
         initialView: 'dayGridMonth',
         events: [],
         eventClick: this.handleEventClick.bind(this),
         dateClick: this.handleDateClick.bind(this),
+        viewDidMount: this.handleViewChange.bind(this),
         locale: esLocale,
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         headerToolbar: {
@@ -34,10 +36,15 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        height: 'auto',
+        height: '700px',
         eventDisplay: 'block',
         dayMaxEventRows: 3,
-        moreLinkClick: 'day'
+        moreLinkClick: 'day',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '22:00:00',
+        slotDuration: '00:30:00',
+        allDaySlot: false,
+        displayEventTime: true
     };
 
     // Variables para el modal de agregar turnos
@@ -97,7 +104,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             this.medicalCenterOptions = options;
         });
         
-        // Cargar turnos inmediatamente y también después de un retraso
+        // Cargar turnos inmediatamente
         this.loadAllTurnos();
         
         // Método de respaldo por si el primero falla
@@ -105,6 +112,17 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             console.log('=== MÉTODO DE RESPALDO ===');
             this.loadAllTurnos();
         }, 1000);
+        
+        // Listener para detectar cuando se recarga la página
+        window.addEventListener('beforeunload', () => {
+            console.log('Página siendo recargada...');
+        });
+        
+        // Listener para detectar cuando la página se enfoca nuevamente
+        window.addEventListener('focus', () => {
+            console.log('Página enfocada, recargando turnos...');
+            this.loadAllTurnos();
+        });
     }
 
     ngAfterViewInit(): void {
@@ -119,8 +137,8 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         // Exponer métodos útiles para debugging
         (window as any).debugCalendar = {
             loadTurnos: () => this.loadAllTurnos(),
-            loadTestData: () => this.loadTestData(),
             refreshCalendar: () => this.refreshCalendar(),
+            processEvents: () => this.processCalendarEvents(),
             showLocalStorage: () => console.log('LocalStorage:', {
                 userId: localStorage.getItem('userId'),
                 userType: localStorage.getItem('userType'),
@@ -130,8 +148,14 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             showCurrentData: () => console.log('Datos actuales:', {
                 allTurnos: this.allTurnos,
                 my_events: this.my_events,
+                currentView: this.currentView,
                 calendarOptions: this.calendarOptions
-            })
+            }),
+            changeView: (view: string) => {
+                if (this.calendarComponent) {
+                    this.calendarComponent.getApi().changeView(view);
+                }
+            }
         };
     }
 
@@ -189,21 +213,48 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
                 console.error('Message:', err.message);
                 console.error('URL:', err.url);
                 
-                // En caso de error, intentar cargar datos de prueba
-                this.loadTestData();
+                // En caso de error, inicializar con array vacío
+                this.allTurnos = [];
+                this.processCalendarEvents();
             }
         });
     }
 
     processCalendarEvents() {
         console.log('Iniciando processCalendarEvents con turnos:', this.allTurnos);
+        console.log('Vista actual:', this.currentView);
         
         // Limpiar eventos anteriores
         this.my_events = [];
         
+        if (this.currentView === 'dayGridMonth') {
+            // Vista mensual: mostrar eventos agrupados (resumen)
+            this.createMonthlyEvents();
+        } else {
+            // Vista semanal y diaria: mostrar eventos individuales
+            this.createDetailedEvents();
+        }
+        
+        // Crear una nueva referencia del array para forzar la actualización
+        this.calendarOptions = {
+            ...this.calendarOptions,
+            events: [...this.my_events]
+        };
+        
+        // Si el componente de calendario está disponible, forzar la actualización directamente
+        if (this.calendarComponent) {
+            const calendarApi = this.calendarComponent.getApi();
+            calendarApi.removeAllEvents();
+            calendarApi.addEventSource(this.my_events);
+        }
+        
+        console.log('Eventos finales para el calendario:', this.my_events);
+    }
+
+    createMonthlyEvents() {
         // Agrupar turnos por fecha y centro médico para crear eventos más informativos
         const groupedTurnos = this.groupTurnosByDateAndCenter();
-        console.log('Turnos agrupados:', groupedTurnos);
+        console.log('Turnos agrupados para vista mensual:', groupedTurnos);
         
         Object.keys(groupedTurnos).forEach(date => {
             Object.keys(groupedTurnos[date]).forEach(center => {
@@ -228,21 +279,49 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
                 });
             });
         });
+    }
+
+    createDetailedEvents() {
+        console.log('Creando eventos detallados para vista semanal/diaria');
         
-        // Crear una nueva referencia del array para forzar la actualización
-        this.calendarOptions = {
-            ...this.calendarOptions,
-            events: [...this.my_events]
+        this.allTurnos.forEach(turno => {
+            const title = this.getTurnoTitle(turno);
+            const color = turno.available ? '#4caf50' : '#ff9800';
+            
+            this.my_events.push({
+                title: title,
+                start: `${turno.fechaTurno}T${turno.horaTurno}`,
+                color: color,
+                allDay: false,
+                extendedProps: {
+                    turno: turno,
+                    center: turno.medicalCenter,
+                    date: turno.fechaTurno
+                }
+            });
+        });
+    }
+
+    getTurnoTitle(turno: any): string {
+        const centerShort = this.formatMedicalCenterShort(turno.medicalCenter);
+        
+        if (turno.available) {
+            return `${centerShort} - Disponible`;
+        } else {
+            const patientName = turno.patient ? `${turno.patient.name} ${turno.patient.lastname}` : 'Paciente';
+            return `${centerShort} - ${patientName}`;
+        }
+    }
+
+    formatMedicalCenterShort(center: string): string {
+        const centerMap: {[key: string]: string} = {
+            "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL": "H. Austral",
+            "CENTRO_ESPECIALIDAD_OFFICIA": "C. Officia",
+            "CENTRO_ESPECIALIDAD_CHAMPAGNAT": "C. Champagnat",
+            "CENTRO_ESPECIALIDAD_LUJAN": "C. Lujan"
         };
         
-        // Si el componente de calendario está disponible, forzar la actualización directamente
-        if (this.calendarComponent) {
-            const calendarApi = this.calendarComponent.getApi();
-            calendarApi.removeAllEvents();
-            calendarApi.addEventSource(this.my_events);
-        }
-        
-        console.log('Eventos finales para el calendario:', this.my_events);
+        return centerMap[center] || center;
     }
 
     groupTurnosByDateAndCenter() {
@@ -294,13 +373,26 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     }
 
     handleEventClick(arg: any) {
-        const turnos = arg.event.extendedProps.turnos;
-        const center = arg.event.extendedProps.center;
-        const date = arg.event.extendedProps.date;
+        const extendedProps = arg.event.extendedProps;
         
-        this.selectedDate = date;
-        this.selectedDateTurnos = turnos;
-        this.showDetailModal = true;
+        if (extendedProps.turnos) {
+            // Evento agrupado (vista mensual)
+            const turnos = extendedProps.turnos;
+            const center = extendedProps.center;
+            const date = extendedProps.date;
+            
+            this.selectedDate = date;
+            this.selectedDateTurnos = turnos;
+            this.showDetailModal = true;
+        } else if (extendedProps.turno) {
+            // Evento individual (vista semanal/diaria)
+            const turno = extendedProps.turno;
+            const date = extendedProps.date;
+            
+            this.selectedDate = date;
+            this.selectedDateTurnos = [turno];
+            this.showDetailModal = true;
+        }
     }
 
     handleDateClick(arg: any) {
@@ -312,6 +404,16 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             this.selectedDate = dateStr;
             this.selectedDateTurnos = turnosForDate;
             this.showDetailModal = true;
+        }
+    }
+
+    handleViewChange(arg: any) {
+        console.log('Vista cambiada a:', arg.view.type);
+        this.currentView = arg.view.type;
+        
+        // Regenerar eventos para la nueva vista
+        if (this.allTurnos.length > 0) {
+            this.processCalendarEvents();
         }
     }
 
@@ -412,63 +514,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         return medicId;
     }
 
-    // Método para forzar actualización del calendario
-    forceRefreshCalendar() {
-        console.log('=== FORZANDO ACTUALIZACIÓN DEL CALENDARIO ===');
-        this.loadAllTurnos();
-        setTimeout(() => {
-            this.refreshCalendar();
-        }, 200);
-    }
 
-    // Método para cargar datos de prueba en caso de error
-    loadTestData() {
-        console.log('=== CARGANDO DATOS DE PRUEBA ===');
-        
-        // Crear algunos turnos de prueba
-        const today = new Date();
-        const testTurnos = [
-            {
-                turnoId: 1,
-                fechaTurno: "2025-07-16",
-                horaTurno: "09:00:00",
-                medicFullName: "Dr. Test",
-                medicSpecialty: "CARDIOLOGIA",
-                medicalCenter: "CENTRO_ESPECIALIDAD_OFFICIA",
-                available: true
-            },
-            {
-                turnoId: 2,
-                fechaTurno: "2025-07-16",
-                horaTurno: "10:00:00",
-                medicFullName: "Dr. Test",
-                medicSpecialty: "CARDIOLOGIA",
-                medicalCenter: "CENTRO_ESPECIALIDAD_OFFICIA",
-                available: false,
-                patient: {
-                    name: "Juan",
-                    lastname: "Pérez"
-                }
-            },
-            {
-                turnoId: 3,
-                fechaTurno: "2025-07-18",
-                horaTurno: "14:00:00",
-                medicFullName: "Dr. Test",
-                medicSpecialty: "CARDIOLOGIA",
-                medicalCenter: "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL",
-                available: true
-            }
-        ];
-        
-        console.log('Datos de prueba creados:', testTurnos);
-        this.allTurnos = testTurnos;
-        this.processCalendarEvents();
-        
-        setTimeout(() => {
-            this.refreshCalendar();
-        }, 100);
-    }
 
     addAvailableSlots() {
         // Mapear daysOfWeek seleccionados a formato backend
@@ -525,12 +571,13 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
                 setTimeout(() => {
                     console.log('Recargando turnos después de crear nuevos...');
                     this.loadAllTurnos();
-                    
-                    // Forzar actualización del calendario después de recargar
-                    setTimeout(() => {
-                        this.refreshCalendar();
-                    }, 200);
                 }, 500);
+                
+                // Recargar adicional para asegurar que se muestren los cambios
+                setTimeout(() => {
+                    console.log('Recarga adicional de turnos...');
+                    this.loadAllTurnos();
+                }, 1500);
             },
             error: (err) => {
                 console.error('Error al crear turnos:', err);

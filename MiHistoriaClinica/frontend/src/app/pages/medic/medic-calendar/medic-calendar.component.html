@@ -1,36 +1,39 @@
-<h1 class="text-center">Calendario</h1>
+<div class="container content-with-toolbar">
+  <!-- Título principal -->
+  <div class="page-title">
+    <h1>Calendario</h1>
+  </div>
 
-<!-- Leyenda de colores actualizada -->
-<div class="container mb-2">
-  <div class="row justify-content-center">
-    <div class="col-auto">
-      <span style="display:inline-block;width:18px;height:18px;background:#4caf50;margin-right:6px;border-radius:3px;"></span> Solo disponibles
+  <!-- Leyenda de colores y botón -->
+  <div class="calendar-controls">
+    <div class="legend-section">
+      <h4>Leyenda:</h4>
+      <div class="legend-row">
+        <div class="legend-item">
+          <span class="legend-color" style="background:#4caf50;"></span>
+          <span>Solo disponibles</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#ff9800;"></span>
+          <span>Mixto (disponibles y reservados)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="background:#ff5722;"></span>
+          <span>Solo reservados</span>
+        </div>
+      </div>
     </div>
-    <div class="col-auto">
-      <span style="display:inline-block;width:18px;height:18px;background:#ff9800;margin-right:6px;border-radius:3px;"></span> Mixto (disponibles y reservados)
-    </div>
-    <div class="col-auto">
-      <span style="display:inline-block;width:18px;height:18px;background:#ff5722;margin-right:6px;border-radius:3px;"></span> Solo reservados
+    <div class="button-container">
+      <button class="boton" (click)="showModal = true">Agregar turnos disponibles</button>
     </div>
   </div>
-</div>
 
-<div class="container-fluid mb-3">
-  <div class="row justify-content-center">
-    <div class="col-auto">
-      <button class="btn btn-primary custom-blue" (click)="showModal = true">Agregar turnos disponibles</button>
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-secondary" (click)="forceRefreshCalendar()">🔄 Actualizar calendario</button>
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-warning" (click)="loadTestData()">📋 Cargar datos de prueba</button>
+  <!-- Calendario -->
+  <div class="calendar-section">
+    <div class="full-calendar-wrapper">
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
     </div>
   </div>
-</div>
-
-<div class="full-calendar-wrapper position-relative">
-  <full-calendar #calendar [options]="calendarOptions"></full-calendar>
 </div>
 
 <!-- Modal para agregar turnos disponibles -->
@@ -71,8 +74,8 @@
             </select>
           </div>
           <div class="col-12 d-flex justify-content-center gap-3 mt-3">
-            <button type="submit" class="btn btn-primary custom-blue" [disabled]="!startTime || !endTime || !medicalCenter || availableDays.length === 0">Aceptar</button>
-            <button type="button" class="btn btn-secondary" (click)="showModal = false">Cancelar</button>
+            <button type="submit" class="boton" [disabled]="!startTime || !endTime || !medicalCenter || availableDays.length === 0">Aceptar</button>
+            <button type="button" class="boton-secondary" (click)="showModal = false">Cancelar</button>
           </div>
         </form>
       </div>
@@ -177,12 +180,12 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" 
+        <button type="button" class="boton" 
                 (click)="processSelectedTurnos()" 
                 [disabled]="selectedTurnos.length === 0">
           <i class="fas fa-check"></i> Procesar seleccionados ({{ selectedTurnos.length }})
         </button>
-        <button type="button" class="btn btn-secondary" (click)="closeDetailModal()">
+        <button type="button" class="boton-secondary" (click)="closeDetailModal()">
           <i class="fas fa-times"></i> Cerrar
         </button>
       </div>
