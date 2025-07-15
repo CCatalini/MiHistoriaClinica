@@ -204,6 +204,10 @@ export class PatientService {
         return this.http.get<string[]>("http://localhost:8080/turno/patient/medics-with-available-turnos", { params: params });
     }
 
+    public getAllMedicalCenterNames() {
+        return this.http.get<string[]>("http://localhost:8080/analysis/medicalCenter/all-names");
+    }
+
 }
 
 
