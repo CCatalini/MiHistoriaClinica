@@ -1,64 +1,174 @@
-.text-center {
-    margin-top: 50px;
-    margin-bottom: 30px;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 900px;
-    height: 500px;
+/* ---------------- GLOBAL RESET ---------------- */
+html, body {
+    height: 100%;
+    width: 100%;
     margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    box-sizing: border-box;
 }
 
-full-calendar {
-    width: 70%;
-    max-width: 800px;
-    height: 500px;
+/* ---------------- CONTENEDOR PRINCIPAL ---------------- */
+.container {
+    width: 100%;
+    max-width: 95vw;
+    padding: 0 8px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-top: 80px; /* Separación del header azul */
+}
+
+/* ---------------- TÍTULO PRINCIPAL ---------------- */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-bottom: 3px solid #3fb5eb;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+/* ---------------- CONTROLES DEL CALENDARIO ---------------- */
+.calendar-controls {
+    width: 100%;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.legend-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.legend-section h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: max-content;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}
+
+.legend-item span:last-child {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* ---------------- BOTÓN AGREGAR TURNOS ---------------- */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.boton {
+    background-color: #3fb5eb;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    min-width: 200px;
+}
+
+.boton:hover {
+    background-color: #2ea3d4;
+}
+
+.boton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.boton-secondary {
+    background-color: #6c757d;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    min-width: 120px;
+}
+
+.boton-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* ---------------- SECCIÓN DEL CALENDARIO ---------------- */
+.calendar-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
 }
 
 .full-calendar-wrapper {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  display: block;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
 }
 
 .full-calendar {
-  width: 100% !important;
-  min-width: 0 !important;
-  margin: 0 auto;
-  padding: 0;
-  box-sizing: border-box;
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .full-calendar-wrapper .fc {
-  width: 100% !important;
-}
-
-/* El botón solo ocupa su ancho natural */
-.container-fluid .btn-success {
-  width: auto;
-  min-width: 180px;
-}
-
-@media (max-width: 1500px) {
-  .full-calendar-wrapper {
-    max-width: 98vw;
-  }
-}
-
-.custom-blue {
-  background-color: #3fb5eb !important;
-  border-color: #3fb5eb !important;
-  color: #fff !important;
-}
-
-.custom-blue:hover, .custom-blue:focus {
-  background-color: #249fd6 !important;
-  border-color: #249fd6 !important;
-  color: #fff !important;
+    width: 100% !important;
 }
 
 /* Estilos para los eventos del calendario */
@@ -72,6 +182,39 @@ full-calendar {
 .fc-event-title {
   font-weight: 500 !important;
   line-height: 1.2 !important;
+}
+
+/* Estilos específicos para vista de tiempo (semana/día) */
+.fc-timegrid-event {
+  border-radius: 6px !important;
+  font-size: 0.9em !important;
+  padding: 4px 6px !important;
+  margin: 1px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.fc-timegrid-event .fc-event-title {
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  color: white !important;
+}
+
+.fc-timegrid-event .fc-event-time {
+  font-size: 0.8em !important;
+  opacity: 0.9 !important;
+  font-weight: 500 !important;
+}
+
+/* Estilos para eventos disponibles */
+.fc-event[style*="rgb(76, 175, 80)"] {
+  background-color: #4caf50 !important;
+  border-color: #45a049 !important;
+}
+
+/* Estilos para eventos reservados */
+.fc-event[style*="rgb(255, 152, 0)"] {
+  background-color: #ff9800 !important;
+  border-color: #f57c00 !important;
 }
 
 /* Estilos para el modal de vista detallada */
@@ -193,7 +336,7 @@ full-calendar {
   padding: 2px 4px !important;
 }
 
-/* Estilos para el modal backdrop personalizado */
+/* ---------------- ESTILOS MODALES ---------------- */
 .modal-backdrop.show {
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -201,22 +344,92 @@ full-calendar {
 .modal-content {
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: none;
 }
 
 .modal-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  background-color: #3fb5eb;
+  color: white;
+  border-bottom: none;
   border-radius: 8px 8px 0 0;
+  padding: 20px;
+}
+
+.modal-header .modal-title {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.modal-header .close {
+  color: white;
+  opacity: 0.8;
+  text-shadow: none;
+}
+
+.modal-header .close:hover {
+  opacity: 1;
+}
+
+.modal-body {
+  padding: 30px;
+  background-color: #f8f9fa;
 }
 
 .modal-footer {
   background-color: #f8f9fa;
   border-top: 1px solid #dee2e6;
   border-radius: 0 0 8px 8px;
+  padding: 20px;
 }
 
-/* Responsive mejoras */
+/* ---------------- RESPONSIVE ---------------- */
 @media (max-width: 768px) {
+  .calendar-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .legend-section {
+    min-width: 100%;
+  }
+
+  .legend-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .button-container {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .boton {
+    width: 100%;
+  }
+
+  .page-title {
+    padding: 25px 15px;
+    margin: 15px 0 25px 0;
+  }
+
+  .page-title h1 {
+    font-size: 28px;
+  }
+
+  .container {
+    padding: 60px 12px 0 12px;
+  }
+
+  .calendar-controls {
+    padding: 15px;
+  }
+
+  .calendar-section {
+    padding: 15px;
+  }
+
   .modal-xl {
     max-width: 95vw;
   }
@@ -233,6 +446,110 @@ full-calendar {
   .btn-group .btn {
     margin-bottom: 5px;
   }
+
+  .full-calendar-wrapper {
+    padding: 0 !important;
+  }
+}
+
+/* ---------------- ESTILOS FORMULARIO MODAL ---------------- */
+.modal-body form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.modal-body .form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.modal-body .form-control:focus {
+  border-color: #3fb5eb;
+  box-shadow: 0 0 0 0.2rem rgba(63, 181, 235, 0.25);
+}
+
+.modal-body label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.modal-body input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* ---------------- UTILIDADES ---------------- */
+.text-center { 
+  text-align: center !important; 
+}
+
+.mt-3 { 
+  margin-top: 1rem !important; 
+}
+
+.mb-2 { 
+  margin-bottom: 0.5rem !important; 
+}
+
+.gap-3 {
+  gap: 1rem !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.col-12 {
+  width: 100%;
+}
+
+.col-md-6 {
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .col-md-6 {
+    width: 100%;
+  }
+}
+
+/* ---------------- CALENDARIO FULLCALENDAR ---------------- */
+.fc {
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+.fc-header-toolbar {
+  margin-bottom: 1.5rem !important;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+}
+
+.fc-daygrid-day-number {
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
+}
+
+.fc-col-header-cell {
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+}
+
+.fc-col-header-cell-cushion {
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
 }
 
 /* Estilos para las vistas de calendario */
