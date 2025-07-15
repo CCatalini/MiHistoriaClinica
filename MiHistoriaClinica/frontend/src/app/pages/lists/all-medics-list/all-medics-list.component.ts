@@ -47,10 +47,20 @@ export class AllMedicsListComponent implements OnInit {
         if (localStorage.getItem('userType') != 'PATIENT') {
             this.router.navigate(['/patient/login']);
         } else {
-            this.formSubmit(); // Creamos medics list
             this.userService.getAllSpecialties().subscribe((data: any) => {
                 this.specialties = data;
             });
+            this.userService.getAllMedicsList().subscribe((data: any) => {
+                if (Array.isArray(data)) {
+                    this.medics = data;
+                    this.filteredMedics = data;
+                    this.updateNames();
+                }
+            });
+            // Inicializar turnos vacíos
+            this.availableTurnos = [];
+            this.filteredTurnos = [];
+            this.totalPages = 1;
         }
     }
 
@@ -138,17 +148,9 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     filterTurnos() {
-        this.filteredTurnos = this.availableTurnos.filter(turno => {
-            const specialtyMatch = this.selectedSpecialty ? turno.specialty === this.selectedSpecialty : true;
-            const nameMatch = this.selectedName ? turno.medicName.includes(this.selectedName) : true;
-            const centerMatch = this.selectedMedicalCenter ? turno.medicalCenter === this.selectedMedicalCenter : true;
-            const dateMatch = this.selectedDateRange.start && this.selectedDateRange.end ? 
-                turno.fechaTurno >= this.selectedDateRange.start && turno.fechaTurno <= this.selectedDateRange.end : true;
-            
-            return specialtyMatch && nameMatch && centerMatch && dateMatch;
-        });
-        
-        // Calcular paginación después de filtrar
+        this.filteredTurnos = this.availableTurnos.slice();
+        console.log('Turnos disponibles:', this.availableTurnos);
+        console.log('Turnos filtrados:', this.filteredTurnos);
         this.calculatePagination();
     }
 
@@ -212,13 +214,10 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     updateSpecialties() {
-        // Especialidades presentes en la lista filtrada
-        this.specialties = Array.from(new Set(this.medics
-            .filter(medic => {
-                const nameMatch = this.selectedName ? medic.name === this.selectedName : true;
-                return nameMatch;
-            })
-            .map((m: any) => m.specialty)));
+        // Mostrar siempre todas las especialidades que envía el backend
+        this.userService.getAllSpecialties().subscribe((data: any) => {
+            this.specialties = data;
+        });
     }
 
     updateNames() {
@@ -332,11 +331,42 @@ export class AllMedicsListComponent implements OnInit {
 
     onSpecialtyChange() {
         this.selectedName = '';
-        this.filterMedics();
+        this.filteredMedics = this.medics.filter(medic => this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true);
+        this.updateNames();
+        if (this.selectedSpecialty) {
+            // Pedir turnos al backend por especialidad y rango de 30 días desde hoy
+            const today = new Date().toISOString().split('T')[0];
+            this.userService.getTurnosBySpecialtyRange(this.selectedSpecialty, today).subscribe((turnosDTO: any[]) => {
+                const turnos: any[] = [];
+                turnosDTO.forEach((dto: any) => {
+                    if (dto.availableTimes && dto.availableTimes.length > 0) {
+                        (dto.availableTimes as string[]).forEach((hora: string, idx: number) => {
+                            // Asignar una fecha dummy diferente para cada 20 turnos
+                            const fecha = new Date();
+                            fecha.setDate(fecha.getDate() + Math.floor(idx / 20));
+                            turnos.push({
+                                medicId: dto.medicId,
+                                medicName: dto.medicFullName, // Usar el campo correcto
+                                specialty: dto.specialty,
+                                medicalCenter: dto.medicalCenter,
+                                fechaTurno: fecha.toISOString().split('T')[0],
+                                horaTurno: hora
+                            });
+                        });
+                    }
+                });
+                this.availableTurnos = turnos;
+                this.filterTurnos();
+            });
+        } else {
+            this.availableTurnos = [];
+            this.filteredTurnos = [];
+            this.totalPages = 1;
+        }
     }
 
     onNameChange() {
-        this.filterMedics();
+        this.filterTurnos();
     }
 
     onMedicalCenterChange() {
