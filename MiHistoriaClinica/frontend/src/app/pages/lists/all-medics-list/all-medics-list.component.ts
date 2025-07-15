@@ -339,18 +339,15 @@ export class AllMedicsListComponent implements OnInit {
             this.userService.getTurnosBySpecialtyRange(this.selectedSpecialty, today).subscribe((turnosDTO: any[]) => {
                 const turnos: any[] = [];
                 turnosDTO.forEach((dto: any) => {
-                    if (dto.availableTimes && dto.availableTimes.length > 0) {
-                        (dto.availableTimes as string[]).forEach((hora: string, idx: number) => {
-                            // Asignar una fecha dummy diferente para cada 20 turnos
-                            const fecha = new Date();
-                            fecha.setDate(fecha.getDate() + Math.floor(idx / 20));
+                    if (dto.availableTurnos && dto.availableTurnos.length > 0) {
+                        dto.availableTurnos.forEach((turno: any) => {
                             turnos.push({
                                 medicId: dto.medicId,
-                                medicName: dto.medicFullName, // Usar el campo correcto
+                                medicName: dto.medicFullName,
                                 specialty: dto.specialty,
                                 medicalCenter: dto.medicalCenter,
-                                fechaTurno: fecha.toISOString().split('T')[0],
-                                horaTurno: hora
+                                fechaTurno: turno.fecha,
+                                horaTurno: turno.hora
                             });
                         });
                     }
