@@ -1,78 +1,317 @@
-.example-list-wrapping {
-    max-width: 500px;
+/* ---------------- GLOBAL RESET ---------------- */
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    box-sizing: border-box;
 }
 
+/* ---------------- CONTENEDOR PRINCIPAL ---------------- */
 .container {
-    /* Deja espacio fijo para la toolbar del header y algo de margen */
-    margin-top: 100px;
-
-    /* Centra el contenido y se adapta al ancho de pantalla */
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     padding: 0 16px;
-
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    background: #f5f5f5;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-top: 80px; /* Separación del header azul */
 }
 
-.downloadList h4 {
-    font-size: 20px;
-    margin-bottom: 20px;
+/* ---------------- TÍTULO PRINCIPAL ---------------- */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-bottom: 3px solid #3fb5eb;
 }
 
-.downloadList mat-checkbox {
-    margin: 0 10px;
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
 }
 
-/* Fila de filtros */
+/* ---------------- FILTROS Y BOTÓN ---------------- */
+.filters-section {
+    width: 100%;
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filters-section h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    text-align: left;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
 .filters-row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
     gap: 15px;
+    margin-bottom: 15px;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
-/* Título enmarcado al estilo del PDF */
-.title-box {
-    border: 2px solid #000;
-    padding: 10px 25px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 25px;
+.filters-row mat-checkbox {
+    flex: 0 0 auto;
+    min-width: max-content;
+}
+
+/* ---------------- BOTÓN DESCARGAR ---------------- */
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 10px;
 }
 
 .boton {
     background-color: #3fb5eb;
     color: white;
     font-size: 16px;
-    padding: 5px 10px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
 }
 
-.button-container {
-    display: flex;
-    justify-content: center;
+.boton:hover {
+    background-color: #2ea3d4;
 }
 
-/* Permite scroll horizontal en tablas cuando el ancho es menor */
-table {
-    width: 100%;
+/* ---------------- SECCIONES DE CONTENIDO ---------------- */
+.section {
+    margin-top: 20px;
 }
 
+.medical-file-section,
+.medicines-section,
+.analysis-section,
+.appointments-section {
+    margin-bottom: 25px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.medical-file-section h2,
+.medicines-section h2,
+.analysis-section h2,
+.appointments-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 2px solid #3fb5eb;
+    padding-bottom: 10px;
+}
+
+/* ---------------- TABLAS ---------------- */
 .table-responsive {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    margin-top: 15px;
 }
 
+table {
+    width: 100%;
+    min-width: 800px; /* Ancho mínimo fijo para todas las tablas */
+    table-layout: fixed; /* Mantiene anchos consistentes */
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+table th {
+    background-color: #343a40;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+table td {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+/* Anchos específicos para columnas de medicamentos y estudios */
+.medicines-section table th:nth-child(1),
+.medicines-section table td:nth-child(1),
+.analysis-section table th:nth-child(1),
+.analysis-section table td:nth-child(1) {
+    width: 25%;
+}
+
+.medicines-section table th:nth-child(2),
+.medicines-section table td:nth-child(2),
+.analysis-section table th:nth-child(2),
+.analysis-section table td:nth-child(2) {
+    width: 55%;
+}
+
+.medicines-section table th:nth-child(3),
+.medicines-section table td:nth-child(3),
+.analysis-section table th:nth-child(3),
+.analysis-section table td:nth-child(3) {
+    width: 20%;
+}
+
+/* Anchos específicos para columnas de consultas médicas */
+.appointments-section table th:nth-child(1),
+.appointments-section table td:nth-child(1) {
+    width: 15%;
+}
+
+.appointments-section table th:nth-child(2),
+.appointments-section table td:nth-child(2) {
+    width: 10%;
+}
+
+.appointments-section table th:nth-child(3),
+.appointments-section table td:nth-child(3) {
+    width: 12%;
+}
+
+.appointments-section table th:nth-child(4),
+.appointments-section table td:nth-child(4),
+.appointments-section table th:nth-child(5),
+.appointments-section table td:nth-child(5),
+.appointments-section table th:nth-child(6),
+.appointments-section table td:nth-child(6),
+.appointments-section table th:nth-child(7),
+.appointments-section table td:nth-child(7) {
+    width: 18%;
+}
+
+/* ---------------- FICHA MÉDICA ---------------- */
+.medical-file-content {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.medical-file-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.medical-file-item:last-child {
+    border-bottom: none;
+}
+
+.medical-file-label {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 200px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.medical-file-value {
+    color: #495057;
+    font-weight: 500;
+    flex: 1;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
 @media (max-width: 768px) {
-    .downloadList h4 {
-        text-align: center;
+    .filters-row {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .title-box {
+    .button-container {
+        justify-content: flex-start;
+    }
+
+    .page-title {
+        padding: 25px 15px;
+        margin: 15px 0 25px 0;
+    }
+
+    .page-title h1 {
+        font-size: 32px;
+    }
+
+    .container {
+        padding: 60px 12px 0 12px;
+    }
+
+    .filters-section {
+        padding: 15px;
+    }
+
+    .medical-file-section,
+    .medicines-section,
+    .analysis-section,
+    .appointments-section {
+        padding: 15px;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    table th,
+    table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .medical-file-section h2,
+    .medicines-section h2,
+    .analysis-section h2,
+    .appointments-section h2 {
         font-size: 20px;
     }
+
+    .medical-file-label {
+        min-width: 150px;
+        margin-right: 10px;
+        font-size: 14px;
+    }
+
+    .medical-file-value {
+        font-size: 14px;
+    }
 }
+
+/* ---------------- UTILIDADES ---------------- */
+.mt20 { margin-top: 20px !important; }
+.mb20 { margin-bottom: 20px !important; }
+.ml10 { margin-left: 10px !important; }
+.mr10 { margin-right: 10px !important; }
+.text-center { text-align: center; }
