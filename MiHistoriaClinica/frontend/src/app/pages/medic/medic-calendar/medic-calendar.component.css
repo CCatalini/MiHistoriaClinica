@@ -11,10 +11,10 @@ html, body {
 
 /* ---------------- CONTENEDOR PRINCIPAL ---------------- */
 .container {
-    width: 100%;
-    max-width: 95vw;
-    padding: 0 8px;
-    margin: 0 auto;
+    width: 100vw;
+    max-width: none;
+    padding: 0 10px;
+    margin: 0;
     display: flex;
     flex-direction: column;
     background: #f5f5f5;
@@ -22,17 +22,19 @@ html, body {
     max-height: 100vh;
     overflow-y: auto;
     padding-top: 80px; /* Separación del header azul */
+    box-sizing: border-box;
 }
 
 /* ---------------- TÍTULO PRINCIPAL ---------------- */
 .page-title {
     background: white;
     padding: 20px;
-    margin: 0 0 20px 0;
+    margin: 0 auto 20px auto;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
     border-bottom: 3px solid #3fb5eb;
+    width: 95%;
 }
 
 .page-title h1 {
@@ -45,8 +47,8 @@ html, body {
 
 /* ---------------- CONTROLES DEL CALENDARIO ---------------- */
 .calendar-controls {
-    width: 100%;
-    margin-bottom: 25px;
+    width: 95%;
+    margin: 0 auto 25px auto;
     background: white;
     padding: 20px;
     border-radius: 8px;
@@ -147,28 +149,174 @@ html, body {
 /* ---------------- SECCIÓN DEL CALENDARIO ---------------- */
 .calendar-section {
     background: white;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
+    margin: 0 auto 25px auto;
+    width: 95%;
+    overflow-x: auto;
 }
 
 .full-calendar-wrapper {
-    width: 100%;
+    width: 95%;
     margin: 0 auto;
     display: block;
+    overflow-x: auto;
 }
 
 .full-calendar {
-    width: 100% !important;
-    min-width: 0 !important;
+    width: 95% !important;
+    min-width: 95% !important;
     margin: 0 auto;
     padding: 0;
     box-sizing: border-box;
 }
 
 .full-calendar-wrapper .fc {
-    width: 100% !important;
+    width: 95% !important;
+    min-width: 95% !important;
+}
+
+/* Forzar ancho completo en todas las tablas del calendario */
+.fc-scrollgrid {
+    width: 95% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.fc-scrollgrid-section table {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+/* Asegurar que las columnas usen el espacio disponible */
+.fc-col-header-cell {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+.fc-daygrid-day {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+/* Expandir el contenedor del calendario para usar todo el espacio disponible */
+.fc-daygrid-day-cell {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Forzar ancho completo en todos los elementos del calendario */
+.fc-view-harness {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-body {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+.fc-scrollgrid-sync-table {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+/* Asegurar que las columnas de los días se distribuyan equitativamente */
+.fc-day-header {
+    width: 14.28% !important;
+    min-width: 0 !important;
+}
+
+/* Centrar y expandir todo el contenido del calendario */
+.fc-daygrid-day-top {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.fc-daygrid-day-events {
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-day-bottom {
+    margin: 0 auto !important;
+}
+
+.fc-timegrid-col {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+/* Centrar específicamente el contenedor principal del calendario */
+.fc-toolbar-title {
+    text-align: center !important;
+}
+
+.fc-daygrid-header {
+    margin: 0 auto !important;
+}
+
+/* Centrar todo el contenido del calendario */
+.fc-view {
+    margin: 0 auto !important;
+}
+
+.fc-scroller {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor del calendario completo */
+.fc-daygrid {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar la tabla principal del calendario */
+.fc-scrollgrid-liquid {
+    margin: 0 auto !important;
+}
+
+.fc-scrollgrid table {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor padre del calendario */
+.fc-daygrid-container {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar completamente el calendario */
+.fc-daygrid-event-harness {
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-day-frame {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor general del calendario */
+.fc-daygrid-view {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor padre del calendario */
+.fc-view-container {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor más externo del calendario */
+.fc-direction-ltr {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor del calendario completo */
+.fc-theme-standard {
+    margin: 0 auto !important;
+    text-align: center !important;
 }
 
 /* Estilos para los eventos del calendario */
@@ -187,22 +335,43 @@ html, body {
 /* Estilos específicos para vista de tiempo (semana/día) */
 .fc-timegrid-event {
   border-radius: 6px !important;
-  font-size: 0.9em !important;
-  padding: 4px 6px !important;
+  font-size: 0.85em !important;
+  padding: 6px 8px !important;
   margin: 1px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 
 .fc-timegrid-event .fc-event-title {
   font-weight: 600 !important;
-  line-height: 1.3 !important;
+  line-height: 1.2 !important;
   color: white !important;
+  white-space: pre-line !important;
+  text-align: center !important;
+  word-wrap: break-word !important;
 }
 
 .fc-timegrid-event .fc-event-time {
-  font-size: 0.8em !important;
-  opacity: 0.9 !important;
-  font-weight: 500 !important;
+  display: none !important; /* Ocultar tiempo por defecto ya que lo mostramos en el título */
+}
+
+/* Mejorar la visualización del contenido del evento */
+.fc-timegrid-event .fc-event-main {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  text-align: center !important;
+}
+
+.fc-timegrid-event .fc-event-title-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
 }
 
 /* Estilos para eventos disponibles */
@@ -215,6 +384,41 @@ html, body {
 .fc-event[style*="rgb(255, 152, 0)"] {
   background-color: #ff9800 !important;
   border-color: #f57c00 !important;
+}
+
+/* Estilos específicos para eventos en tiempo grid (día/semana) */
+.fc-timegrid-event {
+  min-height: 20px !important;
+  cursor: pointer !important;
+}
+
+.fc-timegrid-event:hover {
+  opacity: 0.9 !important;
+  transform: scale(1.02) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Mejorar la legibilidad del texto en eventos pequeños */
+.fc-timegrid-event .fc-event-title {
+  font-size: 0.8em !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Estilos específicos para eventos de 30 minutos */
+.fc-timegrid-event[data-duration="30"] .fc-event-title {
+  font-size: 0.75em !important;
+  line-height: 1.1 !important;
+}
+
+/* Ajustar espaciado para eventos cortos */
+.fc-timegrid-event.fc-event-short {
+  padding: 2px 4px !important;
+}
+
+.fc-timegrid-event.fc-event-short .fc-event-title {
+  font-size: 0.7em !important;
+  line-height: 1.0 !important;
 }
 
 /* Estilos para el modal de vista detallada */
@@ -391,7 +595,7 @@ html, body {
   }
 
   .legend-section {
-    min-width: 100%;
+    min-width: 95%;
   }
 
   .legend-row {
@@ -402,16 +606,16 @@ html, body {
 
   .button-container {
     justify-content: flex-start;
-    width: 100%;
+    width: 95%;
   }
 
   .boton {
-    width: 100%;
+    width: 95%;
   }
 
   .page-title {
     padding: 25px 15px;
-    margin: 15px 0 25px 0;
+    margin: 15px auto 25px auto;
   }
 
   .page-title h1 {
@@ -424,10 +628,12 @@ html, body {
 
   .calendar-controls {
     padding: 15px;
+    margin: 0 auto 25px auto;
   }
 
   .calendar-section {
     padding: 15px;
+    margin: 0 auto 25px auto;
   }
 
   .modal-xl {
@@ -440,7 +646,7 @@ html, body {
   
   .btn-group {
     flex-direction: column;
-    width: 100%;
+    width: 95%;
   }
   
   .btn-group .btn {
@@ -449,6 +655,7 @@ html, body {
 
   .full-calendar-wrapper {
     padding: 0 !important;
+    margin: 0 auto;
   }
 }
 
@@ -509,7 +716,7 @@ html, body {
 }
 
 .col-12 {
-  width: 100%;
+  width: 95%;
 }
 
 .col-md-6 {
@@ -518,17 +725,20 @@ html, body {
 
 @media (max-width: 768px) {
   .col-md-6 {
-    width: 100%;
+    width: 95%;
   }
 }
 
 /* ---------------- CALENDARIO FULLCALENDAR ---------------- */
 .fc {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+    font-family: Roboto, "Helvetica Neue", sans-serif !important;
+    margin: 0 auto !important;
+    text-align: center !important;
 }
 
 .fc-header-toolbar {
-  margin-bottom: 1.5rem !important;
+    margin: 0 auto 1.5rem auto !important;
+    text-align: center !important;
 }
 
 .fc-toolbar-title {
@@ -554,12 +764,14 @@ html, body {
 
 /* Estilos para las vistas de calendario */
 .fc-toolbar {
-  margin-bottom: 1rem !important;
+    margin: 0 auto 1rem auto !important;
+    text-align: center !important;
 }
 
 .fc-toolbar-chunk {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .fc-button {

@@ -40,8 +40,8 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         eventDisplay: 'block',
         dayMaxEventRows: 3,
         moreLinkClick: 'day',
-        slotMinTime: '06:00:00',
-        slotMaxTime: '22:00:00',
+        slotMinTime: '08:00:00',
+        slotMaxTime: '20:00:00',
         slotDuration: '00:30:00',
         allDaySlot: false,
         displayEventTime: true
@@ -288,9 +288,15 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             const title = this.getTurnoTitle(turno);
             const color = turno.available ? '#4caf50' : '#ff9800';
             
+            // Calcular tiempo de fin basado en la duración del turno
+            const startTime = new Date(`${turno.fechaTurno}T${turno.horaTurno}`);
+            const duracionMinutos = turno.duracion || 30; // Usar duración del turno o 30 minutos por defecto
+            const endTime = new Date(startTime.getTime() + (duracionMinutos * 60 * 1000));
+            
             this.my_events.push({
                 title: title,
                 start: `${turno.fechaTurno}T${turno.horaTurno}`,
+                end: endTime.toISOString(),
                 color: color,
                 allDay: false,
                 extendedProps: {
@@ -304,12 +310,17 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
 
     getTurnoTitle(turno: any): string {
         const centerShort = this.formatMedicalCenterShort(turno.medicalCenter);
+        const hora = turno.horaTurno.substring(0, 5); // Solo HH:MM
+        const duracion = turno.duracion || 30;
+        
+        // Mostrar duración solo si es diferente a 30 minutos
+        const duracionText = duracion !== 30 ? ` (${duracion}min)` : '';
         
         if (turno.available) {
-            return `${centerShort} - Disponible`;
+            return `${centerShort} ${hora}${duracionText}\nDisponible`;
         } else {
             const patientName = turno.patient ? `${turno.patient.name} ${turno.patient.lastname}` : 'Paciente';
-            return `${centerShort} - ${patientName}`;
+            return `${centerShort} ${hora}${duracionText}\n${patientName}`;
         }
     }
 
@@ -376,7 +387,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         const extendedProps = arg.event.extendedProps;
         
         if (extendedProps.turnos) {
-            // Evento agrupado (vista mensual)
+            // Evento agrupado (vista mensual) - permitir selección
             const turnos = extendedProps.turnos;
             const center = extendedProps.center;
             const date = extendedProps.date;
@@ -385,14 +396,49 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             this.selectedDateTurnos = turnos;
             this.showDetailModal = true;
         } else if (extendedProps.turno) {
-            // Evento individual (vista semanal/diaria)
+            // Evento individual (vista semanal/diaria) - solo mostrar información
             const turno = extendedProps.turno;
-            const date = extendedProps.date;
-            
-            this.selectedDate = date;
-            this.selectedDateTurnos = [turno];
-            this.showDetailModal = true;
+            this.showTurnoInfo(turno);
         }
+    }
+
+    showTurnoInfo(turno: any) {
+        const centerName = this.formatMedicalCenter(turno.medicalCenter);
+        const hora = turno.horaTurno.substring(0, 5);
+        const duracion = turno.duracion || 30;
+        const fecha = new Date(turno.fechaTurno).toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Calcular hora de fin
+        const startTime = new Date(`${turno.fechaTurno}T${turno.horaTurno}`);
+        const endTime = new Date(startTime.getTime() + (duracion * 60 * 1000));
+        const horaFin = endTime.toTimeString().substring(0, 5);
+        
+        let info = `📅 ${fecha}\n⏰ ${hora} - ${horaFin} (${duracion} min)\n🏥 ${centerName}\n\n`;
+        
+        if (turno.available) {
+            info += `✅ Estado: Disponible\n`;
+            info += `💡 Este turno está disponible para ser reservado por un paciente.`;
+        } else {
+            const patientName = turno.patient ? `${turno.patient.name} ${turno.patient.lastname}` : 'Paciente no identificado';
+            info += `🔒 Estado: Reservado\n`;
+            info += `👤 Paciente: ${patientName}\n`;
+            if (turno.patient && turno.patient.email) {
+                info += `📧 Email: ${turno.patient.email}\n`;
+            }
+            if (turno.patient && turno.patient.dni) {
+                info += `🆔 DNI: ${turno.patient.dni}\n`;
+            }
+            if (turno.patient && turno.patient.phone) {
+                info += `📞 Teléfono: ${turno.patient.phone}\n`;
+            }
+        }
+        
+        alert(info);
     }
 
     handleDateClick(arg: any) {
