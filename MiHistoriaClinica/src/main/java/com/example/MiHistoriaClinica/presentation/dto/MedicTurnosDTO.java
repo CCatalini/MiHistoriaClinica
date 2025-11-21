@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -18,5 +17,5 @@ public class MedicTurnosDTO {
     private String medicFullName;
     private MedicalSpecialtyE specialty;
     private String medicalCenter;
-    private List<LocalTime> availableTimes;
+    private List<TurnoDisponibleDTO> availableTurnos;
 } 

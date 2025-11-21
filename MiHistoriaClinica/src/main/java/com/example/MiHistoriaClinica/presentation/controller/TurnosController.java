@@ -49,6 +49,22 @@ public class TurnosController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/patient/available-by-specialty-range")
+    public ResponseEntity<List<MedicTurnosDTO>> getAvailableBySpecialtyRange(
+            @RequestParam("specialty") String specialty,
+            @RequestParam("startDate") String startDate) {
+        List<MedicTurnosDTO> result = patientService.searchAvailableTurnosBySpecialtyAndDateRange(specialty, startDate);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/patient/medics-with-available-turnos")
+    public ResponseEntity<List<String>> getMedicsWithAvailableTurnosBySpecialty(
+            @RequestParam("specialty") String specialty,
+            @RequestParam("startDate") String startDate) {
+        List<String> medics = patientService.getMedicsWithAvailableTurnosBySpecialty(specialty, startDate);
+        return new ResponseEntity<>(medics, HttpStatus.OK);
+    }
+
     @GetMapping("/patient/get-turnos")
     public ResponseEntity<List<Turnos>> getMisTurnos (@RequestHeader("Authorization") String token) throws InvalidTokenException {
         List<Turnos> misTurnos = patientService.getMisTurnos(jwtValidator.getId(token));
