@@ -40,24 +40,6 @@ export class AllMedicsListComponent implements OnInit {
     ];
     selectedMedicalCenter: string = '';
 
-    // Nuevas propiedades para el formulario de búsqueda
-    selectedPatient: string = '';
-    selectedCoverage: string = '';
-    searchTerm: string = '';
-    showResults: boolean = false;
-
-    // Especialidades más agendadas y más buscadas
-    mostScheduledSpecialties: string[] = [
-        'ENDOCRINOLOGIA',
-        'GINECOLOGIA VIRTUAL'
-    ];
-
-    mostSearchedSpecialties: string[] = [
-        'CARDIOLOGIA',
-        'CLINICA MEDICA',
-        'DERMATOLOGIA'
-    ];
-
     constructor(private userService: PatientService, private router: Router) { }
 
     ngOnInit(): void {
@@ -65,19 +47,24 @@ export class AllMedicsListComponent implements OnInit {
         if (localStorage.getItem('userType') != 'PATIENT') {
             this.router.navigate(['/patient/login']);
         } else {
-            this.formSubmit(); // Creamos medics list
             this.userService.getAllSpecialties().subscribe((data: any) => {
                 this.specialties = data;
-                
-                // Actualizar las especialidades más agendadas y más buscadas con datos reales
-                if (data && data.length > 0) {
-                    // Tomar las primeras especialidades disponibles para "más agendadas"
-                    this.mostScheduledSpecialties = data.slice(0, 2);
-                    
-                    // Tomar otras especialidades para "más buscadas"
-                    this.mostSearchedSpecialties = data.slice(2, 5);
+            });
+            this.userService.getAllMedicsList().subscribe((data: any) => {
+                if (Array.isArray(data)) {
+                    this.medics = data;
+                    this.filteredMedics = data;
+                    this.updateNames();
                 }
             });
+            // Cargar centros médicos usando el mismo endpoint que el calendario del médico
+            this.userService.getAllMedicalCenterNames().subscribe((centers: string[]) => {
+                this.medicalCenters = centers;
+            });
+            // Inicializar turnos vacíos
+            this.availableTurnos = [];
+            this.filteredTurnos = [];
+            this.totalPages = 1;
         }
     }
 
@@ -166,21 +153,12 @@ export class AllMedicsListComponent implements OnInit {
 
     filterTurnos() {
         this.filteredTurnos = this.availableTurnos.filter(turno => {
-            const specialtyMatch = this.selectedSpecialty ? turno.specialty === this.selectedSpecialty : true;
-            const nameMatch = this.selectedName ? turno.medicName.includes(this.selectedName) : true;
+            const nameMatch = this.selectedName ? turno.medicName === this.selectedName : true;
             const centerMatch = this.selectedMedicalCenter ? turno.medicalCenter === this.selectedMedicalCenter : true;
             const dateMatch = this.selectedDateRange.start && this.selectedDateRange.end ? 
                 turno.fechaTurno >= this.selectedDateRange.start && turno.fechaTurno <= this.selectedDateRange.end : true;
-            
-            // Búsqueda adicional por término de búsqueda (si no hay selecciones específicas)
-            const searchTermMatch = this.searchTerm && !this.selectedSpecialty && !this.selectedName ? 
-                turno.specialty.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-                turno.medicName.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
-            
-            return specialtyMatch && nameMatch && centerMatch && dateMatch && searchTermMatch;
+            return nameMatch && centerMatch && dateMatch;
         });
-        
-        // Calcular paginación después de filtrar
         this.calculatePagination();
     }
 
@@ -244,23 +222,27 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     updateSpecialties() {
-        // Especialidades presentes en la lista filtrada
-        this.specialties = Array.from(new Set(this.medics
-            .filter(medic => {
-                const nameMatch = this.selectedName ? medic.name === this.selectedName : true;
-                return nameMatch;
-            })
-            .map((m: any) => m.specialty)));
+        // Mostrar siempre todas las especialidades que envía el backend
+        this.userService.getAllSpecialties().subscribe((data: any) => {
+            this.specialties = data;
+        });
     }
 
     updateNames() {
-        // Nombres presentes en la lista filtrada
-        this.names = Array.from(new Set(this.medics
-            .filter(medic => {
-                const specialtyMatch = this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true;
-                return specialtyMatch;
-            })
-            .map((m: any) => m.name + ' ' + m.lastname)));
+        if (this.selectedSpecialty) {
+            const today = new Date().toISOString().split('T')[0];
+            this.userService.getMedicsWithAvailableTurnosBySpecialty(this.selectedSpecialty, today).subscribe((medics: string[]) => {
+                this.names = medics;
+                console.log('Nombres de médicos en filtro (desde backend):', this.names);
+            });
+        } else {
+            // Si no hay especialidad seleccionada, mostrar todos los médicos con turnos disponibles
+            this.names = Array.from(new Set(this.availableTurnos
+                .map((t: any) => t.medicName && t.medicName.trim())
+                .filter((name: string | undefined) => !!name)
+            ));
+            console.log('Nombres de médicos en filtro:', this.names);
+        }
     }
 
     getAvailableDates() {
@@ -364,11 +346,40 @@ export class AllMedicsListComponent implements OnInit {
 
     onSpecialtyChange() {
         this.selectedName = '';
-        this.filterMedics();
+        this.filteredMedics = this.medics.filter(medic => this.selectedSpecialty ? medic.specialty === this.selectedSpecialty : true);
+        if (this.selectedSpecialty) {
+            // Pedir turnos al backend por especialidad y rango de 30 días desde hoy
+            const today = new Date().toISOString().split('T')[0];
+            this.userService.getTurnosBySpecialtyRange(this.selectedSpecialty, today).subscribe((turnosDTO: any[]) => {
+                const turnos: any[] = [];
+                turnosDTO.forEach((dto: any) => {
+                    if (dto.availableTurnos && dto.availableTurnos.length > 0) {
+                        dto.availableTurnos.forEach((turno: any) => {
+                            turnos.push({
+                                medicId: dto.medicId,
+                                medicName: dto.medicFullName,
+                                specialty: dto.specialty,
+                                medicalCenter: dto.medicalCenter,
+                                fechaTurno: turno.fecha,
+                                horaTurno: turno.hora
+                            });
+                        });
+                    }
+                });
+                this.availableTurnos = turnos;
+                this.updateNames(); // <-- Aquí se actualiza el filtro de médicos
+                this.filterTurnos();
+            });
+        } else {
+            this.availableTurnos = [];
+            this.filteredTurnos = [];
+            this.totalPages = 1;
+            this.updateNames();
+        }
     }
 
     onNameChange() {
-        this.filterMedics();
+        this.filterTurnos();
     }
 
     onMedicalCenterChange() {
@@ -400,69 +411,6 @@ export class AllMedicsListComponent implements OnInit {
             timer: 2000,
             showConfirmButton: false
         });
-    }
-
-    // Nuevos métodos para el formulario de búsqueda
-    onSearchChange() {
-        if (this.searchTerm.length >= 2) {
-            // Limpiar selecciones previas
-            this.selectedSpecialty = '';
-            this.selectedName = '';
-            
-            // Buscar tanto en especialidades como en nombres de médicos
-            const foundSpecialty = this.specialties.find(specialty => 
-                specialty.toLowerCase().includes(this.searchTerm.toLowerCase())
-            );
-            
-            const foundMedic = this.medics.find(medic => 
-                (medic.name + ' ' + medic.lastname).toLowerCase().includes(this.searchTerm.toLowerCase())
-            );
-            
-            if (foundSpecialty) {
-                this.selectedSpecialty = foundSpecialty;
-            }
-            
-            if (foundMedic) {
-                this.selectedName = foundMedic.name + ' ' + foundMedic.lastname;
-            }
-            
-            // Mostrar resultados automáticamente si hay coincidencias
-            if (foundSpecialty || foundMedic) {
-                this.showResults = true;
-                this.filterTurnos();
-            }
-        } else if (this.searchTerm.length === 0) {
-            this.selectedSpecialty = '';
-            this.selectedName = '';
-            this.showResults = false;
-        }
-    }
-
-    selectSpecialty(specialty: string) {
-        this.selectedSpecialty = specialty;
-        this.searchTerm = specialty;
-        this.selectedName = ''; // Limpiar selección de médico
-        this.updateNames(); // Actualizar lista de nombres disponibles
-        this.showResults = true;
-        this.filterTurnos();
-    }
-
-    showAvailability() {
-        if (!this.selectedSpecialty && !this.searchTerm && !this.selectedName) {
-            Swal.fire('Error', 'Por favor selecciona una especialidad o realiza una búsqueda.', 'warning');
-            return;
-        }
-        
-        this.showResults = true;
-        this.filterTurnos();
-        
-        // Scroll suave hacia la sección de resultados
-        setTimeout(() => {
-            const resultsSection = document.querySelector('.results-section');
-            if (resultsSection) {
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 100);
     }
 
     redirectToAddTurno(medicId: string) {

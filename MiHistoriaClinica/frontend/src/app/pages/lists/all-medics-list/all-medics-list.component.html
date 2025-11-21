@@ -1,223 +1,191 @@
-<div class="container content-with-toolbar">
-
-    <!-- 🔵 Título principal -->
-    <div class="page-title">
-        <h1>Solicitar turno</h1>
+<div class="main-content">
+  <h1 class="text-center">Turnos Médicos Disponibles</h1>
+  <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-md-3 mb-2">
+      <select id="specialtySelect" class="form-control" [(ngModel)]="selectedSpecialty" (change)="onSpecialtyChange()">
+        <option value="">Ingrese especialidad</option>
+        <option *ngFor="let specialty of specialties" [value]="specialty">{{specialty}}</option>
+      </select>
     </div>
+    <div class="col-md-3 mb-2">
+      <select id="nameSelect" class="form-control" [(ngModel)]="selectedName" (change)="onNameChange()">
+        <option value="">Todos los médicos</option>
+        <option *ngFor="let name of names" [value]="name">{{name}}</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2">
+      <select id="centerSelect" class="form-control" [(ngModel)]="selectedMedicalCenter" (change)="onMedicalCenterChange()">
+        <option value="">Todos los centros médicos</option>
+        <option *ngFor="let center of medicalCenters" [value]="center">{{center}}</option>
+      </select>
+    </div>
+    <div class="col-md-3 mb-2">
+      <button class="form-control text-start" style="background-color: white; border: 1px solid #ced4da; cursor: pointer;" (click)="showDateRangeModal = true">
+        Seleccionar rango de fechas
+      </button>
+    </div>
+  </div>
 
-    <!-- 🔵 Formulario de búsqueda -->
-    <div class="search-form-section">
-        <div class="search-form-content">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="patientSelect">¿Para quién es el turno?</label>
-                    <select id="patientSelect" class="form-control" [(ngModel)]="selectedPatient">
-                        <option value="">Camila Catalini</option>
-                        <option value="self">Para mí</option>
-                        <option value="family">Para un familiar</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="coverageSelect">¿Qué cobertura tienes?</label>
-                    <select id="coverageSelect" class="form-control" [(ngModel)]="selectedCoverage">
-                        <option value="">Austral salud Mi Medico 3030</option>
-                        <option value="austral">Austral Salud</option>
-                        <option value="osde">OSDE</option>
-                        <option value="swiss">Swiss Medical</option>
-                        <option value="particular">Particular</option>
-                    </select>
-                </div>
+  <!-- Rango de fechas seleccionado -->
+  <div class="row mb-3" *ngIf="selectedDateRange.start && selectedDateRange.end">
+    <div class="col-12">
+      <div class="alert alert-info d-flex justify-content-between align-items-center" style="background-color: #e3f2fd; border-color: #2196f3; color: #1976d2;">
+        <div>
+          <strong *ngIf="selectedDateRange.start === selectedDateRange.end">
+            Fecha seleccionada:
+          </strong>
+          <strong *ngIf="selectedDateRange.start !== selectedDateRange.end">
+            Rango seleccionado:
+          </strong>
+          {{ selectedDateRange.start | date:'dd/MM/yyyy' }}
+          <span *ngIf="selectedDateRange.start !== selectedDateRange.end">
+            - {{ selectedDateRange.end | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+        <button class="btn btn-sm btn-outline-primary" (click)="clearDateRange()" style="border-color: #2196f3; color: #2196f3;">
+          <i class="fas fa-times"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fechas disponibles -->
+  <div class="row mb-4" *ngIf="availableDates.length > 0">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Fechas disponibles:</h5>
+        <button 
+          *ngIf="selectedDateRange.start && selectedDateRange.start === selectedDateRange.end"
+          class="btn btn-sm btn-outline-secondary" 
+          (click)="clearDateFilter()"
+          style="border-color: #6c757d; color: #6c757d;">
+          <i class="fas fa-times"></i> Limpiar filtro de fecha
+        </button>
+      </div>
+      <div class="d-flex flex-wrap gap-3 mb-4">
+        <button 
+          *ngFor="let date of availableDates" 
+          class="btn btn-outline-primary date-button"
+          [class.active]="selectedDateRange.start === date && selectedDateRange.end === date"
+          (click)="selectDate(date)"
+          style="width: 120px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 8px;">
+          <div class="fw-bold">{{ date | date:'EEEE' }}</div>
+          <div class="small">{{ date | date:'dd/mm/yyyy' }}</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para seleccionar rango de fechas -->
+  <div class="modal-backdrop show" *ngIf="showDateRangeModal"></div>
+  <div class="modal show d-block" tabindex="-1" *ngIf="showDateRangeModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Seleccionar rango de fechas</h5>
+          <button type="button" class="close" aria-label="Close" (click)="showDateRangeModal = false" style="font-size:2rem;line-height:1;color:#000;background:transparent;border:none;outline:none;">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label>Fecha de inicio:</label>
+              <input type="date" class="form-control mb-3" [(ngModel)]="startDate" name="startDate" [min]="today">
             </div>
-            
-            <div class="form-row">
-                <div class="form-group search-input-group">
-                    <label for="specialtySearch">¿Qué necesitas?</label>
-                    <div class="search-input-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input 
-                            type="text" 
-                            id="specialtySearch" 
-                            class="form-control search-input" 
-                            placeholder="Escribí el nombre del profesional, especialidad o práctica"
-                            [(ngModel)]="searchTerm"
-                            (input)="onSearchChange()"
-                        >
-                    </div>
-                </div>
+            <div class="col-md-6">
+              <label>Fecha de fin:</label>
+              <input type="date" class="form-control mb-3" [(ngModel)]="endDate" name="endDate" [min]="startDate || today">
             </div>
+          </div>
+          <div class="d-flex justify-content-center gap-3">
+            <button type="button" class="btn btn-primary custom-blue" (click)="applyDateRange()">Aplicar</button>
+            <button type="button" class="btn btn-secondary" (click)="showDateRangeModal = false">Cancelar</button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- 🔵 Especialidades más agendadas -->
-    <div class="specialties-section">
-        <h2>Prácticas más agendadas</h2>
-        <div class="specialties-grid">
-            <button 
-                *ngFor="let specialty of mostScheduledSpecialties" 
-                class="specialty-button"
-                (click)="selectSpecialty(specialty)"
-                [class.selected]="selectedSpecialty === specialty">
-                {{ specialty }}
-            </button>
-        </div>
-    </div>
+  <table class="table table-striped">
+      <thead class="table-dark">
+      <tr>
+          <th>Médico</th>
+          <th>Especialidad</th>
+          <th>Centro Médico</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let turno of getCurrentPageTurnos()">
+          <td>{{turno.medicName}}</td>
+          <td>{{turno.specialty}}</td>
+          <td>{{turno.medicalCenter}}</td>
+          <td>{{turno.fechaTurno | date:'dd/MM/yyyy'}}</td>
+          <td>{{turno.horaTurno}}</td>
+          <td>
+              <button class="btn btn-primary" style="background-color: #3fb5eb;" (click)="redirectToAddTurno(turno.medicId)">
+                  <i class="fas fa-calendar-plus"></i> Agendar turno
+              </button>
+          </td>
+      </tr>
+      </tbody>
+  </table>
 
-    <!-- 🔵 Especialidades más buscadas -->
-    <div class="specialties-section">
-        <h2>Prácticas más buscadas</h2>
-        <div class="specialties-grid">
-            <button 
-                *ngFor="let specialty of mostSearchedSpecialties" 
-                class="specialty-button"
-                (click)="selectSpecialty(specialty)"
-                [class.selected]="selectedSpecialty === specialty">
-                {{ specialty }}
-            </button>
-        </div>
-    </div>
+  <!-- Controles de paginación -->
+  <div class="row mt-4" *ngIf="totalPages > 1">
+      <div class="col-12">
+          <nav aria-label="Navegación de páginas">
+              <ul class="pagination justify-content-center">
+                  <!-- Botón Anterior -->
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()" 
+                         style="color: #3fb5eb; border-color: #3fb5eb;">
+                          <i class="fas fa-chevron-left"></i> Anterior
+                      </a>
+                  </li>
+                  
+                  <!-- Números de página -->
+                  <li class="page-item" *ngFor="let page of getPageNumbers()" 
+                      [class.active]="page === currentPage">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)"
+                         [style.background-color]="page === currentPage ? '#3fb5eb' : 'white'"
+                         [style.color]="page === currentPage ? 'white' : '#3fb5eb'"
+                         [style.border-color]="page === currentPage ? '#3fb5eb' : '#3fb5eb'">
+                          {{page}}
+                      </a>
+                  </li>
+                  
+                  <!-- Botón Siguiente -->
+                  <li class="page-item" [class.disabled]="currentPage === totalPages">
+                      <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()"
+                         style="color: #3fb5eb; border-color: #3fb5eb;">
+                          Siguiente <i class="fas fa-chevron-right"></i>
+                      </a>
+                  </li>
+              </ul>
+          </nav>
+          
+          <!-- Información de la página -->
+          <div class="text-center mt-2">
+              <small class="text-muted">
+                  Página {{currentPage}} de {{totalPages}} 
+                  ({{filteredTurnos.length}} turnos en total)
+              </small>
+          </div>
+      </div>
+  </div>
 
-    <!-- 🔵 Filtros adicionales -->
-    <div class="filters-section" *ngIf="selectedSpecialty || searchTerm">
-        <h4>Filtros adicionales:</h4>
-        <div class="filters-row">
-            <div class="filter-group">
-                <label for="nameSelect">Médico:</label>
-                <select id="nameSelect" class="form-control" [(ngModel)]="selectedName" (change)="filterTurnos()">
-                    <option value="">Todos los médicos</option>
-                    <option *ngFor="let name of names" [value]="name">{{name}}</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="centerSelect">Centro médico:</label>
-                <select id="centerSelect" class="form-control" [(ngModel)]="selectedMedicalCenter" (change)="filterTurnos()">
-                    <option value="">Todos los centros</option>
-                    <option *ngFor="let center of medicalCenters" [value]="center">{{center}}</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label for="dateRange">Rango de fechas:</label>
-                <button class="form-control date-range-button" (click)="showDateRangeModal = true">
-                    <span *ngIf="!selectedDateRange.start || !selectedDateRange.end">Seleccionar fechas</span>
-                    <span *ngIf="selectedDateRange.start && selectedDateRange.end">
-                        {{selectedDateRange.start | date:'dd/MM/yyyy'}} - {{selectedDateRange.end | date:'dd/MM/yyyy'}}
-                    </span>
-                </button>
-            </div>
-        </div>
-        
-        <div class="availability-button-container">
-            <button class="boton availability-button" (click)="showAvailability()">
-                <i class="fas fa-search"></i> Buscar disponibilidad
-            </button>
-        </div>
-    </div>
-
-    <!-- 🔵 Resultados - Turnos disponibles -->
-    <div class="results-section" *ngIf="showResults && filteredTurnos.length > 0">
-        <h2>Turnos disponibles</h2>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead class="table-dark">
-                <tr>
-                    <th>Médico</th>
-                    <th>Especialidad</th>
-                    <th>Centro Médico</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Acción</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let turno of getCurrentPageTurnos()">
-                    <td>{{turno.medicName}}</td>
-                    <td>{{turno.specialty}}</td>
-                    <td>{{turno.medicalCenter}}</td>
-                    <td>{{turno.fechaTurno | date:'dd/MM/yyyy'}}</td>
-                    <td>{{turno.horaTurno}}</td>
-                    <td>
-                        <button class="btn btn-primary appointment-btn" (click)="redirectToAddTurno(turno.medicId)">
-                            <i class="fas fa-calendar-plus"></i> Agendar
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Paginación -->
-        <div class="pagination-container" *ngIf="totalPages > 1">
-            <nav aria-label="Navegación de páginas">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" [class.disabled]="currentPage === 1">
-                        <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()">
-                            <i class="fas fa-chevron-left"></i> Anterior
-                        </a>
-                    </li>
-                    
-                    <li class="page-item" *ngFor="let page of getPageNumbers()" 
-                        [class.active]="page === currentPage">
-                        <a class="page-link" href="javascript:void(0)" (click)="goToPage(page)">
-                            {{page}}
-                        </a>
-                    </li>
-                    
-                    <li class="page-item" [class.disabled]="currentPage === totalPages">
-                        <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()">
-                            Siguiente <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            
-            <div class="pagination-info">
-                <small class="text-muted">
-                    Página {{currentPage}} de {{totalPages}} 
-                    ({{filteredTurnos.length}} turnos en total)
-                </small>
-            </div>
-        </div>
-    </div>
-
-    <!-- 🔵 Mensaje cuando no hay resultados -->
-    <div class="no-results-section" *ngIf="showResults && filteredTurnos.length === 0">
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i>
-            No hay turnos disponibles con los filtros seleccionados.
-        </div>
-    </div>
-
-    <!-- 🔵 Modal para seleccionar rango de fechas -->
-    <div class="modal-backdrop show" *ngIf="showDateRangeModal"></div>
-    <div class="modal show d-block" tabindex="-1" *ngIf="showDateRangeModal">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seleccionar rango de fechas</h5>
-                    <button type="button" class="close" (click)="showDateRangeModal = false">
-                        &times;
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label>Fecha de inicio:</label>
-                            <input type="date" class="form-control mb-3" [(ngModel)]="startDate" [min]="today">
-                        </div>
-                        <div class="col-md-6">
-                            <label>Fecha de fin:</label>
-                            <input type="date" class="form-control mb-3" [(ngModel)]="endDate" [min]="startDate || today">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" (click)="applyDateRange()">Aplicar</button>
-                        <button type="button" class="btn btn-secondary" (click)="showDateRangeModal = false">Cancelar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+  <!-- Mensaje cuando no hay turnos disponibles -->
+  <div class="row mt-4" *ngIf="filteredTurnos.length === 0">
+      <div class="col-12 text-center">
+          <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i>
+              No hay turnos disponibles con los filtros seleccionados.
+          </div>
+      </div>
+  </div>
 </div>
