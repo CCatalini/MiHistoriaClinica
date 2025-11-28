@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Random;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -40,7 +40,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     /**
-     * Método para generar el código de enlace y actualizar el registro del paciente con el nuevo código
+     * Method para generar el código de enlace y actualizar el registro del paciente con el nuevo código
+     *
      * @return linkCode
      */
     public String generateLinkCode(Long patientId) {
@@ -48,7 +49,12 @@ public class PatientServiceImpl implements PatientService {
         if (patient == null) {
             throw new RuntimeException("No se pudo generar el código de enlace. El paciente no existe.");
         }
-        String linkCode = UUID.randomUUID().toString().substring(0, 4); // Generar un código aleatorio de 4 caracteres
+
+        // código numérico de 4 dígitos
+        Random random = new Random();
+        int code = 1000 + random.nextInt(9000);
+        String linkCode = String.valueOf(code);
+
         patient.setLinkCode(linkCode);
         patientRepository.save(patient);
         return linkCode;
@@ -99,7 +105,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public MedicalFileDTO getMedicalHistory(Long id){
+    public MedicalFileDTO getMedicalHistory(Long id) {
         Patient thisPatient = patientRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
         return new MedicalFileDTO(thisPatient.getMedicalFile());
@@ -141,14 +147,17 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
-        Patient patient = patientRepository.findById(patientId).get();
-        Medic medic = medicRepository.findById(medicId).get();
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
+        Medic medic = medicRepository.findById(medicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
         customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
     }
 
     @Override
     public List<Turnos> getMisTurnos(Long id) {
-        Patient patient = patientRepository.findById(id).get();
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
         return turnosRepository.findByPatient(patient);
     }
 
@@ -162,9 +171,6 @@ public class PatientServiceImpl implements PatientService {
         MedicalSpecialtyE medicalSpecialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
         return patientRepository.getMedicsBySpecialty(id, medicalSpecialtyE);
     }
-
-
-
 }
 
 
