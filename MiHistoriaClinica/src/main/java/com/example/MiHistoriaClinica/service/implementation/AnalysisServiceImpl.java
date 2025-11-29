@@ -52,15 +52,14 @@ public class AnalysisServiceImpl implements AnalysisService {
         
         Analysis createdAnalysis = customRepositoryAccess.createPatientAnalysis(analysisDTO, patient);
         
-        // Enviar email de confirmación
-        if (createdAnalysis != null && patient.isPresent()) {
-            try {
-                emailService.sendAnalysisConfirmationEmail(patient.get(), createdAnalysis);
-            } catch (Exception e) {
-                // Log error pero no fallar la operación
-                System.err.println("Error enviando email de confirmación de análisis: " + e.getMessage());
-            }
-        }
+        // TODO: Agregar email de confirmación cuando se implemente el método
+        // if (createdAnalysis != null && patient.isPresent()) {
+        //     try {
+        //         emailService.sendAnalysisConfirmationEmail(patient.get(), createdAnalysis);
+        //     } catch (Exception e) {
+        //         System.err.println("Error enviando email de confirmación de análisis: " + e.getMessage());
+        //     }
+        // }
         
         return createdAnalysis;
     }

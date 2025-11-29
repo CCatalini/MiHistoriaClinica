@@ -62,8 +62,9 @@ public class ReminderServiceImpl implements ReminderService {
             for (Turnos turno : turnosForTomorrow) {
                 if (turno.getPatient() != null && turno.getPatient().getEmail() != null) {
                     try {
-                        emailService.sendTurnoReminderEmail(turno.getPatient(), turno);
-                        logger.info("Recordatorio enviado para turno ID: {} - Paciente: {}", 
+                        // TODO: Implementar método sendTurnoReminderEmail en EmailService
+                        // emailService.sendTurnoReminderEmail(turno.getPatient(), turno);
+                        logger.info("Recordatorio pendiente para turno ID: {} - Paciente: {}", 
                                    turno.getTurnoId(), turno.getPatient().getName());
                     } catch (Exception e) {
                         logger.error("Error enviando recordatorio para turno ID: {}", turno.getTurnoId(), e);
@@ -101,8 +102,9 @@ public class ReminderServiceImpl implements ReminderService {
                     for (Patient patient : analysis.getPatients()) {
                         if (patient.getEmail() != null) {
                             try {
-                                emailService.sendAnalysisReminderEmail(patient, analysis);
-                                logger.info("Recordatorio de análisis enviado para paciente: {} - Análisis: {}", 
+                                // TODO: Implementar método sendAnalysisReminderEmail en EmailService
+                                // emailService.sendAnalysisReminderEmail(patient, analysis);
+                                logger.info("Recordatorio de análisis pendiente para paciente: {} - Análisis: {}", 
                                            patient.getName(), analysis.getName().getName());
                             } catch (Exception e) {
                                 logger.error("Error enviando recordatorio de análisis para paciente: {}", 
