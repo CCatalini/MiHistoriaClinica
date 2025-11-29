@@ -8,6 +8,7 @@ import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.Medicine;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
+import com.example.MiHistoriaClinica.presentation.dto.MedicTurnosDTO;
 
 import java.util.List;
 
@@ -29,13 +30,17 @@ public interface PatientService {
 
     PatientDTO getPatientInfo(Long patientId);
 
-    void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter);
+    void reserveTurno(Long patientId, Long turnoId);
 
     List<Turnos> getMisTurnos(Long id);
 
     void deleteTurno(Long id);
 
     List<Medic> getMedicsBySpecialty(Long id, String specialty);
+
+    List<Turnos> getAvailableTurnosByMedic(Long medicId);
+
+    List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDate(String specialty, String dateIso);
 }
 
 

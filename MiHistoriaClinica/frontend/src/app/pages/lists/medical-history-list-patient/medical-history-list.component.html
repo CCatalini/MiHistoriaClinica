@@ -1,122 +1,136 @@
-<div class="container">
-    <h1 class="text-center">Mi Historia Clínica</h1>
-    <br>
+<div class="container content-with-toolbar">
 
-    <section class="downloadList" [formGroup]="downloadList">
-        <h4>Ingrese los datos que desea descargar:</h4>
-        <p><mat-checkbox formControlName="fichaMedica">Ficha médica</mat-checkbox></p>
-        <p><mat-checkbox formControlName="medicamentos">Medicamentos</mat-checkbox></p>
-        <p><mat-checkbox formControlName="estudios">Estudios</mat-checkbox></p>
-        <p><mat-checkbox formControlName="consultasMedicas">Consultas médicas</mat-checkbox></p>
-    </section>
-    <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
-    <br><br>
+    <!-- 🔵 Título principal -->
+    <div class="page-title">
+        <h1>Mi Historia Clínica</h1>
+    </div>
 
-    <h2 class="text-center">Ficha Médica</h2>
-    <mat-list *ngIf="medicalHistory">
-        <mat-list *ngIf="medicalHistory">
-            <mat-list-item>
-                <span matListItemTitle>Altura</span>
-                <span matListItemLine>{{ medicalHistory.height }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Peso</span>
-                <span matListItemLine>{{ medicalHistory.weight }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Grupo sanguíneo</span>
-                <span matListItemLine>{{ medicalHistory.bloodType }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Alergias</span>
-                <span matListItemLine>{{ medicalHistory.allergy }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Medicación crónica</span>
-                <span matListItemLine>{{ medicalHistory.actualMedicine }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Enfermedades crónicas</span>
-                <span matListItemLine>{{ medicalHistory.chronicDisease }}</span>
-            </mat-list-item>
-            <mat-list-item>
-                <span matListItemTitle>Antecedentes familiares</span>
-                <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
-            </mat-list-item>
-        </mat-list>    </mat-list>
+    <!-- 🔵 Filtros y botón abajo del título -->
+    <form [formGroup]="downloadList">
+        <div class="filters-section">
+            <h4>Seleccione secciones para visualizar/descargar:</h4>
+            <div class="filters-row">
+                <mat-checkbox formControlName="fichaMedica">Ficha médica</mat-checkbox>
+                <mat-checkbox formControlName="medicamentos">Medicamentos</mat-checkbox>
+                <mat-checkbox formControlName="estudios">Estudios</mat-checkbox>
+                <mat-checkbox formControlName="consultasMedicas">Consultas médicas</mat-checkbox>
+            </div>
+            <div class="button-container">
+                <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 🔵 Ficha Médica -->
+    <div *ngIf="showMedicalFile" class="medical-file-section">
+        <h2 class="text-center">Ficha Médica</h2>
+        <div class="medical-file-content" *ngIf="medicalHistory">
+            <div class="medical-file-item">
+                <span class="medical-file-label">Altura:</span>
+                <span class="medical-file-value">{{ medicalHistory.height }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Peso:</span>
+                <span class="medical-file-value">{{ medicalHistory.weight }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Grupo sanguíneo:</span>
+                <span class="medical-file-value">{{ medicalHistory.bloodType }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Alergias:</span>
+                <span class="medical-file-value">{{ medicalHistory.allergy }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Medicación crónica:</span>
+                <span class="medical-file-value">{{ medicalHistory.actualMedicine }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Enfermedades crónicas:</span>
+                <span class="medical-file-value">{{ medicalHistory.chronicDisease }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Antecedentes familiares:</span>
+                <span class="medical-file-value">{{ medicalHistory.familyMedicalHistory }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔵 Medicamentos -->
+    <div *ngIf="showMedicines" class="medicines-section">
+        <h2 class="text-center">Medicamentos</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>Medicación</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let medicine of medicines">
+                    <td>{{ medicine.name }}</td>
+                    <td>{{ medicine.description }}</td>
+                    <td>{{ medicine.status }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🔵 Estudios -->
+    <div *ngIf="showAnalysis" class="analysis-section">
+        <h2 class="text-center">Estudios</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>Estudio</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let analysis of analysisList">
+                    <td>{{ analysis.name }}</td>
+                    <td>{{ analysis.description }}</td>
+                    <td>{{ analysis.status }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 🔵 Consultas Médicas -->
+    <div *ngIf="showAppointments" class="appointments-section">
+        <h2 class="text-center">Mis Consultas Médicas</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th>Nombre del médico</th>
+                    <th>Matrícula</th>
+                    <th>Especialidad</th>
+                    <th>Motivo de consulta</th>
+                    <th>Síntomas</th>
+                    <th>Examen físico</th>
+                    <th>Observaciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let appointment of appointments">
+                    <td>{{ appointment.medicFullName }}</td>
+                    <td>{{ appointment.matricula }}</td>
+                    <td>{{ appointment.specialty }}</td>
+                    <td>{{ appointment.appointmentReason }}</td>
+                    <td>{{ appointment.currentIllness }}</td>
+                    <td>{{ appointment.physicalExam }}</td>
+                    <td>{{ appointment.observations }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
-<br>
-
-<h2 class="text-center">Medicamentos</h2>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Medicación</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let medicine of medicines">
-        <td>{{ medicine.name }}</td>
-        <td>{{ medicine.description }}</td>
-        <td>{{ medicine.status }}</td>
-    </tr>
-    </tbody>
-</table>
-<br><br>
-
-<h2 class="text-center">Estudios</h2>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Estudio</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let analysis of analysisList">
-        <td>{{ analysis.name }}</td>
-        <td>{{ analysis.description }}</td>
-        <td>{{ analysis.status }}</td>
-    </tr>
-    </tbody>
-</table>
-<br><br>
-
-<h2 class = "text-center">Mis Consultas Médicas</h2>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Nombre del médico</th>
-        <th>Matrícula</th>
-        <th>Especialidad</th>
-        <th>Motivo de consulta</th>
-        <th>Síntomas</th>
-        <th>Exámen físico</th>
-        <th>Observaciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let appointment of appointments">
-        <td>{{appointment.medicFullName}}</td>
-        <td>{{appointment.matricula}}</td>
-        <td>{{appointment.specialty}}</td>
-        <td>{{appointment.appointmentReason}}</td>
-        <td>{{appointment.currentIllness}}</td>
-        <td>{{appointment.physicalExam}}</td>
-        <td>{{appointment.observations}}</td>
-    </tr>
-    </tbody>
-</table>
-<br><br>
-
-
-
-
-
-

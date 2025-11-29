@@ -18,6 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
+import com.example.MiHistoriaClinica.presentation.dto.ScheduleDTO;
+import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
+import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Medicine;
+import com.example.MiHistoriaClinica.persistence.model.Patient;
 import java.util.UUID;
 import com.example.MiHistoriaClinica.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +33,34 @@ public class MedicServiceImpl implements MedicService {
 
     private final MedicRepository medicRepository;
     private final PatientRepository patientRepository;
+    private final MedicineRepository medicineRepository;
+    private final AnalysisRepository analysisRepository;
+    private final MedicalFileRepository medicalFileRepository;
+    private final TurnosRepository turnosRepository;
+
     private final CustomRepositoryAccess customRepositoryAccess;
     private final PatientServiceImpl patientService;
-    
+
     @Autowired
     private EmailService emailService;
 
 
     public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
+    public MedicServiceImpl(MedicRepository medicRepository,
+                           PatientRepository patientRepository,
+                           MedicineRepository medicineRepository,
+                           AnalysisRepository analysisRepository,
+                           MedicalFileRepository medicalFileRepository,
+                           TurnosRepository turnosRepository,
+                           CustomRepositoryAccess customRepositoryAccess,
+                           PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
+        this.medicineRepository = medicineRepository;
+        this.analysisRepository = analysisRepository;
+        this.medicalFileRepository = medicalFileRepository;
+        this.turnosRepository = turnosRepository;
+
         this.customRepositoryAccess = customRepositoryAccess;
         this.patientService = patientService;
     }
@@ -47,16 +71,16 @@ public class MedicServiceImpl implements MedicService {
     @Override
     public Medic createMedic(MedicDTO medic) {
         Medic newMedic = customRepositoryAccess.saveMedicDto(medic);
-        
+
         // Generar token de verificación
         String verificationToken = UUID.randomUUID().toString();
         newMedic.setVerificationToken(verificationToken);
         newMedic.setEmailVerified(false);
         newMedic.setEnabled(false);
-        
+
         // Guardar con el token
         newMedic = medicRepository.save(newMedic);
-        
+
         // Enviar email de verificación
         String verificationUrl = "http://localhost:4200/medic/verify?token=" + verificationToken;
         try {
@@ -65,31 +89,31 @@ public class MedicServiceImpl implements MedicService {
             // Log pero no fallar el registro
             System.err.println("Error enviando email de verificación a médico: " + e.getMessage());
         }
-        
+
         return newMedic;
     }
-    
+
     public Medic verifyMedicEmail(String token) {
         Medic medic = medicRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new RuntimeException("Token de verificación inválido o expirado"));
-        
+
         if (medic.isEmailVerified()) {
             throw new RuntimeException("El email ya ha sido verificado");
         }
-        
+
         medic.setEmailVerified(true);
         medic.setEnabled(true);
         medic.setVerificationToken(null);
-        
+
         medic = medicRepository.save(medic);
-        
+
         // Enviar email de bienvenida
         try {
             emailService.sendMedicWelcomeEmail(medic);
         } catch (Exception e) {
             System.err.println("Error enviando email de bienvenida a médico: " + e.getMessage());
         }
-        
+
         return medic;
     }
 
@@ -105,16 +129,16 @@ public class MedicServiceImpl implements MedicService {
         if (result == null) {
             throw new MedicNotFoundException();
         }
-        
+
         // Verificar que el email esté verificado
         if (!result.isEmailVerified()) {
             throw new RuntimeException("Debes verificar tu email antes de iniciar sesión. Revisa tu correo electrónico.");
         }
-        
+
         if (!result.isEnabled()) {
             throw new RuntimeException("Tu cuenta no está activa. Por favor contacta al soporte.");
         }
-        
+
         return result;
     }
 
@@ -305,6 +329,10 @@ public class MedicServiceImpl implements MedicService {
         return patientRepository.getMedicinesByPatientIdAndStatus(patient.get().getPatientId(), status);
     }
 
+    public MedicalFileRepository getMedicalHistoryRepository() {
+        return medicalFileRepository;
+    }
+
     @Override
     public List<String> getAllSpecialties() {
         return MedicalSpecialtyE.getSpecialties();
@@ -316,6 +344,114 @@ public class MedicServiceImpl implements MedicService {
         return medicRepository.getMedicsBySpecialty(specialtyE);
     }
 
+    /**
+     * Crear turnos disponibles según la configuración recibida.
+     */
+    @Override
+    public void createSchedule(Long medicId, ScheduleDTO scheduleDTO) {
+        Medic medic = medicRepository.findById(medicId)
+                .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
+
+        // ---  Validaciones básicas  ---
+        if (scheduleDTO.getStartTime() == null || scheduleDTO.getEndTime() == null) {
+            throw new IllegalArgumentException("Se debe especificar el rango horario");
+        }
+
+        // validar rango permitido 08:00-20:00
+        java.time.LocalTime allowedStart = java.time.LocalTime.of(8, 0);
+        java.time.LocalTime allowedEnd = java.time.LocalTime.of(20, 0);
+        if (scheduleDTO.getStartTime().isBefore(allowedStart) || scheduleDTO.getEndTime().isAfter(allowedEnd)) {
+            throw new IllegalArgumentException("El rango horario permitido es de 08:00 a 20:00 hs");
+        }
+
+        // validar duración
+        int duration = scheduleDTO.getDurationMinutes();
+        java.util.List<Integer> validDurations = java.util.Arrays.asList(15, 30, 45, 60);
+        if (!validDurations.contains(duration)) {
+            throw new IllegalArgumentException("La duración debe ser 15, 30, 45 o 60 minutos");
+        }
+
+        final int GAP_MINUTES = 5; // espacio entre turnos
+
+        java.time.LocalTime breakStart = java.time.LocalTime.of(13, 0);
+        java.time.LocalTime breakEnd = java.time.LocalTime.of(14, 0);
+
+        // Determinar rango: startIter = startDate o hoy. endIter = startIter + 1 mes - 1 día
+         java.time.LocalDate startIter = scheduleDTO.getStartDate() != null ? scheduleDTO.getStartDate() : java.time.LocalDate.now();
+         java.time.LocalDate endIter = startIter.plusMonths(1).minusDays(1);
+
+        // Recorrer el rango de fechas
+        for (java.time.LocalDate currentDate = startIter;
+             !currentDate.isAfter(endIter);
+             currentDate = currentDate.plusDays(1)) {
+            // Verificar si el día de la semana está en la configuración
+            if (!scheduleDTO.getDaysOfWeek().contains(currentDate.getDayOfWeek())) {
+                continue;
+            }
+            java.time.LocalTime currentTime = scheduleDTO.getStartTime();
+            while (!currentTime.isAfter(scheduleDTO.getEndTime().minusMinutes(duration))) {
+
+                // saltar si el turno cae en el descanso
+                boolean overlapsBreak = (currentTime.isBefore(breakEnd) && currentTime.plusMinutes(duration).isAfter(breakStart));
+                if (overlapsBreak) {
+                    currentTime = breakEnd; // saltamos al final del descanso
+                    continue;
+                }
+
+                // validar superposición con otros centros u horarios previos
+                boolean exists = turnosRepository.existsByMedic_MedicIdAndFechaTurnoAndHoraTurno(medicId, currentDate, currentTime);
+                if (exists) {
+                    currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
+                    continue; // ya existe un turno en ese horario (en cualquier centro)
+                }
+
+                // Crear bloque disponible
+                Turnos turno = new Turnos();
+                turno.setFechaTurno(currentDate);
+                turno.setHoraTurno(currentTime);
+                turno.setMedic(medic);
+                turno.setMedicFullName(medic.getName() + " " + medic.getLastname());
+                turno.setMedicSpecialty(medic.getSpecialty());
+                turno.setMedicalCenter(scheduleDTO.getMedicalCenter());
+                turno.setAvailable(true);
+                turnosRepository.save(turno);
+
+                // avanzar tiempo: duración + gap
+                currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
+            }
+        }
+    }
+
+    @Override
+    public List<Turnos> getAvailableTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+    }
+
+    @Override
+    public List<PatientQueueDTO> getUpcomingPatients(Long medicId) {
+        List<Turnos> turnos = turnosRepository.findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(medicId);
+        List<PatientQueueDTO> list = new java.util.ArrayList<>();
+        for (Turnos t : turnos) {
+            if (t.getPatient() == null) continue; // seguridad
+            list.add(new PatientQueueDTO(
+                    t.getTurnoId(),
+                    t.getPatient().getName() + " " + t.getPatient().getLastname(),
+                    t.getFechaTurno(),
+                    t.getHoraTurno()
+            ));
+        }
+        return list;
+    }
+
+    @Override
+    public List<Turnos> getAllTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicId(medicId);
+    }
+
+    @Override
+    public List<Turnos> getReservedTurnos(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(medicId);
+    }
 
     public void deleteMedic(Long medicId) {
         medicRepository.deleteById(medicId);

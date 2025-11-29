@@ -1,93 +1,802 @@
-
-.text-center {
-    margin-top: 50px;
-    margin-bottom: 30px;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 900px;
-    height: 500px;
+/* ---------------- GLOBAL RESET ---------------- */
+html, body {
+    height: 100%;
+    width: 100%;
     margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    box-sizing: border-box;
 }
 
-full-calendar {
-    width: 70%;
-    max-width: 800px;
-    height: 500px;
+/* ---------------- CONTENEDOR PRINCIPAL ---------------- */
+.container {
+    width: 100vw;
+    max-width: none;
+    padding: 0 10px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-top: 80px; /* Separación del header azul */
+    box-sizing: border-box;
 }
 
-/*.css del fullcalendar:
+/* ---------------- TÍTULO PRINCIPAL ---------------- */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 auto 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-bottom: 3px solid #3fb5eb;
+    width: 95%;
+}
 
--webkit-text-size-adjust: 100%;
--webkit-tap-highlight-color: transparent;
---fc-small-font-size: .85em;
---fc-page-bg-color: #fff;
---fc-neutral-bg-color: hsla(0,0%,82%,.3);
---fc-neutral-text-color: grey;
---fc-border-color: #ddd;
---fc-button-text-color: #fff;
---fc-button-bg-color: #2c3e50;
---fc-button-border-color: #2c3e50;
---fc-button-hover-bg-color: #1e2b37;
---fc-button-hover-border-color: #1a252f;
---fc-button-active-bg-color: #1a252f;
---fc-button-active-border-color: #151e27;
---fc-event-bg-color: #3788d8;
---fc-event-border-color: #3788d8;
---fc-event-text-color: #fff;
---fc-event-selected-overlay-color: rgba(0,0,0,.25);
---fc-more-link-bg-color: #d0d0d0;
---fc-more-link-text-color: inherit;
---fc-event-resizer-thickness: 8px;
---fc-event-resizer-dot-total-width: 8px;
---fc-event-resizer-dot-border-width: 1px;
---fc-non-business-color: hsla(0,0%,84%,.3);
---fc-bg-event-color: #8fdf82;
---fc-bg-event-opacity: 0.3;
---fc-highlight-color: rgba(188,232,241,.3);
---fc-today-bg-color: rgba(255,220,40,.15);
---fc-now-indicator-color: red;
---fc-daygrid-event-dot-width: 8px;
---fc-list-event-dot-width: 10px;
---fc-list-event-hover-bg-color: #f5f5f5;
---blue: #007bff;
---indigo: #6610f2;
---purple: #6f42c1;
---pink: #e83e8c;
---red: #dc3545;
---orange: #fd7e14;
---yellow: #ffc107;
---green: #28a745;
---teal: #20c997;
---cyan: #17a2b8;
---white: #fff;
---gray: #6c757d;
---gray-dark: #343a40;
---primary: #007bff;
---secondary: #6c757d;
---success: #28a745;
---info: #17a2b8;
---warning: #ffc107;
---danger: #dc3545;
---light: #f8f9fa;
---dark: #343a40;
---breakpoint-xs: 0;
---breakpoint-sm: 576px;
---breakpoint-md: 768px;
---breakpoint-lg: 992px;
---breakpoint-xl: 1200px;
---font-family-sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
---font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-font-weight: 400;
-line-height: 1.5;
-color: #000;
-display: flex;
-flex-direction: column;
-font-size: 1em;
-box-sizing: border-box;
-direction: ltr;
-text-align: left;*/
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+/* ---------------- CONTROLES DEL CALENDARIO ---------------- */
+.calendar-controls {
+    width: 95%;
+    margin: 0 auto 25px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.legend-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.legend-section h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: max-content;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}
+
+.legend-item span:last-child {
+    font-size: 14px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+/* ---------------- BOTÓN AGREGAR TURNOS ---------------- */
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.boton {
+    background-color: #3fb5eb;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    min-width: 200px;
+}
+
+.boton:hover {
+    background-color: #2ea3d4;
+}
+
+.boton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.boton-secondary {
+    background-color: #6c757d;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    min-width: 120px;
+}
+
+.boton-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* ---------------- SECCIÓN DEL CALENDARIO ---------------- */
+.calendar-section {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 0 auto 25px auto;
+    width: 95%;
+    overflow-x: auto;
+}
+
+.full-calendar-wrapper {
+    width: 95%;
+    margin: 0 auto;
+    display: block;
+    overflow-x: auto;
+}
+
+.full-calendar {
+    width: 95% !important;
+    min-width: 95% !important;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.full-calendar-wrapper .fc {
+    width: 95% !important;
+    min-width: 95% !important;
+}
+
+/* Forzar ancho completo en todas las tablas del calendario */
+.fc-scrollgrid {
+    width: 95% !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.fc-scrollgrid-section table {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+/* Asegurar que las columnas usen el espacio disponible */
+.fc-col-header-cell {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+.fc-daygrid-day {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+/* Expandir el contenedor del calendario para usar todo el espacio disponible */
+.fc-daygrid-day-cell {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Forzar ancho completo en todos los elementos del calendario */
+.fc-view-harness {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-body {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+.fc-scrollgrid-sync-table {
+    width: 95% !important;
+    margin: 0 auto !important;
+}
+
+/* Asegurar que las columnas de los días se distribuyan equitativamente */
+.fc-day-header {
+    width: 14.28% !important;
+    min-width: 0 !important;
+}
+
+/* Centrar y expandir todo el contenido del calendario */
+.fc-daygrid-day-top {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.fc-daygrid-day-events {
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-day-bottom {
+    margin: 0 auto !important;
+}
+
+.fc-timegrid-col {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+/* Centrar específicamente el contenedor principal del calendario */
+.fc-toolbar-title {
+    text-align: center !important;
+}
+
+.fc-daygrid-header {
+    margin: 0 auto !important;
+}
+
+/* Centrar todo el contenido del calendario */
+.fc-view {
+    margin: 0 auto !important;
+}
+
+.fc-scroller {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor del calendario completo */
+.fc-daygrid {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar la tabla principal del calendario */
+.fc-scrollgrid-liquid {
+    margin: 0 auto !important;
+}
+
+.fc-scrollgrid table {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor padre del calendario */
+.fc-daygrid-container {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar completamente el calendario */
+.fc-daygrid-event-harness {
+    margin: 0 auto !important;
+}
+
+.fc-daygrid-day-frame {
+    margin: 0 auto !important;
+}
+
+/* Centrar el contenedor general del calendario */
+.fc-daygrid-view {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor padre del calendario */
+.fc-view-container {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor más externo del calendario */
+.fc-direction-ltr {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Centrar el contenedor del calendario completo */
+.fc-theme-standard {
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+/* Estilos para los eventos del calendario */
+.fc-event {
+  border-radius: 4px !important;
+  font-size: 0.85em !important;
+  padding: 2px !important;
+  white-space: pre-line !important;
+}
+
+.fc-event-title {
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+/* Estilos específicos para vista de tiempo (semana/día) */
+.fc-timegrid-event {
+  border-radius: 6px !important;
+  font-size: 0.85em !important;
+  padding: 6px 8px !important;
+  margin: 1px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.fc-timegrid-event .fc-event-title {
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  color: white !important;
+  white-space: pre-line !important;
+  text-align: center !important;
+  word-wrap: break-word !important;
+}
+
+.fc-timegrid-event .fc-event-time {
+  display: none !important; /* Ocultar tiempo por defecto ya que lo mostramos en el título */
+}
+
+/* Mejorar la visualización del contenido del evento */
+.fc-timegrid-event .fc-event-main {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+  text-align: center !important;
+}
+
+.fc-timegrid-event .fc-event-title-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Estilos para eventos disponibles */
+.fc-event[style*="rgb(76, 175, 80)"] {
+  background-color: #4caf50 !important;
+  border-color: #45a049 !important;
+}
+
+/* Estilos para eventos reservados */
+.fc-event[style*="rgb(255, 152, 0)"] {
+  background-color: #ff9800 !important;
+  border-color: #f57c00 !important;
+}
+
+/* Estilos específicos para eventos en tiempo grid (día/semana) */
+.fc-timegrid-event {
+  min-height: 20px !important;
+  cursor: pointer !important;
+}
+
+.fc-timegrid-event:hover {
+  opacity: 0.9 !important;
+  transform: scale(1.02) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Mejorar la legibilidad del texto en eventos pequeños */
+.fc-timegrid-event .fc-event-title {
+  font-size: 0.8em !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Estilos específicos para eventos de 30 minutos */
+.fc-timegrid-event[data-duration="30"] .fc-event-title {
+  font-size: 0.75em !important;
+  line-height: 1.1 !important;
+}
+
+/* Ajustar espaciado para eventos cortos */
+.fc-timegrid-event.fc-event-short {
+  padding: 2px 4px !important;
+}
+
+.fc-timegrid-event.fc-event-short .fc-event-title {
+  font-size: 0.7em !important;
+  line-height: 1.0 !important;
+}
+
+/* Estilos para el modal de vista detallada */
+.modal-xl {
+  max-width: 1200px;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #343a40;
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 12px;
+}
+
+.table td {
+  padding: 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.table-success {
+  background-color: rgba(212, 237, 218, 0.3) !important;
+}
+
+.table-warning {
+  background-color: rgba(255, 193, 7, 0.2) !important;
+}
+
+.badge {
+  font-size: 0.85em;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+}
+
+.bg-success {
+  background-color: #28a745 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.btn-group {
+  border-radius: 4px;
+}
+
+.btn-outline-primary {
+  border-color: #3fb5eb;
+  color: #3fb5eb;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3fb5eb;
+  border-color: #3fb5eb;
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+.form-check-input:checked {
+  background-color: #3fb5eb;
+  border-color: #3fb5eb;
+}
+
+.form-select {
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+.form-select:focus {
+  border-color: #3fb5eb;
+  box-shadow: 0 0 0 0.2rem rgba(63, 181, 235, 0.25);
+}
+
+/* Estilos para mejorar la visualización en el calendario */
+.fc-daygrid-event {
+  margin: 1px 0 !important;
+}
+
+.fc-daygrid-event-harness {
+  margin: 1px 0 !important;
+}
+
+.fc-event-main {
+  padding: 2px 4px !important;
+}
+
+/* ---------------- ESTILOS MODALES ---------------- */
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+.modal-header {
+  background-color: #3fb5eb;
+  color: white;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 20px;
+}
+
+.modal-header .modal-title {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.modal-header .close {
+  color: white;
+  opacity: 0.8;
+  text-shadow: none;
+}
+
+.modal-header .close:hover {
+  opacity: 1;
+}
+
+.modal-body {
+  padding: 30px;
+  background-color: #f8f9fa;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  border-radius: 0 0 8px 8px;
+  padding: 20px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  .calendar-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .legend-section {
+    min-width: 95%;
+  }
+
+  .legend-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .button-container {
+    justify-content: flex-start;
+    width: 95%;
+  }
+
+  .boton {
+    width: 95%;
+  }
+
+  .page-title {
+    padding: 25px 15px;
+    margin: 15px auto 25px auto;
+  }
+
+  .page-title h1 {
+    font-size: 28px;
+  }
+
+  .container {
+    padding: 60px 12px 0 12px;
+  }
+
+  .calendar-controls {
+    padding: 15px;
+    margin: 0 auto 25px auto;
+  }
+
+  .calendar-section {
+    padding: 15px;
+    margin: 0 auto 25px auto;
+  }
+
+  .modal-xl {
+    max-width: 95vw;
+  }
+  
+  .table-responsive {
+    font-size: 0.9em;
+  }
+  
+  .btn-group {
+    flex-direction: column;
+    width: 95%;
+  }
+  
+  .btn-group .btn {
+    margin-bottom: 5px;
+  }
+
+  .full-calendar-wrapper {
+    padding: 0 !important;
+    margin: 0 auto;
+  }
+}
+
+/* ---------------- ESTILOS FORMULARIO MODAL ---------------- */
+.modal-body form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.modal-body .form-control {
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.modal-body .form-control:focus {
+  border-color: #3fb5eb;
+  box-shadow: 0 0 0 0.2rem rgba(63, 181, 235, 0.25);
+}
+
+.modal-body label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.modal-body input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+/* ---------------- UTILIDADES ---------------- */
+.text-center { 
+  text-align: center !important; 
+}
+
+.mt-3 { 
+  margin-top: 1rem !important; 
+}
+
+.mb-2 { 
+  margin-bottom: 0.5rem !important; 
+}
+
+.gap-3 {
+  gap: 1rem !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.justify-content-center {
+  justify-content: center !important;
+}
+
+.col-12 {
+  width: 95%;
+}
+
+.col-md-6 {
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .col-md-6 {
+    width: 95%;
+  }
+}
+
+/* ---------------- CALENDARIO FULLCALENDAR ---------------- */
+.fc {
+    font-family: Roboto, "Helvetica Neue", sans-serif !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.fc-header-toolbar {
+    margin: 0 auto 1.5rem auto !important;
+    text-align: center !important;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #2c3e50 !important;
+}
+
+.fc-daygrid-day-number {
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
+}
+
+.fc-col-header-cell {
+  background-color: #f8f9fa !important;
+  border-color: #dee2e6 !important;
+}
+
+.fc-col-header-cell-cushion {
+  color: #2c3e50 !important;
+  font-weight: 600 !important;
+}
+
+/* Estilos para las vistas de calendario */
+.fc-toolbar {
+    margin: 0 auto 1rem auto !important;
+    text-align: center !important;
+}
+
+.fc-toolbar-chunk {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fc-button {
+  background-color: #3fb5eb !important;
+  border-color: #3fb5eb !important;
+  color: white !important;
+}
+
+.fc-button:hover {
+  background-color: #249fd6 !important;
+  border-color: #249fd6 !important;
+}
+
+.fc-button-active {
+  background-color: #1a7ca8 !important;
+  border-color: #1a7ca8 !important;
+}
+
+.fc-today-button {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+.fc-today-button:hover {
+  background-color: #218838 !important;
+  border-color: #218838 !important;
+}
 

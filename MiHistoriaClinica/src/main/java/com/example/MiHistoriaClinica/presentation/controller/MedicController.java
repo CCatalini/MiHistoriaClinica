@@ -10,12 +10,15 @@ import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidatorImpl;
+import com.example.MiHistoriaClinica.presentation.dto.ScheduleDTO;
+import com.example.MiHistoriaClinica.presentation.dto.PatientQueueDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
 
 
 @RestController
@@ -87,8 +90,32 @@ public class MedicController {
         return new ResponseEntity<>(filteredMedics, HttpStatus.OK);
     }
 
+    @GetMapping("/all-turnos")
+    public ResponseEntity<List<Turnos>> getAllTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getAllTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
 
-    /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENTE                                                  */
+    @GetMapping("/available-turnos")
+    public ResponseEntity<List<Turnos>> getAvailableTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getAvailableTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
+
+    @GetMapping("/reserved-turnos")
+    public ResponseEntity<List<Turnos>> getReservedTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<Turnos> turnos = medicService.getReservedTurnos(medicId);
+        if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(turnos, HttpStatus.OK);
+    }
+
+
+    /** MÉTODOS DEL MEDICO EN RELACIÓN AL PACIENT                                                  */
 
     @PostMapping("/linkPatient")
     public ResponseEntity<Void> linkPatient(@RequestHeader("Authorization") String token, @RequestParam String linkCode) throws InvalidTokenException {
@@ -125,6 +152,21 @@ public class MedicController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/create-schedule")
+    public ResponseEntity<Void> createSchedule(@RequestHeader("Authorization") String token,
+                                              @RequestBody ScheduleDTO scheduleDTO) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        medicService.createSchedule(medicId, scheduleDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/upcoming-patients")
+    public ResponseEntity<List<PatientQueueDTO>> getUpcomingPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<PatientQueueDTO> list = medicService.getUpcomingPatients(medicId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 

@@ -91,7 +91,6 @@
   --> Ver calendario con turnos disponibles a la hora de programar uno   --                --
 
   * Mails
-  --> Mail de confirmación al agendar turno o estudio                    --                ?
-  --> Mail de recordatorio día anterior al turno o estudio               --                ?
+  --> Mail de confirmación al agendar turno o estudio               ✅                ✅
+  --> Mail de recordatorio día anterior al turno o estudio          ✅                ✅
 
-    
