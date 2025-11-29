@@ -8,13 +8,10 @@ import java.util.stream.Collectors;
 
 @Getter
 public enum MedicalCenterE {
-    HOSPITAL_AUSTRAL("Hospital Austral"),
-    CONSULTORIOS_ESCOBAR("Consultorios Escobar"),
-    CONSULTORIOS_CHAMPAGNAT("Consultorios Champagnat"),
-    HOSPITAL_ALEMAN("Hospital Aleman"),
-    HOSPITAL_ITALIANO("Hospital Italiano"),
-    HOSPITAL_GARRAHAN("Hospital Garrahan"),
-    HOSPITAL_POSADAS("Hospital Posadas");
+    SEDE_PRINCIPAL_HOSPITAL_AUSTRAL("Sede Principal - Hospital Universitario Austral"),
+    CENTRO_ESPECIALIDAD_OFFICIA("Centro de especialidad Officia"),
+    CENTRO_ESPECIALIDAD_CHAMPAGNAT("Centro de especialidad Champagnat"),
+    CENTRO_ESPECIALIDAD_LUJAN("Centro de especialidad Lujan");
 
     private final String name;
 

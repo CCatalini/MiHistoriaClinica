@@ -39,7 +39,10 @@ export class SignupMedicComponent implements OnInit{
     formSubmit(){
         console.log(this.medic);
         if(this.medic.dni == '' || this.medic.dni == null){
-            Swal.fire('Ingrese su DNI', 'El DNI es requisito para registrarse como paciente.', 'warning');
+            Swal.fire('Ingrese su DNI', 'El DNI es requisito para registrarse como médico.', 'warning');
+
+
+            
             return;
         }
 

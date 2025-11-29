@@ -13,6 +13,7 @@ import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.persistence.repository.*;
 import com.example.MiHistoriaClinica.service.PatientService;
+import com.example.MiHistoriaClinica.service.EmailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import com.example.MiHistoriaClinica.presentation.dto.MedicTurnosDTO;
+import com.example.MiHistoriaClinica.presentation.dto.TurnoDisponibleDTO;
 import com.example.MiHistoriaClinica.service.EmailService;
 
 @Service
@@ -68,16 +71,16 @@ public class PatientServiceImpl implements PatientService {
     public Patient createPatient(PatientDTO patient) {
         // Crear el paciente
         Patient newPatient = customRepositoryAccess.saveDTO(patient);
-        
+
         // Generar token de verificación
         String verificationToken = UUID.randomUUID().toString();
         newPatient.setVerificationToken(verificationToken);
         newPatient.setEmailVerified(false);
         newPatient.setEnabled(false);
-        
+
         // Guardar con el token
         newPatient = patientRepository.save(newPatient);
-        
+
         // Enviar email de verificación
         String verificationUrl = "http://localhost:4200/patient/verify?token=" + verificationToken;
         try {
@@ -86,31 +89,31 @@ public class PatientServiceImpl implements PatientService {
             // Log pero no fallar el registro
             System.err.println("Error enviando email de verificación: " + e.getMessage());
         }
-        
+
         return newPatient;
     }
-    
+
     public Patient verifyEmail(String token) {
         Patient patient = patientRepository.findByVerificationToken(token)
                 .orElseThrow(() -> new RuntimeException("Token de verificación inválido o expirado"));
-        
+
         if (patient.isEmailVerified()) {
             throw new RuntimeException("El email ya ha sido verificado");
         }
-        
+
         patient.setEmailVerified(true);
         patient.setEnabled(true);
         patient.setVerificationToken(null);
-        
+
         patient = patientRepository.save(patient);
-        
+
         // Enviar email de bienvenida
         try {
             emailService.sendWelcomeEmail(patient);
         } catch (Exception e) {
             System.err.println("Error enviando email de bienvenida: " + e.getMessage());
         }
-        
+
         return patient;
     }
 
@@ -120,16 +123,16 @@ public class PatientServiceImpl implements PatientService {
         if (result == null) {
             throw new PatientNotFoundException();
         }
-        
+
         // Verificar que el email esté verificado
         if (!result.isEmailVerified()) {
             throw new RuntimeException("Debes verificar tu email antes de iniciar sesión. Revisa tu correo electrónico.");
         }
-        
+
         if (!result.isEnabled()) {
             throw new RuntimeException("Tu cuenta no está activa. Por favor contacta al soporte.");
         }
-        
+
         return result;
     }
 
@@ -210,6 +213,29 @@ public class PatientServiceImpl implements PatientService {
         Medic medic = medicRepository.findById(medicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
         customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
+    public void reserveTurno(Long patientId, Long turnoId) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+
+        if (!turno.isAvailable()) {
+            throw new RuntimeException("Turno no disponible");
+        }
+
+        Patient patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
+
+        turno.setPatient(patient);
+        turno.setAvailable(false);
+
+        turnosRepository.save(turno);
+
+        // Enviar email de confirmación
+        try {
+            emailService.sendTurnoConfirmationEmail(patient, turno);
+        } catch (Exception e) {
+            // Log error pero no fallar la operación
+            System.err.println("Error enviando email de confirmación: " + e.getMessage());
+        }
     }
 
     @Override
@@ -229,6 +255,70 @@ public class PatientServiceImpl implements PatientService {
         MedicalSpecialtyE medicalSpecialtyE = MedicalSpecialtyE.getEnumFromName(specialty);
         return patientRepository.getMedicsBySpecialty(id, medicalSpecialtyE);
     }
+
+    @Override
+    public List<Turnos> getAvailableTurnosByMedic(Long medicId) {
+        return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+    }
+
+    @Override
+    public List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDate(String specialty, String dateIso) {
+        java.time.LocalDate date = java.time.LocalDate.parse(dateIso);
+        com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
+        List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoAndAvailableTrue(specEnum, date);
+
+        java.util.Map<Long, MedicTurnosDTO> map = new java.util.HashMap<>();
+
+        for (Turnos t : turnos) {
+            MedicTurnosDTO dto = map.computeIfAbsent(
+                    t.getMedic().getMedicId(),
+                    id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
+            );
+            dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getFechaTurno().toString(),
+                t.getHoraTurno().toString()
+            ));
+        }
+
+        return new java.util.ArrayList<>(map.values());
+    }
+
+    public List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDateRange(String specialty, String startDateIso) {
+        java.time.LocalDate startDate = java.time.LocalDate.parse(startDateIso);
+        java.time.LocalDate endDate = startDate.plusDays(29); // 30 días incluyendo el de inicio
+        com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
+
+        List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoBetweenAndAvailableTrue(specEnum, startDate, endDate);
+
+        java.util.Map<Long, MedicTurnosDTO> map = new java.util.HashMap<>();
+
+        for (Turnos t : turnos) {
+            MedicTurnosDTO dto = map.computeIfAbsent(
+                    t.getMedic().getMedicId(),
+                    id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
+            );
+            dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getFechaTurno().toString(),
+                t.getHoraTurno().toString()
+            ));
+        }
+
+        return new java.util.ArrayList<>(map.values());
+    }
+
+    public List<String> getMedicsWithAvailableTurnosBySpecialty(String specialty, String startDateIso) {
+        java.time.LocalDate startDate = java.time.LocalDate.parse(startDateIso);
+        java.time.LocalDate endDate = startDate.plusDays(29);
+        com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
+        List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoBetweenAndAvailableTrue(specEnum, startDate, endDate);
+        java.util.Set<String> medics = new java.util.HashSet<>();
+        for (Turnos t : turnos) {
+            medics.add(t.getMedic().getName() + " " + t.getMedic().getLastname());
+        }
+        return new java.util.ArrayList<>(medics);
+    }
+
+
 }
 
 

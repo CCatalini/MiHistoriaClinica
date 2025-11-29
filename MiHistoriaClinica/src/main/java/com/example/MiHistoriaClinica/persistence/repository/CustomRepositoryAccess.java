@@ -148,7 +148,7 @@ public class CustomRepositoryAccess {
 
     }
 
-    public Turnos createTurno(Patient patient, Medic medic, TurnoDTO request, String medicalCenter) {
+    public Turnos createTurno(Patient patient, Medic medic, TurnoDTO request, MedicalCenterE medicalCenter) {
         Turnos turnoSaved = new Turnos();
 
         turnoSaved.setFechaTurno(request.getFechaTurno());

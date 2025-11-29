@@ -263,6 +263,46 @@ export class MedicService {
         const params = new HttpParams().set('token', token);
         return this.http.get<string>('http://localhost:8080/medic/verify-email', { params: params, responseType: 'text' as 'json' });
     }
+
+    getAvailableTurnos(medicId: string) {
+        return this.http.get<any[]>(`http://localhost:8080/medic/available-turnos?medicId=${medicId}`);
+    }
+
+    getAllTurnosByMedic(medicId: string) {
+        const url = `http://localhost:8080/medic/all-turnos?medicId=${medicId}`;
+        console.log('=== SERVICIO getAllTurnosByMedic ===');
+        console.log('URL completa:', url);
+        console.log('medicId recibido:', medicId);
+
+        // Añadir headers si es necesario
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+            console.log('Token añadido a headers');
+        }
+
+        return this.http.get<any[]>(url, { headers });
+    }
+
+    getReservedTurnos(medicId: string) {
+        return this.http.get<any[]>(`http://localhost:8080/medic/reserved-turnos?medicId=${medicId}`);
+    }
+
+    createSchedule(scheduleDTO: any) {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+
+        console.log('=== SERVICIO createSchedule ===');
+        console.log('DTO recibido:', scheduleDTO);
+        console.log('Token presente:', token ? 'Sí' : 'No');
+        console.log('Headers:', headers);
+
+        return this.http.post('http://localhost:8080/medic/create-schedule', scheduleDTO, { headers });
+    }
 }
 
 
