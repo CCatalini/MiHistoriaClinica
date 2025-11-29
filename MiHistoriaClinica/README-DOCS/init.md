@@ -19,7 +19,15 @@ Esto creará un contenedor MySQL con:
 
 ### 2. **Levantar el backend (Spring Boot)**
 
-Asegúrate de tener **Java 17** instalado y seleccionado como versión activa.
+#### IMPORTANTE
+Con las env que necesita sengrid es importante correr el backend con el script `run.sh` o exportar las variables de entorno manualmente antes de levantar el backend.
+el script `run.sh` carga las variables desde el archivo `.env` y luego ejecuta el backend.
+hay un .env de ejemplo `.env.example` en la raíz del proyecto que podes copiar a `.env` y completar con tus credenciales de sengrid.
+
+**Opción 1 - Con el script (Recomendado):**
+```bash
+./run.sh
+```
 
 Desde la carpeta `MiHistoriaClinica/MiHistoriaClinica/`, ejecuta:
 

@@ -27,6 +27,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Optional<Patient> findByLinkCode(String linkCode);
 
+    Optional<Patient> findByVerificationToken(String verificationToken);
+
 
 
     /**

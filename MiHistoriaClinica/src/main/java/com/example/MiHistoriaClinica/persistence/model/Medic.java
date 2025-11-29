@@ -31,6 +31,15 @@ public class Medic {
     private MedicalSpecialtyE specialty;
     private String password;
 
+    @Column(name = "email_verified")
+    private boolean emailVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
     @ManyToMany(mappedBy = "medics", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Patient> patients = new ArrayList<>();

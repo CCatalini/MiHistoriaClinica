@@ -258,6 +258,11 @@ export class MedicService {
     getBloodTypes() {
         return this.http.get<string[]>('http://localhost:8080/medical-file/blood-types');
     }
+
+    public verifyEmail(token: string): Observable<string> {
+        const params = new HttpParams().set('token', token);
+        return this.http.get<string>('http://localhost:8080/medic/verify-email', { params: params, responseType: 'text' as 'json' });
+    }
 }
 
 

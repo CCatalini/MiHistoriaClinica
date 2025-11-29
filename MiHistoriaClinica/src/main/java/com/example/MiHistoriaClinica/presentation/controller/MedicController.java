@@ -117,6 +117,16 @@ public class MedicController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyMedicEmail(@RequestParam("token") String token) {
+        try {
+            Medic medic = medicService.verifyMedicEmail(token);
+            return ResponseEntity.ok("Email verificado exitosamente. Ya puedes iniciar sesión.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }
 
