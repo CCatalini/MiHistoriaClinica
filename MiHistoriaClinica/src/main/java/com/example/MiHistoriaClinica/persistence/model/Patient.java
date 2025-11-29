@@ -32,6 +32,15 @@ public class Patient {
     @Column(name = "link_code")
     private String linkCode;
 
+    @Column(name = "email_verified")
+    private boolean emailVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

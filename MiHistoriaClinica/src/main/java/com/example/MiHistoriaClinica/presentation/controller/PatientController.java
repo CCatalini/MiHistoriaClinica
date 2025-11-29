@@ -76,4 +76,14 @@ public class PatientController {
         return new ResponseEntity<>(medics, HttpStatus.OK);
     }
 
+    @GetMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam("token") String token) {
+        try {
+            Patient patient = patientService.verifyEmail(token);
+            return ResponseEntity.ok("Email verificado exitosamente. Ya puedes iniciar sesión.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

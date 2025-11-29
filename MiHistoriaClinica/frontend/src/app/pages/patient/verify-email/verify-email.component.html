@@ -1,0 +1,30 @@
+<div class="verification-container">
+  <div class="verification-card">
+    <div class="icon-container" *ngIf="verifying">
+      <div class="spinner"></div>
+    </div>
+    
+    <div class="icon-container" *ngIf="!verifying && success">
+      <div class="success-icon">✅</div>
+    </div>
+    
+    <div class="icon-container" *ngIf="!verifying && !success">
+      <div class="error-icon">❌</div>
+    </div>
+    
+    <h1 *ngIf="verifying">Verificando tu email...</h1>
+    <h1 *ngIf="!verifying && success">¡Email Verificado!</h1>
+    <h1 *ngIf="!verifying && !success">Error en la Verificación</h1>
+    
+    <p class="message">{{ message }}</p>
+    
+    <div class="button-container" *ngIf="!verifying">
+      <button class="btn-primary" *ngIf="success" routerLink="/patient/login">
+        Ir al Login
+      </button>
+      <button class="btn-secondary" *ngIf="!success" routerLink="/">
+        Volver al Inicio
+      </button>
+    </div>
+  </div>
+</div>

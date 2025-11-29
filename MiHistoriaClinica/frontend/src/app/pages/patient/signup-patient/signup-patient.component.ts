@@ -37,8 +37,15 @@ export class SignupPatientComponent implements OnInit{
       this.userService.addPatient(this.patient).subscribe(
           (data) => {
               console.log(data);
-              Swal.fire('Usuario guardado', 'Usuario registrado con éxito en el sistema.', 'success');
-              this.router.navigate(['patient/login']);
+              Swal.fire({
+                  title: '¡Registro exitoso!',
+                  html: '<p>Usuario registrado con éxito.</p>' +
+                        '<p><strong>📧 Revisa tu correo electrónico</strong> para verificar tu cuenta antes de iniciar sesión.</p>' +
+                        '<p>Si no ves el email, revisa tu carpeta de spam.</p>',
+                  icon: 'success',
+                  confirmButtonText: 'Entendido'
+              });
+              this.router.navigate(['/']);
           },(error) => {
               console.log(error);
               Swal.fire('Error', 'Existen datos erroneos.', 'error');

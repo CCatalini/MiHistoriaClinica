@@ -9,10 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MedicRepository extends JpaRepository<Medic, Long> {
 
     Medic findByMatriculaAndPassword(Long matricula, String password);
+
+    Optional<Medic> findByVerificationToken(String verificationToken);
 
     /**
     Se utiliza la cláusula JOIN para unir las entidades PatientModel y MedicModel a través de la relación medics.

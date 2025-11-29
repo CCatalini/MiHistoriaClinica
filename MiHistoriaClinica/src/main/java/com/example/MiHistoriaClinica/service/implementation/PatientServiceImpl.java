@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
+import com.example.MiHistoriaClinica.service.EmailService;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -29,14 +31,16 @@ public class PatientServiceImpl implements PatientService {
     private final MedicineRepository medicineRepository;
     private final MedicRepository medicRepository;
     private final TurnosRepository turnosRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, MedicineRepository medicineRepository, MedicRepository medicRepository, TurnosRepository turnosRepository, EmailService emailService) {
         this.patientRepository = patientRepository;
         this.customRepositoryAccess = customRepositoryAccess;
         this.medicineRepository = medicineRepository;
         this.medicRepository = medicRepository;
         this.turnosRepository = turnosRepository;
+        this.emailService = emailService;
     }
 
     /**
@@ -62,7 +66,52 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient createPatient(PatientDTO patient) {
-        return customRepositoryAccess.saveDTO(patient);
+        // Crear el paciente
+        Patient newPatient = customRepositoryAccess.saveDTO(patient);
+        
+        // Generar token de verificación
+        String verificationToken = UUID.randomUUID().toString();
+        newPatient.setVerificationToken(verificationToken);
+        newPatient.setEmailVerified(false);
+        newPatient.setEnabled(false);
+        
+        // Guardar con el token
+        newPatient = patientRepository.save(newPatient);
+        
+        // Enviar email de verificación
+        String verificationUrl = "http://localhost:4200/patient/verify?token=" + verificationToken;
+        try {
+            emailService.sendVerificationEmail(newPatient, verificationUrl);
+        } catch (Exception e) {
+            // Log pero no fallar el registro
+            System.err.println("Error enviando email de verificación: " + e.getMessage());
+        }
+        
+        return newPatient;
+    }
+    
+    public Patient verifyEmail(String token) {
+        Patient patient = patientRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new RuntimeException("Token de verificación inválido o expirado"));
+        
+        if (patient.isEmailVerified()) {
+            throw new RuntimeException("El email ya ha sido verificado");
+        }
+        
+        patient.setEmailVerified(true);
+        patient.setEnabled(true);
+        patient.setVerificationToken(null);
+        
+        patient = patientRepository.save(patient);
+        
+        // Enviar email de bienvenida
+        try {
+            emailService.sendWelcomeEmail(patient);
+        } catch (Exception e) {
+            System.err.println("Error enviando email de bienvenida: " + e.getMessage());
+        }
+        
+        return patient;
     }
 
     @Override
@@ -70,9 +119,18 @@ public class PatientServiceImpl implements PatientService {
         Patient result = patientRepository.findByDniAndPassword(patient.getDni(), patient.getPassword());
         if (result == null) {
             throw new PatientNotFoundException();
-        } else {
-            return result;
         }
+        
+        // Verificar que el email esté verificado
+        if (!result.isEmailVerified()) {
+            throw new RuntimeException("Debes verificar tu email antes de iniciar sesión. Revisa tu correo electrónico.");
+        }
+        
+        if (!result.isEnabled()) {
+            throw new RuntimeException("Tu cuenta no está activa. Por favor contacta al soporte.");
+        }
+        
+        return result;
     }
 
     @Override

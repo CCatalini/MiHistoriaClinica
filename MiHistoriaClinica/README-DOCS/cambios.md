@@ -17,15 +17,8 @@
 - **Solución:** Actualizado a Lombok 1.18.30
 
 #### 2. Configuración de SendGrid
-- **Problema:** Faltaban propiedades requeridas para EmailService
-- **Solución:** Agregadas propiedades con valores placeholder
-- **Archivo modificado:** `src/main/resources/application.properties`
-- **Estado:** Requiere API Key real para funcionar
-- **Configuración actual:**
-  ```properties
-  sendgrid.api.key=SG.REPLACE_WITH_YOUR_API_KEY
-  sendgrid.from.email=noreply@mihistoriaclinica.com
-  sendgrid.from.name=Mi Historia Clinica
-  app.reminders.enabled=false
-  ```
+  
+- implementacion para enviar mails de confirmacion de cuenta listo, 
+desde back y front, la cuenta queda desahbilitada hasta que se confirme mail 
+
 

@@ -49,6 +49,7 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { VerifyEmailComponent } from './pages/patient/verify-email/verify-email.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     AllMedicsListComponent,
     TurnosListComponent,
     MedicCalendarComponent,
+    VerifyEmailComponent,
   ],
     imports: [
         BrowserModule,

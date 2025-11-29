@@ -38,7 +38,23 @@ export class LoginMedicComponent implements OnInit{
                 this.router.navigate(['medic/home']);
             },(error) => {
                 console.log(error);
-                Swal.fire('Error', 'Existen datos erroneos.', 'error');
+                
+                // Verificar si el error es por email no verificado
+                const errorMessage = error.error?.message || error.message || '';
+                
+                if (errorMessage.includes('verificar tu email') || errorMessage.includes('email antes de iniciar')) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cuenta no verificada',
+                        html: '<p>Aún no has verificado tu cuenta médica.</p>' +
+                              '<p><strong>📧 Revisa tu correo electrónico</strong> y haz clic en el enlace de verificación.</p>' +
+                              '<p style="font-size: 14px; color: #666;">Si no encuentras el email, revisa tu carpeta de spam.</p>',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#4A90E2'
+                    });
+                } else {
+                    Swal.fire('Error', 'Credenciales incorrectas. Verifica tu matrícula y contraseña.', 'error');
+                }
             }
         )
     }

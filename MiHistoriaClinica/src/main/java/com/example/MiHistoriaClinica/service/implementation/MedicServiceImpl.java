@@ -18,27 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.UUID;
+import com.example.MiHistoriaClinica.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class MedicServiceImpl implements MedicService {
 
     private final MedicRepository medicRepository;
     private final PatientRepository patientRepository;
-    private final MedicineRepository medicineRepository;
-    private final AnalysisRepository analysisRepository;
-    private final MedicalFileRepository medicalFileRepository;
-
     private final CustomRepositoryAccess customRepositoryAccess;
     private final PatientServiceImpl patientService;
+    
+    @Autowired
+    private EmailService emailService;
 
 
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, MedicineRepository medicineRepository, AnalysisRepository analysisRepository, MedicalFileRepository medicalFileRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
+    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
         this.medicRepository = medicRepository;
         this.patientRepository = patientRepository;
-        this.medicineRepository = medicineRepository;
-        this.analysisRepository = analysisRepository;
-        this.medicalFileRepository = medicalFileRepository;
-
         this.customRepositoryAccess = customRepositoryAccess;
         this.patientService = patientService;
     }
@@ -48,7 +46,51 @@ public class MedicServiceImpl implements MedicService {
 
     @Override
     public Medic createMedic(MedicDTO medic) {
-       return customRepositoryAccess.saveMedicDto(medic);
+        Medic newMedic = customRepositoryAccess.saveMedicDto(medic);
+        
+        // Generar token de verificación
+        String verificationToken = UUID.randomUUID().toString();
+        newMedic.setVerificationToken(verificationToken);
+        newMedic.setEmailVerified(false);
+        newMedic.setEnabled(false);
+        
+        // Guardar con el token
+        newMedic = medicRepository.save(newMedic);
+        
+        // Enviar email de verificación
+        String verificationUrl = "http://localhost:4200/medic/verify?token=" + verificationToken;
+        try {
+            emailService.sendMedicVerificationEmail(newMedic, verificationUrl);
+        } catch (Exception e) {
+            // Log pero no fallar el registro
+            System.err.println("Error enviando email de verificación a médico: " + e.getMessage());
+        }
+        
+        return newMedic;
+    }
+    
+    public Medic verifyMedicEmail(String token) {
+        Medic medic = medicRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new RuntimeException("Token de verificación inválido o expirado"));
+        
+        if (medic.isEmailVerified()) {
+            throw new RuntimeException("El email ya ha sido verificado");
+        }
+        
+        medic.setEmailVerified(true);
+        medic.setEnabled(true);
+        medic.setVerificationToken(null);
+        
+        medic = medicRepository.save(medic);
+        
+        // Enviar email de bienvenida
+        try {
+            emailService.sendMedicWelcomeEmail(medic);
+        } catch (Exception e) {
+            System.err.println("Error enviando email de bienvenida a médico: " + e.getMessage());
+        }
+        
+        return medic;
     }
 
     /**
@@ -62,9 +104,18 @@ public class MedicServiceImpl implements MedicService {
         Medic result = medicRepository.findByMatriculaAndPassword(medic.getMatricula(), medic.getPassword());
         if (result == null) {
             throw new MedicNotFoundException();
-        } else {
-            return result;
         }
+        
+        // Verificar que el email esté verificado
+        if (!result.isEmailVerified()) {
+            throw new RuntimeException("Debes verificar tu email antes de iniciar sesión. Revisa tu correo electrónico.");
+        }
+        
+        if (!result.isEnabled()) {
+            throw new RuntimeException("Tu cuenta no está activa. Por favor contacta al soporte.");
+        }
+        
+        return result;
     }
 
     @Override
@@ -205,16 +256,8 @@ public class MedicServiceImpl implements MedicService {
         Patient patient = patientRepository.findByLinkCode(linkCode).get();
         return patientService.getMedicalHistory(patient.getPatientId());
     }
-/*
-    public MedicalHistoryModel updatePatientMedicalHistory(Long medicId, String patientLinkCode, MedicalFileDTO update) {
-        Optional<MedicModel> medic = medicRepository.findById(medicId);
-        Optional<PatientModel> patient = patientRepository.findByLinkCode(patientLinkCode);
 
-        if (medic.isEmpty() || patient.isEmpty() || !isPatientLinked(medicId, patientLinkCode))     return  null;
-        else                                    return customRepositoryAccess.auxMedicalHistory(patient, update);
-        
-    }
-*/
+
     /** Métodos Medicines*/
 
     @Override
@@ -233,8 +276,7 @@ public class MedicServiceImpl implements MedicService {
         Optional<Patient> patient = patientRepository.findByLinkCode(patientLinkCode);
         List<Medicine> medicines = patient.get().getMedicines();
 
-        if(medicines == null)       return null;
-        else                        return medicines;
+        return medicines;
     }
 
     @Override
@@ -261,10 +303,6 @@ public class MedicServiceImpl implements MedicService {
     public List<Medicine> getAnalysisByStatus(String patientLinkCode, String status) {
         Optional<Patient> patient = patientRepository.findByLinkCode(patientLinkCode);
         return patientRepository.getMedicinesByPatientIdAndStatus(patient.get().getPatientId(), status);
-    }
-
-    public MedicalFileRepository getMedicalHistoryRepository() {
-        return medicalFileRepository;
     }
 
     @Override

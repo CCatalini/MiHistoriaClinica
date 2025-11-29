@@ -190,6 +190,11 @@ export class PatientService {
         return this.http.get('http://localhost:8080/medical-history/download-pdf', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
     }
 
+    public verifyEmail(token: string): Observable<string> {
+        const params = new HttpParams().set('token', token);
+        return this.http.get<string>('http://localhost:8080/patient/verify-email', { params: params, responseType: 'text' as 'json' });
+    }
+
 }
 
 
