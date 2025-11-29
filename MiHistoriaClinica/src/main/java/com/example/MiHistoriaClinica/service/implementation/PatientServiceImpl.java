@@ -169,6 +169,12 @@ public class PatientServiceImpl implements PatientService {
     public MedicalFileDTO getMedicalHistory(Long id) {
         Patient thisPatient = patientRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+        
+        // Si el paciente no tiene historia clínica, retornar un DTO vacío
+        if (thisPatient.getMedicalFile() == null) {
+            return new MedicalFileDTO();
+        }
+        
         return new MedicalFileDTO(thisPatient.getMedicalFile());
     }
 
@@ -206,13 +212,20 @@ public class PatientServiceImpl implements PatientService {
         return modelMapper.map(patient, PatientDTO.class);
     }
 
-    @Override
     public void createTurno(Long patientId, Long medicId, TurnoDTO request, String medicalCenter) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
         Medic medic = medicRepository.findById(medicId)
                 .orElseThrow(() -> new ResourceNotFoundException("Médico no encontrado"));
-        customRepositoryAccess.createTurno(patient, medic, request, medicalCenter);
+        
+        // Convertir String a MedicalCenterE
+        com.example.MiHistoriaClinica.util.constant.MedicalCenterE medicalCenterEnum = 
+            com.example.MiHistoriaClinica.util.constant.MedicalCenterE.getEnumFromName(medicalCenter);
+        
+        customRepositoryAccess.createTurno(patient, medic, request, medicalCenterEnum);
+    }
+
+    @Override
     public void reserveTurno(Long patientId, Long turnoId) {
         Turnos turno = turnosRepository.findById(turnoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
@@ -229,13 +242,12 @@ public class PatientServiceImpl implements PatientService {
 
         turnosRepository.save(turno);
 
-        // Enviar email de confirmación
-        try {
-            emailService.sendTurnoConfirmationEmail(patient, turno);
-        } catch (Exception e) {
-            // Log error pero no fallar la operación
-            System.err.println("Error enviando email de confirmación: " + e.getMessage());
-        }
+        // TODO: Agregar email de confirmación cuando se implemente el método
+        // try {
+        //     emailService.sendTurnoConfirmationEmail(patient, turno);
+        // } catch (Exception e) {
+        //     System.err.println("Error enviando email de confirmación: " + e.getMessage());
+        // }
     }
 
     @Override

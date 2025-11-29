@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MedicService } from '../../../services/medic/medic.service';
+import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-medic-verify-email',
   templateUrl: './verify-email.component.html',
   standalone: true,
+  imports: [CommonModule],
   styleUrls: ['./verify-email.component.css']
 })
 export class MedicVerifyEmailComponent implements OnInit {

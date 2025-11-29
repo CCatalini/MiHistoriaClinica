@@ -44,8 +44,7 @@ public class MedicServiceImpl implements MedicService {
     @Autowired
     private EmailService emailService;
 
-
-    public MedicServiceImpl(MedicRepository medicRepository, PatientRepository patientRepository, CustomRepositoryAccess customRepositoryAccess, PatientServiceImpl patientService) {
+    @Autowired
     public MedicServiceImpl(MedicRepository medicRepository,
                            PatientRepository patientRepository,
                            MedicineRepository medicineRepository,
