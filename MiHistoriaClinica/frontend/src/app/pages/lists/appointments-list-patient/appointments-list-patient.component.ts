@@ -30,8 +30,6 @@ export class AppointmentsListPatientComponent implements OnInit{
                     console.log(data); // Agregar este console.log para verificar la respuesta del servidor
                     if (Array.isArray(data)) {
                         this.appointments = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
                     }
                 },
                 (error: any) => {

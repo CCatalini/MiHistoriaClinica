@@ -30,9 +30,7 @@ export class TurnosListComponent implements OnInit{
                     console.log(data); // Agrego este console.log para verificar la respuesta del servidor
                     if (Array.isArray(data)) {
                         this.turnos = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
-                    }
+                    } 
                 },
                 (error: any) => {
                     console.log(error);
