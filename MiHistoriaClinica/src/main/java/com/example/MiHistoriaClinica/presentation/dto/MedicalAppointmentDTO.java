@@ -11,6 +11,7 @@ public class MedicalAppointmentDTO {
     private String currentIllness;
     private String physicalExam;
     private String observations;
+    private String estado;
 
     public MedicalAppointmentDTO (){
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
-import {map, Observable, of} from "rxjs";
+import {map, Observable} from "rxjs";
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 
@@ -211,6 +211,11 @@ export class PatientService {
     public verifyEmail(token: string): Observable<string> {
         const params = new HttpParams().set('token', token);
         return this.http.get<string>('http://localhost:8080/patient/verify-email', { params: params, responseType: 'text' as 'json' });
+    }
+
+    public updateAppointmentEstado(appointmentId: number, estado: string): Observable<string> {
+        const params = new HttpParams().set('estado', estado);
+        return this.http.put<string>(`http://localhost:8080/medicalAppointment/update-estado/${appointmentId}`, null, { params: params, responseType: 'text' as 'json' });
     }
 
 }

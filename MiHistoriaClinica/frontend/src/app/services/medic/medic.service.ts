@@ -303,6 +303,11 @@ export class MedicService {
 
         return this.http.post('http://localhost:8080/medic/create-schedule', scheduleDTO, { headers });
     }
+
+    updateAppointmentEstado(appointmentId: number, estado: string): Observable<string> {
+        const params = new HttpParams().set('estado', estado);
+        return this.http.put<string>(`http://localhost:8080/medicalAppointment/update-estado/${appointmentId}`, null, { params: params, responseType: 'text' as 'json' });
+    }
 }
 
 
