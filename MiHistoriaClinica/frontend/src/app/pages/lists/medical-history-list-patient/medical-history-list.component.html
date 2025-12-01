@@ -15,8 +15,39 @@
                 <mat-checkbox formControlName="estudios">Estudios</mat-checkbox>
                 <mat-checkbox formControlName="consultasMedicas">Consultas médicas</mat-checkbox>
             </div>
+            
+            <!-- Filtros adicionales para consultas médicas -->
+            <div class="consultation-filters" *ngIf="downloadList.get('consultasMedicas')?.value">
+                <h5>Filtros de consultas:</h5>
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select formControlName="estadoConsulta" class="filter-select">
+                        <option value="">Todas</option>
+                        <option value="Pendiente">Pendientes</option>
+                        <option value="Completada">Completadas</option>
+                        <option value="Cancelada">Canceladas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Especialidad:</label>
+                    <select formControlName="especialidadMedico" class="filter-select">
+                        <option value="">Todas</option>
+                        <option value="CARDIOLOGIA">Cardiología</option>
+                        <option value="PEDIATRIA">Pediatría</option>
+                        <option value="MEDICINA_CLINICA">Medicina Clínica</option>
+                        <option value="TRAUMATOLOGIA">Traumatología</option>
+                        <option value="GINECOLOGIA">Ginecología</option>
+                        <option value="NEUROLOGIA">Neurología</option>
+                        <option value="GASTROENTEROLOGIA">Gastroenterología</option>
+                        <option value="CIRUGIA_GENERAL">Cirugía General</option>
+                        <option value="PSIQUIATRIA">Psiquiatría</option>
+                        <option value="OFTALMOLOGIA">Oftalmología</option>
+                    </select>
+                </div>
+            </div>
+            
             <div class="button-container">
-                <button class="boton" (click)="downloadMedicalHistory()">Descargar</button>
+                <button class="boton" (click)="downloadMedicalHistory()">Descargar PDF</button>
             </div>
         </div>
     </form>
@@ -71,7 +102,11 @@
                 <tbody>
                 <tr *ngFor="let medicine of medicines">
                     <td>{{ medicine.name }}</td>
-                    <td>{{ medicine.description }}</td>
+                    <td>
+                        <div style="max-width: 300px; position: relative;" class="expandable-text" (mouseenter)="showTooltip($event, medicine.description)" (mouseleave)="hideTooltip()">
+                            <span>{{ medicine.description?.length > 80 ? (medicine.description | slice:0:80) + '...' : medicine.description }}</span>
+                        </div>
+                    </td>
                     <td>{{ medicine.status }}</td>
                 </tr>
                 </tbody>
@@ -93,8 +128,12 @@
                 </thead>
                 <tbody>
                 <tr *ngFor="let analysis of analysisList">
-                    <td>{{ analysis.name }}</td>
-                    <td>{{ analysis.description }}</td>
+                    <td>{{ formatAnalysisName(analysis.name) }}</td>
+                    <td>
+                        <div style="max-width: 300px; position: relative;" class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
+                            <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
+                        </div>
+                    </td>
                     <td>{{ analysis.status }}</td>
                 </tr>
                 </tbody>
@@ -104,13 +143,12 @@
 
     <!-- 🔵 Consultas Médicas -->
     <div *ngIf="showAppointments" class="appointments-section">
-        <h2 class="text-center">Mis Consultas Médicas</h2>
+        <h2 class="text-center">Consultas</h2>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead class="table-dark">
                 <tr>
                     <th>Nombre del médico</th>
-                    <th>Matrícula</th>
                     <th>Especialidad</th>
                     <th>Motivo de consulta</th>
                     <th>Síntomas</th>
@@ -121,16 +159,47 @@
                 <tbody>
                 <tr *ngFor="let appointment of appointments">
                     <td>{{ appointment.medicFullName }}</td>
-                    <td>{{ appointment.matricula }}</td>
                     <td>{{ appointment.specialty }}</td>
                     <td>{{ appointment.appointmentReason }}</td>
-                    <td>{{ appointment.currentIllness }}</td>
-                    <td>{{ appointment.physicalExam }}</td>
-                    <td>{{ appointment.observations }}</td>
+                    <td>
+                        <div style="max-width: 200px; position: relative;">
+                            <span>{{ appointment.currentIllness?.length > 60 ? (appointment.currentIllness | slice:0:60) + '...' : appointment.currentIllness }}</span>
+                            <button *ngIf="appointment.currentIllness?.length > 60" 
+                                    class="btn btn-sm btn-link" 
+                                    (click)="showFullText('Síntomas', appointment.currentIllness)"
+                                    style="padding: 0; margin-left: 5px; font-size: 0.85em; vertical-align: baseline;">
+                                Ver más
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="max-width: 200px; position: relative;">
+                            <span>{{ appointment.physicalExam?.length > 60 ? (appointment.physicalExam | slice:0:60) + '...' : appointment.physicalExam }}</span>
+                            <button *ngIf="appointment.physicalExam?.length > 60" 
+                                    class="btn btn-sm btn-link" 
+                                    (click)="showFullText('Examen Físico', appointment.physicalExam)"
+                                    style="padding: 0; margin-left: 5px; font-size: 0.85em; vertical-align: baseline;">
+                                Ver más
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="max-width: 200px; position: relative;" class="expandable-text" (mouseenter)="showTooltip($event, appointment.observations)" (mouseleave)="hideTooltip()">
+                            <span>{{ appointment.observations?.length > 60 ? (appointment.observations | slice:0:60) + '...' : appointment.observations }}</span>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+</div>
+
+<!-- Tooltip flotante global -->
+<div *ngIf="tooltipText" 
+     class="global-tooltip" 
+     [style.left.px]="tooltipX" 
+     [style.top.px]="tooltipY">
+    {{ tooltipText }}
 </div>

@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {MedicService} from "../../../services/medic/medic.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-medical-history-list-medic',
@@ -58,6 +59,32 @@ export class MedicalHistoryListMedicComponent implements OnInit{
                 console.error('Error fetching patient info:', error);
             }
         );
+    }
+
+    downloadPatientHistory(): void {
+        this.medicService.downloadPatientMedicalHistory().subscribe({
+            next: (response: HttpResponse<Blob>) => {
+                const blob = response.body!;
+
+                if (blob.size === 0) {
+                    Swal.fire('Error', 'No se pudo generar el PDF. Intente nuevamente más tarde.', 'error');
+                    return;
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const patientName = this.patient ? `${this.patient.name}_${this.patient.lastname}` : 'paciente';
+                a.download = `historia_clinica_${patientName}.pdf`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                Swal.fire('Éxito', 'Historia clínica descargada correctamente', 'success');
+            },
+            error: (error) => {
+                console.error('Error al descargar el historial médico:', error);
+                Swal.fire('Error', 'Error al descargar la historia clínica del paciente.', 'error');
+            }
+        });
     }
 
 }

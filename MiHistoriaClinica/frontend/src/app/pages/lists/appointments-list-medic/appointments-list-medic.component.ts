@@ -13,6 +13,11 @@ export class AppointmentsListMedicComponent implements OnInit{
 
     appointments: any[] = [];
     patient: any;
+    
+    // Variables para tooltip flotante
+    tooltipText: string | null = null;
+    tooltipX: number = 0;
+    tooltipY: number = 0;
 
     constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) { }
 
@@ -96,5 +101,18 @@ export class AppointmentsListMedicComponent implements OnInit{
                 Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
             }
         );
+    }
+
+    showTooltip(event: MouseEvent, text: string | null): void {
+        if (!text || text.length <= 50) return;
+        
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        this.tooltipX = rect.left;
+        this.tooltipY = rect.bottom + window.scrollY + 5;
+        this.tooltipText = text;
+    }
+
+    hideTooltip(): void {
+        this.tooltipText = null;
     }
 }
