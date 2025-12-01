@@ -34,22 +34,16 @@ export class AnalysisListMedicComponent implements OnInit{
         }
         createGetAnalysisListObservable.subscribe(
             (data: any) => {
-                console.log(data); // Agregar este console.log para verificar la respuesta del servidor
-                if (Array.isArray(data)) {
-                    this.analysisList = data;
-                } else {
-                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de estudios válida.', 'error');
-                }
+                console.log(data);
+                this.analysisList = Array.isArray(data) ? data : [];
             },
             (error: any) => {
                 console.log(error);
-                if (error.status === 400) {
-                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                } else if (error.status === 404) {
-                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                } else {
+                // Solo mostrar error si es un error real del servidor (500+)
+                if (error.status >= 500) {
                     Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                 }
+                this.analysisList = [];
             }
         );
     }
@@ -90,33 +84,28 @@ export class AnalysisListMedicComponent implements OnInit{
                 return;
             }
             getAnalysisListObservable?.subscribe(
-                (data: Object) => { // Change the type of 'data' to 'Object'
+                (data: Object) => {
                     console.log('Analysis List:', data);
-                    if (Array.isArray(data)) {
-                        this.analysisList = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de estudios válida.', 'error');
-                    }
+                    this.analysisList = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    if (error.status === 400) {
-                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                    } else if (error.status === 404) {
-                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                    } else {
+                    // Solo mostrar error si es un error real del servidor (500+)
+                    if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.analysisList = [];
                 }
             );
         } else {
             this.userService.getAnalysisByStatus(status).subscribe(
                 (analysis: any[]) => {
-                    this.analysisList = analysis;
+                    this.analysisList = Array.isArray(analysis) ? analysis : [];
                     console.log('Se ha filtrado con éxito');
                 },
                 (error: any) => {
                     console.log('Error al filtrar estudios:', error);
+                    this.analysisList = [];
                 }
             );
         }

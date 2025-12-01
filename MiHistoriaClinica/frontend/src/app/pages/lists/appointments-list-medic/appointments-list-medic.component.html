@@ -11,6 +11,8 @@
         <th>Síntomas</th>
         <th>Exámen físico</th>
         <th>Observaciones</th>
+        <th>Estado</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -22,6 +24,20 @@
         <td>{{appointment.currentIllness}}</td>
         <td>{{appointment.physicalExam}}</td>
         <td>{{appointment.observations}}</td>
+        <td>
+            <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
+                {{ getEstadoLabel(appointment.estado) }}
+            </span>
+        </td>
+        <td>
+            <select class="form-select form-select-sm" 
+                    [value]="appointment.estado" 
+                    (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
+                <option value="0">Pendiente</option>
+                <option value="1">Completada</option>
+                <option value="2">Cancelada</option>
+            </select>
+        </td>
     </tbody>
 </table>
 

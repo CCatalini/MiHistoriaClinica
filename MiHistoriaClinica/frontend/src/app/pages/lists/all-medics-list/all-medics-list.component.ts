@@ -71,25 +71,21 @@ export class AllMedicsListComponent implements OnInit {
     formSubmit() {
         this.userService.getAllMedicsList().subscribe(
             (data: any) => {
-                if (Array.isArray(data)) {
-                    this.medics = data;
-                    this.filteredMedics = data;
-                    this.updateSpecialties();
-                    this.updateNames();
-                    this.getAvailableDates(); // Obtener fechas disponibles
-                    this.generateAvailableTurnos(); // Generar turnos disponibles
-                } else {
-                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de médicos válida.', 'error');
-                }
+                this.medics = Array.isArray(data) ? data : [];
+                this.filteredMedics = this.medics;
+                this.updateSpecialties();
+                this.updateNames();
+                this.getAvailableDates(); // Obtener fechas disponibles
+                this.generateAvailableTurnos(); // Generar turnos disponibles
             },
             (error: any) => {
-                if (error.status === 400) {
-                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                } else if (error.status === 404) {
-                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                } else {
+                console.log(error);
+                // Solo mostrar error si es un error real del servidor (500+)
+                if (error.status >= 500) {
                     Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                 }
+                this.medics = [];
+                this.filteredMedics = [];
             }
         );
     }

@@ -36,21 +36,15 @@ export class MedicinesListMedicComponent implements OnInit {
         createGetMedicinesListObservable.subscribe(
             (data: any) => {
                 console.log(data);
-                if (Array.isArray(data)) {
-                    this.medicines = data;
-                } else {
-                    Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida (3).', 'error');
-                }
+                this.medicines = Array.isArray(data) ? data : [];
             },
             (error: any) => {
                 console.log(error);
-                if (error.status === 400) {
-                    Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                } else if (error.status === 404) {
-                    Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                } else {
+                // Solo mostrar error si es un error real del servidor (500+)
+                if (error.status >= 500) {
                     Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                 }
+                this.medicines = [];
             }
         );
     }
@@ -92,33 +86,28 @@ export class MedicinesListMedicComponent implements OnInit {
                 return;
             }
             getMedicinesListObservable?.subscribe(
-                (data: Object) => { // Change the type of 'data' to 'Object'
+                (data: Object) => {
                     console.log('Medicines List:', data);
-                    if (Array.isArray(data)) {
-                        this.medicines = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de medicamentos válida (4).', 'error');
-                    }
+                    this.medicines = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    if (error.status === 400) {
-                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                    } else if (error.status === 404) {
-                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                    } else {
+                    // Solo mostrar error si es un error real del servidor (500+)
+                    if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.medicines = [];
                 }
             );
         } else {
             this.userService.getMedicinesByStatus(status).subscribe(
                 (medicines: any[]) => {
-                    this.medicines = medicines;
+                    this.medicines = Array.isArray(medicines) ? medicines : [];
                     console.log('Se ha filtrado con éxito');
                 },
                 (error: any) => {
                     console.log('Error al filtrar medicamentos:', error);
+                    this.medicines = [];
                 }
             );
         }

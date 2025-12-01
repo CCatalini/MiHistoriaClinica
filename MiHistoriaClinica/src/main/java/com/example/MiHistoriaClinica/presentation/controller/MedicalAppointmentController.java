@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
 import com.example.MiHistoriaClinica.presentation.dto.MedicalAppointmentDTO;
+import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.MedicalAppointment;
 import com.example.MiHistoriaClinica.service.implementation.MedicalAppointmentServiceImpl;
@@ -56,22 +57,42 @@ public class MedicalAppointmentController {
         else                                                             return new ResponseEntity<>(appointmentList, HttpStatus.OK);
     }
 
+    @PutMapping("/update-estado/{appointmentId}")
+    public ResponseEntity<String> updateEstado(@PathVariable Long appointmentId, 
+                                               @RequestParam String estado) {
+        try {
+            EstadoConsultaE nuevoEstado = EstadoConsultaE.getEnumFromName(estado);
+            boolean updated = medicalAppointmentService.updateEstado(appointmentId, nuevoEstado);
+            if (updated) {
+                return new ResponseEntity<>("Estado actualizado exitosamente", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Consulta médica no encontrada", HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Estado inválido", HttpStatus.BAD_REQUEST);
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
+    @GetMapping("/patient/get-by-estado")
+    public ResponseEntity<List<MedicalAppointment>> getAppointmentsByEstado(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(required = false) String estado) throws InvalidTokenException {
+        Long patientId = jwtValidator.getId(token);
+        EstadoConsultaE estadoEnum = null;
+        
+        if (estado != null && !estado.isEmpty()) {
+            try {
+                estadoEnum = EstadoConsultaE.getEnumFromName(estado);
+            } catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+        }
+        
+        List<MedicalAppointment> appointmentList = medicalAppointmentService.getAppointmentsByPatientIdAndEstado(patientId, estadoEnum);
+        if (appointmentList == null || appointmentList.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(appointmentList, HttpStatus.OK);
+    }
 
 }
-
-
-
-
-
-

@@ -27,26 +27,54 @@ export class AppointmentsListPatientComponent implements OnInit{
         if(token) {
             this.userService.getAppointmentsList(token).subscribe(
                 (data: any) => {
-                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
-                    if (Array.isArray(data)) {
-                        this.appointments = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
-                    }
+                    console.log(data);
+                    this.appointments = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    if (error.status === 400) {
-                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                    } else if (error.status === 404) {
-                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                    } else {
+                    // Solo mostrar error si es un error real del servidor (500+)
+                    if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.appointments = [];
                 }
             );
         } else {
             // Manejar el caso en el que no se encuentre el token en el local storage
         }
+    }
+
+    getEstadoLabel(estado: number): string {
+        switch(estado) {
+            case 0: return 'Pendiente';
+            case 1: return 'Completada';
+            case 2: return 'Cancelada';
+            default: return 'Pendiente';
+        }
+    }
+
+    getEstadoBadgeClass(estado: number): string {
+        switch(estado) {
+            case 0: return 'bg-warning text-dark';
+            case 1: return 'bg-success';
+            case 2: return 'bg-danger';
+            default: return 'bg-warning text-dark';
+        }
+    }
+
+    cambiarEstado(appointmentId: number, event: any) {
+        const nuevoEstado = parseInt(event.target.value);
+        const estadoNombre = this.getEstadoLabel(nuevoEstado);
+        
+        this.userService.updateAppointmentEstado(appointmentId, estadoNombre).subscribe(
+            (response: any) => {
+                Swal.fire('Éxito', 'Estado actualizado correctamente', 'success');
+                this.formSubmit(); // Recargar la lista
+            },
+            (error: any) => {
+                console.log(error);
+                Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
+            }
+        );
     }
 }

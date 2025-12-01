@@ -27,22 +27,16 @@ export class TurnosListComponent implements OnInit{
         if(token) {
             this.userService.getTurnosList(token).subscribe(
                 (data: any) => {
-                    console.log(data); // Agrego este console.log para verificar la respuesta del servidor
-                    if (Array.isArray(data)) {
-                        this.turnos = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de turnos válida.', 'error');
-                    }
+                    console.log('Turnos:', data);
+                    this.turnos = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
-                    console.log(error);
-                    if (error.status === 400) {
-                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                    } else if (error.status === 404) {
-                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                    } else {
+                    console.log('Error fetching turnos:', error);
+                    // Solo mostrar error si es un error real del servidor (500), no si simplemente no hay datos
+                    if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.turnos = [];
                 }
             );
         } else {

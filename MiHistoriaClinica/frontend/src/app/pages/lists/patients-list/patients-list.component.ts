@@ -28,22 +28,16 @@ export class PatientsListComponent implements OnInit {
         if(token) {
             this.userService.getPatientsList(token).subscribe(
                 (data: any) => {
-                    console.log(data); // Agregar este console.log para verificar la respuesta del servidor
-                    if (Array.isArray(data)) {
-                        this.patients = data;
-                    } else {
-                        Swal.fire('Error', 'La respuesta del servidor no contiene una lista de pacientes válida.', 'error');
-                    }
+                    console.log(data);
+                    this.patients = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    if (error.status === 400) {
-                        Swal.fire('Error', 'Existen datos erróneos.', 'error');
-                    } else if (error.status === 404) {
-                        Swal.fire('Error', 'No se encontraron pacientes.', 'error');
-                    } else {
+                    // Solo mostrar error si es un error real del servidor (500+)
+                    if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.patients = [];
                 }
             );
         } else {
