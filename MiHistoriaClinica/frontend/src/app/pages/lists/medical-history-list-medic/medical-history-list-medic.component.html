@@ -1,6 +1,17 @@
 <div class="container">
     <h3>Historia Clínica</h3>
     <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
+    
+    <!-- Botones de acción -->
+    <div class="action-buttons" style="margin: 20px 0; display: flex; gap: 10px; justify-content: center;">
+        <button mat-raised-button color="primary" (click)="downloadPatientHistory()">
+            📄 Descargar Historia Clínica
+        </button>
+        <button mat-raised-button color="accent" [routerLink]="'/medic/edit-medicalHistory'" [queryParams]="{ data: medicalHistory | json }">
+            ✏️ Editar
+        </button>
+    </div>
+    
     <mat-list *ngIf="medicalHistory">
         <mat-list-item>
             <span matListItemTitle>Altura</span>
@@ -31,8 +42,4 @@
             <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
         </mat-list-item>
     </mat-list>
-    <button mat-button class="edit-button" [routerLink]="'/medic/edit-medicalHistory'" [queryParams]="{ data: medicalHistory | json }">Editar</button>
 </div>
-
-
-<!--todo podría agregar lista con medicamentos en curso debajo de la historia clínica-->

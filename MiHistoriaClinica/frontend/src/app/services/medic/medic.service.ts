@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {map, Observable, throwError} from "rxjs";
 import Swal from "sweetalert2";
 
@@ -307,6 +307,21 @@ export class MedicService {
     updateAppointmentEstado(appointmentId: number, estado: string): Observable<string> {
         const params = new HttpParams().set('estado', estado);
         return this.http.put<string>(`http://localhost:8080/medicalAppointment/update-estado/${appointmentId}`, null, { params: params, responseType: 'text' as 'json' });
+    }
+
+    downloadPatientMedicalHistory(): Observable<HttpResponse<Blob>> {
+        const linkCode = localStorage.getItem('patientLinkCode') || '';
+        const headers = new HttpHeaders({
+            'patientLinkCode': linkCode
+        });
+
+        const params = new HttpParams()
+            .set('includeMedicalFile', 'true')
+            .set('includeAnalysis', 'true')
+            .set('includeMedications', 'true')
+            .set('includeAppointments', 'true');
+
+        return this.http.get('http://localhost:8080/medical-history/download-pdf-by-linkcode', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
     }
 }
 

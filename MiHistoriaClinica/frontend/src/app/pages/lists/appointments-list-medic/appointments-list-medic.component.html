@@ -5,7 +5,6 @@
     <thead class="table-dark">
     <tr>
         <th>Nombre del médico</th>
-        <th>Matrícula</th>
         <th>Especialidad</th>
         <th>Motivo de consulta</th>
         <th>Síntomas</th>
@@ -18,12 +17,32 @@
     <tbody>
     <tr *ngFor="let appointment of appointments">
         <td>{{appointment.medicFullName}}</td>
-        <td>{{appointment.matricula}}</td>
         <td>{{appointment.specialty}}</td>
         <td>{{appointment.appointmentReason}}</td>
-        <td>{{appointment.currentIllness}}</td>
-        <td>{{appointment.physicalExam}}</td>
-        <td>{{appointment.observations}}</td>
+        <td>
+            <span class="expandable-text" 
+                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
+                  (mouseenter)="showTooltip($event, appointment.currentIllness)" 
+                  (mouseleave)="hideTooltip()">
+                {{ appointment.currentIllness && appointment.currentIllness.length > 50 ? (appointment.currentIllness.substring(0, 50) + '...') : appointment.currentIllness }}
+            </span>
+        </td>
+        <td>
+            <span class="expandable-text" 
+                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
+                  (mouseenter)="showTooltip($event, appointment.physicalExam)" 
+                  (mouseleave)="hideTooltip()">
+                {{ appointment.physicalExam && appointment.physicalExam.length > 50 ? (appointment.physicalExam.substring(0, 50) + '...') : appointment.physicalExam }}
+            </span>
+        </td>
+        <td>
+            <span class="expandable-text" 
+                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
+                  (mouseenter)="showTooltip($event, appointment.observations)" 
+                  (mouseleave)="hideTooltip()">
+                {{ appointment.observations && appointment.observations.length > 50 ? (appointment.observations.substring(0, 50) + '...') : appointment.observations }}
+            </span>
+        </td>
         <td>
             <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
                 {{ getEstadoLabel(appointment.estado) }}
@@ -41,5 +60,10 @@
     </tbody>
 </table>
 
-
-
+<!-- Tooltip flotante global -->
+<div *ngIf="tooltipText" 
+     class="global-tooltip" 
+     [style.left.px]="tooltipX" 
+     [style.top.px]="tooltipY">
+    {{ tooltipText }}
+</div>

@@ -27,6 +27,12 @@ export class MedicalHistoryListComponent implements OnInit {
     medicines: any[] = [];
     analysisList: any[] = [];
     appointments: any[] = [];
+    allAppointments: any[] = []; // Guardar todas las consultas para filtrar
+    
+    // Variables para tooltip flotante
+    tooltipText: string | null = null;
+    tooltipX: number = 0;
+    tooltipY: number = 0;
 
     constructor(private patientService: PatientService, private router: Router, private formBuilder: FormBuilder) {
         this.downloadList = this.formBuilder.group({
@@ -34,7 +40,13 @@ export class MedicalHistoryListComponent implements OnInit {
             medicamentos: false,
             estudios: false,
             consultasMedicas: false,
+            estadoConsulta: [''],
+            especialidadMedico: [''],
         });
+        
+        // Escuchar cambios en los filtros
+        this.downloadList.get('estadoConsulta')?.valueChanges.subscribe(() => this.filterAppointments());
+        this.downloadList.get('especialidadMedico')?.valueChanges.subscribe(() => this.filterAppointments());
     }
 
     ngOnInit(): void {
@@ -91,7 +103,8 @@ export class MedicalHistoryListComponent implements OnInit {
             this.patientService.getAppointmentsList(token).subscribe(
                 (data: any) => {
                     console.log('Appointments:', data);
-                    this.appointments = Array.isArray(data) ? data : [];
+                    this.allAppointments = Array.isArray(data) ? data : [];
+                    this.appointments = this.allAppointments; // Inicialmente mostrar todas
                 },
                 (error: any) => {
                     console.log('Error fetching appointments:', error);
@@ -99,6 +112,7 @@ export class MedicalHistoryListComponent implements OnInit {
                     if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
+                    this.allAppointments = [];
                     this.appointments = [];
                 }
             );
@@ -222,10 +236,12 @@ export class MedicalHistoryListComponent implements OnInit {
             const includeMedications = this.downloadList.get('medicamentos')?.value || false;
             const includeAnalysis = this.downloadList.get('estudios')?.value || false;
             const includeAppointments = this.downloadList.get('consultasMedicas')?.value || false;
+            const estadoConsulta = this.downloadList.get('estadoConsulta')?.value || '';
+            const especialidadMedico = this.downloadList.get('especialidadMedico')?.value || '';
 
-            console.log(`includeMedicalFile: ${includeMedicalFile}, includeMedications: ${includeMedications}, includeAnalysis: ${includeAnalysis}, includeAppointments: ${includeAppointments}`);
+            console.log(`includeMedicalFile: ${includeMedicalFile}, includeMedications: ${includeMedications}, includeAnalysis: ${includeAnalysis}, includeAppointments: ${includeAppointments}, estadoConsulta: ${estadoConsulta}, especialidadMedico: ${especialidadMedico}`);
 
-            this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments)
+            this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments, estadoConsulta, especialidadMedico)
                 .subscribe({
                     next: (response: HttpResponse<Blob>) => {
                         const blob = response.body!;
@@ -241,6 +257,7 @@ export class MedicalHistoryListComponent implements OnInit {
                         a.download = 'historia_clinica.pdf';
                         a.click();
                         window.URL.revokeObjectURL(url);
+                        Swal.fire('Éxito', 'Historia clínica descargada correctamente', 'success');
                     },
                     error: (error) => {
                         console.error('Error al descargar el historial médico:', error);
@@ -248,6 +265,93 @@ export class MedicalHistoryListComponent implements OnInit {
                     }
                 });
         }
+    }
+
+    formatAnalysisName(name: string): string {
+        if (!name) return '';
+        
+        const analysisNames: { [key: string]: string } = {
+            'HEMOGRAMA_COMPLETO': 'Hemograma Completo',
+            'PERFIL_LIPIDICO': 'Perfil Lipídico',
+            'GLUCEMIA_EN_AYUNAS': 'Glucemia en Ayunas',
+            'PRUEBA_DE_EMABARAZO': 'Prueba de Embarazo',
+            'ANALISIS_DE_ORINA': 'Análisis de Orina',
+            'ELECTROCARDIOGRAMA': 'Electrocardiograma',
+            'RADIOGRAFIA_DE_TORAX': 'Radiografía de Tórax',
+            'ECOGRAFIA_ABDOMINAL': 'Ecografía Abdominal',
+            'DENSITOMETRIA_OSEA': 'Densitometría Ósea',
+            'ANALISIS_DE_TIROIDES': 'Análisis de Tiroides',
+            'TOMOGRAFIA_COMPUTARIZADA': 'Tomografía Computarizada',
+            'RESONANCIA_MAGNETICA': 'Resonancia Magnética',
+            'COLONOSCOPIA': 'Colonoscopía',
+            'MAMOGRAFIA': 'Mamografía',
+            'TEST_DE_VIH': 'Test de VIH',
+            'ANALISIS_DE_HEPATITIS': 'Análisis de Hepatitis',
+            'HOLTER_CARDIACO': 'Holter Cardíaco',
+            'ANALISIS_DE_ALERGIAS': 'Análisis de Alergias',
+            'PAPANICOLAOU': 'Papanicolau',
+            'TEST_DE_GLUCOSA_POSPRANDIAL': 'Test de Glucosa Posprandial',
+            'CITOLOGIA_DE_ESPUTO': 'Citología de Esputo'
+        };
+        
+        return analysisNames[name] || name;
+    }
+
+    showFullText(title: string, text: string): void {
+        Swal.fire({
+            title: title,
+            text: text,
+            confirmButtonText: 'Cerrar',
+            width: '600px',
+            confirmButtonColor: '#4A90E2'
+        });
+    }
+
+    filterAppointments(): void {
+        const estadoFiltro = this.downloadList.get('estadoConsulta')?.value;
+        const especialidadFiltro = this.downloadList.get('especialidadMedico')?.value;
+        
+        this.appointments = this.allAppointments.filter(appointment => {
+            let matchEstado = true;
+            let matchEspecialidad = true;
+            
+            // Filtrar por estado
+            if (estadoFiltro) {
+                const estadoMap: { [key: string]: number } = {
+                    'Pendiente': 0,
+                    'Completada': 1,
+                    'Cancelada': 2
+                };
+                matchEstado = appointment.estado === estadoMap[estadoFiltro];
+            }
+            
+            // Filtrar por especialidad
+            if (especialidadFiltro) {
+                matchEspecialidad = appointment.specialty === especialidadFiltro;
+            }
+            
+            return matchEstado && matchEspecialidad;
+        });
+    }
+
+    showTooltip(event: MouseEvent, text: string | null): void {
+        if (!text) return;
+        
+        // Para consultas médicas (textos más cortos) el límite es 50
+        // Para medicamentos y estudios (descripciones largas) el límite es 80
+        const isLongDescription = text.length > 80;
+        const isShortDescription = text.length > 50;
+        
+        if (!isLongDescription && !isShortDescription) return;
+        
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        this.tooltipX = rect.left;
+        this.tooltipY = rect.bottom + window.scrollY + 5;
+        this.tooltipText = text;
+    }
+
+    hideTooltip(): void {
+        this.tooltipText = null;
     }
 
 }

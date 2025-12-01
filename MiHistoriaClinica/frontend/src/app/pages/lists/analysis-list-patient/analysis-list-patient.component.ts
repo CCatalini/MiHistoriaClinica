@@ -10,6 +10,11 @@ import {PatientService} from "../../../services/patient/patient.service";
 })
 export class AnalysisListPatientComponent implements OnInit{
     analysisList: any[] = [];
+    
+    // Variables para tooltip flotante
+    tooltipText: string | null = null;
+    tooltipX: number = 0;
+    tooltipY: number = 0;
 
     constructor(private userService: PatientService, private router: Router) {}
 
@@ -84,5 +89,18 @@ export class AnalysisListPatientComponent implements OnInit{
                 }
             );
         }
+    }
+
+    showTooltip(event: MouseEvent, text: string | null): void {
+        if (!text || text.length <= 80) return;
+        
+        const rect = (event.target as HTMLElement).getBoundingClientRect();
+        this.tooltipX = rect.left;
+        this.tooltipY = rect.bottom + window.scrollY + 5;
+        this.tooltipText = text;
+    }
+
+    hideTooltip(): void {
+        this.tooltipText = null;
     }
 }
