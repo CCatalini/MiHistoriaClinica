@@ -45,20 +45,25 @@ export class TurnosListComponent implements OnInit{
     }
 
     deleteTurno(turno: any) {
-        console.log(turno.turnoId); // Verificar el valor del ID del medicamento
+        console.log(turno.turnoId); // Verificar el valor del ID del turno
         if (!turno.turnoId) {
-            Swal.fire('Error', 'ID del medicamento no válido.', 'error');
+            Swal.fire({
+                title: 'Error',
+                text: 'ID del turno no válido.',
+                icon: 'error',
+                confirmButtonColor: '#3fb5eb'
+            });
             return;
         }
         Swal.fire({
-            title: 'Eliminar medicamento',
-            text: '¿Estás seguro de que quieres eliminar este medicamento?',
+            title: 'Cancelar Turno Médico',
+            text: '¿Estás seguro de que quieres cancelar este turno médico?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
+            confirmButtonColor: '#3fb5eb',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, cancelar turno',
+            cancelButtonText: 'No, mantener turno'
         }).then((result) => {
             if (result.isConfirmed) {
                 this.userService.deleteTurno(turno.turnoId).subscribe(
@@ -67,7 +72,22 @@ export class TurnosListComponent implements OnInit{
                         if (index !== -1) {
                             this.turnos.splice(index, 1);
                         }
+                        Swal.fire({
+                            title: '¡Turno Cancelado!',
+                            text: 'Tu turno médico ha sido cancelado exitosamente.',
+                            icon: 'success',
+                            confirmButtonColor: '#3fb5eb'
+                        });
                     },
+                    (error) => {
+                        console.error('Error al cancelar turno:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo cancelar el turno. Por favor, intenta nuevamente.',
+                            icon: 'error',
+                            confirmButtonColor: '#3fb5eb'
+                        });
+                    }
                 );
             }
         });

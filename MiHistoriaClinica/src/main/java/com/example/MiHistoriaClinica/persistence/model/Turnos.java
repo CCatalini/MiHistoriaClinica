@@ -33,6 +33,12 @@ public class Turnos {
     @JsonIgnore
     private Patient patient;
 
+    // Campos denormalizados para información del paciente (para evitar problemas de serialización)
+    private String patientName;
+    private String patientLastname;
+    private Long patientDni;
+    private String patientEmail;
+
     @ManyToOne
     @JoinColumn(name = "medicId")
     @JsonIgnore

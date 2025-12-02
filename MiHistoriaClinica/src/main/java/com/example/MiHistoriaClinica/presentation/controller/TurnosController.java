@@ -76,4 +76,23 @@ public class TurnosController {
         patientService.deleteTurno(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/medic/liberar-turno")
+    public ResponseEntity<Void> liberarTurno (@RequestParam("turnoId") Long turnoId){
+        patientService.liberarTurno(turnoId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/medic/bloquear-turno")
+    public ResponseEntity<Void> bloquearTurno (@RequestParam("turnoId") Long turnoId){
+        patientService.bloquearTurno(turnoId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/medic/reservar-turno")
+    public ResponseEntity<Void> reservarTurnoParaPaciente (@RequestParam("turnoId") Long turnoId,
+                                                           @RequestParam("patientDni") Long patientDni){
+        patientService.reserveTurnoByDni(patientDni, turnoId);
+        return ResponseEntity.ok().build();
+    }
 }

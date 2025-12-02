@@ -226,6 +226,16 @@ export class PatientService {
         return this.http.put<string>(`http://localhost:8080/medicalAppointment/update-estado/${appointmentId}`, null, { params: params, responseType: 'text' as 'json' });
     }
 
+    public reserveTurno(turnoId: number): Observable<any> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+        return this.http.post('http://localhost:8080/turno/patient/reserve-turno', null, { headers: headers, params: params });
+    }
+
 }
 
 

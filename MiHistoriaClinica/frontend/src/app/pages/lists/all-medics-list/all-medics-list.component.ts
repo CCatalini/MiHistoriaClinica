@@ -54,14 +54,13 @@ export class AllMedicsListComponent implements OnInit {
                 if (Array.isArray(data)) {
                     this.medics = data;
                     this.filteredMedics = data;
-                    this.updateNames();
                 }
             });
             // Cargar centros médicos usando el mismo endpoint que el calendario del médico
             this.userService.getAllMedicalCenterNames().subscribe((centers: string[]) => {
                 this.medicalCenters = centers;
             });
-            // Inicializar turnos vacíos
+            // Inicializar turnos vacíos - el usuario debe seleccionar una especialidad
             this.availableTurnos = [];
             this.filteredTurnos = [];
             this.totalPages = 1;
@@ -74,9 +73,6 @@ export class AllMedicsListComponent implements OnInit {
                 this.medics = Array.isArray(data) ? data : [];
                 this.filteredMedics = this.medics;
                 this.updateSpecialties();
-                this.updateNames();
-                this.getAvailableDates(); // Obtener fechas disponibles
-                this.generateAvailableTurnos(); // Generar turnos disponibles
             },
             (error: any) => {
                 console.log(error);
@@ -88,51 +84,6 @@ export class AllMedicsListComponent implements OnInit {
                 this.filteredMedics = [];
             }
         );
-    }
-
-    generateAvailableTurnos() {
-        // Generar turnos disponibles de ejemplo
-        // En el futuro, esto vendría del backend
-        const medicalCenters = [
-            'Hospital Austral',
-            'Consultorios Escobar', 
-            'Consultorios Champagnat',
-            'Hospital Aleman',
-            'Hospital Italiano'
-        ];
-        
-        const turnos = [];
-        const today = new Date();
-        
-        // Generar turnos para los próximos 30 días
-        for (let i = 1; i <= 30; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            
-            // Generar 2-3 turnos por día
-            const numTurnos = Math.floor(Math.random() * 3) + 2;
-            for (let j = 0; j < numTurnos; j++) {
-                const medic = this.medics[Math.floor(Math.random() * this.medics.length)];
-                if (medic) {
-                    const hora = 9 + Math.floor(Math.random() * 8); // Horarios entre 9:00 y 17:00
-                    const minuto = Math.floor(Math.random() * 4) * 15; // Intervalos de 15 minutos
-                    
-                    turnos.push({
-                        turnoId: turnos.length + 1,
-                        medicId: medic.medicId,
-                        medicName: medic.name + ' ' + medic.lastname,
-                        specialty: medic.specialty,
-                        fechaTurno: date.toISOString().split('T')[0],
-                        horaTurno: `${hora.toString().padStart(2, '0')}:${minuto.toString().padStart(2, '0')}`,
-                        medicalCenter: medicalCenters[Math.floor(Math.random() * medicalCenters.length)]
-                    });
-                }
-            }
-        }
-        
-        this.availableTurnos = turnos;
-        this.filteredTurnos = turnos;
-        this.calculatePagination(); // Calcular paginación inicial
     }
 
     filterMedics() {
@@ -232,26 +183,19 @@ export class AllMedicsListComponent implements OnInit {
                 console.log('Nombres de médicos en filtro (desde backend):', this.names);
             });
         } else {
-            // Si no hay especialidad seleccionada, mostrar todos los médicos con turnos disponibles
-            this.names = Array.from(new Set(this.availableTurnos
-                .map((t: any) => t.medicName && t.medicName.trim())
-                .filter((name: string | undefined) => !!name)
-            ));
-            console.log('Nombres de médicos en filtro:', this.names);
+            // Si no hay especialidad seleccionada, limpiar nombres
+            this.names = [];
         }
     }
 
     getAvailableDates() {
-        // Generar fechas de ejemplo para el próximo mes (30 días)
-        // En el futuro, esto vendría del backend según los turnos disponibles
-        const dates = [];
-        const today = new Date();
-        for (let i = 1; i <= 30; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            dates.push(date.toISOString().split('T')[0]); // Formato YYYY-MM-DD
+        // Extraer fechas únicas de los turnos disponibles reales
+        if (this.availableTurnos.length > 0) {
+            const uniqueDates = Array.from(new Set(this.availableTurnos.map((t: any) => t.fechaTurno)));
+            this.availableDates = uniqueDates.sort();
+        } else {
+            this.availableDates = [];
         }
-        this.availableDates = dates;
         this.filterAvailableDatesByRange();
     }
 
@@ -352,6 +296,7 @@ export class AllMedicsListComponent implements OnInit {
                     if (dto.availableTurnos && dto.availableTurnos.length > 0) {
                         dto.availableTurnos.forEach((turno: any) => {
                             turnos.push({
+                                turnoId: turno.turnoId, // ID del turno para reservar
                                 medicId: dto.medicId,
                                 medicName: dto.medicFullName,
                                 specialty: dto.specialty,
@@ -363,13 +308,15 @@ export class AllMedicsListComponent implements OnInit {
                     }
                 });
                 this.availableTurnos = turnos;
-                this.updateNames(); // <-- Aquí se actualiza el filtro de médicos
+                this.getAvailableDates(); // Actualizar fechas disponibles
+                this.updateNames(); // Actualizar filtro de médicos
                 this.filterTurnos();
             });
         } else {
             this.availableTurnos = [];
             this.filteredTurnos = [];
             this.totalPages = 1;
+            this.availableDates = [];
             this.updateNames();
         }
     }
@@ -409,7 +356,67 @@ export class AllMedicsListComponent implements OnInit {
         });
     }
 
-    redirectToAddTurno(medicId: string) {
-        this.router.navigate(['/patient/add-turno'], { queryParams: { medicId: medicId } });
+    reserveTurno(turno: any) {
+        // Validar que el turno tenga ID
+        if (!turno.turnoId) {
+            Swal.fire('Error', 'No se puede reservar este turno. ID no válido.', 'error');
+            return;
+        }
+
+        // Mostrar confirmación con los detalles del turno
+        const formattedDate = new Date(turno.fechaTurno).toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        Swal.fire({
+            title: '¿Confirmar reserva?',
+            html: `
+                <div style="text-align: left;">
+                    <p><strong>Médico:</strong> ${turno.medicName}</p>
+                    <p><strong>Especialidad:</strong> ${turno.specialty}</p>
+                    <p><strong>Centro Médico:</strong> ${turno.medicalCenter}</p>
+                    <p><strong>Fecha:</strong> ${formattedDate}</p>
+                    <p><strong>Hora:</strong> ${turno.horaTurno}</p>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3fb5eb',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, reservar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Llamar al servicio para reservar
+                this.userService.reserveTurno(turno.turnoId).subscribe(
+                    () => {
+                        Swal.fire({
+                            title: '¡Reserva exitosa!',
+                            text: 'El turno ha sido reservado correctamente.',
+                            icon: 'success',
+                            confirmButtonColor: '#3fb5eb'
+                        }).then(() => {
+                            // Recargar los turnos para actualizar la lista
+                            if (this.selectedSpecialty) {
+                                this.onSpecialtyChange();
+                            }
+                        });
+                    },
+                    (error: any) => {
+                        console.error('Error al reservar turno:', error);
+                        let errorMessage = 'No se pudo reservar el turno.';
+                        if (error.status === 404) {
+                            errorMessage = 'El turno no existe o ya no está disponible.';
+                        } else if (error.error && error.error.message) {
+                            errorMessage = error.error.message;
+                        }
+                        Swal.fire('Error', errorMessage, 'error');
+                    }
+                );
+            }
+        });
     }
 }

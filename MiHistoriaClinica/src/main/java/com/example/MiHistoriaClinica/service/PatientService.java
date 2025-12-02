@@ -31,6 +31,12 @@ public interface PatientService {
     PatientDTO getPatientInfo(Long patientId);
 
     void reserveTurno(Long patientId, Long turnoId);
+    
+    void reserveTurnoByDni(Long patientDni, Long turnoId);
+
+    void liberarTurno(Long turnoId);
+
+    void bloquearTurno(Long turnoId);
 
     List<Turnos> getMisTurnos(Long id);
 

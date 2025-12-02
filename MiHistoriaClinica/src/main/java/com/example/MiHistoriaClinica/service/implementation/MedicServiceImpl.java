@@ -370,14 +370,14 @@ public class MedicServiceImpl implements MedicService {
             throw new IllegalArgumentException("La duración debe ser 15, 30, 45 o 60 minutos");
         }
 
-        final int GAP_MINUTES = 5; // espacio entre turnos
+        final int GAP_MINUTES = 5; // espacio automático de 5 minutos entre turnos
 
         java.time.LocalTime breakStart = java.time.LocalTime.of(13, 0);
         java.time.LocalTime breakEnd = java.time.LocalTime.of(14, 0);
 
-        // Determinar rango: startIter = startDate o hoy. endIter = startIter + 1 mes - 1 día
-         java.time.LocalDate startIter = scheduleDTO.getStartDate() != null ? scheduleDTO.getStartDate() : java.time.LocalDate.now();
-         java.time.LocalDate endIter = startIter.plusMonths(1).minusDays(1);
+        // Determinar rango: generar turnos para exactamente 30 días desde la fecha de inicio
+        java.time.LocalDate startIter = scheduleDTO.getStartDate() != null ? scheduleDTO.getStartDate() : java.time.LocalDate.now();
+        java.time.LocalDate endIter = startIter.plusDays(29); // 30 días en total (día inicial + 29 días más)
 
         // Recorrer el rango de fechas
         for (java.time.LocalDate currentDate = startIter;

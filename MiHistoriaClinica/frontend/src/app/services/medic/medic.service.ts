@@ -264,17 +264,21 @@ export class MedicService {
         return this.http.get<string>('http://localhost:8080/medic/verify-email', { params: params, responseType: 'text' as 'json' });
     }
 
-    getAvailableTurnos(medicId: string) {
-        return this.http.get<any[]>(`http://localhost:8080/medic/available-turnos?medicId=${medicId}`);
+    getAvailableTurnos() {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>(`http://localhost:8080/medic/available-turnos`, { headers });
     }
 
-    getAllTurnosByMedic(medicId: string) {
-        const url = `http://localhost:8080/medic/all-turnos?medicId=${medicId}`;
+    getAllTurnosByMedic() {
+        const url = `http://localhost:8080/medic/all-turnos`;
         console.log('=== SERVICIO getAllTurnosByMedic ===');
         console.log('URL completa:', url);
-        console.log('medicId recibido:', medicId);
 
-        // Añadir headers si es necesario
+        // El backend extrae el medicId del token JWT
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
@@ -285,8 +289,13 @@ export class MedicService {
         return this.http.get<any[]>(url, { headers });
     }
 
-    getReservedTurnos(medicId: string) {
-        return this.http.get<any[]>(`http://localhost:8080/medic/reserved-turnos?medicId=${medicId}`);
+    getReservedTurnos() {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>(`http://localhost:8080/medic/reserved-turnos`, { headers });
     }
 
     createSchedule(scheduleDTO: any) {
@@ -322,6 +331,26 @@ export class MedicService {
             .set('includeAppointments', 'true');
 
         return this.http.get('http://localhost:8080/medical-history/download-pdf-by-linkcode', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
+    }
+
+    liberarTurno(turnoId: number): Observable<any> {
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+        return this.http.put('http://localhost:8080/turno/medic/liberar-turno', null, { params: params });
+    }
+
+    bloquearTurno(turnoId: number): Observable<any> {
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+        return this.http.put('http://localhost:8080/turno/medic/bloquear-turno', null, { params: params });
+    }
+
+    reservarTurnoParaPaciente(turnoId: number, patientDni: string): Observable<any> {
+        const params = new HttpParams()
+            .set('turnoId', turnoId.toString())
+            .set('patientDni', patientDni.toString());
+        
+        const url = 'http://localhost:8080/turno/medic/reservar-turno';
+        
+        return this.http.post(url, null, { params: params });
     }
 }
 
