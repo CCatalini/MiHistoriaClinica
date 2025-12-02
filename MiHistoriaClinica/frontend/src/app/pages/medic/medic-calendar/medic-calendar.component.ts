@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {CalendarOptions} from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -14,14 +14,15 @@ import { FullCalendarComponent } from '@fullcalendar/angular';
   styleUrls: ['./medic-calendar.component.css']
 })
 
-export class MedicCalendarComponent implements OnInit, AfterViewInit {
+export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
     my_events : any = [];
     allTurnos: any[] = [];
-    selectedTurnos: any[] = [];
     currentView: string = 'dayGridMonth';
+    calendarFilter: 'all' | 'available' | 'reserved' = 'all';
+    private autoRefreshInterval: any = null;
 
     calendarOptions: CalendarOptions = {
         initialView: 'dayGridMonth',
@@ -71,6 +72,19 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     selectedDateTurnos: any[] = [];
     viewType: 'all' | 'available' | 'reserved' = 'all';
 
+    // Variables para gestión de turnos individuales
+    showReserveModal: boolean = false;
+    showBlockModal: boolean = false;
+    showCancelModal: boolean = false;
+    showErrorModal: boolean = false;
+    errorMessage: string = '';
+    errorTitle: string = 'Error';
+    myPatients: any[] = [];
+    selectedPatientDni: string = '';
+    turnoToReserve: any = null;
+    turnoToBlock: any = null;
+    turnoToCancel: any = null;
+
     // Mapeo de nombre legible a nombre de enum para MedicalCenterE
     medicalCenterEnumMap: {[key: string]: string} = {
       "Sede Principal - Hospital Universitario Austral": "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL",
@@ -82,7 +96,10 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     // Opciones fijas para duración
     durationOptions: number[] = [15, 30, 45, 60];
 
-    constructor(private medicService: MedicService) {}
+    constructor(
+        private medicService: MedicService,
+        private cdr: ChangeDetectorRef
+    ) {}
 
     ngOnInit(): void {
         console.log('=== INICIANDO ngOnInit ===');
@@ -123,6 +140,20 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             console.log('Página enfocada, recargando turnos...');
             this.loadAllTurnos();
         });
+        
+        // Configurar actualización automática cada 30 segundos
+        this.autoRefreshInterval = setInterval(() => {
+            // Actualización silenciosa cada 15 segundos para reflejar cambios de pacientes
+            this.loadAllTurnos();
+        }, 15000);
+    }
+    
+    ngOnDestroy(): void {
+        // Limpiar el intervalo cuando el componente se destruye
+        if (this.autoRefreshInterval) {
+            clearInterval(this.autoRefreshInterval);
+            console.log('🛑 Intervalo de actualización automática detenido');
+        }
     }
 
     ngAfterViewInit(): void {
@@ -160,20 +191,20 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     }
 
     refreshCalendar(): void {
-        if (this.calendarComponent && this.my_events.length > 0) {
+        if (this.calendarComponent) {
             const calendarApi = this.calendarComponent.getApi();
             calendarApi.removeAllEvents();
-            calendarApi.addEventSource(this.my_events);
+            if (this.my_events.length > 0) {
+                calendarApi.addEventSource(this.my_events);
+            }
+            calendarApi.refetchEvents();
+            this.cdr.detectChanges();
         }
     }
 
     loadAllTurnos() {
         console.log('=== INICIANDO loadAllTurnos ===');
         
-        // Usar el método robusto para obtener medicId
-        const medicId = this.getMedicId();
-        
-        console.log('medicId obtenido:', medicId);
         console.log('Todos los valores de localStorage:', {
             userId: localStorage.getItem('userId'),
             medicId: localStorage.getItem('medicId'),
@@ -181,10 +212,10 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             userType: localStorage.getItem('userType')
         });
 
-        console.log('Llamando al servicio getAllTurnosByMedic con medicId:', medicId);
+        console.log('Llamando al servicio getAllTurnosByMedic (usa token JWT)');
         
-        // Forzar la llamada al backend
-        this.medicService.getAllTurnosByMedic(medicId).subscribe({
+        // El backend extrae el medicId del token JWT
+        this.medicService.getAllTurnosByMedic().subscribe({
             next: (turnos) => {
                 console.log('=== RESPUESTA DEL BACKEND ===');
                 console.log('Turnos recibidos:', turnos);
@@ -201,9 +232,13 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
                 this.processCalendarEvents();
                 console.log('Eventos procesados para el calendario:', this.my_events);
                 
+                // Forzar detección de cambios
+                this.cdr.detectChanges();
+                
                 // Actualización adicional después de un breve retraso
                 setTimeout(() => {
                     this.refreshCalendar();
+                    this.cdr.detectChanges();
                 }, 100);
             },
             error: (err) => {
@@ -248,6 +283,9 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
             calendarApi.addEventSource(this.my_events);
         }
         
+        // Forzar detección de cambios
+        this.cdr.detectChanges();
+        
         console.log('Eventos finales para el calendario:', this.my_events);
     }
 
@@ -258,13 +296,24 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         
         Object.keys(groupedTurnos).forEach(date => {
             Object.keys(groupedTurnos[date]).forEach(center => {
-                const turnosForDateCenter = groupedTurnos[date][center];
+                let turnosForDateCenter = groupedTurnos[date][center];
+                
+                // Aplicar filtro
+                if (this.calendarFilter === 'available') {
+                    turnosForDateCenter = turnosForDateCenter.filter((t: any) => t.available);
+                } else if (this.calendarFilter === 'reserved') {
+                    turnosForDateCenter = turnosForDateCenter.filter((t: any) => !t.available);
+                }
+                
+                // Si no hay turnos después del filtro, no crear evento
+                if (turnosForDateCenter.length === 0) return;
+                
                 const availableCount = turnosForDateCenter.filter((t: any) => t.available).length;
                 const reservedCount = turnosForDateCenter.filter((t: any) => !t.available).length;
                 
                 // Crear evento resumen para el día
                 const timeSlots = this.getTimeSlotSummary(turnosForDateCenter);
-                const title = `${this.formatMedicalCenter(center)}\n${timeSlots}\nDisp: ${availableCount} | Res: ${reservedCount}`;
+                const title = `${this.formatMedicalCenterShort(center)}\n${timeSlots}\nDisp: ${availableCount} | Res: ${reservedCount}`;
                 
                 this.my_events.push({
                     title: title,
@@ -284,9 +333,18 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     createDetailedEvents() {
         console.log('Creando eventos detallados para vista semanal/diaria');
         
-        this.allTurnos.forEach(turno => {
+        let turnosToShow = this.allTurnos;
+        
+        // Aplicar filtro
+        if (this.calendarFilter === 'available') {
+            turnosToShow = this.allTurnos.filter(t => t.available);
+        } else if (this.calendarFilter === 'reserved') {
+            turnosToShow = this.allTurnos.filter(t => !t.available);
+        }
+        
+        turnosToShow.forEach(turno => {
             const title = this.getTurnoTitle(turno);
-            const color = turno.available ? '#4caf50' : '#ff9800';
+            const color = turno.available ? '#9e9e9e' : '#3fb5eb';
             
             // Calcular tiempo de fin basado en la duración del turno
             const startTime = new Date(`${turno.fechaTurno}T${turno.horaTurno}`);
@@ -319,7 +377,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         if (turno.available) {
             return `${centerShort} ${hora}${duracionText}\nDisponible`;
         } else {
-            const patientName = turno.patient ? `${turno.patient.name} ${turno.patient.lastname}` : 'Paciente';
+            const patientName = turno.patientName ? `${turno.patientName} ${turno.patientLastname}` : 'Paciente';
             return `${centerShort} ${hora}${duracionText}\n${patientName}`;
         }
     }
@@ -358,19 +416,71 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     formatMedicalCenter(center: string): string {
         // Mapear nombres de enum a nombres legibles
         const centerMap: {[key: string]: string} = {
-            "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL": "Hospital Austral",
-            "CENTRO_ESPECIALIDAD_OFFICIA": "Centro Officia",
-            "CENTRO_ESPECIALIDAD_CHAMPAGNAT": "Centro Champagnat",
-            "CENTRO_ESPECIALIDAD_LUJAN": "Centro Lujan"
+            "SEDE_PRINCIPAL_HOSPITAL_AUSTRAL": "Sede Principal - Hospital Universitario Austral",
+            "CENTRO_ESPECIALIDAD_OFFICIA": "Centro de Especialidad Officia",
+            "CENTRO_ESPECIALIDAD_CHAMPAGNAT": "Centro de Especialidad Champagnat",
+            "CENTRO_ESPECIALIDAD_LUJAN": "Centro de Especialidad Lujan"
         };
         
         return centerMap[center] || center;
     }
 
+    getFormattedDate(dateStr: string): string {
+        // Formatear fecha en español
+        const date = new Date(dateStr + 'T12:00:00'); // Añadir hora para evitar problemas de zona horaria
+        const options: Intl.DateTimeFormatOptions = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        return date.toLocaleDateString('es-ES', options);
+    }
+
+    formatTime(time: string): string {
+        // Formatear hora sin segundos (HH:mm en lugar de HH:mm:ss)
+        if (!time) return '';
+        return time.substring(0, 5); // Toma solo los primeros 5 caracteres (HH:mm)
+    }
+
+    getRowBackgroundColor(turno: any): string {
+        if (turno.available) {
+            // Turno disponible - gris claro
+            return 'rgba(210, 210, 210, 0.5)';
+        } else if (turno.patientName) {
+            // Turno reservado (con paciente) - celeste principal con poca opacidad
+            // #3fb5eb = rgb(63, 181, 235)
+            return 'rgba(63, 181, 235, 0.2)';
+        } else {
+            // Turno bloqueado (sin paciente) - gris oscuro
+            return 'rgba(73, 80, 87, 0.4)';
+        }
+    }
+
+    getBadgeColor(turno: any): string {
+        if (turno.available) {
+            return '#9e9e9e'; // Gris para disponible
+        } else if (turno.patientName) {
+            return '#3fb5eb'; // Celeste principal para reservado
+        } else {
+            return '#495057'; // Gris oscuro para bloqueado
+        }
+    }
+
+    getBadgeText(turno: any): string {
+        if (turno.available) {
+            return 'Disponible';
+        } else if (turno.patientName) {
+            return 'Reservado';
+        } else {
+            return 'No disponible';
+        }
+    }
+
     getTimeSlotSummary(turnos: any[]): string {
         if (turnos.length === 0) return '';
         
-        const times = turnos.map(t => t.horaTurno).sort();
+        const times = turnos.map(t => this.formatTime(t.horaTurno)).sort();
         const firstTime = times[0];
         const lastTime = times[times.length - 1];
         
@@ -378,9 +488,9 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
     }
 
     getEventColor(availableCount: number, reservedCount: number): string {
-        if (availableCount === 0) return '#ff5722'; // Solo reservados - rojo
-        if (reservedCount === 0) return '#4caf50'; // Solo disponibles - verde
-        return '#ff9800'; // Mixto - naranja
+        if (availableCount === 0) return '#3fb5eb'; // Solo reservados - celeste principal
+        if (reservedCount === 0) return '#9e9e9e'; // Solo disponibles - gris medio
+        return '#757575'; // Mixto - gris oscuro
     }
 
     handleEventClick(arg: any) {
@@ -421,21 +531,21 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         let info = `📅 ${fecha}\n⏰ ${hora} - ${horaFin} (${duracion} min)\n🏥 ${centerName}\n\n`;
         
         if (turno.available) {
-            info += `✅ Estado: Disponible\n`;
-            info += `💡 Este turno está disponible para ser reservado por un paciente.`;
-        } else {
-            const patientName = turno.patient ? `${turno.patient.name} ${turno.patient.lastname}` : 'Paciente no identificado';
+            info += `Estado: Disponible\n`;
+            info += `Este turno está disponible para ser reservado por un paciente.`;
+        } else if (turno.patientName) {
+            const patientName = `${turno.patientName} ${turno.patientLastname}`;
             info += `🔒 Estado: Reservado\n`;
             info += `👤 Paciente: ${patientName}\n`;
-            if (turno.patient && turno.patient.email) {
-                info += `📧 Email: ${turno.patient.email}\n`;
+            if (turno.patientEmail) {
+                info += `📧 Email: ${turno.patientEmail}\n`;
             }
-            if (turno.patient && turno.patient.dni) {
-                info += `🆔 DNI: ${turno.patient.dni}\n`;
+            if (turno.patientDni) {
+                info += `🆔 DNI: ${turno.patientDni}\n`;
             }
-            if (turno.patient && turno.patient.phone) {
-                info += `📞 Teléfono: ${turno.patient.phone}\n`;
-            }
+        } else {
+            info += `Estado: No disponible (bloqueado)\n`;
+            info += `Este turno está bloqueado y no puede ser reservado.`;
         }
         
         alert(info);
@@ -474,68 +584,190 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         }
     }
 
-    onTurnoSelectionChange(turno: any, event: any) {
-        if (event.target.checked) {
-            if (!this.selectedTurnos.find(t => t.id === turno.id)) {
-                this.selectedTurnos.push(turno);
-            }
-        } else {
-            this.selectedTurnos = this.selectedTurnos.filter(t => t.id !== turno.id);
-        }
-    }
+    // ============================================
+    // MÉTODOS PARA ACCIONES INDIVIDUALES DE TURNOS
+    // ============================================
 
-    isTurnoSelected(turno: any): boolean {
-        return this.selectedTurnos.some(t => t.id === turno.id);
-    }
-
-    areAllVisibleTurnosSelected(): boolean {
-        const filteredTurnos = this.getFilteredTurnos();
-        return filteredTurnos.length > 0 && filteredTurnos.every(turno => this.isTurnoSelected(turno));
-    }
-
-    onMasterCheckboxChange(event: any) {
-        if (event.target.checked) {
-            this.selectAllVisible();
-        } else {
-            this.deselectAllVisible();
-        }
-    }
-
-    selectAllVisible() {
-        const visibleTurnos = this.getFilteredTurnos();
-        visibleTurnos.forEach(turno => {
-            if (!this.selectedTurnos.find(t => t.id === turno.id)) {
-                this.selectedTurnos.push(turno);
+    // Abrir modal para reservar turno individual
+    abrirReservarTurno(turno: any) {
+        this.turnoToReserve = turno;
+        this.selectedPatientDni = ''; // Resetear selección
+        
+        // Cargar pacientes asociados
+        const token = localStorage.getItem('token') || '';
+        this.medicService.getPatientsList(token).subscribe({
+            next: (patients) => {
+                this.myPatients = patients || [];
+                if (this.myPatients.length === 0) {
+                    this.mostrarError('Sin pacientes', 'No tienes pacientes asociados. Vincula pacientes primero para poder asignarles turnos.');
+                } else {
+                    this.showReserveModal = true;
+                }
+            },
+            error: (err) => {
+                console.error('Error al cargar pacientes:', err);
+                this.mostrarError('Error de Conexión', 'No se pudo cargar la lista de pacientes. Por favor, intenta nuevamente.');
             }
         });
     }
 
-    deselectAllVisible() {
-        const visibleTurnosIds = this.getFilteredTurnos().map(t => t.id);
-        this.selectedTurnos = this.selectedTurnos.filter(t => !visibleTurnosIds.includes(t.id));
+    // Confirmar reserva de turno individual
+    confirmarReservaTurno() {
+        if (!this.isPacienteSeleccionado()) {
+            this.mostrarError('Paciente No Seleccionado', 'Debe seleccionar un paciente del listado antes de confirmar la reserva.');
+            return;
+        }
+
+        if (!this.turnoToReserve) {
+            this.mostrarError('Error Interno', 'No se encontró el turno a reservar. Por favor, cierra este modal e intenta nuevamente.');
+            return;
+        }
+
+        // Buscar el paciente por DNI
+        const paciente = this.myPatients.find(p => String(p.dni) === String(this.selectedPatientDni));
+        
+        if (!paciente) {
+            this.mostrarError('Paciente No Encontrado', 'El paciente seleccionado no se encuentra en la lista. Por favor, recarga la página e intenta nuevamente.');
+            return;
+        }
+
+        // Enviar DNI al backend
+        const patientDniToSend = String(this.selectedPatientDni);
+
+        // Reservar directamente
+        this.medicService.reservarTurnoParaPaciente(this.turnoToReserve.turnoId, patientDniToSend).subscribe({
+            next: () => {
+                this.closeReserveModal();
+                this.mostrarError('Reserva Exitosa', `El turno ha sido reservado para ${paciente.name} ${paciente.lastname} correctamente.`);
+            },
+            error: (err) => {
+                const errorMsg = err.error?.message || err.error || err.message || 'No se pudo completar la reserva';
+                this.mostrarError('Error al Reservar', `${errorMsg}. Por favor, verifica que el turno esté disponible e intenta nuevamente.`);
+            }
+        });
     }
 
-    processSelectedTurnos() {
-        if (this.selectedTurnos.length === 0) {
-            alert('No hay turnos seleccionados');
+    // Cerrar modal de reserva
+    closeReserveModal() {
+        this.showReserveModal = false;
+        this.selectedPatientDni = '';
+        this.turnoToReserve = null;
+    }
+
+    // Abrir modal para confirmar bloqueo
+    abrirModalBloquear(turno: any) {
+        this.turnoToBlock = turno;
+        this.showBlockModal = true;
+    }
+
+    // Confirmar bloqueo de turno
+    confirmarBloqueoTurno() {
+        if (!this.turnoToBlock) {
+            this.mostrarError('Error Interno', 'No se encontró el turno a bloquear. Por favor, intenta nuevamente.');
+            return;
+        }
+
+        this.medicService.bloquearTurno(this.turnoToBlock.turnoId).subscribe({
+            next: () => {
+                this.closeBlockModal();
+                this.mostrarError('Turno Bloqueado', 'El turno ha sido bloqueado correctamente y ya no estará disponible para reservas.');
+            },
+            error: (err) => {
+                console.error('Error al bloquear turno:', err);
+                const errorMsg = err.error?.message || err.message || 'No se pudo bloquear el turno';
+                this.closeBlockModal();
+                this.mostrarError('Error al Bloquear', `${errorMsg}. Por favor, intenta nuevamente.`);
+            }
+        });
+    }
+
+    // Cerrar modal de bloqueo
+    closeBlockModal() {
+        this.showBlockModal = false;
+        this.turnoToBlock = null;
+    }
+
+    // Abrir modal para liberar un turno individual (reservado/bloqueado → disponible)
+    liberarTurnoIndividual(turno: any) {
+        this.turnoToCancel = turno;
+        this.showCancelModal = true;
+    }
+
+    // Confirmar liberación de turno
+    confirmarLiberarTurno() {
+        if (!this.turnoToCancel) {
+            this.mostrarError('Error Interno', 'No se encontró el turno a liberar. Por favor, intenta nuevamente.');
             return;
         }
         
-        console.log('Turnos seleccionados:', this.selectedTurnos);
-        // Aquí puedes agregar la lógica para procesar los turnos seleccionados
-        // Por ejemplo, eliminarlos, modificarlos, etc.
-        
-        // Ejemplo: mostrar información de los turnos seleccionados
-        const selectedInfo = this.selectedTurnos.map(t => 
-            `${t.fechaTurno} ${t.horaTurno} - ${t.medicalCenter} (${t.available ? 'Disponible' : 'Reservado'})`
-        ).join('\n');
-        
-        alert(`Turnos seleccionados:\n${selectedInfo}`);
+        const tituloExito = this.turnoToCancel.patientName ? 
+            'Reserva Cancelada' : 
+            'Turno Desbloqueado';
+        const mensajeExito = this.turnoToCancel.patientName ? 
+            'La reserva ha sido cancelada y el turno está nuevamente disponible.' : 
+            'El turno ha sido desbloqueado y ahora está disponible para reservas.';
+
+        this.medicService.liberarTurno(this.turnoToCancel.turnoId).subscribe({
+            next: () => {
+                this.closeCancelModal();
+                this.mostrarError(tituloExito, mensajeExito);
+            },
+            error: (err) => {
+                console.error('Error al liberar turno:', err);
+                const errorMsg = err.error?.message || err.message || 'No se pudo liberar el turno';
+                this.closeCancelModal();
+                this.mostrarError('Error al Liberar', `${errorMsg}. Por favor, intenta nuevamente.`);
+            }
+        });
     }
 
+    // Cerrar modal de cancelación
+    closeCancelModal() {
+        this.showCancelModal = false;
+        this.turnoToCancel = null;
+    }
+
+    // Mostrar modal de error
+    mostrarError(titulo: string, mensaje: string) {
+        this.errorTitle = titulo;
+        this.errorMessage = mensaje;
+        this.showErrorModal = true;
+    }
+
+    // Cerrar modal de error
+    closeErrorModal() {
+        const wasSuccess = this.errorTitle.includes('✅');
+        this.showErrorModal = false;
+        this.errorMessage = '';
+        this.errorTitle = 'Error';
+        
+        // Si fue un mensaje de éxito, recargar los turnos y cerrar el modal de detalle
+        if (wasSuccess) {
+            // Cerrar modal de detalle si está abierto
+            this.showDetailModal = false;
+            
+            // Recargar turnos
+            this.loadAllTurnos();
+            
+            // Forzar actualización adicional del calendario después de un breve delay
+            setTimeout(() => {
+                this.refreshCalendar();
+                this.cdr.detectChanges();
+            }, 500);
+        }
+    }
+
+    // Handler para cuando cambia la selección de paciente
+    // Verificar si hay un paciente seleccionado
+    isPacienteSeleccionado(): boolean {
+        return this.selectedPatientDni !== '' && 
+               this.selectedPatientDni !== null && 
+               this.selectedPatientDni !== undefined;
+    }
+
+    // Cerrar modal de detalle
     closeDetailModal() {
         this.showDetailModal = false;
-        this.selectedTurnos = [];
         this.viewType = 'all';
     }
 
@@ -575,18 +807,14 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         };
         const selectedDays = this.availableDays.map(d => dayMap[d]);
         
-        // Calcular fechas de inicio y fin (próxima semana)
+        // El backend genera automáticamente turnos para 1 mes desde hoy
+        // No necesitamos calcular fechas manualmente
         const today = new Date();
-        const nextMonday = new Date(today);
-        nextMonday.setDate(today.getDate() + ((8 - today.getDay()) % 7));
-        const startDate = new Date(nextMonday);
-        const endDate = new Date(nextMonday);
-        endDate.setDate(startDate.getDate() + 6);
+        const startDate = today.toISOString().slice(0, 10);
         
         // Construir objeto para backend
         const scheduleDTO = {
-            startDate: startDate.toISOString().slice(0, 10),
-            endDate: endDate.toISOString().slice(0, 10),
+            startDate: startDate, // Fecha de inicio (hoy)
             daysOfWeek: selectedDays,
             startTime: this.startTime,
             endTime: this.endTime,
@@ -600,34 +828,31 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         console.log('Días mapeados:', selectedDays);
         console.log('Centro médico seleccionado:', this.medicalCenter);
         console.log('Centro médico mapeado:', this.medicalCenterEnumMap[this.medicalCenter]);
+        console.log('Se crearán turnos para 30 días desde:', startDate);
+        console.log('Nota: Se aplicará automáticamente espacio de 5 min entre turnos y pausa de 13:00-14:00');
         
         this.medicService.createSchedule(scheduleDTO).subscribe({
             next: (response) => {
                 console.log('Turnos creados exitosamente:', response);
-                this.showModal = false;
                 
-                // Limpiar formulario
+                // Cerrar modal y limpiar formulario
+                this.showModal = false;
                 this.availableDays = [];
                 this.startTime = '';
                 this.endTime = '';
                 this.slotDuration = 30;
                 this.medicalCenter = '';
                 
-                // Recargar los turnos con un pequeño retraso para asegurar que el backend esté actualizado
-                setTimeout(() => {
-                    console.log('Recargando turnos después de crear nuevos...');
-                    this.loadAllTurnos();
-                }, 500);
-                
-                // Recargar adicional para asegurar que se muestren los cambios
-                setTimeout(() => {
-                    console.log('Recarga adicional de turnos...');
-                    this.loadAllTurnos();
-                }, 1500);
+                // Mostrar mensaje de éxito (el reload se hará al cerrar el modal)
+                this.mostrarError('Agenda Cargada', 'La agenda ha sido cargada correctamente. Los nuevos turnos ya están disponibles.');
             },
             error: (err) => {
                 console.error('Error al crear turnos:', err);
-                alert('Error al crear los turnos. Por favor, intente nuevamente.');
+                let errorMsg = 'Error al crear los turnos.';
+                if (err.error && err.error.message) {
+                    errorMsg += ' ' + err.error.message;
+                }
+                this.mostrarError('Error al Crear Agenda', errorMsg + ' Por favor, intente nuevamente.');
             }
         });
     }
@@ -640,5 +865,18 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit {
         } else {
             this.availableDays = this.availableDays.filter(day => day !== value);
         }
+    }
+
+    setCalendarFilter(filter: 'all' | 'available' | 'reserved') {
+        console.log('Cambiando filtro de calendario a:', filter);
+        this.calendarFilter = filter;
+        
+        // Volver a procesar los eventos del calendario con el nuevo filtro
+        this.processCalendarEvents();
+        
+        // Forzar actualización del calendario
+        setTimeout(() => {
+            this.refreshCalendar();
+        }, 100);
     }
 }

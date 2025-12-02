@@ -230,8 +230,13 @@ public class PatientServiceImpl implements PatientService {
         Turnos turno = turnosRepository.findById(turnoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
 
+        // Validar que el turno esté disponible
         if (!turno.isAvailable()) {
-            throw new RuntimeException("Turno no disponible");
+            if (turno.getPatient() != null) {
+                throw new RuntimeException("El turno ya está reservado por otro paciente");
+            } else {
+                throw new RuntimeException("El turno está bloqueado y no puede ser reservado");
+            }
         }
 
         Patient patient = patientRepository.findById(patientId)
@@ -239,15 +244,92 @@ public class PatientServiceImpl implements PatientService {
 
         turno.setPatient(patient);
         turno.setAvailable(false);
+        
+        // Copiar información del paciente a campos denormalizados
+        turno.setPatientName(patient.getName());
+        turno.setPatientLastname(patient.getLastname());
+        turno.setPatientDni(patient.getDni());
+        turno.setPatientEmail(patient.getEmail());
 
         turnosRepository.save(turno);
+    }
 
-        // TODO: Agregar email de confirmación cuando se implemente el método
-        // try {
-        //     emailService.sendTurnoConfirmationEmail(patient, turno);
-        // } catch (Exception e) {
-        //     System.err.println("Error enviando email de confirmación: " + e.getMessage());
-        // }
+    @Override
+    public void reserveTurnoByDni(Long patientDni, Long turnoId) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+
+        // Validar que el turno esté disponible
+        if (!turno.isAvailable()) {
+            if (turno.getPatient() != null) {
+                throw new RuntimeException("El turno ya está reservado por otro paciente");
+            } else {
+                throw new RuntimeException("El turno está bloqueado y no puede ser reservado");
+            }
+        }
+
+        // Buscar paciente por DNI en lugar de por ID
+        Patient patient = patientRepository.findByDni(patientDni);
+        if (patient == null) {
+            throw new ResourceNotFoundException("Paciente no encontrado con DNI: " + patientDni);
+        }
+
+        turno.setPatient(patient);
+        turno.setAvailable(false);
+        
+        // Copiar información del paciente a campos denormalizados
+        turno.setPatientName(patient.getName());
+        turno.setPatientLastname(patient.getLastname());
+        turno.setPatientDni(patient.getDni());
+        turno.setPatientEmail(patient.getEmail());
+
+        turnosRepository.save(turno);
+    }
+
+    @Override
+    public void liberarTurno(Long turnoId) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+        
+        // Validar que el turno no esté ya disponible
+        if (turno.isAvailable()) {
+            throw new RuntimeException("El turno ya está disponible");
+        }
+        
+        // Liberar el turno: quitar paciente y marcar como disponible
+        // Funciona tanto para turnos reservados como bloqueados
+        turno.setPatient(null);
+        turno.setAvailable(true);
+        
+        // Limpiar campos denormalizados del paciente
+        turno.setPatientName(null);
+        turno.setPatientLastname(null);
+        turno.setPatientDni(null);
+        turno.setPatientEmail(null);
+        
+        turnosRepository.save(turno);
+    }
+
+    @Override
+    public void bloquearTurno(Long turnoId) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+        
+        // Validar que el turno no esté ya bloqueado
+        if (!turno.isAvailable() && turno.getPatient() == null) {
+            throw new RuntimeException("El turno ya está bloqueado");
+        }
+        
+        // Validar que el turno no esté reservado
+        if (!turno.isAvailable() && turno.getPatient() != null) {
+            throw new RuntimeException("No se puede bloquear un turno que está reservado. Primero cancele la reserva.");
+        }
+        
+        // Bloquear el turno: marcar como no disponible sin asignar paciente
+        turno.setPatient(null);
+        turno.setAvailable(false);
+        
+        turnosRepository.save(turno);
     }
 
     @Override
@@ -287,6 +369,7 @@ public class PatientServiceImpl implements PatientService {
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
             );
             dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getTurnoId(),
                 t.getFechaTurno().toString(),
                 t.getHoraTurno().toString()
             ));
@@ -310,6 +393,7 @@ public class PatientServiceImpl implements PatientService {
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
             );
             dto.getAvailableTurnos().add(new TurnoDisponibleDTO(
+                t.getTurnoId(),
                 t.getFechaTurno().toString(),
                 t.getHoraTurno().toString()
             ));

@@ -4,37 +4,24 @@
 <body>
 <div class="bootstrap-wrapper">
     <div class="container">
-        <div class="row" style="margin-top: -150px;">
-            <div clazz="col-md-6 offset-md-3">
-                <div class="container text-center" style="margin-bottom: -10px;">
+        <div class="row" style="margin-top: 50px;">
+            <div class="col-md-6 offset-md-3">
+                <div class="container text-center" style="margin-bottom: 30px;">
                     <img src="../../../../assets/Programar.png" width="200" height="200">
                 </div>
-                <h1 class="text-center">Consulta Médica</h1>
-                <div class="page-container" style="margin-bottom: -380px;">
-                    <form (ngSubmit)="formSubmit()" style="margin-top: 20px;">
-
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Fecha:</mat-label>
-                            <input required [(ngModel)]="turnoDTO.fechaTurno" name="fechaTurno" matInput placeholder="Ingrese la fecha del turno">
-                        </mat-form-field>
-
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Hora:</mat-label>
-                            <input required [(ngModel)]="turnoDTO.horaTurno" name="horaTurno" matInput placeholder="Ingrese la hora del turno">
-                        </mat-form-field>
-
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Centro Médico:</mat-label>
-                            <input required [(ngModel)]="turnoDTO.medicalCenter" name="medicalCenter" matInput placeholder="Ingrese el centro médico">
-                        </mat-form-field>
-
-                        <div class="container text-center">
-                            <button class="boton">Crear</button>
-                            <button type="reset" style="margin-left: 20px;" class="boton">Limpiar</button>
-                        </div>
-
-                    </form>
-                    <br><br><br>
+                <h1 class="text-center">Reserva de Turnos</h1>
+                <div class="page-container text-center" style="padding: 40px;">
+                    <div class="alert alert-info" role="alert">
+                        <h4 class="alert-heading">¡Bienvenido!</h4>
+                        <p>Para reservar un turno médico, por favor utiliza el buscador de turnos disponibles.</p>
+                        <hr>
+                        <p class="mb-0">Podrás filtrar por especialidad, médico, centro médico y fecha.</p>
+                    </div>
+                    <div class="mt-4">
+                        <button class="boton" routerLink="/patient/all-medics-list">
+                            <i class="fas fa-search"></i> Buscar Turnos Disponibles
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
