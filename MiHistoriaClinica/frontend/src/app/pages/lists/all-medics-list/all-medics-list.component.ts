@@ -55,8 +55,8 @@ export class AllMedicsListComponent implements OnInit {
         this.selectedName = '';
         this.selectedDate = '';
         this.names = [];
-        this.availableTurnos = [];
-        this.filteredTurnos = [];
+            this.availableTurnos = [];
+            this.filteredTurnos = [];
         this.availableDates = [];
         
         if (!this.selectedSpecialty) {
@@ -286,11 +286,11 @@ export class AllMedicsListComponent implements OnInit {
             title: '¿Confirmar reserva?',
             html: `
                 <div style="text-align: left; padding: 10px 0;">
-                    <p style="margin: 8px 0;"><strong>👨‍⚕️ Médico:</strong> ${turno.medicName}</p>
-                    <p style="margin: 8px 0;"><strong>🏥 Especialidad:</strong> ${turno.specialty}</p>
-                    <p style="margin: 8px 0;"><strong>📍 Centro:</strong> ${turno.medicalCenter}</p>
-                    <p style="margin: 8px 0;"><strong>📅 Fecha:</strong> ${formattedDate}</p>
-                    <p style="margin: 8px 0;"><strong>🕐 Hora:</strong> ${turno.horaTurno}</p>
+                    <p style="margin: 8px 0;"><strong>Médico:</strong> ${turno.medicName}</p>
+                    <p style="margin: 8px 0;"><strong>Especialidad:</strong> ${turno.specialty}</p>
+                    <p style="margin: 8px 0;"><strong>Centro:</strong> ${turno.medicalCenter}</p>
+                    <p style="margin: 8px 0;"><strong>Fecha:</strong> ${formattedDate}</p>
+                    <p style="margin: 8px 0;"><strong>Hora:</strong> ${turno.horaTurno}</p>
                 </div>
             `,
             icon: 'question',

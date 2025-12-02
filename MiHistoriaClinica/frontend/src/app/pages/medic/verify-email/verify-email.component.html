@@ -5,11 +5,11 @@
     </div>
     
     <div class="icon-container" *ngIf="!verifying && success">
-      <div class="success-icon">✅</div>
+      <div class="success-icon"><i class="fas fa-check-circle"></i></div>
     </div>
     
     <div class="icon-container" *ngIf="!verifying && !success">
-      <div class="error-icon">❌</div>
+      <div class="error-icon"><i class="fas fa-times-circle"></i></div>
     </div>
     
     <h1 *ngIf="verifying">Verificando tu email...</h1>

@@ -528,7 +528,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
         const endTime = new Date(startTime.getTime() + (duracion * 60 * 1000));
         const horaFin = endTime.toTimeString().substring(0, 5);
         
-        let info = `📅 ${fecha}\n⏰ ${hora} - ${horaFin} (${duracion} min)\n🏥 ${centerName}\n\n`;
+        let info = `Fecha: ${fecha}\nHora: ${hora} - ${horaFin} (${duracion} min)\nCentro: ${centerName}\n\n`;
         
         if (turno.available) {
             info += `Estado: Disponible\n`;
@@ -736,7 +736,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // Cerrar modal de error
     closeErrorModal() {
-        const wasSuccess = this.errorTitle.includes('✅');
+        const wasSuccess = this.errorTitle.includes('Exitosa') || this.errorTitle.includes('Bloqueado') || this.errorTitle.includes('Cargada');
         this.showErrorModal = false;
         this.errorMessage = '';
         this.errorTitle = 'Error';

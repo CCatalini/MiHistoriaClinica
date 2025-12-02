@@ -233,9 +233,9 @@
 <div class="modal show d-block" tabindex="-1" *ngIf="showErrorModal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" [style.background-color]="errorTitle.includes('✅') ? '#3fb5eb' : '#dc3545'" style="color: white;">
+      <div class="modal-header" [style.background-color]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? '#3fb5eb' : '#dc3545'" style="color: white;">
         <h5 class="modal-title">
-          <i [class]="errorTitle.includes('✅') ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'"></i>
+          <i [class]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'"></i>
           {{ errorTitle }}
         </h5>
         <button type="button" class="close" aria-label="Close" (click)="closeErrorModal()" style="font-size:2rem;line-height:1;color:#fff;background:transparent;border:none;outline:none;">
@@ -243,13 +243,13 @@
         </button>
       </div>
       <div class="modal-body">
-        <div [class]="errorTitle.includes('✅') ? 'alert alert-success' : 'alert alert-danger'">
+        <div [class]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? 'alert alert-success' : 'alert alert-danger'">
           <p style="margin: 0;">{{ errorMessage }}</p>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" 
-                [style.background-color]="errorTitle.includes('✅') ? '#3fb5eb' : '#6c757d'" 
+                [style.background-color]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? '#3fb5eb' : '#6c757d'" 
                 style="color: white;"
                 (click)="closeErrorModal()">
           <i class="fas fa-check"></i> Entendido
