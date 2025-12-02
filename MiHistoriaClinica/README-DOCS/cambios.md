@@ -58,8 +58,6 @@ Cada turno tiene acciones específicas según su estado:
 - El calendario se actualiza automáticamente cada 15 segundos
 - Refleja cambios realizados por pacientes (reservas/cancelaciones) en tiempo real
 
-
-
 ### 🏥 Funcionalidades para Pacientes
 
 #### Búsqueda de Turnos
