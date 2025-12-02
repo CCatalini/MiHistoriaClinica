@@ -1,2 +1,5 @@
 # Environment variables
 .env
+
+# Ignorar application.properties con credenciales sensibles
+src/main/resources/application.properties
