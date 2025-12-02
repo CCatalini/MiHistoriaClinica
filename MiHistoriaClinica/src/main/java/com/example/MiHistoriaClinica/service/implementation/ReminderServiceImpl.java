@@ -62,9 +62,8 @@ public class ReminderServiceImpl implements ReminderService {
             for (Turnos turno : turnosForTomorrow) {
                 if (turno.getPatient() != null && turno.getPatient().getEmail() != null) {
                     try {
-                        // TODO: Implementar método sendTurnoReminderEmail en EmailService
-                        // emailService.sendTurnoReminderEmail(turno.getPatient(), turno);
-                        logger.info("Recordatorio pendiente para turno ID: {} - Paciente: {}", 
+                        emailService.sendTurnoReminderEmail(turno.getPatient(), turno);
+                        logger.info("Recordatorio enviado exitosamente para turno ID: {} - Paciente: {}", 
                                    turno.getTurnoId(), turno.getPatient().getName());
                     } catch (Exception e) {
                         logger.error("Error enviando recordatorio para turno ID: {}", turno.getTurnoId(), e);

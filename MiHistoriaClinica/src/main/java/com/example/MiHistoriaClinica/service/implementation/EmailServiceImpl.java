@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.service.implementation;
 
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
+import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.service.EmailService;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -33,6 +36,186 @@ public class EmailServiceImpl implements EmailService {
     
     @Value("${app.reminders.enabled:true}")
     private boolean remindersEnabled;
+
+    // ============================================
+    // ESTILOS BASE COMPARTIDOS
+    // ============================================
+    
+    private static final String BASE_STYLES = """
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.15), 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #5ba3e8 0%, #4A90E2 50%, #3a7bc8 100%);
+            color: white;
+            padding: 45px 20px;
+            text-align: center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.3) 100%);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .header .icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+        .header .subtitle {
+            margin-top: 10px;
+            font-size: 15px;
+            opacity: 0.95;
+        }
+        .content {
+            padding: 40px 35px;
+            color: #333;
+            background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+        }
+        .content h2 {
+            color: #4A90E2;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .content p {
+            line-height: 1.7;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white !important;
+            padding: 16px 45px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+            transition: all 0.3s ease;
+        }
+        .info-box {
+            background: linear-gradient(135deg, #E8F4FD 0%, #d6ebf9 100%);
+            border-left: 4px solid #4A90E2;
+            padding: 18px;
+            margin: 22px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.1);
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-left: 4px solid #6c757d;
+            padding: 18px;
+            margin: 22px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .details-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 28px 0;
+            border-left: 5px solid #4A90E2;
+            box-shadow: 0 2px 12px rgba(74, 144, 226, 0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        .details-box h3 {
+            color: #357ABD;
+            margin: 0 0 22px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .detail-row {
+            display: flex;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.15);
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #4A90E2;
+            width: 140px;
+            flex-shrink: 0;
+        }
+        .detail-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .feature-list {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+            padding: 22px;
+            border-radius: 10px;
+            margin: 22px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .feature-item {
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.12);
+            color: #555;
+        }
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+        .feature-item strong {
+            color: #4A90E2;
+        }
+        .footer {
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid rgba(74, 144, 226, 0.1);
+        }
+        .footer a {
+            color: #4A90E2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        """;
+
+    private static final String FOOTER_HTML = """
+        <div class="footer">
+            <p><strong>Mi Historia Clínica</strong><br>
+            Universidad Austral - Facultad de Ingeniería<br>
+            Pilar, Buenos Aires, Argentina</p>
+            <p style="margin-top: 12px;">
+                ¿Necesitas ayuda? <a href="mailto:mihistoriaclinica.austral@gmail.com">Contáctanos</a>
+            </p>
+        </div>
+        """;
+
+    // ============================================
+    // MÉTODOS DE ENVÍO
+    // ============================================
 
     @Override
     public void sendVerificationEmail(Patient patient, String verificationUrl) {
@@ -70,290 +253,6 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             logger.error("Error enviando email de bienvenida: ", e);
         }
-    }
-
-    private void sendEmail(String toEmail, String subject, String htmlContent) throws IOException {
-        Email from = new Email(fromEmail, fromName);
-        Email to = new Email(toEmail);
-        Content content = new Content("text/html", htmlContent);
-        
-        Mail mail = new Mail(from, subject, to, content);
-        
-        SendGrid sg = new SendGrid(sendGridApiKey);
-        Request request = new Request();
-        
-        try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            
-            Response response = sg.api(request);
-            
-            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
-                logger.info("Email enviado exitosamente. Status: {}", response.getStatusCode());
-            } else {
-                logger.error("Error enviando email. Status: {}, Body: {}", 
-                           response.getStatusCode(), response.getBody());
-            }
-            
-        } catch (IOException ex) {
-            logger.error("Excepción enviando email: ", ex);
-            throw ex;
-        }
-    }
-
-    private String buildVerificationEmailHtml(Patient patient, String verificationUrl) {
-        return String.format("""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Verificación de Email</title>
-                <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f5f5f5;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 20px auto;
-                        background-color: white;
-                        border-radius: 10px;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                        overflow: hidden;
-                    }
-                    .header {
-                        background: #4A90E2;
-                        color: white;
-                        padding: 40px 20px;
-                        text-align: center;
-                    }
-                    .header h1 {
-                        margin: 0;
-                        font-size: 28px;
-                        font-weight: bold;
-                    }
-                    .content {
-                        padding: 40px 30px;
-                        color: #333;
-                    }
-                    .content h2 {
-                        color: #4A90E2;
-                        font-size: 24px;
-                        margin-bottom: 20px;
-                    }
-                    .content p {
-                        line-height: 1.6;
-                        font-size: 16px;
-                        margin-bottom: 20px;
-                        color: #555;
-                    }
-                    .button-container {
-                        text-align: center;
-                        margin: 30px 0;
-                    }
-                    .verify-button {
-                        display: inline-block;
-                        background: #4A90E2;
-                        color: white !important;
-                        padding: 15px 40px;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        font-weight: bold;
-                        font-size: 16px;
-                        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-                    }
-                    .verify-button:hover {
-                        background: #357ABD;
-                    }
-                    .info-box {
-                        background-color: #E8F4FD;
-                        border-left: 4px solid #4A90E2;
-                        padding: 15px;
-                        margin: 20px 0;
-                        border-radius: 5px;
-                    }
-                    .footer {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        text-align: center;
-                        color: #777;
-                        font-size: 14px;
-                    }
-                    .footer a {
-                        color: #4A90E2;
-                        text-decoration: none;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>Mi Historia Clínica</h1>
-                    </div>
-                    <div class="content">
-                        <h2>¡Bienvenido/a, %s!</h2>
-                        <p>Gracias por registrarte en <strong>Mi Historia Clínica</strong>. Estamos emocionados de tenerte en nuestra plataforma.</p>
-                        
-                        <p>Para completar tu registro y comenzar a utilizar todos los servicios, necesitamos verificar tu dirección de correo electrónico.</p>
-                        
-                        <div class="button-container">
-                            <a href="%s" class="verify-button">Verificar mi Email</a>
-                        </div>
-                        
-                        <div class="info-box">
-                            <p style="margin: 0; color: #555;"><strong>Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
-                        </div>
-                        
-                        <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
-                        <p style="word-break: break-all; color: #4A90E2; font-size: 14px;">%s</p>
-                        
-                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si no te registraste en Mi Historia Clínica, puedes ignorar este correo de forma segura.</p>
-                    </div>
-                    <div class="footer">
-                        <p><strong>Mi Historia Clínica</strong><br>
-                        Universidad Austral - Facultad de Ingeniería<br>
-                        Pilar, Buenos Aires, Argentina</p>
-                        <p style="margin-top: 10px;">
-                            ¿Necesitas ayuda? <a href="mailto:mihistoriaclinica.austral@gmail.com">Contáctanos</a>
-                        </p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """, 
-            patient.getName(),
-            verificationUrl,
-            verificationUrl
-        );
-    }
-
-    private String buildWelcomeEmailHtml(Patient patient) {
-        return String.format("""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Bienvenida</title>
-                <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f5f5f5;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 20px auto;
-                        background-color: white;
-                        border-radius: 10px;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                        overflow: hidden;
-                    }
-                    .header {
-                        background: #4A90E2;
-                        color: white;
-                        padding: 40px 20px;
-                        text-align: center;
-                    }
-                    .header h1 {
-                        margin: 0;
-                        font-size: 28px;
-                        font-weight: bold;
-                    }
-                    .content {
-                        padding: 40px 30px;
-                        color: #333;
-                    }
-                    .content h2 {
-                        color: #4A90E2;
-                        font-size: 24px;
-                        margin-bottom: 20px;
-                    }
-                    .content p {
-                        line-height: 1.6;
-                        font-size: 16px;
-                        margin-bottom: 20px;
-                        color: #555;
-                    }
-                    .feature-list {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        border-radius: 8px;
-                        margin: 20px 0;
-                    }
-                    .feature-item {
-                        padding: 10px 0;
-                        border-bottom: 1px solid #e9ecef;
-                        color: #555;
-                    }
-                    .feature-item:last-child {
-                        border-bottom: none;
-                    }
-                    .feature-item strong {
-                        color: #4A90E2;
-                    }
-                    .footer {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        text-align: center;
-                        color: #777;
-                        font-size: 14px;
-                    }
-                    .footer a {
-                        color: #4A90E2;
-                        text-decoration: none;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <div class="header">
-                        <h1>¡Cuenta Verificada!</h1>
-                    </div>
-                    <div class="content">
-                        <h2>¡Hola, %s %s!</h2>
-                        <p>Tu cuenta ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades de <strong>Mi Historia Clínica</strong>.</p>
-                        
-                        <div class="feature-list">
-                            <div class="feature-item">
-                                <strong>Vinculación con médicos:</strong> Conecta con tus profesionales de salud
-                            </div>
-                            <div class="feature-item">
-                                <strong>Gestión de turnos:</strong> Programa y administra tus citas médicas
-                            </div>
-                            <div class="feature-item">
-                                <strong>Historia clínica:</strong> Accede a tu historial médico completo
-                            </div>
-                            <div class="feature-item">
-                                <strong>Medicamentos:</strong> Lleva un registro de tus tratamientos
-                            </div>
-                            <div class="feature-item">
-                                <strong>Estudios:</strong> Gestiona tus análisis y resultados
-                            </div>
-                        </div>
-                        
-                        <p style="margin-top: 30px;">Ya puedes <strong>iniciar sesión</strong> en la plataforma y comenzar a utilizar todos nuestros servicios.</p>
-                        
-                        <p style="font-size: 14px; color: #888; margin-top: 30px;">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
-                    </div>
-                    <div class="footer">
-                        <p><strong>Mi Historia Clínica</strong><br>
-                        Universidad Austral - Facultad de Ingeniería<br>
-                        Pilar, Buenos Aires, Argentina</p>
-                        <p style="margin-top: 10px;">
-                            <a href="mailto:mihistoriaclinica.austral@gmail.com">mihistoriaclinica.austral@gmail.com</a>
-                        </p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """, 
-            patient.getName(),
-            patient.getLastname()
-        );
     }
 
     @Override
@@ -394,7 +293,214 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @Override
+    public void sendTurnoConfirmationEmail(Patient patient, Turnos turno) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Turno Confirmado - Mi Historia Clínica";
+            String htmlContent = buildTurnoConfirmationEmailHtml(patient, turno);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de confirmación de turno enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de confirmación de turno: ", e);
+        }
+    }
+
+    @Override
+    public void sendTurnoReminderEmail(Patient patient, Turnos turno) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Recordatorio de Turno para Mañana - Mi Historia Clínica";
+            String htmlContent = buildTurnoReminderEmailHtml(patient, turno);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de recordatorio de turno enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de recordatorio de turno: ", e);
+        }
+    }
+
+    @Override
+    public void sendTurnoCancellationEmail(Patient patient, Turnos turno) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Turno Cancelado - Mi Historia Clínica";
+            String htmlContent = buildTurnoCancellationEmailHtml(patient, turno);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de cancelación de turno enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de cancelación de turno: ", e);
+        }
+    }
+
+    private void sendEmail(String toEmail, String subject, String htmlContent) throws IOException {
+        Email from = new Email(fromEmail, fromName);
+        Email to = new Email(toEmail);
+        Content content = new Content("text/html", htmlContent);
+        
+        Mail mail = new Mail(from, subject, to, content);
+        
+        SendGrid sg = new SendGrid(sendGridApiKey);
+        Request request = new Request();
+        
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            
+            Response response = sg.api(request);
+            
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+                logger.info("Email enviado exitosamente. Status: {}", response.getStatusCode());
+            } else {
+                String errorMsg = String.format("Error enviando email. Status: %d, Body: %s", 
+                           response.getStatusCode(), response.getBody());
+                logger.error(errorMsg);
+                throw new IOException(errorMsg);
+            }
+            
+        } catch (IOException ex) {
+            logger.error("Excepción enviando email: ", ex);
+            throw ex;
+        }
+    }
+
+    // ============================================
+    // PLANTILLAS HTML - PACIENTES
+    // ============================================
+
+    private String buildVerificationEmailHtml(Patient patient, String verificationUrl) {
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Verificación de Email</title>
+                <style>
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="icon">✉️</div>
+                        <h1>Mi Historia Clínica</h1>
+                        <p class="subtitle">Verificación de cuenta</p>
+                    </div>
+                    <div class="content">
+                        <h2>¡Bienvenido/a, %s!</h2>
+                        <p>Gracias por registrarte en <strong>Mi Historia Clínica</strong>. Estamos emocionados de tenerte en nuestra plataforma.</p>
+                        
+                        <p>Para completar tu registro y comenzar a utilizar todos los servicios, necesitamos verificar tu dirección de correo electrónico.</p>
+                        
+                        <div class="button-container">
+                            <a href="%s" class="action-button">Verificar mi Email</a>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>⏰ Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
+                        </div>
+                        
+                        <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
+                        <p style="word-break: break-all; color: #4A90E2; font-size: 14px; background: #f8fafc; padding: 12px; border-radius: 6px;">%s</p>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si no te registraste en Mi Historia Clínica, puedes ignorar este correo de forma segura.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """, 
+            BASE_STYLES,
+            patient.getName(),
+            verificationUrl,
+            verificationUrl,
+            FOOTER_HTML
+        );
+    }
+
+    private String buildWelcomeEmailHtml(Patient patient) {
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Bienvenida</title>
+                <style>
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="icon">🎉</div>
+                        <h1>¡Cuenta Verificada!</h1>
+                        <p class="subtitle">Ya puedes comenzar a usar la plataforma</p>
+                    </div>
+                    <div class="content">
+                        <h2>¡Hola, %s %s!</h2>
+                        <p>Tu cuenta ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades de <strong>Mi Historia Clínica</strong>.</p>
+                        
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <strong>🔗 Vinculación con médicos:</strong> Conecta con tus profesionales de salud
+                            </div>
+                            <div class="feature-item">
+                                <strong>📅 Gestión de turnos:</strong> Programa y administra tus citas médicas
+                            </div>
+                            <div class="feature-item">
+                                <strong>📋 Historia clínica:</strong> Accede a tu historial médico completo
+                            </div>
+                            <div class="feature-item">
+                                <strong>💊 Medicamentos:</strong> Lleva un registro de tus tratamientos
+                            </div>
+                            <div class="feature-item">
+                                <strong>🔬 Estudios:</strong> Gestiona tus análisis y resultados
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>✨ Tip:</strong> Ya puedes iniciar sesión en la plataforma y comenzar a utilizar todos nuestros servicios.</p>
+                        </div>
+                        
+                        <p style="font-size: 14px; color: #888; margin-top: 30px;">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """, 
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            FOOTER_HTML
+        );
+    }
+
+    // ============================================
+    // PLANTILLAS HTML - MÉDICOS
+    // ============================================
+
     private String buildMedicVerificationEmailHtml(Medic medic, String verificationUrl) {
+        String specialtyName = medic.getSpecialty() != null ? medic.getSpecialty().getName() : "No especificada";
+        
         return String.format("""
             <!DOCTYPE html>
             <html>
@@ -402,103 +508,15 @@ public class EmailServiceImpl implements EmailService {
                 <meta charset="UTF-8">
                 <title>Verificación de Cuenta Médica</title>
                 <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f5f5f5;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 20px auto;
-                        background-color: white;
-                        border-radius: 10px;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                        overflow: hidden;
-                    }
-                    .header {
-                        background: #4A90E2;
-                        color: white;
-                        padding: 40px 20px;
-                        text-align: center;
-                    }
-                    .header h1 {
-                        margin: 0;
-                        font-size: 28px;
-                        font-weight: bold;
-                    }
-                    .header p {
-                        margin: 10px 0 0 0;
-                        font-size: 14px;
-                        opacity: 0.9;
-                    }
-                    .content {
-                        padding: 40px 30px;
-                        color: #333;
-                    }
-                    .content h2 {
-                        color: #4A90E2;
-                        font-size: 24px;
-                        margin-bottom: 20px;
-                    }
-                    .content p {
-                        line-height: 1.6;
-                        font-size: 16px;
-                        margin-bottom: 20px;
-                        color: #555;
-                    }
-                    .button-container {
-                        text-align: center;
-                        margin: 30px 0;
-                    }
-                    .verify-button {
-                        display: inline-block;
-                        background: #4A90E2;
-                        color: white !important;
-                        padding: 15px 40px;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        font-weight: bold;
-                        font-size: 16px;
-                        box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
-                    }
-                    .verify-button:hover {
-                        background: #357ABD;
-                    }
-                    .info-box {
-                        background-color: #E8F4FD;
-                        border-left: 4px solid #4A90E2;
-                        padding: 15px;
-                        margin: 20px 0;
-                        border-radius: 5px;
-                    }
-                    .credential-box {
-                        background-color: #f8f9fa;
-                        padding: 15px;
-                        border-radius: 5px;
-                        margin: 20px 0;
-                    }
-                    .footer {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        text-align: center;
-                        color: #777;
-                        font-size: 14px;
-                    }
-                    .footer a {
-                        color: #4A90E2;
-                        text-decoration: none;
-                    }
-                    ul {
-                        color: #555;
-                    }
+                    %s
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
+                        <div class="icon">⚕️</div>
                         <h1>Mi Historia Clínica</h1>
-                        <p>Portal Médico Profesional</p>
+                        <p class="subtitle">Portal Médico Profesional</p>
                     </div>
                     <div class="content">
                         <h2>Verificación de Cuenta Médica</h2>
@@ -506,55 +524,58 @@ public class EmailServiceImpl implements EmailService {
                         <p>Gracias por registrarte como profesional médico en nuestra plataforma. Para activar tu cuenta y comenzar a atender pacientes, necesitamos verificar tu dirección de correo electrónico.</p>
                         
                         <div class="button-container">
-                            <a href="%s" class="verify-button">Verificar mi Cuenta Médica</a>
+                            <a href="%s" class="action-button">Verificar mi Cuenta Médica</a>
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #555;"><strong>Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
+                            <p style="margin: 0; color: #2980b9;"><strong>⏰ Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
                         </div>
                         
-                        <div class="credential-box">
-                            <p style="margin: 5px 0;"><strong>Matrícula profesional:</strong> %s</p>
-                            <p style="margin: 5px 0;"><strong>Especialidad:</strong> %s</p>
+                        <div class="details-box">
+                            <h3>📋 Datos de registro</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Matrícula:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Especialidad:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
                         </div>
                         
-                        <p style="margin-top: 30px;">Una vez verificada tu cuenta, podrás:</p>
-                        <ul style="line-height: 1.8;">
-                            <li>Crear y gestionar historias clínicas</li>
-                            <li>Vincular y atender pacientes</li>
-                            <li>Gestionar tu agenda de turnos</li>
-                            <li>Prescribir medicamentos</li>
-                            <li>Solicitar estudios médicos</li>
-                            <li>Acceder al historial completo de tus pacientes</li>
-                        </ul>
+                        <p style="margin-top: 20px;">Una vez verificada tu cuenta, podrás:</p>
+                        <div class="feature-list">
+                            <div class="feature-item">✓ Crear y gestionar historias clínicas</div>
+                            <div class="feature-item">✓ Vincular y atender pacientes</div>
+                            <div class="feature-item">✓ Gestionar tu agenda de turnos</div>
+                            <div class="feature-item">✓ Prescribir medicamentos</div>
+                            <div class="feature-item">✓ Solicitar estudios médicos</div>
+                        </div>
                         
-                        <p>Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:</p>
-                        <p style="word-break: break-all; color: #4A90E2; font-size: 14px;">%s</p>
+                        <p>Si el botón no funciona, copia y pega el siguiente enlace:</p>
+                        <p style="word-break: break-all; color: #4A90E2; font-size: 14px; background: #f8fafc; padding: 12px; border-radius: 6px;">%s</p>
                         
-                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si no te registraste como médico en Mi Historia Clínica, puedes ignorar este correo de forma segura.</p>
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si no te registraste como médico en Mi Historia Clínica, puedes ignorar este correo.</p>
                     </div>
-                    <div class="footer">
-                        <p><strong>Mi Historia Clínica</strong><br>
-                        Universidad Austral - Facultad de Ingeniería<br>
-                        Pilar, Buenos Aires, Argentina</p>
-                        <p style="margin-top: 10px;">
-                            <a href="mailto:mihistoriaclinica.austral@gmail.com">mihistoriaclinica.austral@gmail.com</a>
-                        </p>
-                    </div>
+                    %s
                 </div>
             </body>
             </html>
             """, 
+            BASE_STYLES,
             medic.getName(),
             medic.getLastname(),
             verificationUrl,
             medic.getMatricula(),
-            medic.getSpecialty() != null ? medic.getSpecialty().getName() : "No especificada",
-            verificationUrl
+            specialtyName,
+            verificationUrl,
+            FOOTER_HTML
         );
     }
 
     private String buildMedicWelcomeEmailHtml(Medic medic) {
+        String specialtyName = medic.getSpecialty() != null ? medic.getSpecialty().getName() : "No especificada";
+        
         return String.format("""
             <!DOCTYPE html>
             <html>
@@ -562,144 +583,446 @@ public class EmailServiceImpl implements EmailService {
                 <meta charset="UTF-8">
                 <title>Bienvenida - Cuenta Médica Activada</title>
                 <style>
-                    body {
-                        font-family: 'Arial', sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        background-color: #f5f5f5;
-                    }
-                    .container {
-                        max-width: 600px;
-                        margin: 20px auto;
-                        background-color: white;
-                        border-radius: 10px;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                        overflow: hidden;
-                    }
-                    .header {
-                        background: #4A90E2;
-                        color: white;
-                        padding: 40px 20px;
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="icon">🩺</div>
+                        <h1>¡Cuenta Médica Verificada!</h1>
+                        <p class="subtitle">Ya puede comenzar a atender pacientes</p>
+                    </div>
+                    <div class="content">
+                        <h2>¡Bienvenido/a, Dr/Dra. %s %s!</h2>
+                        <p>Tu cuenta médica ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades profesionales de <strong>Mi Historia Clínica</strong>.</p>
+                        
+                        <div class="details-box">
+                            <h3>📋 Datos de tu cuenta</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Matrícula:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Especialidad:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Email:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <strong>📋 Gestión de historias clínicas:</strong> Crea y mantén actualizados los registros de tus pacientes
+                            </div>
+                            <div class="feature-item">
+                                <strong>🔗 Vinculación con pacientes:</strong> Acepta solicitudes de vinculación mediante códigos únicos
+                            </div>
+                            <div class="feature-item">
+                                <strong>📅 Agenda de turnos:</strong> Configura tus horarios disponibles y gestiona las reservas
+                            </div>
+                            <div class="feature-item">
+                                <strong>💊 Prescripción de medicamentos:</strong> Receta tratamientos a tus pacientes
+                            </div>
+                            <div class="feature-item">
+                                <strong>🔬 Solicitud de estudios:</strong> Ordena análisis y estudios complementarios
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9; text-align: center; font-size: 17px;"><strong>✨ Ya puede iniciar sesión y comenzar a atender pacientes</strong></p>
+                        </div>
+                        
+                        <p style="font-size: 14px; color: #888; margin-top: 30px;">Si necesita ayuda para comenzar, no dude en contactarnos.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """, 
+            BASE_STYLES,
+            medic.getName(),
+            medic.getLastname(),
+            medic.getMatricula(),
+            specialtyName,
+            medic.getEmail(),
+            FOOTER_HTML
+        );
+    }
+
+    // ============================================
+    // PLANTILLAS HTML - TURNOS
+    // ============================================
+
+    private String buildTurnoConfirmationEmailHtml(Patient patient, Turnos turno) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        String fechaFormateada = turno.getFechaTurno().format(dateFormatter);
+        String horaFormateada = turno.getHoraTurno().format(timeFormatter);
+        String medicalCenterName = turno.getMedicalCenter() != null ? turno.getMedicalCenter().getName() : "No especificado";
+        String specialtyName = turno.getMedicSpecialty() != null ? turno.getMedicSpecialty().getName() : "No especificada";
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Confirmación de Turno</title>
+                <style>
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="icon">✓</div>
+                        <h1>¡Turno Confirmado!</h1>
+                        <p class="subtitle">Tu reserva ha sido procesada exitosamente</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hola, %s %s</h2>
+                        <p>Tu turno ha sido reservado exitosamente. A continuación encontrarás los detalles de tu cita médica:</p>
+                        
+                        <div class="details-box">
+                            <h3>📋 Detalles del Turno</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-value">%s hs</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-value">Dr/Dra. %s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>🔔 Recordatorio:</strong> Te enviaremos un email de recordatorio 24 horas antes de tu turno.</p>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si necesitas cancelar, hazlo con al menos 24 horas de anticipación desde la plataforma.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si tienes alguna pregunta o necesitas reprogramar tu turno, puedes hacerlo desde la plataforma Mi Historia Clínica.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """,
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            fechaFormateada,
+            horaFormateada,
+            turno.getMedicFullName(),
+            specialtyName,
+            medicalCenterName,
+            FOOTER_HTML
+        );
+    }
+
+    private String buildTurnoReminderEmailHtml(Patient patient, Turnos turno) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        String fechaFormateada = turno.getFechaTurno().format(dateFormatter);
+        String horaFormateada = turno.getHoraTurno().format(timeFormatter);
+        String medicalCenterName = turno.getMedicalCenter() != null ? turno.getMedicalCenter().getName() : "No especificado";
+        String specialtyName = turno.getMedicSpecialty() != null ? turno.getMedicSpecialty().getName() : "No especificada";
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Recordatorio de Turno</title>
+                <style>
+                    %s
+                    .countdown-box {
+                        background: linear-gradient(135deg, #E8F4FD 0%%, #cce5f8 100%%);
+                        border-radius: 12px;
+                        padding: 25px;
+                        margin: 28px 0;
                         text-align: center;
+                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+                        border: 1px solid rgba(74, 144, 226, 0.2);
                     }
-                    .header h1 {
+                    .countdown-box h3 {
+                        color: #2980b9;
                         margin: 0;
-                        font-size: 28px;
-                        font-weight: bold;
+                        font-size: 22px;
+                        font-weight: 600;
                     }
-                    .content {
-                        padding: 40px 30px;
-                        color: #333;
-                    }
-                    .content h2 {
+                    .countdown-box p {
+                        margin: 12px 0 0 0;
+                        font-size: 15px;
                         color: #4A90E2;
-                        font-size: 24px;
-                        margin-bottom: 20px;
                     }
-                    .content p {
-                        line-height: 1.6;
+                    .checklist {
+                        background: linear-gradient(135deg, #f5f7fa 0%%, #e8ecf1 100%%);
+                        padding: 22px;
+                        border-radius: 10px;
+                        margin: 22px 0;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                    }
+                    .checklist h4 {
+                        color: #2c3e50;
+                        margin: 0 0 18px 0;
                         font-size: 16px;
-                        margin-bottom: 20px;
+                    }
+                    .checklist-item {
+                        padding: 10px 0;
                         color: #555;
+                        display: flex;
+                        align-items: center;
+                        border-bottom: 1px solid rgba(0,0,0,0.05);
                     }
-                    .feature-list {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        border-radius: 8px;
-                        margin: 20px 0;
-                    }
-                    .feature-item {
-                        padding: 12px 0;
-                        border-bottom: 1px solid #e9ecef;
-                        color: #555;
-                    }
-                    .feature-item:last-child {
+                    .checklist-item:last-child {
                         border-bottom: none;
                     }
-                    .feature-item strong {
+                    .checklist-item::before {
+                        content: "✓";
                         color: #4A90E2;
-                    }
-                    .footer {
-                        background-color: #f8f9fa;
-                        padding: 20px;
-                        text-align: center;
-                        color: #777;
+                        font-weight: bold;
+                        margin-right: 12px;
                         font-size: 14px;
-                    }
-                    .footer a {
-                        color: #4A90E2;
-                        text-decoration: none;
-                    }
-                    .credentials-box {
-                        background-color: #E8F4FD;
-                        border-left: 4px solid #4A90E2;
-                        padding: 20px;
-                        border-radius: 5px;
-                        margin: 20px 0;
                     }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>¡Cuenta Médica Verificada!</h1>
+                        <div class="icon">🔔</div>
+                        <h1>Recordatorio de Turno</h1>
+                        <p class="subtitle">¡Tu cita médica es mañana!</p>
                     </div>
                     <div class="content">
-                        <h2>¡Bienvenido/a, Dr/Dra. %s %s!</h2>
-                        <p>Tu cuenta médica ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades profesionales de <strong>Mi Historia Clínica</strong>.</p>
+                        <h2>Hola, %s %s</h2>
+                        <p>Te recordamos que tienes un turno médico programado para <strong>mañana</strong>. Por favor, revisa los detalles a continuación:</p>
                         
-                        <div class="credentials-box">
-                            <p style="margin: 0; font-size: 18px; color: #333;"><strong>Datos de tu cuenta:</strong></p>
-                            <p style="margin: 10px 0 0 0; color: #555;"><strong>Matrícula:</strong> %s</p>
-                            <p style="margin: 5px 0 0 0; color: #555;"><strong>Especialidad:</strong> %s</p>
-                            <p style="margin: 5px 0 0 0; color: #555;"><strong>Email:</strong> %s</p>
+                        <div class="countdown-box">
+                            <h3>⏰ Tu turno es en menos de 24 horas</h3>
+                            <p>No olvides prepararte para tu cita</p>
                         </div>
                         
-                        <div class="feature-list">
-                            <div class="feature-item">
-                                <strong>Gestión de historias clínicas:</strong> Crea y mantén actualizados los registros de tus pacientes
+                        <div class="details-box">
+                            <h3>📋 Detalles del Turno</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-value">%s</span>
                             </div>
-                            <div class="feature-item">
-                                <strong>Vinculación con pacientes:</strong> Acepta solicitudes de vinculación mediante códigos únicos
+                            <div class="detail-row">
+                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-value">%s hs</span>
                             </div>
-                            <div class="feature-item">
-                                <strong>Agenda de turnos:</strong> Configura tus horarios disponibles y gestiona las reservas
+                            <div class="detail-row">
+                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-value">Dr/Dra. %s</span>
                             </div>
-                            <div class="feature-item">
-                                <strong>Prescripción de medicamentos:</strong> Receta tratamientos a tus pacientes
+                            <div class="detail-row">
+                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-value">%s</span>
                             </div>
-                            <div class="feature-item">
-                                <strong>Solicitud de estudios:</strong> Ordena análisis y estudios complementarios
-                            </div>
-                            <div class="feature-item">
-                                <strong>Consultas médicas:</strong> Registra cada atención con detalles completos
+                            <div class="detail-row">
+                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-value">%s</span>
                             </div>
                         </div>
                         
-                        <p style="margin-top: 30px; font-size: 18px; text-align: center; color: #4A90E2;">
-                            <strong>Ya puedes iniciar sesión y comenzar a atender pacientes</strong>
-                        </p>
+                        <div class="checklist">
+                            <h4>📝 No olvides llevar:</h4>
+                            <div class="checklist-item">DNI o documento de identidad</div>
+                            <div class="checklist-item">Credencial de obra social/prepaga (si corresponde)</div>
+                            <div class="checklist-item">Estudios previos relacionados</div>
+                            <div class="checklist-item">Lista de medicamentos actuales</div>
+                        </div>
                         
-                        <p style="font-size: 14px; color: #888; margin-top: 30px;">Si necesitas ayuda para comenzar, no dudes en contactarnos.</p>
+                        <div class="warning-box">
+                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si no puedes asistir, cancela tu turno desde la plataforma para que otro paciente pueda tomarlo.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos una excelente consulta. ¡Gracias por confiar en nosotros!</p>
                     </div>
-                    <div class="footer">
-                        <p><strong>Mi Historia Clínica</strong><br>
-                        Universidad Austral - Facultad de Ingeniería<br>
-                        Pilar, Buenos Aires, Argentina</p>
-                        <p style="margin-top: 10px;">
-                            <a href="mailto:mihistoriaclinica.austral@gmail.com">mihistoriaclinica.austral@gmail.com</a>
-                        </p>
-                    </div>
+                    %s
                 </div>
             </body>
             </html>
             """, 
-            medic.getName(),
-            medic.getLastname(),
-            medic.getMatricula(),
-            medic.getSpecialty() != null ? medic.getSpecialty().getName() : "No especificada",
-            medic.getEmail()
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            fechaFormateada,
+            horaFormateada,
+            turno.getMedicFullName(),
+            specialtyName,
+            medicalCenterName,
+            FOOTER_HTML
+        );
+    }
+
+    private String buildTurnoCancellationEmailHtml(Patient patient, Turnos turno) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        String fechaFormateada = turno.getFechaTurno().format(dateFormatter);
+        String horaFormateada = turno.getHoraTurno().format(timeFormatter);
+        String medicalCenterName = turno.getMedicalCenter() != null ? turno.getMedicalCenter().getName() : "No especificado";
+        String specialtyName = turno.getMedicSpecialty() != null ? turno.getMedicSpecialty().getName() : "No especificada";
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Turno Cancelado</title>
+                <style>
+                    %s
+                    .header-cancel {
+                        background: linear-gradient(135deg, #95a5a6 0%%, #7f8c8d 50%%, #6c7a7d 100%%);
+                        color: white;
+                        padding: 45px 20px;
+                        text-align: center;
+                        position: relative;
+                    }
+                    .header-cancel::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        height: 4px;
+                        background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%%, rgba(255,255,255,0.6) 50%%, rgba(255,255,255,0.3) 100%%);
+                    }
+                    .header-cancel h1 {
+                        margin: 0;
+                        font-size: 28px;
+                        font-weight: bold;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    }
+                    .header-cancel .icon {
+                        font-size: 55px;
+                        margin-bottom: 15px;
+                        text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+                    }
+                    .header-cancel .subtitle {
+                        margin-top: 10px;
+                        font-size: 15px;
+                        opacity: 0.95;
+                    }
+                    .cancelled-details {
+                        background: linear-gradient(135deg, #f8f9fa 0%%, #e9ecef 100%%);
+                        border-radius: 12px;
+                        padding: 28px;
+                        margin: 28px 0;
+                        border-left: 5px solid #95a5a6;
+                        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+                    }
+                    .cancelled-details h3 {
+                        color: #6c757d;
+                        margin: 0 0 22px 0;
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+                    .cancelled-details .detail-label {
+                        color: #6c757d;
+                    }
+                    .reschedule-box {
+                        background: linear-gradient(135deg, #E8F4FD 0%%, #d6ebf9 100%%);
+                        border-radius: 12px;
+                        padding: 25px;
+                        margin: 28px 0;
+                        text-align: center;
+                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.15);
+                        border: 1px solid rgba(74, 144, 226, 0.2);
+                    }
+                    .reschedule-box h3 {
+                        color: #2980b9;
+                        margin: 0 0 10px 0;
+                        font-size: 18px;
+                    }
+                    .reschedule-box p {
+                        margin: 0;
+                        color: #4A90E2;
+                        font-size: 15px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header-cancel">
+                        <div class="icon">✕</div>
+                        <h1>Turno Cancelado</h1>
+                        <p class="subtitle">Tu reserva ha sido cancelada</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hola, %s %s</h2>
+                        <p>Te confirmamos que tu turno ha sido <strong>cancelado exitosamente</strong>. A continuación los detalles del turno que fue cancelado:</p>
+                        
+                        <div class="cancelled-details">
+                            <h3>📋 Turno Cancelado</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-value" style="text-decoration: line-through; color: #95a5a6;">%s</span>
+                        </div>
+                            <div class="detail-row">
+                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-value" style="text-decoration: line-through; color: #95a5a6;">%s hs</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-value">Dr/Dra. %s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            </div>
+                        
+                        <div class="reschedule-box">
+                            <h3>📅 ¿Necesitas reprogramar?</h3>
+                            <p>Puedes reservar un nuevo turno desde la plataforma Mi Historia Clínica</p>
+                            </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>💡 Tip:</strong> Te recomendamos reservar tu nuevo turno con anticipación para asegurar disponibilidad con tu médico preferido.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """, 
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            fechaFormateada,
+            horaFormateada,
+            turno.getMedicFullName(),
+            specialtyName,
+            medicalCenterName,
+            FOOTER_HTML
         );
     }
 }
-

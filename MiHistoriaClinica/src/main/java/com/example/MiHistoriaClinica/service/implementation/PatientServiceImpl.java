@@ -252,6 +252,13 @@ public class PatientServiceImpl implements PatientService {
         turno.setPatientEmail(patient.getEmail());
 
         turnosRepository.save(turno);
+        
+        // Enviar email de confirmación de turno
+        try {
+            emailService.sendTurnoConfirmationEmail(patient, turno);
+        } catch (Exception e) {
+            System.err.println("Error enviando email de confirmación de turno: " + e.getMessage());
+        }
     }
 
     @Override
@@ -284,6 +291,13 @@ public class PatientServiceImpl implements PatientService {
         turno.setPatientEmail(patient.getEmail());
 
         turnosRepository.save(turno);
+        
+        // Enviar email de confirmación de turno
+        try {
+            emailService.sendTurnoConfirmationEmail(patient, turno);
+        } catch (Exception e) {
+            System.err.println("Error enviando email de confirmación de turno: " + e.getMessage());
+        }
     }
 
     @Override
@@ -295,6 +309,17 @@ public class PatientServiceImpl implements PatientService {
         if (turno.isAvailable()) {
             throw new RuntimeException("El turno ya está disponible");
         }
+        
+        // Guardar referencia al paciente antes de liberar (para enviar email)
+        Patient patient = turno.getPatient();
+        
+        // Crear copia de los datos del turno para el email (antes de limpiarlos)
+        Turnos turnoParaEmail = new Turnos();
+        turnoParaEmail.setFechaTurno(turno.getFechaTurno());
+        turnoParaEmail.setHoraTurno(turno.getHoraTurno());
+        turnoParaEmail.setMedicFullName(turno.getMedicFullName());
+        turnoParaEmail.setMedicSpecialty(turno.getMedicSpecialty());
+        turnoParaEmail.setMedicalCenter(turno.getMedicalCenter());
         
         // Liberar el turno: quitar paciente y marcar como disponible
         // Funciona tanto para turnos reservados como bloqueados
@@ -308,6 +333,15 @@ public class PatientServiceImpl implements PatientService {
         turno.setPatientEmail(null);
         
         turnosRepository.save(turno);
+        
+        // Enviar email de cancelación solo si había un paciente asignado
+        if (patient != null && patient.getEmail() != null) {
+            try {
+                emailService.sendTurnoCancellationEmail(patient, turnoParaEmail);
+            } catch (Exception e) {
+                System.err.println("Error enviando email de cancelación de turno: " + e.getMessage());
+            }
+        }
     }
 
     @Override
