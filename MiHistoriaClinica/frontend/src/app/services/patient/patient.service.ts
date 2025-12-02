@@ -134,6 +134,11 @@ export class PatientService {
         return this.http.get<string[]>('http://localhost:8080/medic/all-specialties');
     }
 
+    public getAllMedicsBySpecialty(specialty: string) {
+        let params = new HttpParams().set("specialty", specialty);
+        return this.http.get<any[]>("http://localhost:8080/medic/all-medics/by-specialty", { params: params });
+    }
+
     public getTurnosBySpecialty(specialty: string, date: string) {
         let params = new HttpParams().set("specialty", specialty).set("date", date);
         return this.http.get<any[]>("http://localhost:8080/turno/patient/available-by-specialty", { params: params });
