@@ -1,12 +1,10 @@
-/* home.component.css */
-div {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centra horizontalmente */
-    justify-content: center; /* Centra verticalmente */
-    height: 100vh; /* Ajusta la altura según tus necesidades */
+/* app.component.css */
+.app-content {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
 }
 
 h1 {
-    text-align: center; /* Centra el texto horizontalmente */
+    text-align: center;
 }

@@ -50,14 +50,18 @@
 
     <!-- Estado vacío: sin especialidad -->
     <div *ngIf="!selectedSpecialty" class="empty-section">
-        <div class="empty-icon">🏥</div>
+        <div class="empty-icon">
+            <i class="fas fa-hospital"></i>
+        </div>
         <h3>Selecciona una especialidad</h3>
         <p>Para ver los turnos disponibles, primero elige una especialidad médica</p>
     </div>
 
     <!-- Estado vacío: sin fechas -->
     <div *ngIf="selectedSpecialty && availableDates.length === 0 && !isLoading" class="empty-section">
-        <div class="empty-icon">📭</div>
+        <div class="empty-icon">
+            <i class="fas fa-calendar-times"></i>
+        </div>
         <h3>No hay turnos disponibles</h3>
         <p>No se encontraron turnos para esta especialidad</p>
     </div>
@@ -113,7 +117,9 @@
 
     <!-- Sin turnos para fecha seleccionada -->
     <div *ngIf="selectedSpecialty && availableDates.length > 0 && filteredTurnos.length === 0 && selectedDate && !isLoading" class="empty-section">
-        <div class="empty-icon">🔍</div>
+        <div class="empty-icon">
+            <i class="fas fa-search"></i>
+        </div>
         <h3>No hay turnos para este día</h3>
         <p>Prueba seleccionando otra fecha</p>
     </div>

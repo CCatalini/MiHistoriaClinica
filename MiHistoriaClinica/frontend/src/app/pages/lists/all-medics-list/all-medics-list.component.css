@@ -225,6 +225,11 @@ html, body {
 .empty-icon {
     font-size: 48px;
     margin-bottom: 15px;
+    color: #adb5bd;
+}
+
+.empty-icon i {
+    font-size: 48px;
 }
 
 .empty-section h3 {

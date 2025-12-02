@@ -1,40 +1,88 @@
-/* home.component.css */
+/* home-medic.component.css */
+:host {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 16px 40px 16px;
+    box-sizing: border-box;
+    background: #f5f5f5;
+}
+
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background: #f5f5f5;
 }
 
+/* Título principal */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 auto 30px auto;
+    max-width: 1200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-bottom: 3px solid #3fb5eb;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
 .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 html {
-    height: 100%; /* Asegura que el html tenga una altura del 100% */
+    height: 100%;
+}
+
+.bootstrap-wrapper {
+    display: flex;
+    justify-content: center;
 }
 
 .options {
     display: flex;
     justify-content: center;
+    flex-wrap: nowrap;
+    gap: 15px;
 }
 
 .option {
-    margin: 0 10px;
+    margin: 10px;
     text-align: center;
     text-decoration: none;
     color: #000;
+    flex-shrink: 0;
 }
 
 .option-box {
     width: 200px;
     height: 200px;
-    background-color:  #FFFFFF;
+    background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.option-box img { /* Ajusta el ajuste de la imagen */
+.option-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.option-box img {
     width: 150px;
     height: 150px;
     object-fit: cover;
@@ -42,4 +90,7 @@ html {
 
 .option-box span {
     margin-top: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
 }
