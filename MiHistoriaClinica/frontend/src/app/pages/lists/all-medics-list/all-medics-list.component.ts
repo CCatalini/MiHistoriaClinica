@@ -55,8 +55,8 @@ export class AllMedicsListComponent implements OnInit {
         this.selectedName = '';
         this.selectedDate = '';
         this.names = [];
-            this.availableTurnos = [];
-            this.filteredTurnos = [];
+        this.availableTurnos = [];
+        this.filteredTurnos = [];
         this.availableDates = [];
         
         if (!this.selectedSpecialty) {
@@ -68,6 +68,17 @@ export class AllMedicsListComponent implements OnInit {
         // Obtener turnos para la especialidad seleccionada (próximos 30 días)
         const today = new Date().toISOString().split('T')[0];
         
+        // Cargar todos los médicos de la especialidad (para el dropdown)
+        this.userService.getAllMedicsBySpecialty(this.selectedSpecialty).subscribe(
+            (medics: any[]) => {
+                this.names = medics.map(m => `${m.name} ${m.lastname}`).sort();
+            },
+            (error) => {
+                console.error('Error al cargar médicos:', error);
+            }
+        );
+        
+        // Cargar turnos disponibles
         this.userService.getTurnosBySpecialtyRange(this.selectedSpecialty, today).subscribe(
             (turnosDTO: any[]) => {
                 const turnos: any[] = [];
@@ -90,7 +101,6 @@ export class AllMedicsListComponent implements OnInit {
                 
                 this.availableTurnos = turnos;
                 this.extractAvailableDates();
-                this.updateMedicNames();
                 this.filterTurnos();
                 this.isLoading = false;
             },
