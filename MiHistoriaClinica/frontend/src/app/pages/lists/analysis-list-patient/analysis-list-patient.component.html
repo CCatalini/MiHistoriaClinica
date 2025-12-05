@@ -41,6 +41,7 @@
                     <tr>
                         <th>Estudio</th>
                         <th>Descripción</th>
+                        <th>Fecha Programada</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -51,6 +52,10 @@
                             <div class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
                                 <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
                             </div>
+                        </td>
+                        <td>
+                            <span *ngIf="analysis.scheduledDate">{{ formatDate(analysis.scheduledDate) }}</span>
+                            <span *ngIf="!analysis.scheduledDate" class="text-muted">Sin programar</span>
                         </td>
                         <td>
                             <select class="status-select" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">

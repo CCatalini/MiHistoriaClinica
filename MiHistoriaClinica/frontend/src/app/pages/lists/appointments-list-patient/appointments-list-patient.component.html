@@ -3,20 +3,18 @@
     <!-- Título principal -->
     <div class="page-title">
         <h1>Mis Consultas</h1>
-        <p class="subtitle">Historial de tus consultas médicas</p>
     </div>
 
     <!-- Tabla de consultas -->
     <div class="data-section">
-        <h2 class="text-center">Historial de Consultas</h2>
         
         <!-- Estado vacío -->
         <div *ngIf="appointments.length === 0" class="empty-state">
             <div class="empty-icon">
                 <i class="fas fa-clipboard-list"></i>
             </div>
-            <h3>No hay consultas registradas</h3>
-            <p>Aún no tienes consultas médicas en tu historial</p>
+            <h3>Sin consultas registradas</h3>
+            <p>Las consultas realizadas con tus médicos aparecerán aquí</p>
         </div>
 
         <!-- Tabla -->

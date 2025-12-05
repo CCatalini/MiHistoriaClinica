@@ -198,6 +198,12 @@ table tbody tr:hover {
     display: block;
 }
 
+/* ---------------- TEXTO MUTED ---------------- */
+.text-muted {
+    color: #6c757d;
+    font-style: italic;
+}
+
 /* ---------------- TOOLTIP ---------------- */
 .global-tooltip {
     position: fixed;

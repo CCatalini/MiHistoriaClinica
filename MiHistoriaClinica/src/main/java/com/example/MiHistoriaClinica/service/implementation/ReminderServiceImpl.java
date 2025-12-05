@@ -88,25 +88,26 @@ public class ReminderServiceImpl implements ReminderService {
             return;
         }
 
-        logger.info("Iniciando proceso de envío de recordatorios de análisis");
+        logger.info("Iniciando proceso de envío de recordatorios de estudios");
         
         try {
-            // Buscar análisis pendientes (que llevan más de 24 horas pendientes)
-            List<Analysis> pendingAnalysis = analysisRepository.findByStatus("Pendiente");
+            // Buscar estudios pendientes programados para mañana
+            LocalDate tomorrowDate = LocalDate.now().plusDays(1);
             
-            logger.info("Encontrados {} análisis pendientes", pendingAnalysis.size());
+            List<Analysis> analysisForTomorrow = analysisRepository.findByScheduledDateAndStatus(tomorrowDate, "Pendiente");
             
-            for (Analysis analysis : pendingAnalysis) {
+            logger.info("Encontrados {} estudios programados para mañana", analysisForTomorrow.size());
+            
+            for (Analysis analysis : analysisForTomorrow) {
                 if (analysis.getPatients() != null && !analysis.getPatients().isEmpty()) {
                     for (Patient patient : analysis.getPatients()) {
                         if (patient.getEmail() != null) {
                             try {
-                                // TODO: Implementar método sendAnalysisReminderEmail en EmailService
-                                // emailService.sendAnalysisReminderEmail(patient, analysis);
-                                logger.info("Recordatorio de análisis pendiente para paciente: {} - Análisis: {}", 
+                                emailService.sendAnalysisReminderEmail(patient, analysis);
+                                logger.info("Recordatorio de estudio enviado exitosamente para paciente: {} - Estudio: {}", 
                                            patient.getName(), analysis.getName().getName());
                             } catch (Exception e) {
-                                logger.error("Error enviando recordatorio de análisis para paciente: {}", 
+                                logger.error("Error enviando recordatorio de estudio para paciente: {}", 
                                            patient.getName(), e);
                             }
                         } else {
@@ -114,14 +115,14 @@ public class ReminderServiceImpl implements ReminderService {
                         }
                     }
                 } else {
-                    logger.warn("Análisis sin pacientes asociados: {}", analysis.getAnalysis_id());
+                    logger.warn("Estudio sin pacientes asociados: {}", analysis.getAnalysis_id());
                 }
             }
             
-            logger.info("Proceso de recordatorios de análisis completado");
+            logger.info("Proceso de recordatorios de estudios completado");
             
         } catch (Exception e) {
-            logger.error("Error durante el proceso de recordatorios de análisis", e);
+            logger.error("Error durante el proceso de recordatorios de estudios", e);
         }
     }
 
@@ -130,9 +131,9 @@ public class ReminderServiceImpl implements ReminderService {
         logger.info("Servicio de recordatorios iniciado. Configuración:");
         logger.info("- Recordatorios habilitados: {}", remindersEnabled);
         logger.info("- Horas antes para recordatorio de turnos: {}", turnoHoursBefore);
-        logger.info("- Horas antes para recordatorio de análisis: {}", analysisHoursBefore);
-        logger.info("- Recordatorios de turnos: todos los días a las 9:00 AM");
-        logger.info("- Recordatorios de análisis: todos los días a las 10:00 AM");
+        logger.info("- Horas antes para recordatorio de estudios: {}", analysisHoursBefore);
+        logger.info("- Recordatorios de turnos: todos los días a las 9:00 AM (24h antes)");
+        logger.info("- Recordatorios de estudios: todos los días a las 10:00 AM (24h antes)");
     }
 
     // Método manual para enviar recordatorios (útil para testing)

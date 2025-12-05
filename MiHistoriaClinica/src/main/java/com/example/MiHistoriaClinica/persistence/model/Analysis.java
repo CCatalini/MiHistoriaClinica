@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class Analysis {
     @Enumerated(EnumType.STRING)    private MedicalCenterE medicalCenterE;
     private String description;
     private String status;
+    
+    // Fecha programada para el estudio
+    private LocalDate scheduledDate;
 
     @ManyToMany(mappedBy = "analysis", fetch = FetchType.EAGER)
     @JsonBackReference
