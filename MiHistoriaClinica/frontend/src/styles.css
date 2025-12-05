@@ -52,11 +52,11 @@ body {
 }
 
 .content-with-toolbar {
-    padding-top: 80px; /* toolbar height 64 + margin */
+    padding-top: 110px; /* toolbar height 64 + user bar 30 + margin */
 }
 
 @media (max-width: 600px) {
     .content-with-toolbar {
-        padding-top: 60px; /* toolbar height 56 + margin */
+        padding-top: 90px; /* toolbar height 56 + user bar + margin */
     }
 }

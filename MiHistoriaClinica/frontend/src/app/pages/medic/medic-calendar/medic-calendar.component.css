@@ -21,7 +21,7 @@ html, body {
     min-height: 100vh;
     max-height: 100vh;
     overflow-y: auto;
-    padding-top: 80px; /* Separación del header azul */
+    padding-top: 100px; /* Separación del header azul + barra usuario */
     box-sizing: border-box;
 }
 

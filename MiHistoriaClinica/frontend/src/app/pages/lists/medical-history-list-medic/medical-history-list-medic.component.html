@@ -1,45 +1,69 @@
-<div class="container">
-    <h3>Historia Clínica</h3>
-    <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-    
+<div class="container content-with-toolbar">
+
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Historia Clínica</h1>
+        <p class="subtitle" *ngIf="patient">{{ patient.name }} {{ patient.lastname }} - DNI: {{ patient.dni }}</p>
+    </div>
+
     <!-- Botones de acción -->
-    <div class="action-buttons" style="margin: 20px 0; display: flex; gap: 10px; justify-content: center;">
-        <button mat-raised-button color="primary" (click)="downloadPatientHistory()">
-            📄 Descargar Historia Clínica
+    <div class="actions-section">
+        <button class="boton" (click)="downloadPatientHistory()">
+            <i class="fas fa-file-pdf"></i> Descargar PDF
         </button>
-        <button mat-raised-button color="accent" [routerLink]="'/medic/edit-medicalHistory'" [queryParams]="{ data: medicalHistory | json }">
+        <button class="boton boton-secondary" [routerLink]="'/medic/edit-medicalHistory'" [queryParams]="{ data: medicalHistory | json }">
             <i class="fas fa-edit"></i> Editar
         </button>
     </div>
-    
-    <mat-list *ngIf="medicalHistory">
-        <mat-list-item>
-            <span matListItemTitle>Altura</span>
-            <span matListItemLine>{{ medicalHistory.height }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Peso</span>
-            <span matListItemLine>{{ medicalHistory.weight }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Grupo sanguíneo</span>
-            <span matListItemLine>{{ medicalHistory.bloodType }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Alergias</span>
-            <span matListItemLine>{{ medicalHistory.allergy }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Medicación crónica</span>
-            <span matListItemLine>{{ medicalHistory.actualMedicine }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Enfermedades crónicas</span>
-            <span matListItemLine>{{ medicalHistory.chronicDisease }}</span>
-        </mat-list-item>
-        <mat-list-item>
-            <span matListItemTitle>Antecedentes familiares</span>
-            <span matListItemLine>{{ medicalHistory.familyMedicalHistory }}</span>
-        </mat-list-item>
-    </mat-list>
+
+    <!-- Ficha Médica -->
+    <div class="medical-file-section" *ngIf="medicalHistory">
+        <h2 class="text-center">Ficha Médica</h2>
+        <div class="medical-file-content">
+            <div class="medical-file-item">
+                <span class="medical-file-label">Altura:</span>
+                <span class="medical-file-value">{{ medicalHistory.height || '-' }} cm</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Peso:</span>
+                <span class="medical-file-value">{{ medicalHistory.weight || '-' }} kg</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Grupo sanguíneo:</span>
+                <span class="medical-file-value">{{ medicalHistory.bloodType || '-' }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Alergias:</span>
+                <span class="medical-file-value">{{ medicalHistory.allergy || 'Sin alergias registradas' }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Medicación crónica:</span>
+                <span class="medical-file-value">{{ medicalHistory.actualMedicine || 'Sin medicación crónica' }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Enfermedades crónicas:</span>
+                <span class="medical-file-value">{{ medicalHistory.chronicDisease || 'Sin enfermedades crónicas' }}</span>
+            </div>
+            <div class="medical-file-item">
+                <span class="medical-file-label">Antecedentes familiares:</span>
+                <span class="medical-file-value">{{ medicalHistory.familyMedicalHistory || 'Sin antecedentes registrados' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-section" *ngIf="!medicalHistory && !isLoading">
+        <div class="empty-icon"><i class="fas fa-file-medical"></i></div>
+        <h3>No hay historia clínica</h3>
+        <p>Este paciente aún no tiene una historia clínica registrada</p>
+        <button class="boton" [routerLink]="'/medic/create-medicalHistory'">
+            <i class="fas fa-plus"></i> Crear Historia Clínica
+        </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-section" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Cargando historia clínica...</p>
+    </div>
 </div>

@@ -1,41 +1,67 @@
-<h1 class="text-center">Mis Médicos</h1>
+<div class="container content-with-toolbar">
 
-<div class="row mb-3">
-    <div class="col-12 text-center">
-        <mat-form-field class="full-width" appearance="outline">
-            <mat-label>Filtro por especialidad:</mat-label>
-            <mat-select
-                    [(ngModel)]="medic.specialty"
-                    name="medicSpecialty"
-                    (selectionChange)="getMedicsBySpecialty()"
-                    class="custom-mat-select"
-            >
-                <mat-option *ngFor="let option of specialtyOptions" [value]="option">
-                    {{ option }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Mis Médicos</h1>
     </div>
-</div>
-<br>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Especialidad</th>
-        <th>DNI</th>
-        <th>Email</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let medic of medicsList">
-        <td>{{medic.name}}</td>
-        <td>{{medic.lastname}}</td>
-        <td>{{medic.specialty}}</td>
-        <td>{{medic.dni}}</td>
-        <td>{{medic.email}}</td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Filtrar Médicos</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Especialidad:</label>
+                <mat-form-field appearance="outline" class="mat-field-custom">
+                    <mat-select
+                        [(ngModel)]="medic.specialty"
+                        name="medicSpecialty"
+                        (selectionChange)="getMedicsBySpecialty()"
+                        placeholder="Todas las especialidades">
+                        <mat-option *ngFor="let option of specialtyOptions" [value]="option">
+                            {{ option }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de médicos -->
+    <div class="data-section">
+        <h2 class="text-center">Lista de Médicos</h2>
+        
+        <!-- Estado vacío -->
+        <div *ngIf="medicsList.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-user-md"></i>
+            </div>
+            <h3>No hay médicos</h3>
+            <p>No se encontraron médicos con el filtro seleccionado</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="medicsList.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Especialidad</th>
+                        <th>DNI</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let medic of medicsList">
+                        <td><strong>{{ medic.name }}</strong></td>
+                        <td>{{ medic.lastname }}</td>
+                        <td>{{ medic.specialty }}</td>
+                        <td>{{ medic.dni }}</td>
+                        <td>{{ medic.email }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

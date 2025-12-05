@@ -44,8 +44,34 @@ export class TurnosListComponent implements OnInit{
         }
     }
 
+    formatDate(dateStr: string): string {
+        if (!dateStr) return '';
+        const date = new Date(dateStr + 'T12:00:00');
+        const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+    }
+
+    formatMedicalCenter(center: string): string {
+        if (!center) return '';
+        // Convertir SEDE_PRINCIPAL_HOSPITAL_AUSTRAL a "Sede Principal - Hospital Austral"
+        return center
+            .split('_')
+            .map((word, index, arr) => {
+                // Capitalizar primera letra, resto en minúscula
+                const formatted = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                // Agregar guión antes de "Hospital" o palabras clave similares
+                if (word.toLowerCase() === 'hospital' || word.toLowerCase() === 'clinica' || word.toLowerCase() === 'centro') {
+                    return '- ' + formatted;
+                }
+                return formatted;
+            })
+            .join(' ')
+            .replace('  ', ' ');
+    }
+
     deleteTurno(turno: any) {
-        console.log(turno.turnoId); // Verificar el valor del ID del turno
+        console.log(turno.turnoId);
         if (!turno.turnoId) {
             Swal.fire({
                 title: 'Error',

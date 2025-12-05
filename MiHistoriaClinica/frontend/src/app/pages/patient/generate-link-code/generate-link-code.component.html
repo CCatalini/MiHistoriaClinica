@@ -1,6 +1,35 @@
-<h1>Comenzar consulta médica</h1>
-<br><br>
-<p class="centered-text">Muestre el siguiente código a su médico: {{ linkCode }}</p>
-<div class="button-container">
-    <button class="boton" (click)="generateLinkCode()">Generar código</button>
+<div class="container content-with-toolbar">
+
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Código de Vinculación</h1>
+        <p class="subtitle">Genera un código para que tu médico pueda vincularte</p>
+    </div>
+
+    <!-- Sección del código -->
+    <div class="code-section">
+        <div class="code-content">
+            <div *ngIf="!linkCode" class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3>Genera tu código</h3>
+                <p>Presiona el botón para obtener un código de vinculación</p>
+            </div>
+
+            <div *ngIf="linkCode" class="code-display">
+                <p class="code-label">Tu código de vinculación es:</p>
+                <div class="code-value">{{ linkCode }}</div>
+                <p class="code-hint">Muestra este código a tu médico para que pueda vincularte</p>
+            </div>
+
+            <div class="button-container">
+                <button class="btn-generar" (click)="generateLinkCode()">
+                    <i class="fas fa-sync-alt"></i>
+                    {{ linkCode ? 'Generar nuevo código' : 'Generar código' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>

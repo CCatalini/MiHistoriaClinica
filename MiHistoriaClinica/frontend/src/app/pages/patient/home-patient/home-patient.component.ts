@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -7,14 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomePatientComponent implements OnInit {
 
-    constructor() { }
+    constructor(private router: Router) { }
 
     ngOnInit(): void {
-        //verifico usuario
+        // Verifico usuario
         if (localStorage.getItem('userType') != 'PATIENT') {
-            window.location.href = '/patient/login';
+            this.router.navigate(['/patient/login']);
         }
     }
-
-    // todo agregar metodos que traigan datos del paciente para mostrarlos en el encabezado de la pagina
 }

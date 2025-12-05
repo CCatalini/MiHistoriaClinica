@@ -185,6 +185,15 @@ export class MedicService {
         return this.http.post('http://localhost:8080/medic/logout', {}, { headers });
     }
 
+    public getMedicInfo(): Observable<any> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any>('http://localhost:8080/medic/get-medic-info', { headers: headers });
+    }
+
     public getPatientMedicalHistory(): Observable<string> {
         const linkCode = localStorage.getItem('patientLinkCode') || '';
         let headers = new HttpHeaders();

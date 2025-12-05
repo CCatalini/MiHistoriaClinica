@@ -1,26 +1,53 @@
-<h1 class = "text-center">Mis Turnos Médicos</h1>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Ubicación</th>
-        <th>Médico</th>
-        <th>Especialidad</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let turno of turnos">
-        <td>{{turno.fechaTurno}}</td>
-        <td>{{turno.horaTurno}}</td>
-        <td>{{turno.medicalCenter}}</td>
-        <td>{{turno.medicFullName}}</td>
-        <td>{{turno.medicSpecialy}}</td>
-        <td>
-            <button class="btn btn-danger" (click)="deleteTurno(turno)">Eliminar</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="container content-with-toolbar">
+
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Mis Turnos</h1>
+        <p class="subtitle">Gestiona tus citas médicas agendadas</p>
+    </div>
+
+    <!-- Tabla de turnos -->
+    <div class="data-section">
+        <h2 class="text-center">Turnos Agendados</h2>
+        
+        <!-- Estado vacío -->
+        <div *ngIf="turnos.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>No tienes turnos agendados</h3>
+            <p>Puedes reservar un turno desde "Reservar Turno" en el menú principal</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="turnos.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Médico</th>
+                        <th>Especialidad</th>
+                        <th>Centro Médico</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let turno of turnos">
+                        <td><strong>{{ formatDate(turno.fechaTurno) }}</strong></td>
+                        <td class="hora-cell">{{ turno.horaTurno }}</td>
+                        <td>{{ turno.medicFullName }}</td>
+                        <td>{{ turno.medicSpecialy }}</td>
+                        <td>{{ formatMedicalCenter(turno.medicalCenter) }}</td>
+                        <td class="action-cell">
+                            <button class="btn-cancelar" (click)="deleteTurno(turno)">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

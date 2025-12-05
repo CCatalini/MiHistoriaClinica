@@ -1,49 +1,71 @@
-<h1 class="text-center">Mis Estudios</h1>
+<div class="container content-with-toolbar">
 
-<div class="row mb-3">
-    <div class="col-12 text-center">
-        <div class="d-inline-block">
-            <select class="form-control" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Mis Estudios</h1>
+    </div>
 
-                <option value="" disabled selected>Filtro por estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-                <option value="santi">Sin Filtro</option>
-
-            </select>
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Filtrar Estudios</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+                    <option value="santi">Todos los estados</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<br>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Estudio</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let analysis of analysisList">
-        <td>{{ analysis.name }}</td>
-        <td>
-            <div style="max-width: 300px;" class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
-                <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
+    <!-- Tabla de estudios -->
+    <div class="data-section">
+        <h2 class="text-center">Lista de Estudios</h2>
+        
+        <!-- Estado vacío -->
+        <div *ngIf="analysisList.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-file-medical"></i>
             </div>
-        </td>
-        <td>
-            <select class="form-control" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
-                <option value="" disabled selected>Ingrese estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-            </select>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <h3>No hay estudios</h3>
+            <p>No se encontraron estudios con el filtro seleccionado</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="analysisList.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estudio</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let analysis of analysisList">
+                        <td><strong>{{ analysis.name }}</strong></td>
+                        <td>
+                            <div class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
+                                <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <select class="status-select" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
+                                <option value="En curso">En curso</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Finalizado">Finalizado</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 <!-- Tooltip flotante global -->
 <div *ngIf="tooltipText" 
@@ -52,3 +74,4 @@
      [style.top.px]="tooltipY">
     {{ tooltipText }}
 </div>
+

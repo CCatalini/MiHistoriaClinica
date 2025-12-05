@@ -1,69 +1,96 @@
-<h1 class = "text-center">Historial Consultas Médicas</h1>
-<h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Nombre del médico</th>
-        <th>Especialidad</th>
-        <th>Motivo de consulta</th>
-        <th>Síntomas</th>
-        <th>Exámen físico</th>
-        <th>Observaciones</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let appointment of appointments">
-        <td>{{appointment.medicFullName}}</td>
-        <td>{{appointment.specialty}}</td>
-        <td>{{appointment.appointmentReason}}</td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.currentIllness)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.currentIllness && appointment.currentIllness.length > 50 ? (appointment.currentIllness.substring(0, 50) + '...') : appointment.currentIllness }}
-            </span>
-        </td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.physicalExam)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.physicalExam && appointment.physicalExam.length > 50 ? (appointment.physicalExam.substring(0, 50) + '...') : appointment.physicalExam }}
-            </span>
-        </td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.observations)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.observations && appointment.observations.length > 50 ? (appointment.observations.substring(0, 50) + '...') : appointment.observations }}
-            </span>
-        </td>
-        <td>
-            <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
-                {{ getEstadoLabel(appointment.estado) }}
-            </span>
-        </td>
-        <td>
-            <select class="form-select form-select-sm" 
-                    [value]="appointment.estado" 
-                    (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
-                <option value="0">Pendiente</option>
-                <option value="1">Completada</option>
-                <option value="2">Cancelada</option>
-            </select>
-        </td>
-    </tbody>
-</table>
+<div class="container content-with-toolbar">
+    <div class="page-title">
+        <h1>Consultas del Paciente</h1>
+        <p class="subtitle" *ngIf="patient">{{ patient.name }} {{ patient.lastname }} - DNI: {{ patient.dni }}</p>
+    </div>
 
-<!-- Tooltip flotante global -->
-<div *ngIf="tooltipText" 
-     class="global-tooltip" 
-     [style.left.px]="tooltipX" 
-     [style.top.px]="tooltipY">
-    {{ tooltipText }}
+    <div class="filters-section">
+        <h4>Filtrar Consultas</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" [(ngModel)]="selectedEstado" (change)="filterAppointments()">
+                    <option value="">Todos los estados</option>
+                    <option value="1">Completadas</option>
+                    <option value="0">Pendientes</option>
+                    <option value="2">Canceladas</option>
+                </select>
+            </div>
+            <div class="filter-group search-group">
+                <label>Buscar:</label>
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Buscar por motivo..." 
+                           [(ngModel)]="searchTerm" (input)="filterAppointments()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="filteredAppointments.length > 0" class="data-section">
+        <div class="results-count">
+            Mostrando {{ filteredAppointments.length }} consulta(s)
+        </div>
+        <div class="appointments-list">
+            <div class="appointment-card" *ngFor="let appointment of filteredAppointments">
+                <div class="appointment-header">
+                    <div class="appointment-title">
+                        <h3>{{ appointment.appointmentReason }}</h3>
+                        <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
+                            {{ getEstadoLabel(appointment.estado) }}
+                        </span>
+                    </div>
+                    <div class="appointment-meta">
+                        <span><i class="fas fa-user-md"></i> Dr/a. {{ appointment.medicFullName }}</span>
+                        <span><i class="fas fa-stethoscope"></i> {{ appointment.specialty }}</span>
+                    </div>
+                </div>
+                
+                <div class="appointment-body">
+                    <div class="info-row" *ngIf="appointment.currentIllness">
+                        <div class="info-label"><i class="fas fa-notes-medical"></i> Síntomas:</div>
+                        <div class="info-value">{{ appointment.currentIllness }}</div>
+                    </div>
+                    <div class="info-row" *ngIf="appointment.physicalExam">
+                        <div class="info-label"><i class="fas fa-heartbeat"></i> Examen físico:</div>
+                        <div class="info-value">{{ appointment.physicalExam }}</div>
+                    </div>
+                    <div class="info-row" *ngIf="appointment.observations">
+                        <div class="info-label"><i class="fas fa-clipboard"></i> Observaciones:</div>
+                        <div class="info-value">{{ appointment.observations }}</div>
+                    </div>
+                </div>
+
+                <div class="appointment-footer">
+                    <div class="estado-selector">
+                        <label>Cambiar estado:</label>
+                        <select class="estado-select" 
+                                [value]="appointment.estado" 
+                                (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
+                            <option value="0">Pendiente</option>
+                            <option value="1">Completada</option>
+                            <option value="2">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="filteredAppointments.length === 0 && appointments.length > 0" class="empty-section">
+        <div class="empty-icon"><i class="fas fa-filter"></i></div>
+        <h3>No hay consultas con estos filtros</h3>
+        <p>Prueba ajustando los filtros de búsqueda</p>
+    </div>
+
+    <div *ngIf="appointments.length === 0 && !isLoading" class="empty-section">
+        <div class="empty-icon"><i class="fas fa-notes-medical"></i></div>
+        <h3>No hay consultas registradas</h3>
+        <p>Las consultas médicas con este paciente aparecerán aquí</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-section">
+        <div class="spinner"></div>
+        <p>Cargando consultas...</p>
+    </div>
 </div>

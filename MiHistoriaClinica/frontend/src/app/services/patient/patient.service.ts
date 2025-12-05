@@ -241,6 +241,15 @@ export class PatientService {
         return this.http.post('http://localhost:8080/turno/patient/reserve-turno', null, { headers: headers, params: params });
     }
 
+    public getPatientInfo(): Observable<any> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any>('http://localhost:8080/patient/get-patient-info', { headers: headers });
+    }
+
 }
 
 
