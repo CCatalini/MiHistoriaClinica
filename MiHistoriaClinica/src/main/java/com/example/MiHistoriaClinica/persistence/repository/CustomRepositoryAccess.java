@@ -123,6 +123,7 @@ public class CustomRepositoryAccess {
         analysisSaved.setDescription(name.getDescription());
         analysisSaved.setStatus("Pendiente");
         analysisSaved.setMedicalCenterE(medicalCenter);
+        analysisSaved.setScheduledDate(analysisDTO.getScheduledDate());
 
         aux.getAnalysis().add(analysisSaved);
 

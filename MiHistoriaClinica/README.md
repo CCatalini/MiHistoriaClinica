@@ -84,14 +84,14 @@
 
   * Calendarios
   Agenda de médicos 
-  --> Asignar horarios disponibles de atención                           --                --
-  --> Ver turnos reservados y disponibles                                --                --
+  --> Asignar horarios disponibles de atención                           OK                OK
+  --> Ver turnos reservados y disponibles                                OK                OK
   Agenda de pacientes
   --> Ver turnos agendados en calendario                                 --                --
-  --> Ver calendario con turnos disponibles a la hora de programar uno   --                --
+  --> Ver calendario con turnos disponibles a la hora de programar uno   OK                OK
 
   * Mails
   --> Confirmar y validar cuenta al registrarse                          OK                OK
-  --> Mail de confirmación al agendar turno o estudio                               
-  --> Mail de recordatorio día anterior al turno o estudio                         
+  --> Mail de confirmación al agendar turno o estudio                    OK                OK
+  --> Mail de recordatorio día anterior al turno o estudio               OK                OK 
 
