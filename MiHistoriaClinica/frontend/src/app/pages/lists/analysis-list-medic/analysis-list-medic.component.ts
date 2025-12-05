@@ -129,6 +129,18 @@ export class AnalysisListMedicComponent implements OnInit{
         this.tooltipText = null;
     }
 
+    formatDate(dateString: string): string {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+        };
+        return date.toLocaleDateString('es-ES', options);
+    }
+
     getPatientInfo(): void {
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();

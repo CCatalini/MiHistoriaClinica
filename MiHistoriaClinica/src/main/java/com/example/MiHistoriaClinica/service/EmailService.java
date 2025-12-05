@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
+import com.example.MiHistoriaClinica.persistence.model.Analysis;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
@@ -20,5 +21,8 @@ public interface EmailService {
     void sendTurnoReminderEmail(Patient patient, Turnos turno);
     
     void sendTurnoCancellationEmail(Patient patient, Turnos turno);
+    
+    // Emails de estudios/análisis
+    void sendAnalysisReminderEmail(Patient patient, Analysis analysis);
 }
 

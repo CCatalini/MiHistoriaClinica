@@ -50,7 +50,18 @@
                         </mat-select>
                     </mat-form-field>
 
-
+                    <mat-form-field class = "full-width" appearance = "outline">
+                        <mat-label>Fecha programada:</mat-label>
+                        <input
+                                matInput
+                                type="date"
+                                [(ngModel)] = "analysis.scheduledDate"
+                                name = "scheduledDate"
+                                [min]="minDate"
+                                placeholder="Seleccione la fecha del estudio"
+                        />
+                        <mat-hint>Opcional - Se enviará un recordatorio 24hs antes</mat-hint>
+                    </mat-form-field>
 
                     <div class = "container text-center">
                         <button class="boton">Añadir</button>

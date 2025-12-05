@@ -1,5 +1,6 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
+import com.example.MiHistoriaClinica.persistence.model.Analysis;
 import com.example.MiHistoriaClinica.persistence.model.Patient;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
@@ -347,6 +348,25 @@ public class EmailServiceImpl implements EmailService {
             
         } catch (Exception e) {
             logger.error("Error enviando email de cancelación de turno: ", e);
+        }
+    }
+
+    @Override
+    public void sendAnalysisReminderEmail(Patient patient, Analysis analysis) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Recordatorio de Estudio para Mañana - Mi Historia Clínica";
+            String htmlContent = buildAnalysisReminderEmailHtml(patient, analysis);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de recordatorio de estudio enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de recordatorio de estudio: ", e);
         }
     }
 
@@ -1021,6 +1041,146 @@ public class EmailServiceImpl implements EmailService {
             horaFormateada,
             turno.getMedicFullName(),
             specialtyName,
+            medicalCenterName,
+            FOOTER_HTML
+        );
+    }
+
+    // ============================================
+    // PLANTILLAS HTML - ESTUDIOS/ANÁLISIS
+    // ============================================
+
+    private String buildAnalysisReminderEmailHtml(Patient patient, Analysis analysis) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        
+        String fechaFormateada = analysis.getScheduledDate() != null 
+            ? analysis.getScheduledDate().format(dateFormatter) 
+            : "No especificada";
+        String analysisName = analysis.getName() != null ? analysis.getName().getName() : "No especificado";
+        String medicalCenterName = analysis.getMedicalCenterE() != null ? analysis.getMedicalCenterE().getName() : "No especificado";
+        String description = analysis.getDescription() != null ? analysis.getDescription() : "";
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Recordatorio de Estudio</title>
+                <style>
+                    %s
+                    .countdown-box {
+                        background: linear-gradient(135deg, #E8F4FD 0%%, #cce5f8 100%%);
+                        border-radius: 12px;
+                        padding: 25px;
+                        margin: 28px 0;
+                        text-align: center;
+                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+                        border: 1px solid rgba(74, 144, 226, 0.2);
+                    }
+                    .countdown-box h3 {
+                        color: #2980b9;
+                        margin: 0;
+                        font-size: 22px;
+                        font-weight: 600;
+                    }
+                    .countdown-box p {
+                        margin: 12px 0 0 0;
+                        font-size: 15px;
+                        color: #4A90E2;
+                    }
+                    .checklist {
+                        background: linear-gradient(135deg, #f5f7fa 0%%, #e8ecf1 100%%);
+                        padding: 22px;
+                        border-radius: 10px;
+                        margin: 22px 0;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                    }
+                    .checklist h4 {
+                        color: #2c3e50;
+                        margin: 0 0 18px 0;
+                        font-size: 16px;
+                    }
+                    .checklist-item {
+                        padding: 10px 0;
+                        color: #555;
+                        display: flex;
+                        align-items: center;
+                        border-bottom: 1px solid rgba(0,0,0,0.05);
+                    }
+                    .checklist-item:last-child {
+                        border-bottom: none;
+                    }
+                    .checklist-item::before {
+                        content: "✓";
+                        color: #4A90E2;
+                        font-weight: bold;
+                        margin-right: 12px;
+                        font-size: 14px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <div class="icon">🔬</div>
+                        <h1>Recordatorio de Estudio</h1>
+                        <p class="subtitle">Tu estudio está programado para mañana</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hola, %s %s</h2>
+                        <p>Te recordamos que tienes un <strong>estudio médico</strong> programado para <strong>mañana</strong>. Por favor, revisa los detalles a continuación:</p>
+                        
+                        <div class="countdown-box">
+                            <h3>⏰ Tu estudio es en menos de 24 horas</h3>
+                            <p>No olvides prepararte adecuadamente</p>
+                        </div>
+                        
+                        <div class="details-box">
+                            <h3>📋 Detalles del Estudio</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">🔬 Estudio:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">📝 Descripción:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="checklist">
+                            <h4>📝 Recomendaciones generales:</h4>
+                            <div class="checklist-item">DNI o documento de identidad</div>
+                            <div class="checklist-item">Orden médica o indicación del estudio</div>
+                            <div class="checklist-item">Credencial de obra social/prepaga (si corresponde)</div>
+                            <div class="checklist-item">Seguir las indicaciones de preparación del estudio</div>
+                            <div class="checklist-item">Llegar con tiempo de anticipación</div>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Algunos estudios requieren preparación especial (ayuno, suspensión de medicamentos, etc.). Por favor, consulta las indicaciones específicas de tu estudio.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos que todo salga bien. ¡Gracias por confiar en nosotros!</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """, 
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            fechaFormateada,
+            analysisName,
+            description,
             medicalCenterName,
             FOOTER_HTML
         );

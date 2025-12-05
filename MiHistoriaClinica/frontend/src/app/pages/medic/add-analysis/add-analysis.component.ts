@@ -17,7 +17,11 @@ export class AddAnalysisComponent {
         medicalCenter: '',
         description: '',
         status:'Pendiente',
+        scheduledDate: null as string | null,
     }
+    
+    // Fecha mínima para el selector (hoy)
+    minDate: string = new Date().toISOString().split('T')[0];
 
     patient: any;
     analysisOptions: string[] = [];

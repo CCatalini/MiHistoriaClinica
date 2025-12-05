@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
@@ -17,4 +18,7 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
     
     // Método para recordatorios - buscar análisis por estado
     List<Analysis> findByStatus(String status);
+    
+    // Buscar análisis pendientes programados para una fecha específica
+    List<Analysis> findByScheduledDateAndStatus(LocalDate scheduledDate, String status);
 }
