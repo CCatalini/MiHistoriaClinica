@@ -710,6 +710,13 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
         this.medicService.liberarTurno(this.turnoToCancel.turnoId).subscribe({
             next: () => {
                 this.closeCancelModal();
+                // Recargar turnos para reflejar el cambio
+                this.loadAllTurnos();
+                // Refrescar el calendario visualmente
+                setTimeout(() => {
+                    this.refreshCalendar();
+                    this.cdr.detectChanges();
+                }, 300);
                 this.mostrarError(tituloExito, mensajeExito);
             },
             error: (err) => {

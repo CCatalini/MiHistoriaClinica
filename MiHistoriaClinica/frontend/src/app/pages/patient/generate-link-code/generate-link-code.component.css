@@ -1,24 +1,157 @@
-.boton {
-    margin-top: 10px;
-    background-color: #3fb5eb;
-    color: white;
-    font-size: 18px;
-    padding: 7px 15px;
-    border: none;
-    border-radius: 5px;
-}
+/* ============================================
+   ESTILOS PARA CÓDIGO DE VINCULACIÓN
+   ============================================ */
 
-.centered-text {
-    text-align: center;
-}
-
+/* ---------------- CONTENEDOR PRINCIPAL ---------------- */
 .container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 16px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    min-height: 100vh;
+    overflow-y: auto;
+    padding-top: 100px;
+}
+
+/* ---------------- TÍTULO PRINCIPAL ---------------- */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 0 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    border-bottom: 3px solid #3fb5eb;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+.page-title .subtitle {
+    margin: 10px 0 0 0;
+    color: #6c757d;
+    font-size: 15px;
+}
+
+/* ---------------- SECCIÓN DEL CÓDIGO ---------------- */
+.code-section {
+    width: 100%;
+    margin-bottom: 20px;
+    background: white;
+    padding: 40px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.code-content {
+    max-width: 500px;
+    margin: 0 auto;
     text-align: center;
 }
 
-.button-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px; /* Añade un margen inferior opcional para separar el botón del siguiente elemento */
+/* ---------------- ESTADO VACÍO ---------------- */
+.empty-state {
+    padding: 20px;
 }
 
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #adb5bd;
+}
+
+.empty-icon i {
+    font-size: 64px;
+}
+
+.empty-state h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #495057;
+}
+
+.empty-state p {
+    margin: 0;
+    font-size: 15px;
+    color: #6c757d;
+}
+
+/* ---------------- DISPLAY DEL CÓDIGO ---------------- */
+.code-display {
+    padding: 20px;
+}
+
+.code-label {
+    font-size: 16px;
+    color: #6c757d;
+    margin: 0 0 15px 0;
+}
+
+.code-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: #3fb5eb;
+    letter-spacing: 8px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 3px dashed #3fb5eb;
+    margin-bottom: 15px;
+}
+
+.code-hint {
+    font-size: 14px;
+    color: #6c757d;
+    margin: 0;
+    font-style: italic;
+}
+
+/* ---------------- BOTÓN ---------------- */
+.button-container {
+    margin-top: 30px;
+}
+
+.btn-generar {
+    background: #3fb5eb;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-generar:hover {
+    background: #2ea3d4;
+    transform: translateY(-2px);
+}
+
+.btn-generar i {
+    margin-right: 8px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+    .container {
+        padding: 60px 12px 0 12px;
+    }
+
+    .page-title h1 {
+        font-size: 26px;
+    }
+
+    .code-value {
+        font-size: 32px;
+        letter-spacing: 4px;
+    }
+}

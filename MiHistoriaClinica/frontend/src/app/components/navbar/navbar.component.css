@@ -38,3 +38,41 @@
     margin-right: 10px;
 }
 
+/* Barra de información del usuario */
+.user-info-bar {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 6px 20px 6px 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    z-index: 999;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.user-separator {
+    color: #dee2e6;
+}
+
+.user-detail {
+    color: #6c757d;
+}
+
+@media (max-width: 768px) {
+    .user-info-bar {
+        top: 56px;
+        padding: 6px 12px;
+        font-size: 11px;
+        flex-wrap: wrap;
+    }
+}
+

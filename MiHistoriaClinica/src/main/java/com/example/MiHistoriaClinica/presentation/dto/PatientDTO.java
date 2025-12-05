@@ -14,9 +14,17 @@ public class PatientDTO {
     private String password;
     private Long dni;
     private String email;
+    private String linkCode;
 
     public PatientDTO() {
         // constructor sin argumentos
+    }
+
+    public PatientDTO(String name, String lastname, Long dni, String email) {
+        this.name = name;
+        this.lastname = lastname;
+        this.dni = dni;
+        this.email = email;
     }
 
     public PatientDTO(Long patientId, String name, String lastname, String password, Long dni, String email) {
@@ -26,6 +34,15 @@ public class PatientDTO {
         this.password = password;
         this.dni = dni;
         this.email = email;
+    }
+
+    public PatientDTO(Long patientId, String name, String lastname, Long dni, String email, String linkCode) {
+        this.patientId = patientId;
+        this.name = name;
+        this.lastname = lastname;
+        this.dni = dni;
+        this.email = email;
+        this.linkCode = linkCode;
     }
 
 }

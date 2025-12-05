@@ -1,48 +1,71 @@
-<h1 class="text-center">Mis Medicamentos</h1>
-<div class="row mb-3">
-    <div class="col-12 text-center">
-        <div class="d-inline-block">
-            <select class="form-control" #statusSelect (change)="getMedicinesByStatus(statusSelect.value)">
+<div class="container content-with-toolbar">
 
-                <option value="" disabled selected>Filtro por estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-                <option value="santi">Sin Filtro</option>
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Mis Medicamentos</h1>
+    </div>
 
-            </select>
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Filtrar Medicamentos</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" #statusSelect (change)="getMedicinesByStatus(statusSelect.value)">
+                    <option value="santi">Todos los estados</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<br>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Medicación</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let medicine of medicines">
-        <td>{{ medicine.name }}</td>
-        <td>
-            <div style="max-width: 300px;" class="expandable-text" (mouseenter)="showTooltip($event, medicine.description)" (mouseleave)="hideTooltip()">
-                <span>{{ medicine.description?.length > 80 ? (medicine.description | slice:0:80) + '...' : medicine.description }}</span>
+    <!-- Tabla de medicamentos -->
+    <div class="data-section">
+        <h2 class="text-center">Lista de Medicamentos</h2>
+        
+        <!-- Estado vacío -->
+        <div *ngIf="medicines.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-pills"></i>
             </div>
-        </td>
-        <td>
-            <select class="form-control" [(ngModel)]="medicine.status" (change)="updateMedicineStatus(medicine.medicineId, medicine.status)">
-                <option value="" disabled selected>Ingrese estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-            </select>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <h3>No hay medicamentos</h3>
+            <p>No se encontraron medicamentos con el filtro seleccionado</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="medicines.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicación</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let medicine of medicines">
+                        <td><strong>{{ medicine.name }}</strong></td>
+                        <td>
+                            <div class="expandable-text" (mouseenter)="showTooltip($event, medicine.description)" (mouseleave)="hideTooltip()">
+                                <span>{{ medicine.description?.length > 80 ? (medicine.description | slice:0:80) + '...' : medicine.description }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <select class="status-select" [(ngModel)]="medicine.status" (change)="updateMedicineStatus(medicine.medicineId, medicine.status)">
+                                <option value="En curso">En curso</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Finalizado">Finalizado</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 <!-- Tooltip flotante global -->
 <div *ngIf="tooltipText" 
@@ -51,3 +74,4 @@
      [style.top.px]="tooltipY">
     {{ tooltipText }}
 </div>
+

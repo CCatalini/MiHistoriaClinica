@@ -1,25 +1,25 @@
-/* home.component.css */
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 110px 16px 40px 16px;
+    box-sizing: border-box;
     background: #f5f5f5;
 }
 
 .container {
-    margin-top: -100px;
-}
-
-html {
-    height: 100%; /* Asegura que el html tenga una altura del 100% */
+    text-align: center;
 }
 
 .options {
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
 .option {
-    margin: 0 10px;
     text-align: center;
     text-decoration: none;
     color: #000;
@@ -28,35 +28,51 @@ html {
 .option-box {
     width: 200px;
     height: 200px;
-    background-color:  #FFFFFF;
+    background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.option-box img { /* Ajusta el ajuste de la imagen */
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+.option-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.option-box img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
 }
 
 .option-box span {
     margin-top: 10px;
+    font-weight: 500;
+    color: #2c3e50;
 }
 
 .boton {
-    margin-top: 0px;
+    margin-top: 10px;
     background-color: #3fb5eb;
     color: white;
     font-size: 18px;
     padding: 7px 15px;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.boton:hover {
+    background-color: #2ea3d4;
 }
 
 .button-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px; /* Añade un margen inferior opcional para separar el botón del siguiente elemento */
+    margin-bottom: 30px;
 }

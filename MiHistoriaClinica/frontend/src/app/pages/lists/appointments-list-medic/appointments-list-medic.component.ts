@@ -1,65 +1,92 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {MedicService} from "../../../services/medic/medic.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
+import { MedicService } from "../../../services/medic/medic.service";
 import Swal from "sweetalert2";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
-  selector: 'app-appointments-list-medic',
-  templateUrl: './appointments-list-medic.component.html',
-  styleUrls: ['./appointments-list-medic.component.css']
+    selector: 'app-appointments-list-medic',
+    templateUrl: './appointments-list-medic.component.html',
+    styleUrls: ['./appointments-list-medic.component.css']
 })
-export class AppointmentsListMedicComponent implements OnInit{
+export class AppointmentsListMedicComponent implements OnInit {
 
     appointments: any[] = [];
+    filteredAppointments: any[] = [];
     patient: any;
+    isLoading: boolean = false;
     
-    // Variables para tooltip flotante
-    tooltipText: string | null = null;
-    tooltipX: number = 0;
-    tooltipY: number = 0;
+    // Filtros
+    selectedEstado: string = '1'; // Por defecto: Completadas
+    searchTerm: string = '';
 
-    constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) { }
+    constructor(
+        private userService: MedicService, 
+        private router: Router, 
+        private httpClient: HttpClient
+    ) { }
 
     ngOnInit(): void {
         if (localStorage.getItem('userType') != 'MEDIC') {
-            this.router.navigate(['/patient/login']);
+            this.router.navigate(['/medic/login']);
         } else {
-            this.formSubmit(); // Creamos medics list
+            this.loadAppointments();
+            this.getPatientInfo();
         }
-
-        this.getPatientInfo();
     }
 
-    formSubmit() {
+    loadAppointments() {
         const token = localStorage.getItem('token');
-        if(token) {
+        if (token) {
+            this.isLoading = true;
             this.userService.getAppointmentsList().subscribe(
                 (data: any) => {
-                    console.log(data);
                     this.appointments = Array.isArray(data) ? data : [];
+                    this.filterAppointments();
+                    this.isLoading = false;
                 },
                 (error: any) => {
                     console.log(error);
-                    // Solo mostrar error si es un error real del servidor (500+)
                     if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
                     this.appointments = [];
+                    this.filteredAppointments = [];
+                    this.isLoading = false;
                 }
             );
-        } else {
-            // Manejar el caso en el que no se encuentre el token en el local storage
         }
     }
 
-    getPatientInfo(): void {
-        const token = localStorage.getItem('token');
-        let headers = new HttpHeaders();
-        if (token) {
-            headers = headers.set('Authorization', "Bearer " + token);
+    filterAppointments() {
+        let result = [...this.appointments];
+        
+        // Filtrar por estado
+        if (this.selectedEstado !== '') {
+            const estadoNum = parseInt(this.selectedEstado);
+            result = result.filter(a => a.estado === estadoNum);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        
+        // Filtrar por término de búsqueda
+        if (this.searchTerm.trim()) {
+            const term = this.searchTerm.toLowerCase().trim();
+            result = result.filter(a => 
+                (a.appointmentReason && a.appointmentReason.toLowerCase().includes(term)) ||
+                (a.currentIllness && a.currentIllness.toLowerCase().includes(term)) ||
+                (a.observations && a.observations.toLowerCase().includes(term))
+            );
+        }
+        
+        this.filteredAppointments = result;
+    }
+
+    getPatientInfo(): void {
+        const linkCode = localStorage.getItem('patientLinkCode');
+        if (!linkCode) return;
+        
+        let headers = new HttpHeaders().set('patientLinkCode', linkCode);
+        
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },
@@ -70,7 +97,7 @@ export class AppointmentsListMedicComponent implements OnInit{
     }
 
     getEstadoLabel(estado: number): string {
-        switch(estado) {
+        switch (estado) {
             case 0: return 'Pendiente';
             case 1: return 'Completada';
             case 2: return 'Cancelada';
@@ -79,11 +106,11 @@ export class AppointmentsListMedicComponent implements OnInit{
     }
 
     getEstadoBadgeClass(estado: number): string {
-        switch(estado) {
-            case 0: return 'bg-warning text-dark';
-            case 1: return 'bg-success';
-            case 2: return 'bg-danger';
-            default: return 'bg-warning text-dark';
+        switch (estado) {
+            case 0: return 'badge-warning';
+            case 1: return 'badge-success';
+            case 2: return 'badge-danger';
+            default: return 'badge-warning';
         }
     }
 
@@ -93,26 +120,23 @@ export class AppointmentsListMedicComponent implements OnInit{
         
         this.userService.updateAppointmentEstado(appointmentId, estadoNombre).subscribe(
             (response: any) => {
-                Swal.fire('Éxito', 'Estado actualizado correctamente', 'success');
-                this.formSubmit(); // Recargar la lista
+                Swal.fire({
+                    title: 'Estado Actualizado',
+                    text: 'El estado de la consulta ha sido actualizado correctamente',
+                    icon: 'success',
+                    confirmButtonColor: '#3fb5eb'
+                });
+                this.loadAppointments();
             },
             (error: any) => {
                 console.log(error);
-                Swal.fire('Error', 'No se pudo actualizar el estado', 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo actualizar el estado',
+                    icon: 'error',
+                    confirmButtonColor: '#3fb5eb'
+                });
             }
         );
-    }
-
-    showTooltip(event: MouseEvent, text: string | null): void {
-        if (!text || text.length <= 50) return;
-        
-        const rect = (event.target as HTMLElement).getBoundingClientRect();
-        this.tooltipX = rect.left;
-        this.tooltipY = rect.bottom + window.scrollY + 5;
-        this.tooltipText = text;
-    }
-
-    hideTooltip(): void {
-        this.tooltipText = null;
     }
 }

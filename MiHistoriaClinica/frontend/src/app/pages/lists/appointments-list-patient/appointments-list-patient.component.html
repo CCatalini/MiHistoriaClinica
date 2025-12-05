@@ -1,64 +1,86 @@
-<h1 class = "text-center">Consultas</h1>
-<br>
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Nombre del médico</th>
-        <th>Especialidad</th>
-        <th>Motivo de consulta</th>
-        <th>Síntomas</th>
-        <th>Exámen físico</th>
-        <th>Observaciones</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let appointment of appointments">
-        <td>{{appointment.medicFullName}}</td>
-        <td>{{appointment.specialty}}</td>
-        <td>{{appointment.appointmentReason}}</td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.currentIllness)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.currentIllness && appointment.currentIllness.length > 50 ? (appointment.currentIllness.substring(0, 50) + '...') : appointment.currentIllness }}
-            </span>
-        </td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.physicalExam)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.physicalExam && appointment.physicalExam.length > 50 ? (appointment.physicalExam.substring(0, 50) + '...') : appointment.physicalExam }}
-            </span>
-        </td>
-        <td>
-            <span class="expandable-text" 
-                  style="max-width: 200px; display: inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
-                  (mouseenter)="showTooltip($event, appointment.observations)" 
-                  (mouseleave)="hideTooltip()">
-                {{ appointment.observations && appointment.observations.length > 50 ? (appointment.observations.substring(0, 50) + '...') : appointment.observations }}
-            </span>
-        </td>
-        <td>
-            <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
-                {{ getEstadoLabel(appointment.estado) }}
-            </span>
-        </td>
-        <td>
-            <select class="form-select form-select-sm" 
-                    [value]="appointment.estado" 
-                    (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
-                <option value="0">Pendiente</option>
-                <option value="1">Completada</option>
-                <option value="2">Cancelada</option>
-            </select>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="container content-with-toolbar">
+
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Mis Consultas</h1>
+        <p class="subtitle">Historial de tus consultas médicas</p>
+    </div>
+
+    <!-- Tabla de consultas -->
+    <div class="data-section">
+        <h2 class="text-center">Historial de Consultas</h2>
+        
+        <!-- Estado vacío -->
+        <div *ngIf="appointments.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h3>No hay consultas registradas</h3>
+            <p>Aún no tienes consultas médicas en tu historial</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="appointments.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Médico</th>
+                        <th>Especialidad</th>
+                        <th>Motivo</th>
+                        <th>Síntomas</th>
+                        <th>Examen Físico</th>
+                        <th>Observaciones</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let appointment of appointments">
+                        <td><strong>{{ appointment.medicFullName }}</strong></td>
+                        <td>{{ appointment.specialty }}</td>
+                        <td>{{ appointment.appointmentReason }}</td>
+                        <td>
+                            <span class="expandable-text" 
+                                  (mouseenter)="showTooltip($event, appointment.currentIllness)" 
+                                  (mouseleave)="hideTooltip()">
+                                {{ appointment.currentIllness && appointment.currentIllness.length > 40 ? (appointment.currentIllness.substring(0, 40) + '...') : appointment.currentIllness }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="expandable-text" 
+                                  (mouseenter)="showTooltip($event, appointment.physicalExam)" 
+                                  (mouseleave)="hideTooltip()">
+                                {{ appointment.physicalExam && appointment.physicalExam.length > 40 ? (appointment.physicalExam.substring(0, 40) + '...') : appointment.physicalExam }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="expandable-text" 
+                                  (mouseenter)="showTooltip($event, appointment.observations)" 
+                                  (mouseleave)="hideTooltip()">
+                                {{ appointment.observations && appointment.observations.length > 40 ? (appointment.observations.substring(0, 40) + '...') : appointment.observations }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
+                                {{ getEstadoLabel(appointment.estado) }}
+                            </span>
+                        </td>
+                        <td>
+                            <select class="status-select" 
+                                    [value]="appointment.estado" 
+                                    (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
+                                <option value="0">Pendiente</option>
+                                <option value="1">Completada</option>
+                                <option value="2">Cancelada</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 <!-- Tooltip flotante global -->
 <div *ngIf="tooltipText" 

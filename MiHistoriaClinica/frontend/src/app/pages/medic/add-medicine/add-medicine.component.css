@@ -1,11 +1,28 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 110px 16px 40px 16px;
+    box-sizing: border-box;
+    background: #f5f5f5;
+}
+
 .boton {
-    margin-top:-15px;
+    margin-top: 10px;
     background-color: #3fb5eb;
     color: white;
     font-size: 18px;
     padding: 7px 15px;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.boton:hover {
+    background-color: #2ea3d4;
 }
 
 .container {
