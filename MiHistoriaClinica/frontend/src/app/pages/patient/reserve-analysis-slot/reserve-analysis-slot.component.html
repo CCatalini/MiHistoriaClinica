@@ -1,0 +1,152 @@
+<div class="container content-with-toolbar">
+
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Reservar Turno de Estudio</h1>
+    </div>
+
+    <!-- Info del estudio pendiente (si aplica) -->
+    <div *ngIf="analysisId" class="pending-analysis-info">
+        <i class="fas fa-info-circle"></i>
+        <span>Programando turno para: <strong>{{ analysisName }}</strong></span>
+    </div>
+
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Buscar disponibilidad</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Tipo de estudio:</label>
+                <select class="filter-select" 
+                        [(ngModel)]="selectedAnalysisType" 
+                        (change)="onAnalysisTypeChange()"
+                        [disabled]="analysisId !== null">
+                    <option value="">Seleccionar estudio</option>
+                    <option *ngFor="let type of analysisTypes" [value]="type">{{ formatAnalysisName(type) }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Centro médico:</label>
+                <select class="filter-select" 
+                        [(ngModel)]="selectedMedicalCenter" 
+                        (change)="onMedicalCenterChange()">
+                    <option value="">Seleccionar centro</option>
+                    <option *ngFor="let center of medicalCenters" [value]="center">{{ getMedicalCenterDisplayName(center) }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="loading-container">
+        <div class="spinner"></div>
+        <p>Cargando disponibilidad...</p>
+    </div>
+
+    <!-- Contenido principal -->
+    <div *ngIf="!isLoading && showCalendar" class="main-content">
+        
+        <!-- Calendario -->
+        <div class="calendar-section">
+            <div class="calendar-header">
+                <button class="nav-btn" (click)="previousMonth()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h3>{{ getMonthName() }}</h3>
+                <button class="nav-btn" (click)="nextMonth()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="calendar-grid">
+                <div class="day-header">Dom</div>
+                <div class="day-header">Lun</div>
+                <div class="day-header">Mar</div>
+                <div class="day-header">Mié</div>
+                <div class="day-header">Jue</div>
+                <div class="day-header">Vie</div>
+                <div class="day-header">Sáb</div>
+                
+                <div *ngFor="let day of calendarDays" 
+                     class="calendar-day"
+                     [class.empty]="!day.day"
+                     [class.available]="day.available"
+                     [class.selected]="day.date === selectedDate"
+                     [class.past]="day.isPast"
+                     (click)="day.available ? selectDate(day.date) : null">
+                    {{ day.day }}
+                </div>
+            </div>
+            
+            <div class="calendar-legend">
+                <span class="legend-item">
+                    <span class="legend-dot available"></span> Disponible
+                </span>
+                <span class="legend-item">
+                    <span class="legend-dot selected"></span> Seleccionado
+                </span>
+            </div>
+        </div>
+
+        <!-- Slots disponibles -->
+        <div class="slots-section" *ngIf="selectedDate && selectedMedicalCenter">
+            <h3>Horarios disponibles - {{ formatDateDisplay(selectedDate) }}</h3>
+            
+            <div *ngIf="availableSlots.length === 0" class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                <p>No hay horarios disponibles para esta fecha y centro</p>
+            </div>
+            
+            <div class="slots-grid">
+                <div *ngFor="let slot of availableSlots" class="slot-card" (click)="reserveSlot(slot)">
+                    <div class="slot-time">
+                        <i class="fas fa-clock"></i>
+                        {{ slot.hora }}
+                    </div>
+                    <div class="slot-info">
+                        <span class="slot-center">
+                            <i class="fas fa-hospital"></i>
+                            {{ getMedicalCenterDisplayName(slot.medicalCenter) }}
+                        </span>
+                    </div>
+                    <button class="reserve-btn">Reservar</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mensaje si falta seleccionar centro -->
+        <div class="slots-section" *ngIf="selectedDate && !selectedMedicalCenter">
+            <div class="empty-state">
+                <i class="fas fa-hospital"></i>
+                <p>Selecciona un centro médico para ver los horarios disponibles</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado inicial - sin tipo de estudio -->
+    <div *ngIf="!isLoading && !showCalendar && !selectedAnalysisType" class="initial-state">
+        <div class="empty-icon">
+            <i class="fas fa-flask"></i>
+        </div>
+        <h3>Selecciona un tipo de estudio</h3>
+        <p>Elige el estudio que necesitas para ver la disponibilidad de turnos</p>
+    </div>
+
+    <!-- Estado - con tipo pero sin centro médico -->
+    <div *ngIf="!isLoading && !showCalendar && selectedAnalysisType && !selectedMedicalCenter" class="initial-state">
+        <div class="empty-icon">
+            <i class="fas fa-hospital"></i>
+        </div>
+        <h3>Selecciona un centro médico</h3>
+        <p>Elige el centro donde deseas realizar el estudio para ver los días disponibles</p>
+    </div>
+
+    <!-- Botón volver -->
+    <div class="actions-bar">
+        <button class="back-btn" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i> Volver a mis estudios
+        </button>
+    </div>
+
+</div>
+
