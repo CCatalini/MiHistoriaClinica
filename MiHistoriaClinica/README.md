@@ -90,8 +90,8 @@
   --> Ver turnos agendados en calendario                                 --                --
   --> Ver calendario con turnos disponibles a la hora de programar uno   OK                OK
 
-  * Mails
-  --> Confirmar y validar cuenta al registrarse                          OK                OK
-  --> Mail de confirmación al agendar turno o estudio                    OK                OK
-  --> Mail de recordatorio día anterior al turno o estudio               OK                OK 
-
+    * Mails
+    --> Confirmar y validar cuenta al registrarse                          OK                OK
+    --> Mail de confirmación al agendar turno o estudio                    OK                OK
+    --> Mail de recordatorio día anterior al turno o estudio               OK                OK 
+    --> Mail de resumen post consulta médica                               OK                OK
