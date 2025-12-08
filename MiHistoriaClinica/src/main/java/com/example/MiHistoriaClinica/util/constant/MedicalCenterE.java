@@ -26,11 +26,17 @@ public enum MedicalCenterE {
     }
 
     public static MedicalCenterE getEnumFromName(String medicalCenter) {
-        for (MedicalCenterE medicalCenterE : MedicalCenterE.values()) {
-            if (medicalCenterE.getName().equalsIgnoreCase(medicalCenter)) {
-                return medicalCenterE;
+        // Primero intentar buscar por nombre del enum (SEDE_PRINCIPAL_HOSPITAL_AUSTRAL)
+        try {
+            return MedicalCenterE.valueOf(medicalCenter);
+        } catch (IllegalArgumentException e) {
+            // Si no es un enum válido, buscar por nombre legible
+            for (MedicalCenterE medicalCenterE : MedicalCenterE.values()) {
+                if (medicalCenterE.getName().equalsIgnoreCase(medicalCenter)) {
+                    return medicalCenterE;
+                }
             }
+            return null;
         }
-        return null;
     }
 }

@@ -15,6 +15,7 @@
                     <option value="santi">Todos los estados</option>
                     <option value="En curso">En curso</option>
                     <option value="Pendiente">Pendiente</option>
+                    <option value="Programado">Programado</option>
                     <option value="Finalizado">Finalizado</option>
                 </select>
             </div>
@@ -23,7 +24,6 @@
 
     <!-- Tabla de estudios -->
     <div class="data-section">
-        <h2 class="text-center">Lista de Estudios</h2>
         
         <!-- Estado vacío -->
         <div *ngIf="analysisList.length === 0" class="empty-state">
@@ -43,26 +43,59 @@
                         <th>Descripción</th>
                         <th>Fecha Programada</th>
                         <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let analysis of analysisList">
-                        <td><strong>{{ analysis.name }}</strong></td>
+                        <td><strong>{{ formatAnalysisName(analysis.name) }}</strong></td>
                         <td>
                             <div class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
                                 <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
                             </div>
                         </td>
                         <td>
-                            <span *ngIf="analysis.scheduledDate">{{ formatDate(analysis.scheduledDate) }}</span>
-                            <span *ngIf="!analysis.scheduledDate" class="text-muted">Sin programar</span>
+                            <span *ngIf="analysis.scheduledDate" class="date-scheduled">
+                                <i class="fas fa-calendar-check"></i>
+                                {{ formatDate(analysis.scheduledDate) }}
+                                <span *ngIf="analysis.scheduledTime" class="time-display">{{ analysis.scheduledTime }}</span>
+                            </span>
+                            <span *ngIf="!analysis.scheduledDate" class="text-muted">
+                                <i class="fas fa-calendar-times"></i> Sin programar
+                            </span>
                         </td>
                         <td>
-                            <select class="status-select" [(ngModel)]="analysis.status" (change)="updateAnalysisStatus(analysis.analysis_id, analysis.status)">
-                                <option value="En curso">En curso</option>
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="Finalizado">Finalizado</option>
-                            </select>
+                            <span class="status-badge" [ngClass]="getStatusClass(analysis.status)">
+                                {{ analysis.status }}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <!-- Botón reservar turno para estudios pendientes sin fecha -->
+                            <button *ngIf="analysis.status === 'Pendiente' && !analysis.scheduledDate" 
+                                    class="btn-action btn-reserve"
+                                    (click)="reserveSlotForAnalysis(analysis)">
+                                <i class="fas fa-calendar-plus"></i> Reservar turno
+                            </button>
+                            
+                            <!-- Botones para estudios programados -->
+                            <div *ngIf="analysis.status === 'Programado'" class="action-buttons">
+                                <button class="btn-action btn-reschedule" (click)="reprogramAnalysis(analysis)">
+                                    <i class="fas fa-calendar-alt"></i> Reprogramar
+                                </button>
+                                <button class="btn-action btn-cancel" (click)="cancelAnalysis(analysis)">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </button>
+                            </div>
+                            
+                            <!-- Info para estudios finalizados -->
+                            <span *ngIf="analysis.status === 'Finalizado'" class="text-muted">
+                                <i class="fas fa-check-circle"></i> Completado
+                            </span>
+                            
+                            <!-- Info para estudios en curso -->
+                            <span *ngIf="analysis.status === 'En curso'" class="text-muted">
+                                <i class="fas fa-spinner"></i> En proceso
+                            </span>
                         </td>
                     </tr>
                 </tbody>

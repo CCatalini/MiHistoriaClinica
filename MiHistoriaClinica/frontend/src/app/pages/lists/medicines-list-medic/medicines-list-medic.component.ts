@@ -11,8 +11,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class MedicinesListMedicComponent implements OnInit {
     medicines: any[] = [];
-    private createGetMedicinesListObservable: boolean = false;
-    patient : any;
+    patient: any;
     
     // Variables para tooltip flotante
     tooltipText: string | null = null;
@@ -22,30 +21,26 @@ export class MedicinesListMedicComponent implements OnInit {
     constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) { }
 
     ngOnInit(): void {
-        // Verify user
         if (localStorage.getItem('userType') != 'MEDIC') {
             this.router.navigate(['/medic/login']);
         } else {
-            this.formSubmit(); // Fetch medicines list
+            this.formSubmit();
         }
-
         this.getPatientInfo();
     }
 
     formSubmit() {
         const createGetMedicinesListObservable = this.userService.getMedicinesList();
         if (createGetMedicinesListObservable === undefined) {
-            Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
+            Swal.fire('Error', 'No se pudo obtener la lista.', 'error');
             return;
         }
         createGetMedicinesListObservable.subscribe(
             (data: any) => {
-                console.log(data);
                 this.medicines = Array.isArray(data) ? data : [];
             },
             (error: any) => {
                 console.log(error);
-                // Solo mostrar error si es un error real del servidor (500+)
                 if (error.status >= 500) {
                     Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                 }
@@ -55,7 +50,6 @@ export class MedicinesListMedicComponent implements OnInit {
     }
 
     deleteMedicine(medicine: any) {
-        console.log(medicine.medicineId); // Verificar el valor del ID del medicamento
         if (!medicine.medicineId) {
             Swal.fire('Error', 'ID del medicamento no válido.', 'error');
             return;
@@ -77,7 +71,11 @@ export class MedicinesListMedicComponent implements OnInit {
                         if (index !== -1) {
                             this.medicines.splice(index, 1);
                         }
+                        Swal.fire('Eliminado', 'El medicamento ha sido eliminado.', 'success');
                     },
+                    (error) => {
+                        Swal.fire('Error', 'No se pudo eliminar el medicamento.', 'error');
+                    }
                 );
             }
         });
@@ -87,17 +85,15 @@ export class MedicinesListMedicComponent implements OnInit {
         if (status === "santi") {
             const getMedicinesListObservable = this.userService.getMedicinesList();
             if (!getMedicinesListObservable) {
-                Swal.fire('Error', 'El método getMedicinesList no devuelve un observable.', 'error');
+                Swal.fire('Error', 'Error al obtener la lista.', 'error');
                 return;
             }
             getMedicinesListObservable?.subscribe(
                 (data: Object) => {
-                    console.log('Medicines List:', data);
                     this.medicines = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    // Solo mostrar error si es un error real del servidor (500+)
                     if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
@@ -108,7 +104,6 @@ export class MedicinesListMedicComponent implements OnInit {
             this.userService.getMedicinesByStatus(status).subscribe(
                 (medicines: any[]) => {
                     this.medicines = Array.isArray(medicines) ? medicines : [];
-                    console.log('Se ha filtrado con éxito');
                 },
                 (error: any) => {
                     console.log('Error al filtrar medicamentos:', error);
@@ -119,7 +114,7 @@ export class MedicinesListMedicComponent implements OnInit {
     }
 
     showTooltip(event: MouseEvent, text: string | null): void {
-        if (!text || text.length <= 80) return;
+        if (!text || text.length <= 60) return;
         
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         this.tooltipX = rect.left;
@@ -131,13 +126,51 @@ export class MedicinesListMedicComponent implements OnInit {
         this.tooltipText = null;
     }
 
+    formatMedicineName(name: string): string {
+        if (!name) return '';
+        const nameMap: { [key: string]: string } = {
+            'IBUPROFENO': 'Ibuprofeno',
+            'PARACETAMOL': 'Paracetamol',
+            'AMOXICILINA': 'Amoxicilina',
+            'OMEPRAZOL': 'Omeprazol',
+            'LORATADINA': 'Loratadina',
+            'METFORMINA': 'Metformina',
+            'ENALAPRIL': 'Enalapril',
+            'LOSARTAN': 'Losartán',
+            'ASPIRINA': 'Aspirina',
+            'DICLOFENAC': 'Diclofenac'
+        };
+        return nameMap[name] || name.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    getStatusClass(status: string): string {
+        switch (status?.toLowerCase()) {
+            case 'pendiente':
+                return 'status-pending';
+            case 'en curso':
+                return 'status-in-progress';
+            case 'finalizado':
+                return 'status-completed';
+            default:
+                return '';
+        }
+    }
+
     getPatientInfo(): void {
+        const patientLinkCode = localStorage.getItem('patientLinkCode');
+        if (!patientLinkCode) {
+            console.error('No hay paciente vinculado');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        headers = headers.set('patientLinkCode', patientLinkCode);
+
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },

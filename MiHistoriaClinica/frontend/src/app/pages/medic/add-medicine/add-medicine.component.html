@@ -1,77 +1,73 @@
-<div class="bootstrap-wrapper">
-    <div class="container">
-        <div class="row" style="margin-top: 70px;">
-            <div class="col-md-6 offset-md-3">
-                <div class="container text-center" style="margin-bottom: -10px;">
-                    <img src="../../../../assets/Medicamentos.png" width="200" height="200">
-                </div>
-                <h1 class="text-center">Añadir medicamento</h1>
-                <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-                <div class="page-container" style="margin-bottom: -110px;">
-                    <form (ngSubmit)="formSubmit()">
+<div class="page-title">
+    <h1>Añadir Medicamento</h1>
+    <p class="patient-info" *ngIf="patient">{{ patient?.name }} {{ patient?.lastname }} - DNI: {{ patient?.dni }}</p>
+</div>
 
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Nombre del medicamento:</mat-label>
-                            <mat-select
-                                    required
-                                    [(ngModel)]="medicine.name"
-                                    name="medicineName"
-                                    (selectionChange)="onMedicineSelectionChange()"
-                            >
-                                <mat-option
-                                        *ngFor="let option of medicineOptions"
-                                        [value]="option">
-                                        {{ option }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-
-                        <!-- Agrega el campo de descripción -->
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Descripción:</mat-label>
-                            <input
-                                    [(ngModel)]="medicine.description"
-                                    name="description"
-                                    matInput
-                                    placeholder="Descripción del medicamento"
-                                    [disabled]="true"
-                            />
-                        </mat-form-field>
-
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Comentarios:</mat-label>
-                            <textarea
-                                    [(ngModel)]="medicine.comments"
-                                    name="comments"
-                                    matInput
-                                    placeholder="Ingrese comentarios">
-                            </textarea>
-                        </mat-form-field>
-
-                        <mat-form-field class="full-width" appearance="outline">
-                            <mat-label>Inicio del tratamiento:</mat-label>
-                            <input
-                                    [(ngModel)]="medicine.prescriptionDay"
-                                    name="prescriptionDay"
-                                    matInput
-                                    [matDatepicker]="picker"
-                                    [min]="today"
-                                    placeholder="Seleccione la fecha de inicio del tratamiento"
-                                    required
-                            />
-                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-
-                        <div class="container text-center">
-                            <button class="boton">Añadir</button>
-                            <button type="reset" style="margin-left: 20px;" class="boton">Limpiar</button>
-                        </div>
-                    </form>
-                    <br><br><br>
-                </div>
-            </div>
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <img src="../../../../assets/Medicamentos.png" alt="Medicamentos">
         </div>
+        
+        <form (ngSubmit)="formSubmit()">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Nombre del medicamento</mat-label>
+                <mat-select
+                    required
+                    [(ngModel)]="medicine.name"
+                    name="medicineName"
+                    (selectionChange)="onMedicineSelectionChange()">
+                    <mat-option *ngFor="let option of medicineOptions" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <input
+                    [(ngModel)]="medicine.description"
+                    name="description"
+                    matInput
+                    placeholder="Descripción del medicamento"
+                    [disabled]="true"
+                />
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Comentarios</mat-label>
+                <textarea
+                    [(ngModel)]="medicine.comments"
+                    name="comments"
+                    matInput
+                    placeholder="Ingrese indicaciones o comentarios adicionales"
+                    rows="3">
+                </textarea>
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Inicio del tratamiento</mat-label>
+                <input
+                    [(ngModel)]="medicine.prescriptionDay"
+                    name="prescriptionDay"
+                    matInput
+                    [matDatepicker]="picker"
+                    [min]="today"
+                    placeholder="Seleccione la fecha de inicio"
+                    required
+                />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-plus"></i> Añadir
+                </button>
+                <button type="reset" class="btn-secondary">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+            </div>
+        </form>
     </div>
 </div>

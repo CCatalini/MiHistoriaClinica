@@ -361,6 +361,28 @@ export class MedicService {
         
         return this.http.post(url, null, { params: params });
     }
+
+    /**
+     * Finaliza la consulta y envía email de resumen al paciente
+     */
+    finishConsultation(patientLinkCode: string, changes?: {
+        estudios?: string[],
+        medicamentos?: string[],
+        historiaActualizada?: boolean
+    }): Observable<string> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        headers = headers.set('patientLinkCode', patientLinkCode);
+        headers = headers.set('Content-Type', 'application/json');
+        
+        return this.http.post('http://localhost:8080/medicalAppointment/medic/finish-consultation', 
+            changes || {}, 
+            { headers, responseType: 'text' }
+        );
+    }
 }
 
 

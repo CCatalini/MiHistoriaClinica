@@ -1,47 +1,80 @@
-<h1 class="text-center">Medicamentos</h1>
-<h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-<div class="row mb-3">
-    <div class="col-12 text-center">
-        <div class="d-inline-block">
-            <p>Filtrar por estado:</p>
-            <select class="form-control" #statusSelect (change)="getMedicinesByStatus(statusSelect.value)">
+<div class="container content-with-toolbar">
 
-                <option value="" disabled selected>Seleccione estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-                <option value="santi">Sin Filtro</option>
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Medicamentos del Paciente</h1>
+        <p class="patient-info" *ngIf="patient">{{ patient?.name }} {{ patient?.lastname }} - DNI: {{ patient?.dni }}</p>
+    </div>
 
-            </select>
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Filtrar Medicamentos</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" #statusSelect (change)="getMedicinesByStatus(statusSelect.value)">
+                    <option value="santi">Todos los estados</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<br>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Medicación</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let medicine of medicines">
-        <td>{{ medicine.name }}</td>
-        <td>
-            <div style="max-width: 300px;" class="expandable-text" (mouseenter)="showTooltip($event, medicine.description)" (mouseleave)="hideTooltip()">
-                <span>{{ medicine.description?.length > 80 ? (medicine.description | slice:0:80) + '...' : medicine.description }}</span>
+    <!-- Tabla de medicamentos -->
+    <div class="data-section">
+        
+        <!-- Estado vacío -->
+        <div *ngIf="medicines.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-pills"></i>
             </div>
-        </td>
-        <td>{{ medicine.status }}</td>
-        <td>
-            <button class="btn btn-danger" (click)="deleteMedicine(medicine)">Eliminar</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <h3>No hay medicamentos</h3>
+            <p>No se encontraron medicamentos con el filtro seleccionado</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="medicines.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Medicamento</th>
+                        <th>Descripción</th>
+                        <th>Comentarios</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let medicine of medicines">
+                        <td><strong>{{ formatMedicineName(medicine.name) }}</strong></td>
+                        <td>
+                            <div class="expandable-text" (mouseenter)="showTooltip($event, medicine.description)" (mouseleave)="hideTooltip()">
+                                <span>{{ medicine.description?.length > 60 ? (medicine.description | slice:0:60) + '...' : medicine.description }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span *ngIf="medicine.comments">{{ medicine.comments }}</span>
+                            <span *ngIf="!medicine.comments" class="text-muted">-</span>
+                        </td>
+                        <td>
+                            <span class="status-badge" [ngClass]="getStatusClass(medicine.status)">
+                                {{ medicine.status }}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="btn-action btn-danger" (click)="deleteMedicine(medicine)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 <!-- Tooltip flotante global -->
 <div *ngIf="tooltipText" 

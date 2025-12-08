@@ -204,6 +204,142 @@ table tbody tr:hover {
     font-style: italic;
 }
 
+.text-muted i {
+    margin-right: 5px;
+}
+
+/* ---------------- BARRA DE ACCIONES ---------------- */
+.action-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.reserve-new-btn {
+    background: linear-gradient(135deg, #3fb5eb 0%, #2d9fd4 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(63, 181, 235, 0.3);
+}
+
+.reserve-new-btn:hover {
+    background: linear-gradient(135deg, #2d9fd4 0%, #1e8bc3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(63, 181, 235, 0.4);
+}
+
+/* ---------------- FECHA PROGRAMADA ---------------- */
+.date-scheduled {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: #28a745;
+}
+
+.date-scheduled i {
+    margin-right: 5px;
+}
+
+.time-display {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* ---------------- BADGES DE ESTADO ---------------- */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-scheduled {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-in-progress {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-completed {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* ---------------- BOTONES DE ACCIÓN ---------------- */
+.btn-action {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s;
+}
+
+.btn-reserve {
+    background: #3fb5eb;
+    color: white;
+}
+
+.btn-reserve:hover {
+    background: #2d9fd4;
+}
+
+.btn-reschedule {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-reschedule:hover {
+    background: #e0a800;
+}
+
+.btn-cancel {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #c82333;
+}
+
+/* Celda de acciones */
+.actions-cell {
+    min-width: 200px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn-action {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
 /* ---------------- TOOLTIP ---------------- */
 .global-tooltip {
     position: fixed;

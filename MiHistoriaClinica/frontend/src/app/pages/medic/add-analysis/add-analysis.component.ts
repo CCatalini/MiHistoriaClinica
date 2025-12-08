@@ -14,18 +14,12 @@ import {Observable} from "rxjs";
 export class AddAnalysisComponent {
     public analysis = {
         name: '',
-        medicalCenter: '',
         description: '',
         status:'Pendiente',
-        scheduledDate: null as string | null,
     }
-    
-    // Fecha mínima para el selector (hoy)
-    minDate: string = new Date().toISOString().split('T')[0];
 
     patient: any;
     analysisOptions: string[] = [];
-    medicalCenterOptions: string[] = [];
 
     constructor(private userService: MedicService,
                 private router: Router,
@@ -41,10 +35,6 @@ export class AddAnalysisComponent {
             this.analysisOptions = options;
         });
 
-        this.getMedicalCenterOptions().subscribe((options) => {
-            this.medicalCenterOptions = options;
-        });
-
         this.getPatientInfo();
     }
 
@@ -53,12 +43,6 @@ export class AddAnalysisComponent {
         if(this.analysis.name == '' || this.analysis.name == null){
             Swal.fire('Estudio',
                       'Seleccione un estudio de la lista.',
-                      'warning');
-            return;
-        }
-        if(this.analysis.medicalCenter == '' || this.analysis.medicalCenter == null){
-            Swal.fire('Centro Medico',
-                      'Seleccione un centro médico de la lista.',
                       'warning');
             return;
         }
@@ -84,6 +68,11 @@ export class AddAnalysisComponent {
 
         addAnalysisObservable.subscribe(
             (data) => {
+                // Guardar nombre del estudio para el email de resumen
+                const estudios = JSON.parse(localStorage.getItem('estudiosAgregados') || '[]');
+                estudios.push(this.analysis.name);
+                localStorage.setItem('estudiosAgregados', JSON.stringify(estudios));
+                
                 Swal.fire('Estudio registrado', 'Estudio registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             },
@@ -96,10 +85,6 @@ export class AddAnalysisComponent {
 
     getAnalysisOptions(): Observable<string[]> {
         return this.userService.getAllAnalysisNames();
-    }
-
-    getMedicalCenterOptions(): Observable<string[]> {
-        return this.userService.getAllMedicalCenterNames();
     }
 
     onAnalysisSelectionChange():void{
@@ -119,12 +104,20 @@ export class AddAnalysisComponent {
     }
 
     getPatientInfo(): void {
+        const patientLinkCode = localStorage.getItem('patientLinkCode');
+        if (!patientLinkCode) {
+            console.error('No hay paciente vinculado');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        headers = headers.set('patientLinkCode', patientLinkCode);
+
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },

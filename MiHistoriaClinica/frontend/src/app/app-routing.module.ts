@@ -31,6 +31,7 @@ import {TurnosListComponent} from "./pages/lists/turnos-list/turnos-list.compone
 import {MedicCalendarComponent} from "./pages/medic/medic-calendar/medic-calendar.component";
 import {VerifyEmailComponent} from "./pages/patient/verify-email/verify-email.component";
 import {MedicVerifyEmailComponent} from "./pages/medic/verify-email/verify-email.component";
+import {ReserveAnalysisSlotComponent} from "./pages/patient/reserve-analysis-slot/reserve-analysis-slot.component";
 
 const routes: Routes = [
     {
@@ -186,6 +187,16 @@ const routes: Routes = [
     {
         path: 'medic/verify',
         component: MedicVerifyEmailComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'patient/reserve-analysis-slot',
+        component: ReserveAnalysisSlotComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'patient/analysis-list',
+        component: AnalysisListPatientComponent,
         pathMatch: 'full'
     }
 
