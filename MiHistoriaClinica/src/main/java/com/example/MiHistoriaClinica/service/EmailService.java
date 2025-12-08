@@ -1,9 +1,6 @@
 package com.example.MiHistoriaClinica.service;
 
-import com.example.MiHistoriaClinica.persistence.model.Analysis;
-import com.example.MiHistoriaClinica.persistence.model.Patient;
-import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.Turnos;
+import com.example.MiHistoriaClinica.persistence.model.*;
 
 public interface EmailService {
     
@@ -24,5 +21,13 @@ public interface EmailService {
     
     // Emails de estudios/análisis
     void sendAnalysisReminderEmail(Patient patient, Analysis analysis);
+    
+    void sendAnalysisScheduledEmail(Patient patient, Analysis analysis);
+    
+    // Email resumen de consulta médica
+    void sendConsultationSummaryEmail(Patient patient, Medic medic, 
+                                      java.util.List<String> estudios, 
+                                      java.util.List<String> medicamentos, 
+                                      boolean historiaActualizada);
 }
 

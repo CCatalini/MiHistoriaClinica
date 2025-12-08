@@ -1,21 +1,61 @@
 :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    width: 100%;
     min-height: 100vh;
-    padding: 110px 16px 40px 16px;
+    padding: 120px 16px 40px 16px;
     box-sizing: border-box;
     background: #f5f5f5;
 }
 
-.container {
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background: #f5f5f5;
+}
+
+/* Título principal - ancho completo */
+.page-title {
+    background: white;
+    padding: 20px;
+    margin: 0 0 30px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
+    border-bottom: 3px solid #3fb5eb;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-title h1 {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+}
+
+.page-title .patient-info {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+    font-weight: 500;
+}
+
+.bootstrap-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
 }
 
 .options {
     display: flex;
     justify-content: center;
+    flex-wrap: nowrap;
     gap: 20px;
 }
 
@@ -27,52 +67,105 @@
 
 .option-box {
     width: 200px;
-    height: 200px;
+    min-height: 220px;
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 20px 15px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .option-box:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 
 .option-box img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
+    margin-bottom: 10px;
 }
 
 .option-box span {
-    margin-top: 10px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     color: #2c3e50;
+    margin-bottom: 15px;
 }
 
-.boton {
-    margin-top: 10px;
-    background-color: #3fb5eb;
-    color: white;
-    font-size: 18px;
-    padding: 7px 15px;
-    border: none;
-    border-radius: 5px;
+.option-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-action {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    text-align: center;
+    background: linear-gradient(135deg, #3fb5eb 0%, #2196F3 100%);
+    color: white;
+    border: none;
 }
 
-.boton:hover {
-    background-color: #2ea3d4;
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(63, 181, 235, 0.4);
+    text-decoration: none;
+    color: white;
 }
 
-.button-container {
+.btn-action.btn-secondary {
+    background: transparent;
+    color: #3fb5eb;
+    border: 1px solid #3fb5eb;
+}
+
+.btn-action.btn-secondary:hover {
+    background: rgba(63, 181, 235, 0.1);
+    box-shadow: none;
+}
+
+.finish-button-container {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
+.btn-finish {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-finish:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.btn-finish i {
+    font-size: 18px;
 }

@@ -1,77 +1,52 @@
-<div class = "bootstrap-wrapper">
-    <div class = "container">
-        <div class = "row" style = "margin-top : 20px;">
-            <div clazz = "col-md-6 offset-md-3">
-                <div class = "container text-center" style="margin-bottom: -10px;">
-                    <img src = "../../../../assets/Estudios.png" width = "200" height = "200">
-                </div>
-                <h1 class = "text-center">Añadir estudio</h1>
-                <h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-                <div class="page-container" style="margin-bottom: -110px;">
-                <form  (ngSubmit) = "formSubmit()">
-
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Nombre del estudio:</mat-label>
-                        <mat-select
-                                required
-                                [(ngModel)] = 'analysis.name'
-                                name = "analysisName"
-                                (selectionChange)="onAnalysisSelectionChange()"
-                        >
-                            <mat-option
-                                    *ngFor = "let option of analysisOptions"
-                                    [value] = "option">
-                                    {{ option }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Descripción:</mat-label>
-                        <input
-                                [(ngModel)] = "analysis.description"
-                                name = "description"
-                                matInput
-                                placeholder="Ingrese la descripción del estudio"
-                                [disabled]="true"
-                        />
-                    </mat-form-field>
-
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Centro médico:</mat-label>
-                        <mat-select
-                            [(ngModel)] = 'analysis.medicalCenter'
-                            name = "medicalCenter">
-                            <mat-option
-                                    *ngFor = "let option of medicalCenterOptions"
-                                    [value] = "option">
-                                    {{ option }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Fecha programada:</mat-label>
-                        <input
-                                matInput
-                                type="date"
-                                [(ngModel)] = "analysis.scheduledDate"
-                                name = "scheduledDate"
-                                [min]="minDate"
-                                placeholder="Seleccione la fecha del estudio"
-                        />
-                        <mat-hint>Opcional - Se enviará un recordatorio 24hs antes</mat-hint>
-                    </mat-form-field>
-
-                    <div class = "container text-center">
-                        <button class="boton">Añadir</button>
-                        <button type="reset" style = "margin-left: 20px;" class="boton">Limpiar</button>
-                    </div>
-
-                </form>
-                <br><br><br>
-            </div>
-        </div>
-    </div>
+<div class="page-title">
+    <h1>Añadir Estudio</h1>
+    <p class="patient-info" *ngIf="patient">{{ patient?.name }} {{ patient?.lastname }} - DNI: {{ patient?.dni }}</p>
 </div>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <img src="../../../../assets/Estudios.png" alt="Estudios">
+        </div>
+        
+        <form (ngSubmit)="formSubmit()">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Nombre del estudio</mat-label>
+                <mat-select
+                    required
+                    [(ngModel)]="analysis.name"
+                    name="analysisName"
+                    (selectionChange)="onAnalysisSelectionChange()">
+                    <mat-option *ngFor="let option of analysisOptions" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <input
+                    [(ngModel)]="analysis.description"
+                    name="description"
+                    matInput
+                    placeholder="Ingrese la descripción del estudio"
+                    [disabled]="true"
+                />
+            </mat-form-field>
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <span>El paciente recibirá una notificación del estudio asignado y podrá reservar turno desde la disponibilidad de los centros médicos.</span>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-plus"></i> Añadir
+                </button>
+                <button type="reset" class="btn-secondary">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

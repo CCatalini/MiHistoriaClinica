@@ -53,16 +53,29 @@ public enum AnalysisE {
         return Arrays.stream(AnalysisE.values())
                 .map(AnalysisE::getName)
                 .collect(Collectors.toList());
-
     }
 
+    /**
+     * Devuelve los nombres de los enums (HEMOGRAMA_COMPLETO, PERFIL_LIPIDICO, etc)
+     */
+    public static List<String> getEnumNames(){
+        return Arrays.stream(AnalysisE.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
 
     public static AnalysisE getEnumFromName(String name){
-        for (AnalysisE analysisE : AnalysisE.values()) {
-            if (analysisE.getName().equalsIgnoreCase(name)) {
-                return analysisE;
+        // Primero intentar buscar por nombre del enum (HEMOGRAMA_COMPLETO)
+        try {
+            return AnalysisE.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            // Si no es un enum válido, buscar por nombre legible
+            for (AnalysisE analysisE : AnalysisE.values()) {
+                if (analysisE.getName().equalsIgnoreCase(name)) {
+                    return analysisE;
+                }
             }
+            return null;
         }
-        return null;
     }
 }

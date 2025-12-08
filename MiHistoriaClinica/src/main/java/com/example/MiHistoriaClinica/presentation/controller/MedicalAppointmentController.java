@@ -1,9 +1,12 @@
 package com.example.MiHistoriaClinica.presentation.controller;
 
+import com.example.MiHistoriaClinica.persistence.model.*;
+import com.example.MiHistoriaClinica.persistence.repository.MedicRepository;
+import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.presentation.dto.MedicalAppointmentDTO;
+import com.example.MiHistoriaClinica.service.EmailService;
 import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
-import com.example.MiHistoriaClinica.persistence.model.MedicalAppointment;
 import com.example.MiHistoriaClinica.service.implementation.MedicalAppointmentServiceImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
@@ -15,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/medicalAppointment")
@@ -22,13 +26,22 @@ import java.util.List;
 public class MedicalAppointmentController {
 
     private final MedicalAppointmentServiceImpl medicalAppointmentService;
+    private final PatientRepository patientRepository;
+    private final MedicRepository medicRepository;
+    private final EmailService emailService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
 
 
     @Autowired
-    public MedicalAppointmentController(MedicalAppointmentServiceImpl medicalAppointmentService){
+    public MedicalAppointmentController(MedicalAppointmentServiceImpl medicalAppointmentService,
+                                        PatientRepository patientRepository,
+                                        MedicRepository medicRepository,
+                                        EmailService emailService) {
         this.medicalAppointmentService = medicalAppointmentService;
+        this.patientRepository = patientRepository;
+        this.medicRepository = medicRepository;
+        this.emailService = emailService;
     }
 
 
@@ -93,6 +106,49 @@ public class MedicalAppointmentController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(appointmentList, HttpStatus.OK);
+    }
+
+    /**
+     * Finaliza la consulta y envía email de resumen al paciente
+     */
+    @PostMapping("/medic/finish-consultation")
+    public ResponseEntity<String> finishConsultation(
+            @RequestHeader("Authorization") String token,
+            @RequestHeader("patientLinkCode") String patientLinkCode,
+            @RequestBody(required = false) ConsultationChanges changes) throws InvalidTokenException {
+        
+        Long medicId = jwtValidator.getId(token);
+        
+        // Obtener médico y paciente
+        Optional<Medic> medicOpt = medicRepository.findById(medicId);
+        Optional<Patient> patientOpt = patientRepository.findByLinkCode(patientLinkCode);
+        
+        if (medicOpt.isEmpty() || patientOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Médico o paciente no encontrado");
+        }
+        
+        // Extraer datos de cambios (si existen)
+        List<String> estudios = changes != null ? changes.estudios : null;
+        List<String> medicamentos = changes != null ? changes.medicamentos : null;
+        boolean historiaActualizada = changes != null && changes.historiaActualizada;
+        
+        // Enviar email de resumen
+        emailService.sendConsultationSummaryEmail(
+            patientOpt.get(), 
+            medicOpt.get(),
+            estudios,
+            medicamentos,
+            historiaActualizada
+        );
+        
+        return ResponseEntity.ok("Email de resumen enviado exitosamente");
+    }
+    
+    // Clase simple para recibir los cambios
+    public static class ConsultationChanges {
+        public List<String> estudios;
+        public List<String> medicamentos;
+        public boolean historiaActualizada;
     }
 
 }

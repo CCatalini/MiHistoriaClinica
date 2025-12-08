@@ -87,6 +87,11 @@ export class AddMedicineComponent implements OnInit {
 
         addMedicineObservable.subscribe(
             (data) => {
+                // Guardar nombre del medicamento para el email de resumen
+                const medicamentos = JSON.parse(localStorage.getItem('medicamentosAgregados') || '[]');
+                medicamentos.push(this.medicine.name);
+                localStorage.setItem('medicamentosAgregados', JSON.stringify(medicamentos));
+                
                 Swal.fire('Medicamento registrado', 'Medicamento registrado con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             },
@@ -124,12 +129,20 @@ export class AddMedicineComponent implements OnInit {
 
 
     getPatientInfo(): void {
+        const patientLinkCode = localStorage.getItem('patientLinkCode');
+        if (!patientLinkCode) {
+            console.error('No hay paciente vinculado');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        headers = headers.set('patientLinkCode', patientLinkCode);
+
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },

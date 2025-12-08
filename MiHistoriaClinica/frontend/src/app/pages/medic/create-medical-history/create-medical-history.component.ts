@@ -74,6 +74,9 @@ export class CreateMedicalHistoryComponent {
 
         createMedicalHistoryObservable.subscribe(
             (data) => {
+                // Marcar que se actualizó la historia para el email de resumen
+                localStorage.setItem('historiaActualizada', 'true');
+                
                 Swal.fire('Historia clínica guardada', 'Historia clínica guardada con éxito en el sistema.', 'success');
                 this.router.navigate(['medic/attendPatient']);
             }, (error) => {
@@ -88,12 +91,20 @@ export class CreateMedicalHistoryComponent {
     }
 
     getPatientInfo(): void {
+        const patientLinkCode = localStorage.getItem('patientLinkCode');
+        if (!patientLinkCode) {
+            console.error('No hay paciente vinculado');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        headers = headers.set('patientLinkCode', patientLinkCode);
+
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },

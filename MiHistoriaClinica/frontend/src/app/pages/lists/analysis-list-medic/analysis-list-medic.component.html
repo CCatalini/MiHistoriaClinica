@@ -1,52 +1,87 @@
-<h1 class="text-center">Estudios</h1>
-<h6 class="text-center">Paciente: {{ patient?.name }} {{ patient?.lastname }}, DNI: {{ patient?.dni }}</h6>
-<div class="row mb-3">
-    <div class="col-12 text-center">
-        <div class="d-inline-block">
-            <p>Filtrar por estado:</p>
-            <select class="form-control" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+<div class="container content-with-toolbar">
 
-                <option value="" disabled selected>Seleccione estado</option>
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Finalizado</option>
-                <option value="santi">Sin Filtro</option>
+    <!-- Título principal -->
+    <div class="page-title">
+        <h1>Estudios del Paciente</h1>
+        <p class="patient-info" *ngIf="patient">{{ patient?.name }} {{ patient?.lastname }} - DNI: {{ patient?.dni }}</p>
+    </div>
 
-            </select>
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4>Filtrar Estudios</h4>
+        <div class="filters-row">
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" #statusSelect (change)="getAnalysisByStatus(statusSelect.value)">
+                    <option value="santi">Todos los estados</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Programado">Programado</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
+            </div>
         </div>
     </div>
-</div>
-<br>
 
-<table class="table table-striped">
-    <thead class="table-dark">
-    <tr>
-        <th>Estudio</th>
-        <th>Descripción</th>
-        <th>Fecha Programada</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let analysis of analysisList">
-        <td>{{ analysis.name }}</td>
-        <td>
-            <div style="max-width: 300px;" class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
-                <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
+    <!-- Tabla de estudios -->
+    <div class="data-section">
+        
+        <!-- Estado vacío -->
+        <div *ngIf="analysisList.length === 0" class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-file-medical"></i>
             </div>
-        </td>
-        <td>
-            <span *ngIf="analysis.scheduledDate">{{ formatDate(analysis.scheduledDate) }}</span>
-            <span *ngIf="!analysis.scheduledDate" style="color: #6c757d; font-style: italic;">Sin programar</span>
-        </td>
-        <td>{{ analysis.status }}</td>
-        <td>
-            <button class="btn btn-danger" (click)="deleteAnalysis(analysis)">Eliminar</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <h3>No hay estudios</h3>
+            <p>No se encontraron estudios con el filtro seleccionado</p>
+        </div>
+
+        <!-- Tabla -->
+        <div *ngIf="analysisList.length > 0" class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Estudio</th>
+                        <th>Descripción</th>
+                        <th>Fecha Programada</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let analysis of analysisList">
+                        <td><strong>{{ formatAnalysisName(analysis.name) }}</strong></td>
+                        <td>
+                            <div class="expandable-text" (mouseenter)="showTooltip($event, analysis.description)" (mouseleave)="hideTooltip()">
+                                <span>{{ analysis.description?.length > 80 ? (analysis.description | slice:0:80) + '...' : analysis.description }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span *ngIf="analysis.scheduledDate" class="date-scheduled">
+                                <i class="fas fa-calendar-check"></i>
+                                {{ formatDate(analysis.scheduledDate) }}
+                                <span *ngIf="analysis.scheduledTime" class="time-display">{{ analysis.scheduledTime }}</span>
+                            </span>
+                            <span *ngIf="!analysis.scheduledDate" class="text-muted">
+                                <i class="fas fa-calendar-times"></i> Sin programar
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge" [ngClass]="getStatusClass(analysis.status)">
+                                {{ analysis.status }}
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="btn-action btn-danger" (click)="deleteAnalysis(analysis)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 
 <!-- Tooltip flotante global -->
 <div *ngIf="tooltipText" 

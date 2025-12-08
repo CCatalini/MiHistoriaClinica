@@ -116,18 +116,21 @@ public class CustomRepositoryAccess {
         Analysis analysisSaved = new Analysis();
         Patient aux = patient.get();
         AnalysisE name = AnalysisE.getEnumFromName(analysisDTO.getName());
-        MedicalCenterE medicalCenter = MedicalCenterE.getEnumFromName(analysisDTO.getMedicalCenterE());
 
         analysisSaved.setName(name);
         assert name != null;
         analysisSaved.setDescription(name.getDescription());
         analysisSaved.setStatus("Pendiente");
-        analysisSaved.setMedicalCenterE(medicalCenter);
-        analysisSaved.setScheduledDate(analysisDTO.getScheduledDate());
+        
+        // El centro médico es opcional - el paciente lo elige cuando reserva turno
+        if (analysisDTO.getMedicalCenterE() != null && !analysisDTO.getMedicalCenterE().isEmpty()) {
+            MedicalCenterE medicalCenter = MedicalCenterE.getEnumFromName(analysisDTO.getMedicalCenterE());
+            analysisSaved.setMedicalCenterE(medicalCenter);
+        }
 
         aux.getAnalysis().add(analysisSaved);
 
-               patientRepository.save(aux);
+        patientRepository.save(aux);
         return analysisRepository.save(analysisSaved);
     }
 
