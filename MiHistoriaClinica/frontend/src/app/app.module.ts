@@ -50,6 +50,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { VerifyEmailComponent } from './pages/patient/verify-email/verify-email.component';
+import { ReserveAnalysisSlotComponent } from './pages/patient/reserve-analysis-slot/reserve-analysis-slot.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { VerifyEmailComponent } from './pages/patient/verify-email/verify-email.
     TurnosListComponent,
     MedicCalendarComponent,
     VerifyEmailComponent,
+    ReserveAnalysisSlotComponent,
   ],
     imports: [
         BrowserModule,

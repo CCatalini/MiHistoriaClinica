@@ -1,22 +1,27 @@
-<div class = "bootstrap-wrapper">
-    <div class = "container">
-        <div class = "row" style = "margin-top : 20px;">
-            <div clazz = "col-md-6 offset-md-3">
-                <div class = "container text-center">
-                    <img src = "../../../../assets/AgregarPaciente.png" width = "200" height = "200">
-                </div>
-                <h1 class = "text-center">Atender Paciente</h1>
-                <form  (ngSubmit) = "formSubmit()">
-                    <mat-form-field class = "full-width" appearance = "outline">
-                        <mat-label>Código Paciente:</mat-label>
-                        <input required [(ngModel)] = "patient.code" name = "codigo" matInput placeholder="Ingrese el código del paciente">
-                    </mat-form-field>
-                    <div class = "container text-center" style="margin-top: 10px;">
-                        <button class="boton">Atender</button>
-                    </div>
-                </form>
-                <br><br><br>
-            </div>
+<div class="page-title">
+    <h1>Atender Paciente</h1>
+    <p class="subtitle">Ingrese el código de vinculación del paciente</p>
+</div>
+
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <img src="../../../../assets/AgregarPaciente.png" alt="Atender Paciente">
         </div>
+        
+        <form (ngSubmit)="formSubmit()">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Código del paciente</mat-label>
+                <input required [(ngModel)]="patient.code" name="codigo" matInput 
+                       placeholder="Ej: ABC123">
+                <mat-hint>El paciente debe generar este código desde su portal</mat-hint>
+            </mat-form-field>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Atender
+                </button>
+            </div>
+        </form>
     </div>
 </div>

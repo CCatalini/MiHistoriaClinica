@@ -250,6 +250,73 @@ export class PatientService {
         return this.http.get<any>('http://localhost:8080/patient/get-patient-info', { headers: headers });
     }
 
+    // ==================== TURNOS DE ESTUDIOS ====================
+
+    /**
+     * Obtiene fechas disponibles para un tipo de estudio
+     */
+    public getAvailableDatesForAnalysis(analysisType: string, medicalCenter?: string): Observable<string[]> {
+        let params = new HttpParams().set('analysisType', analysisType);
+        if (medicalCenter) {
+            params = params.set('medicalCenter', medicalCenter);
+        }
+        return this.http.get<string[]>('http://localhost:8080/analysis/schedule/available-dates', { params });
+    }
+
+    /**
+     * Obtiene turnos disponibles para fecha específica
+     */
+    public getAvailableSchedules(analysisType: string, medicalCenter: string, fecha: string): Observable<any[]> {
+        let params = new HttpParams()
+            .set('analysisType', analysisType)
+            .set('medicalCenter', medicalCenter)
+            .set('fecha', fecha);
+        return this.http.get<any[]>('http://localhost:8080/analysis/schedule/available', { params });
+    }
+
+    /**
+     * Reserva un turno de estudio
+     */
+    public reserveStudySchedule(scheduleId: number, analysisId: number): Observable<string> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        let params = new HttpParams()
+            .set('scheduleId', scheduleId.toString())
+            .set('analysisId', analysisId.toString());
+        return this.http.post('http://localhost:8080/analysis/schedule/reserve', null, { 
+            headers, 
+            params,
+            responseType: 'text'
+        });
+    }
+
+    /**
+     * Cancela una reserva de estudio
+     */
+    public cancelStudySchedule(analysisId: number): Observable<string> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        let params = new HttpParams().set('analysisId', analysisId.toString());
+        return this.http.delete('http://localhost:8080/analysis/schedule/cancel', { 
+            headers, 
+            params,
+            responseType: 'text'
+        });
+    }
+
+    /**
+     * Obtiene todos los tipos de estudios
+     */
+    public getAllAnalysisTypes(): Observable<string[]> {
+        return this.http.get<string[]>('http://localhost:8080/analysis/get-all-analysis-names');
+    }
+
 }
 
 

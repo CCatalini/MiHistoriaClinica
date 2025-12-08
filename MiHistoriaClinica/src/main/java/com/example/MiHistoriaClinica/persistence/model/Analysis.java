@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +27,12 @@ public class Analysis {
     private String description;
     private String status;
     
-    // Fecha programada para el estudio
+    // Fecha y hora programada para el estudio
     private LocalDate scheduledDate;
+    private LocalTime scheduledTime;
+    
+    // ID del turno reservado en study_schedule (para cancelaciones)
+    private Long scheduleId;
 
     @ManyToMany(mappedBy = "analysis", fetch = FetchType.EAGER)
     @JsonBackReference
@@ -35,6 +40,13 @@ public class Analysis {
 
     public void addPatient(Patient patient){
         this.patients.add(patient);
+    }
+    
+    /**
+     * Indica si el estudio necesita programar turno
+     */
+    public boolean needsScheduling() {
+        return scheduledDate == null && "Pendiente".equals(status);
     }
 
 }

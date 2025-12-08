@@ -1,9 +1,6 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
-import com.example.MiHistoriaClinica.persistence.model.Analysis;
-import com.example.MiHistoriaClinica.persistence.model.Patient;
-import com.example.MiHistoriaClinica.persistence.model.Medic;
-import com.example.MiHistoriaClinica.persistence.model.Turnos;
+import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.service.EmailService;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -19,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -44,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
     
     private static final String BASE_STYLES = """
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f0f4f8;
@@ -80,9 +78,8 @@ public class EmailServiceImpl implements EmailService {
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .header .icon {
-            font-size: 55px;
+            font-size: 48px;
             margin-bottom: 15px;
-            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
         .header .subtitle {
             margin-top: 10px;
@@ -245,7 +242,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         try {
-            String subject = "¡Bienvenido a Mi Historia Clínica!";
+            String subject = "Bienvenido a Mi Historia Clínica";
             String htmlContent = buildWelcomeEmailHtml(patient);
             
             sendEmail(patient.getEmail(), subject, htmlContent);
@@ -283,7 +280,7 @@ public class EmailServiceImpl implements EmailService {
         }
 
         try {
-            String subject = "¡Bienvenido Dr/Dra. " + medic.getLastname() + " a Mi Historia Clínica!";
+            String subject = "Bienvenido Dr/Dra. " + medic.getLastname() + " a Mi Historia Clínica";
             String htmlContent = buildMedicWelcomeEmailHtml(medic);
             
             sendEmail(medic.getEmail(), subject, htmlContent);
@@ -370,6 +367,46 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @Override
+    public void sendAnalysisScheduledEmail(Patient patient, Analysis analysis) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Turno de Estudio Confirmado - Mi Historia Clínica";
+            String htmlContent = buildAnalysisScheduledEmailHtml(patient, analysis);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de confirmación de estudio enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de confirmación de estudio: ", e);
+        }
+    }
+
+    @Override
+    public void sendConsultationSummaryEmail(Patient patient, Medic medic, 
+                                              List<String> estudios, List<String> medicamentos, 
+                                              boolean historiaActualizada) {
+        if (!remindersEnabled) {
+            logger.info("Envío de emails deshabilitado");
+            return;
+        }
+
+        try {
+            String subject = "Resumen de tu Consulta Médica - Mi Historia Clínica";
+            String htmlContent = buildConsultationSummaryEmailHtml(patient, medic, estudios, medicamentos, historiaActualizada);
+            
+            sendEmail(patient.getEmail(), subject, htmlContent);
+            logger.info("Email de resumen de consulta enviado exitosamente a: {}", patient.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Error enviando email de resumen de consulta: ", e);
+        }
+    }
+
     private void sendEmail(String toEmail, String subject, String htmlContent) throws IOException {
         Email from = new Email(fromEmail, fromName);
         Email to = new Email(toEmail);
@@ -420,13 +457,12 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">✉️</div>
                         <h1>Mi Historia Clínica</h1>
                         <p class="subtitle">Verificación de cuenta</p>
                     </div>
                     <div class="content">
-                        <h2>¡Bienvenido/a, %s!</h2>
-                        <p>Gracias por registrarte en <strong>Mi Historia Clínica</strong>. Estamos emocionados de tenerte en nuestra plataforma.</p>
+                        <h2>Bienvenido/a, %s</h2>
+                        <p>Gracias por registrarte en <strong>Mi Historia Clínica</strong>. Estamos contentos de tenerte en nuestra plataforma.</p>
                         
                         <p>Para completar tu registro y comenzar a utilizar todos los servicios, necesitamos verificar tu dirección de correo electrónico.</p>
                         
@@ -435,7 +471,7 @@ public class EmailServiceImpl implements EmailService {
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9;"><strong>⏰ Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
+                            <p style="margin: 0; color: #2980b9;"><strong>Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
                         </div>
                         
                         <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
@@ -470,34 +506,33 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">🎉</div>
-                        <h1>¡Cuenta Verificada!</h1>
+                        <h1>Cuenta Verificada</h1>
                         <p class="subtitle">Ya puedes comenzar a usar la plataforma</p>
                     </div>
                     <div class="content">
-                        <h2>¡Hola, %s %s!</h2>
+                        <h2>Hola, %s %s</h2>
                         <p>Tu cuenta ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades de <strong>Mi Historia Clínica</strong>.</p>
                         
                         <div class="feature-list">
                             <div class="feature-item">
-                                <strong>🔗 Vinculación con médicos:</strong> Conecta con tus profesionales de salud
+                                <strong>Vinculación con médicos:</strong> Conecta con tus profesionales de salud
                             </div>
                             <div class="feature-item">
-                                <strong>📅 Gestión de turnos:</strong> Programa y administra tus citas médicas
+                                <strong>Gestión de turnos:</strong> Programa y administra tus citas médicas
                             </div>
                             <div class="feature-item">
-                                <strong>📋 Historia clínica:</strong> Accede a tu historial médico completo
+                                <strong>Historia clínica:</strong> Accede a tu historial médico completo
                             </div>
                             <div class="feature-item">
-                                <strong>💊 Medicamentos:</strong> Lleva un registro de tus tratamientos
+                                <strong>Medicamentos:</strong> Lleva un registro de tus tratamientos
                             </div>
                             <div class="feature-item">
-                                <strong>🔬 Estudios:</strong> Gestiona tus análisis y resultados
+                                <strong>Estudios:</strong> Gestiona tus análisis y resultados
                             </div>
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9;"><strong>✨ Tip:</strong> Ya puedes iniciar sesión en la plataforma y comenzar a utilizar todos nuestros servicios.</p>
+                            <p style="margin: 0; color: #2980b9;">Ya puedes iniciar sesión en la plataforma y comenzar a utilizar todos nuestros servicios.</p>
                         </div>
                         
                         <p style="font-size: 14px; color: #888; margin-top: 30px;">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
@@ -534,7 +569,6 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">⚕️</div>
                         <h1>Mi Historia Clínica</h1>
                         <p class="subtitle">Portal Médico Profesional</p>
                     </div>
@@ -548,11 +582,11 @@ public class EmailServiceImpl implements EmailService {
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9;"><strong>⏰ Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
+                            <p style="margin: 0; color: #2980b9;"><strong>Importante:</strong> Este enlace expirará en 24 horas por razones de seguridad.</p>
                         </div>
                         
                         <div class="details-box">
-                            <h3>📋 Datos de registro</h3>
+                            <h3>Datos de registro</h3>
                             <div class="detail-row">
                                 <span class="detail-label">Matrícula:</span>
                                 <span class="detail-value">%s</span>
@@ -565,11 +599,11 @@ public class EmailServiceImpl implements EmailService {
                         
                         <p style="margin-top: 20px;">Una vez verificada tu cuenta, podrás:</p>
                         <div class="feature-list">
-                            <div class="feature-item">✓ Crear y gestionar historias clínicas</div>
-                            <div class="feature-item">✓ Vincular y atender pacientes</div>
-                            <div class="feature-item">✓ Gestionar tu agenda de turnos</div>
-                            <div class="feature-item">✓ Prescribir medicamentos</div>
-                            <div class="feature-item">✓ Solicitar estudios médicos</div>
+                            <div class="feature-item">Crear y gestionar historias clínicas</div>
+                            <div class="feature-item">Vincular y atender pacientes</div>
+                            <div class="feature-item">Gestionar tu agenda de turnos</div>
+                            <div class="feature-item">Prescribir medicamentos</div>
+                            <div class="feature-item">Solicitar estudios médicos</div>
                         </div>
                         
                         <p>Si el botón no funciona, copia y pega el siguiente enlace:</p>
@@ -609,16 +643,15 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">🩺</div>
-                        <h1>¡Cuenta Médica Verificada!</h1>
+                        <h1>Cuenta Médica Verificada</h1>
                         <p class="subtitle">Ya puede comenzar a atender pacientes</p>
                     </div>
                     <div class="content">
-                        <h2>¡Bienvenido/a, Dr/Dra. %s %s!</h2>
+                        <h2>Bienvenido/a, Dr/Dra. %s %s</h2>
                         <p>Tu cuenta médica ha sido verificada exitosamente. Ya puedes acceder a todas las funcionalidades profesionales de <strong>Mi Historia Clínica</strong>.</p>
                         
                         <div class="details-box">
-                            <h3>📋 Datos de tu cuenta</h3>
+                            <h3>Datos de tu cuenta</h3>
                             <div class="detail-row">
                                 <span class="detail-label">Matrícula:</span>
                                 <span class="detail-value">%s</span>
@@ -635,24 +668,24 @@ public class EmailServiceImpl implements EmailService {
                         
                         <div class="feature-list">
                             <div class="feature-item">
-                                <strong>📋 Gestión de historias clínicas:</strong> Crea y mantén actualizados los registros de tus pacientes
+                                <strong>Gestión de historias clínicas:</strong> Crea y mantén actualizados los registros de tus pacientes
                             </div>
                             <div class="feature-item">
-                                <strong>🔗 Vinculación con pacientes:</strong> Acepta solicitudes de vinculación mediante códigos únicos
+                                <strong>Vinculación con pacientes:</strong> Acepta solicitudes de vinculación mediante códigos únicos
                             </div>
                             <div class="feature-item">
-                                <strong>📅 Agenda de turnos:</strong> Configura tus horarios disponibles y gestiona las reservas
+                                <strong>Agenda de turnos:</strong> Configura tus horarios disponibles y gestiona las reservas
                             </div>
                             <div class="feature-item">
-                                <strong>💊 Prescripción de medicamentos:</strong> Receta tratamientos a tus pacientes
+                                <strong>Prescripción de medicamentos:</strong> Receta tratamientos a tus pacientes
                             </div>
                             <div class="feature-item">
-                                <strong>🔬 Solicitud de estudios:</strong> Ordena análisis y estudios complementarios
+                                <strong>Solicitud de estudios:</strong> Ordena análisis y estudios complementarios
                             </div>
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9; text-align: center; font-size: 17px;"><strong>✨ Ya puede iniciar sesión y comenzar a atender pacientes</strong></p>
+                            <p style="margin: 0; color: #2980b9; text-align: center; font-size: 17px;"><strong>Ya puede iniciar sesión y comenzar a atender pacientes</strong></p>
                         </div>
                         
                         <p style="font-size: 14px; color: #888; margin-top: 30px;">Si necesita ayuda para comenzar, no dude en contactarnos.</p>
@@ -698,8 +731,7 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">✓</div>
-                        <h1>¡Turno Confirmado!</h1>
+                        <h1>Turno Confirmado</h1>
                         <p class="subtitle">Tu reserva ha sido procesada exitosamente</p>
                     </div>
                     <div class="content">
@@ -707,35 +739,35 @@ public class EmailServiceImpl implements EmailService {
                         <p>Tu turno ha sido reservado exitosamente. A continuación encontrarás los detalles de tu cita médica:</p>
                         
                         <div class="details-box">
-                            <h3>📋 Detalles del Turno</h3>
+                            <h3>Detalles del Turno</h3>
                             <div class="detail-row">
-                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-label">Fecha:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-label">Hora:</span>
                                 <span class="detail-value">%s hs</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-label">Médico:</span>
                                 <span class="detail-value">Dr/Dra. %s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-label">Especialidad:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-label">Centro:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                         </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9;"><strong>🔔 Recordatorio:</strong> Te enviaremos un email de recordatorio 24 horas antes de tu turno.</p>
+                            <p style="margin: 0; color: #2980b9;"><strong>Recordatorio:</strong> Te enviaremos un email de recordatorio 24 horas antes de tu turno.</p>
                         </div>
                         
                         <div class="warning-box">
-                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si necesitas cancelar, hazlo con al menos 24 horas de anticipación desde la plataforma.</p>
+                            <p style="margin: 0; color: #495057;"><strong>Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si necesitas cancelar, hazlo con al menos 24 horas de anticipación desde la plataforma.</p>
                         </div>
                         
                         <p style="margin-top: 30px; font-size: 14px; color: #888;">Si tienes alguna pregunta o necesitas reprogramar tu turno, puedes hacerlo desde la plataforma Mi Historia Clínica.</p>
@@ -780,7 +812,7 @@ public class EmailServiceImpl implements EmailService {
                         padding: 25px;
                         margin: 28px 0;
                         text-align: center;
-                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.2), inset 0 1px 0 rgba(255,255,255,0.8);
+                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.2);
                         border: 1px solid rgba(74, 144, 226, 0.2);
                     }
                     .countdown-box h3 {
@@ -799,7 +831,6 @@ public class EmailServiceImpl implements EmailService {
                         padding: 22px;
                         border-radius: 10px;
                         margin: 22px 0;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                     }
                     .checklist h4 {
                         color: #2c3e50;
@@ -809,75 +840,65 @@ public class EmailServiceImpl implements EmailService {
                     .checklist-item {
                         padding: 10px 0;
                         color: #555;
-                        display: flex;
-                        align-items: center;
                         border-bottom: 1px solid rgba(0,0,0,0.05);
                     }
                     .checklist-item:last-child {
                         border-bottom: none;
-                    }
-                    .checklist-item::before {
-                        content: "✓";
-                        color: #4A90E2;
-                        font-weight: bold;
-                        margin-right: 12px;
-                        font-size: 14px;
                     }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">🔔</div>
                         <h1>Recordatorio de Turno</h1>
-                        <p class="subtitle">¡Tu cita médica es mañana!</p>
+                        <p class="subtitle">Tu cita médica es mañana</p>
                     </div>
                     <div class="content">
                         <h2>Hola, %s %s</h2>
                         <p>Te recordamos que tienes un turno médico programado para <strong>mañana</strong>. Por favor, revisa los detalles a continuación:</p>
                         
                         <div class="countdown-box">
-                            <h3>⏰ Tu turno es en menos de 24 horas</h3>
+                            <h3>Tu turno es en menos de 24 horas</h3>
                             <p>No olvides prepararte para tu cita</p>
                         </div>
                         
                         <div class="details-box">
-                            <h3>📋 Detalles del Turno</h3>
+                            <h3>Detalles del Turno</h3>
                             <div class="detail-row">
-                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-label">Fecha:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-label">Hora:</span>
                                 <span class="detail-value">%s hs</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-label">Médico:</span>
                                 <span class="detail-value">Dr/Dra. %s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-label">Especialidad:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-label">Centro:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                         </div>
                         
                         <div class="checklist">
-                            <h4>📝 No olvides llevar:</h4>
-                            <div class="checklist-item">DNI o documento de identidad</div>
-                            <div class="checklist-item">Credencial de obra social/prepaga (si corresponde)</div>
-                            <div class="checklist-item">Estudios previos relacionados</div>
-                            <div class="checklist-item">Lista de medicamentos actuales</div>
+                            <h4>No olvides llevar:</h4>
+                            <div class="checklist-item">• DNI o documento de identidad</div>
+                            <div class="checklist-item">• Credencial de obra social/prepaga (si corresponde)</div>
+                            <div class="checklist-item">• Estudios previos relacionados</div>
+                            <div class="checklist-item">• Lista de medicamentos actuales</div>
                         </div>
                         
                         <div class="warning-box">
-                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si no puedes asistir, cancela tu turno desde la plataforma para que otro paciente pueda tomarlo.</p>
+                            <p style="margin: 0; color: #495057;"><strong>Importante:</strong> Por favor, llega 15 minutos antes de tu turno. Si no puedes asistir, cancela tu turno desde la plataforma para que otro paciente pueda tomarlo.</p>
                         </div>
                         
-                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos una excelente consulta. ¡Gracias por confiar en nosotros!</p>
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos una excelente consulta. Gracias por confiar en nosotros.</p>
                     </div>
                     %s
                 </div>
@@ -918,27 +939,11 @@ public class EmailServiceImpl implements EmailService {
                         color: white;
                         padding: 45px 20px;
                         text-align: center;
-                        position: relative;
-                    }
-                    .header-cancel::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 0;
-                        left: 0;
-                        right: 0;
-                        height: 4px;
-                        background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%%, rgba(255,255,255,0.6) 50%%, rgba(255,255,255,0.3) 100%%);
                     }
                     .header-cancel h1 {
                         margin: 0;
                         font-size: 28px;
                         font-weight: bold;
-                        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                    }
-                    .header-cancel .icon {
-                        font-size: 55px;
-                        margin-bottom: 15px;
-                        text-shadow: 0 3px 6px rgba(0,0,0,0.2);
                     }
                     .header-cancel .subtitle {
                         margin-top: 10px;
@@ -951,7 +956,6 @@ public class EmailServiceImpl implements EmailService {
                         padding: 28px;
                         margin: 28px 0;
                         border-left: 5px solid #95a5a6;
-                        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
                     }
                     .cancelled-details h3 {
                         color: #6c757d;
@@ -968,7 +972,6 @@ public class EmailServiceImpl implements EmailService {
                         padding: 25px;
                         margin: 28px 0;
                         text-align: center;
-                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.15);
                         border: 1px solid rgba(74, 144, 226, 0.2);
                     }
                     .reschedule-box h3 {
@@ -986,7 +989,6 @@ public class EmailServiceImpl implements EmailService {
             <body>
                 <div class="container">
                     <div class="header-cancel">
-                        <div class="icon">✕</div>
                         <h1>Turno Cancelado</h1>
                         <p class="subtitle">Tu reserva ha sido cancelada</p>
                     </div>
@@ -995,36 +997,36 @@ public class EmailServiceImpl implements EmailService {
                         <p>Te confirmamos que tu turno ha sido <strong>cancelado exitosamente</strong>. A continuación los detalles del turno que fue cancelado:</p>
                         
                         <div class="cancelled-details">
-                            <h3>📋 Turno Cancelado</h3>
+                            <h3>Turno Cancelado</h3>
                             <div class="detail-row">
-                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-label">Fecha:</span>
                                 <span class="detail-value" style="text-decoration: line-through; color: #95a5a6;">%s</span>
                         </div>
                             <div class="detail-row">
-                                <span class="detail-label">🕐 Hora:</span>
+                                <span class="detail-label">Hora:</span>
                                 <span class="detail-value" style="text-decoration: line-through; color: #95a5a6;">%s hs</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">👨‍⚕️ Médico:</span>
+                                <span class="detail-label">Médico:</span>
                                 <span class="detail-value">Dr/Dra. %s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🏥 Especialidad:</span>
+                                <span class="detail-label">Especialidad:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-label">Centro:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             </div>
                         
                         <div class="reschedule-box">
-                            <h3>📅 ¿Necesitas reprogramar?</h3>
+                            <h3>¿Necesitas reprogramar?</h3>
                             <p>Puedes reservar un nuevo turno desde la plataforma Mi Historia Clínica</p>
                             </div>
                         
                         <div class="info-box">
-                            <p style="margin: 0; color: #2980b9;"><strong>💡 Tip:</strong> Te recomendamos reservar tu nuevo turno con anticipación para asegurar disponibilidad con tu médico preferido.</p>
+                            <p style="margin: 0; color: #2980b9;"><strong>Recomendación:</strong> Te sugerimos reservar tu nuevo turno con anticipación para asegurar disponibilidad con tu médico preferido.</p>
                         </div>
                         
                         <p style="margin-top: 30px; font-size: 14px; color: #888;">Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
@@ -1074,7 +1076,6 @@ public class EmailServiceImpl implements EmailService {
                         padding: 25px;
                         margin: 28px 0;
                         text-align: center;
-                        box-shadow: 0 3px 15px rgba(74, 144, 226, 0.2), inset 0 1px 0 rgba(255,255,255,0.8);
                         border: 1px solid rgba(74, 144, 226, 0.2);
                     }
                     .countdown-box h3 {
@@ -1093,7 +1094,6 @@ public class EmailServiceImpl implements EmailService {
                         padding: 22px;
                         border-radius: 10px;
                         margin: 22px 0;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
                     }
                     .checklist h4 {
                         color: #2c3e50;
@@ -1103,26 +1103,16 @@ public class EmailServiceImpl implements EmailService {
                     .checklist-item {
                         padding: 10px 0;
                         color: #555;
-                        display: flex;
-                        align-items: center;
                         border-bottom: 1px solid rgba(0,0,0,0.05);
                     }
                     .checklist-item:last-child {
                         border-bottom: none;
-                    }
-                    .checklist-item::before {
-                        content: "✓";
-                        color: #4A90E2;
-                        font-weight: bold;
-                        margin-right: 12px;
-                        font-size: 14px;
                     }
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
-                        <div class="icon">🔬</div>
                         <h1>Recordatorio de Estudio</h1>
                         <p class="subtitle">Tu estudio está programado para mañana</p>
                     </div>
@@ -1131,44 +1121,44 @@ public class EmailServiceImpl implements EmailService {
                         <p>Te recordamos que tienes un <strong>estudio médico</strong> programado para <strong>mañana</strong>. Por favor, revisa los detalles a continuación:</p>
                         
                         <div class="countdown-box">
-                            <h3>⏰ Tu estudio es en menos de 24 horas</h3>
+                            <h3>Tu estudio es en menos de 24 horas</h3>
                             <p>No olvides prepararte adecuadamente</p>
                         </div>
                         
                         <div class="details-box">
-                            <h3>📋 Detalles del Estudio</h3>
+                            <h3>Detalles del Estudio</h3>
                             <div class="detail-row">
-                                <span class="detail-label">📅 Fecha:</span>
+                                <span class="detail-label">Fecha:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">🔬 Estudio:</span>
+                                <span class="detail-label">Estudio:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">📝 Descripción:</span>
+                                <span class="detail-label">Descripción:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                             <div class="detail-row">
-                                <span class="detail-label">📍 Centro:</span>
+                                <span class="detail-label">Centro:</span>
                                 <span class="detail-value">%s</span>
                             </div>
                         </div>
                         
                         <div class="checklist">
-                            <h4>📝 Recomendaciones generales:</h4>
-                            <div class="checklist-item">DNI o documento de identidad</div>
-                            <div class="checklist-item">Orden médica o indicación del estudio</div>
-                            <div class="checklist-item">Credencial de obra social/prepaga (si corresponde)</div>
-                            <div class="checklist-item">Seguir las indicaciones de preparación del estudio</div>
-                            <div class="checklist-item">Llegar con tiempo de anticipación</div>
+                            <h4>Recomendaciones generales:</h4>
+                            <div class="checklist-item">• DNI o documento de identidad</div>
+                            <div class="checklist-item">• Orden médica o indicación del estudio</div>
+                            <div class="checklist-item">• Credencial de obra social/prepaga (si corresponde)</div>
+                            <div class="checklist-item">• Seguir las indicaciones de preparación del estudio</div>
+                            <div class="checklist-item">• Llegar con tiempo de anticipación</div>
                         </div>
                         
                         <div class="warning-box">
-                            <p style="margin: 0; color: #495057;"><strong>ℹ️ Importante:</strong> Algunos estudios requieren preparación especial (ayuno, suspensión de medicamentos, etc.). Por favor, consulta las indicaciones específicas de tu estudio.</p>
+                            <p style="margin: 0; color: #495057;"><strong>Importante:</strong> Algunos estudios requieren preparación especial (ayuno, suspensión de medicamentos, etc.). Por favor, consulta las indicaciones específicas de tu estudio.</p>
                         </div>
                         
-                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos que todo salga bien. ¡Gracias por confiar en nosotros!</p>
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Te deseamos que todo salga bien. Gracias por confiar en nosotros.</p>
                     </div>
                     %s
                 </div>
@@ -1182,6 +1172,215 @@ public class EmailServiceImpl implements EmailService {
             analysisName,
             description,
             medicalCenterName,
+            FOOTER_HTML
+        );
+    }
+
+    private String buildAnalysisScheduledEmailHtml(Patient patient, Analysis analysis) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        String fechaFormateada = analysis.getScheduledDate() != null 
+            ? analysis.getScheduledDate().format(dateFormatter) 
+            : "No especificada";
+        String horaFormateada = analysis.getScheduledTime() != null 
+            ? analysis.getScheduledTime().format(timeFormatter) 
+            : "No especificada";
+        String analysisName = analysis.getName() != null ? analysis.getName().getName() : "No especificado";
+        String medicalCenterName = analysis.getMedicalCenterE() != null ? analysis.getMedicalCenterE().getName() : "No especificado";
+        String description = analysis.getDescription() != null ? analysis.getDescription() : "";
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Turno de Estudio Confirmado</title>
+                <style>
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Turno de Estudio Confirmado</h1>
+                        <p class="subtitle">Tu reserva ha sido procesada exitosamente</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hola, %s %s</h2>
+                        <p>Tu turno para realizar el estudio ha sido reservado exitosamente. A continuación encontrarás los detalles:</p>
+                        
+                        <div class="details-box">
+                            <h3>Detalles del Estudio</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Estudio:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Descripción:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Fecha:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Hora:</span>
+                                <span class="detail-value">%s hs</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Centro:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>Recordatorio:</strong> Te enviaremos un email de recordatorio 24 horas antes de tu estudio.</p>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <p style="margin: 0; color: #495057;"><strong>Importante:</strong> Algunos estudios requieren preparación especial (ayuno, suspensión de medicamentos, etc.). Consulta las indicaciones específicas de tu estudio.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si necesitas reprogramar o cancelar tu turno, puedes hacerlo desde la plataforma Mi Historia Clínica.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """,
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            analysisName,
+            description,
+            fechaFormateada,
+            horaFormateada,
+            medicalCenterName,
+            FOOTER_HTML
+        );
+    }
+
+    private String buildConsultationSummaryEmailHtml(Patient patient, Medic medic,
+                                                      List<String> estudios, List<String> medicamentos,
+                                                      boolean historiaActualizada) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+        
+        String fechaConsulta = java.time.LocalDate.now().format(dateFormatter);
+        String medicName = medic.getName() + " " + medic.getLastname();
+        String specialtyName = medic.getSpecialty() != null ? medic.getSpecialty().getName() : "No especificada";
+        
+        // Construir sección de cambios
+        StringBuilder cambiosHtml = new StringBuilder();
+        
+        if (historiaActualizada) {
+            cambiosHtml.append("""
+                <div class="feature-item">
+                    <strong>Historia Clínica:</strong> Se actualizó tu historia médica con nueva información.
+                </div>
+                """);
+        }
+        
+        if (estudios != null && !estudios.isEmpty()) {
+            StringBuilder listaEstudios = new StringBuilder();
+            for (String estudio : estudios) {
+                listaEstudios.append(String.format("<li>%s</li>", estudio));
+            }
+            cambiosHtml.append(String.format("""
+                <div class="feature-item">
+                    <strong>Estudios Asignados:</strong>
+                    <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                        %s
+                    </ul>
+                    <p style="font-size: 13px; color: #666; margin-top: 8px;">Ingresa a la plataforma para programar el turno de tus estudios.</p>
+                </div>
+                """, listaEstudios.toString()));
+        }
+        
+        if (medicamentos != null && !medicamentos.isEmpty()) {
+            StringBuilder listaMedicamentos = new StringBuilder();
+            for (String medicamento : medicamentos) {
+                listaMedicamentos.append(String.format("<li>%s</li>", medicamento));
+            }
+            cambiosHtml.append(String.format("""
+                <div class="feature-item">
+                    <strong>Medicamentos Recetados:</strong>
+                    <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                        %s
+                    </ul>
+                    <p style="font-size: 13px; color: #666; margin-top: 8px;">Sigue las indicaciones de tu médico para cada medicamento.</p>
+                </div>
+                """, listaMedicamentos.toString()));
+        }
+        
+        // Si no hay cambios específicos
+        if (cambiosHtml.length() == 0) {
+            cambiosHtml.append("""
+                <div class="feature-item">
+                    <strong>Consulta de Control:</strong> Se realizó una consulta de seguimiento.
+                </div>
+                """);
+        }
+
+        return String.format("""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Resumen de Consulta Médica</title>
+                <style>
+                    %s
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>Resumen de Consulta</h1>
+                        <p class="subtitle">Tu consulta médica ha finalizado</p>
+                    </div>
+                    <div class="content">
+                        <h2>Hola, %s %s</h2>
+                        <p>Tu consulta médica ha finalizado. A continuación encontrarás el detalle de lo realizado:</p>
+                        
+                        <div class="details-box">
+                            <h3>Datos de la Consulta</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Fecha:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Médico:</span>
+                                <span class="detail-value">Dr/Dra. %s</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Especialidad:</span>
+                                <span class="detail-value">%s</span>
+                            </div>
+                        </div>
+                        
+                        <h3 style="color: #4A90E2; margin-top: 25px; margin-bottom: 15px;">Cambios Realizados</h3>
+                        <div class="feature-list">
+                            %s
+                        </div>
+                        
+                        <div class="info-box">
+                            <p style="margin: 0; color: #2980b9;"><strong>Recordatorio:</strong> Ingresa a la plataforma Mi Historia Clínica para ver todos los detalles y gestionar tus turnos.</p>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 14px; color: #888;">Si tienes alguna pregunta sobre tu consulta, no dudes en contactar a tu médico.</p>
+                    </div>
+                    %s
+                </div>
+            </body>
+            </html>
+            """,
+            BASE_STYLES,
+            patient.getName(),
+            patient.getLastname(),
+            fechaConsulta,
+            medicName,
+            specialtyName,
+            cambiosHtml.toString(),
             FOOTER_HTML
         );
     }

@@ -18,6 +18,101 @@ export class AnalysisListPatientComponent implements OnInit{
 
     constructor(private userService: PatientService, private router: Router) {}
 
+    /**
+     * Navega a reservar turno para un análisis específico
+     */
+    reserveSlotForAnalysis(analysis: any): void {
+        this.router.navigate(['/patient/reserve-analysis-slot'], {
+            queryParams: {
+                analysisId: analysis.analysis_id,
+                analysisType: this.formatAnalysisName(analysis.name),
+                analysisEnum: analysis.name
+            }
+        });
+    }
+
+    /**
+     * Reprogramar un estudio - navega a la pantalla de reserva
+     */
+    reprogramAnalysis(analysis: any): void {
+        Swal.fire({
+            title: 'Reprogramar estudio',
+            text: '¿Deseas reprogramar este estudio? Se cancelará el turno actual.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, reprogramar',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#3fb5eb'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Primero cancelar el turno actual
+                this.userService.cancelStudySchedule(analysis.analysis_id).subscribe(
+                    () => {
+                        // Luego navegar a reservar nuevo turno
+                        this.router.navigate(['/patient/reserve-analysis-slot'], {
+                            queryParams: {
+                                analysisId: analysis.analysis_id,
+                                analysisType: this.formatAnalysisName(analysis.name),
+                                analysisEnum: analysis.name
+                            }
+                        });
+                    },
+                    (error) => {
+                        console.error('Error al cancelar:', error);
+                        Swal.fire('Error', 'No se pudo cancelar el turno actual', 'error');
+                    }
+                );
+            }
+        });
+    }
+
+    /**
+     * Cancelar un estudio programado
+     */
+    cancelAnalysis(analysis: any): void {
+        Swal.fire({
+            title: 'Cancelar turno',
+            text: '¿Estás seguro de que deseas cancelar este turno?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No',
+            confirmButtonColor: '#dc3545'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.userService.cancelStudySchedule(analysis.analysis_id).subscribe(
+                    () => {
+                        Swal.fire({
+                            title: 'Turno cancelado',
+                            text: 'El turno ha sido cancelado. Puedes reservar uno nuevo cuando lo desees.',
+                            icon: 'success',
+                            confirmButtonColor: '#3fb5eb'
+                        });
+                        // Recargar la lista
+                        this.formSubmit();
+                    },
+                    (error) => {
+                        console.error('Error al cancelar:', error);
+                        Swal.fire('Error', 'No se pudo cancelar el turno', 'error');
+                    }
+                );
+            }
+        });
+    }
+
+    /**
+     * Retorna la clase CSS según el estado
+     */
+    getStatusClass(status: string): string {
+        switch (status) {
+            case 'Pendiente': return 'status-pending';
+            case 'Programado': return 'status-scheduled';
+            case 'En curso': return 'status-in-progress';
+            case 'Finalizado': return 'status-completed';
+            default: return '';
+        }
+    }
+
     ngOnInit(): void {
         if (localStorage.getItem('userType') != 'PATIENT') {
             window.location.href = '/patient/login';
@@ -114,5 +209,32 @@ export class AnalysisListPatientComponent implements OnInit{
             year: 'numeric' 
         };
         return date.toLocaleDateString('es-ES', options);
+    }
+
+    formatAnalysisName(enumName: string): string {
+        const names: {[key: string]: string} = {
+            'HEMOGRAMA_COMPLETO': 'Hemograma Completo',
+            'PERFIL_LIPIDICO': 'Perfil Lipídico',
+            'GLUCEMIA_EN_AYUNAS': 'Glucemia en Ayunas',
+            'PRUEBA_DE_EMABARAZO': 'Prueba de Embarazo',
+            'ANALISIS_DE_ORINA': 'Análisis de Orina',
+            'ELECTROCARDIOGRAMA': 'Electrocardiograma',
+            'RADIOGRAFIA_DE_TORAX': 'Radiografía de Tórax',
+            'ECOGRAFIA_ABDOMINAL': 'Ecografía Abdominal',
+            'DENSITOMETRIA_OSEA': 'Densitometría Ósea',
+            'ANALISIS_DE_TIROIDES': 'Análisis de Tiroides',
+            'TOMOGRAFIA_COMPUTARIZADA': 'Tomografía Computarizada',
+            'RESONANCIA_MAGNETICA': 'Resonancia Magnética',
+            'COLONOSCOPIA': 'Colonoscopía',
+            'MAMOGRAFIA': 'Mamografía',
+            'TEST_DE_VIH': 'Test de VIH',
+            'ANALISIS_DE_HEPATITIS': 'Análisis de Hepatitis',
+            'HOLTER_CARDIACO': 'Holter Cardíaco',
+            'ANALISIS_DE_ALERGIAS': 'Análisis de Alergias',
+            'PAPANICOLAOU': 'Papanicolau',
+            'TEST_DE_GLUCOSA_POSPRANDIAL': 'Test de Glucosa Posprandial',
+            'CITOLOGIA_DE_ESPUTO': 'Citología de Esputo'
+        };
+        return names[enumName] || enumName;
     }
 }

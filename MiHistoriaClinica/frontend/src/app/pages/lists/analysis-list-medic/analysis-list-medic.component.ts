@@ -21,20 +21,18 @@ export class AnalysisListMedicComponent implements OnInit{
     constructor(private userService: MedicService, private router: Router, private httpClient: HttpClient) {}
 
     ngOnInit(): void {
-        //verifico usuario
         if (localStorage.getItem('userType') != 'MEDIC') {
-            window.location.href = '/patient/login';
-        }else {
-            this.formSubmit(); // Fetch medicines list
+            window.location.href = '/medic/login';
+        } else {
+            this.formSubmit();
         }
-
         this.getPatientInfo();
     }
 
     formSubmit() {
         const createGetAnalysisListObservable = this.userService.getAnalysisList();
         if (createGetAnalysisListObservable === undefined) {
-            Swal.fire('Error', 'El método createMedicalHistory no devuelve un observable.', 'error');
+            Swal.fire('Error', 'El método no devuelve un observable.', 'error');
             return;
         }
         createGetAnalysisListObservable.subscribe(
@@ -44,7 +42,6 @@ export class AnalysisListMedicComponent implements OnInit{
             },
             (error: any) => {
                 console.log(error);
-                // Solo mostrar error si es un error real del servidor (500+)
                 if (error.status >= 500) {
                     Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                 }
@@ -59,8 +56,8 @@ export class AnalysisListMedicComponent implements OnInit{
             return;
         }
         Swal.fire({
-            title: 'Eliminar medicamento',
-            text: '¿Estás seguro de que quieres eliminar este medicamento?',
+            title: 'Eliminar estudio',
+            text: '¿Estás seguro de que quieres eliminar este estudio?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -75,7 +72,11 @@ export class AnalysisListMedicComponent implements OnInit{
                         if (index !== -1) {
                             this.analysisList.splice(index, 1);
                         }
+                        Swal.fire('Eliminado', 'El estudio ha sido eliminado.', 'success');
                     },
+                    (error) => {
+                        Swal.fire('Error', 'No se pudo eliminar el estudio.', 'error');
+                    }
                 );
             }
         });
@@ -85,17 +86,15 @@ export class AnalysisListMedicComponent implements OnInit{
         if (status === "santi") {
             const getAnalysisListObservable = this.userService.getAnalysisList();
             if (!getAnalysisListObservable) {
-                Swal.fire('Error', 'El método getMedicinesList no devuelve un observable.', 'error');
+                Swal.fire('Error', 'Error al obtener la lista.', 'error');
                 return;
             }
             getAnalysisListObservable?.subscribe(
                 (data: Object) => {
-                    console.log('Analysis List:', data);
                     this.analysisList = Array.isArray(data) ? data : [];
                 },
                 (error: any) => {
                     console.log(error);
-                    // Solo mostrar error si es un error real del servidor (500+)
                     if (error.status >= 500) {
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
@@ -106,7 +105,6 @@ export class AnalysisListMedicComponent implements OnInit{
             this.userService.getAnalysisByStatus(status).subscribe(
                 (analysis: any[]) => {
                     this.analysisList = Array.isArray(analysis) ? analysis : [];
-                    console.log('Se ha filtrado con éxito');
                 },
                 (error: any) => {
                     console.log('Error al filtrar estudios:', error);
@@ -141,13 +139,55 @@ export class AnalysisListMedicComponent implements OnInit{
         return date.toLocaleDateString('es-ES', options);
     }
 
+    formatAnalysisName(name: string): string {
+        if (!name) return '';
+        // Convertir de SNAKE_CASE a formato legible
+        const nameMap: { [key: string]: string } = {
+            'HEMOGRAMA_COMPLETO': 'Hemograma Completo',
+            'PERFIL_LIPIDICO': 'Perfil Lipídico',
+            'GLUCEMIA': 'Glucemia',
+            'ORINA_COMPLETA': 'Orina Completa',
+            'HEPATOGRAMA': 'Hepatograma',
+            'FUNCION_RENAL': 'Función Renal',
+            'ELECTROCARDIOGRAMA': 'Electrocardiograma',
+            'RADIOGRAFIA_TORAX': 'Radiografía de Tórax',
+            'ECOGRAFIA_ABDOMINAL': 'Ecografía Abdominal',
+            'TOMOGRAFIA': 'Tomografía',
+            'RESONANCIA_MAGNETICA': 'Resonancia Magnética'
+        };
+        return nameMap[name] || name.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    getStatusClass(status: string): string {
+        switch (status?.toLowerCase()) {
+            case 'pendiente':
+                return 'status-pending';
+            case 'programado':
+                return 'status-scheduled';
+            case 'en curso':
+                return 'status-in-progress';
+            case 'finalizado':
+                return 'status-completed';
+            default:
+                return '';
+        }
+    }
+
     getPatientInfo(): void {
+        const patientLinkCode = localStorage.getItem('patientLinkCode');
+        if (!patientLinkCode) {
+            console.error('No hay paciente vinculado');
+            return;
+        }
+
         const token = localStorage.getItem('token');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', "Bearer " + token);
         }
-        this.httpClient.get<any>('http://localhost:8080/patient/get-patient-info', { headers }).subscribe(
+        headers = headers.set('patientLinkCode', patientLinkCode);
+
+        this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
                 this.patient = response;
             },
