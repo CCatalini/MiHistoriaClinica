@@ -5,6 +5,7 @@ import com.example.MiHistoriaClinica.presentation.dto.PatientLoginDTO;
 import com.example.MiHistoriaClinica.presentation.dto.PatientDTO;
 import com.example.MiHistoriaClinica.presentation.dto.TurnoDTO;
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
+import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
 import com.example.MiHistoriaClinica.persistence.model.Medic;
@@ -242,6 +243,15 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado"));
 
+        // Validar que el paciente no tenga otro turno en la misma fecha y hora
+        boolean tieneConflicto = turnosRepository.existsByPatient_PatientIdAndFechaTurnoAndHoraTurno(
+                patientId, turno.getFechaTurno(), turno.getHoraTurno());
+        if (tieneConflicto) {
+            throw new RuntimeException("Ya tenés un turno reservado para el " + 
+                    turno.getFechaTurno() + " a las " + turno.getHoraTurno() + 
+                    ". No podés reservar dos turnos en el mismo horario.");
+        }
+
         turno.setPatient(patient);
         turno.setAvailable(false);
         
@@ -279,6 +289,15 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepository.findByDni(patientDni);
         if (patient == null) {
             throw new ResourceNotFoundException("Paciente no encontrado con DNI: " + patientDni);
+        }
+
+        // Validar que el paciente no tenga otro turno en la misma fecha y hora
+        boolean tieneConflicto = turnosRepository.existsByPatient_PatientIdAndFechaTurnoAndHoraTurno(
+                patient.getPatientId(), turno.getFechaTurno(), turno.getHoraTurno());
+        if (tieneConflicto) {
+            throw new RuntimeException("Ya tenés un turno reservado para el " + 
+                    turno.getFechaTurno() + " a las " + turno.getHoraTurno() + 
+                    ". No podés reservar dos turnos en el mismo horario.");
         }
 
         turno.setPatient(patient);
@@ -375,7 +394,40 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void deleteTurno(Long id) {
-        turnosRepository.deleteById(id);
+        Turnos turno = turnosRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+        
+        // Guardar referencia al paciente antes de liberar (para enviar email)
+        Patient patient = turno.getPatient();
+        
+        // Crear copia de los datos del turno para el email (antes de limpiarlos)
+        Turnos turnoParaEmail = new Turnos();
+        turnoParaEmail.setFechaTurno(turno.getFechaTurno());
+        turnoParaEmail.setHoraTurno(turno.getHoraTurno());
+        turnoParaEmail.setMedicFullName(turno.getMedicFullName());
+        turnoParaEmail.setMedicSpecialty(turno.getMedicSpecialty());
+        turnoParaEmail.setMedicalCenter(turno.getMedicalCenter());
+        
+        // Liberar el turno: quitar paciente y marcar como disponible
+        turno.setPatient(null);
+        turno.setAvailable(true);
+        
+        // Limpiar campos denormalizados del paciente
+        turno.setPatientName(null);
+        turno.setPatientLastname(null);
+        turno.setPatientDni(null);
+        turno.setPatientEmail(null);
+        
+        turnosRepository.save(turno);
+        
+        // Enviar email de cancelación al paciente
+        if (patient != null && patient.getEmail() != null) {
+            try {
+                emailService.sendTurnoCancellationEmail(patient, turnoParaEmail);
+            } catch (Exception e) {
+                System.err.println("Error enviando email de cancelación de turno: " + e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -386,18 +438,44 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<Turnos> getAvailableTurnosByMedic(Long medicId) {
-        return turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
+        List<Turnos> allTurnos = turnosRepository.findByMedic_MedicIdAndAvailableTrue(medicId);
+        List<Turnos> filtered = new java.util.ArrayList<>();
+        
+        for (Turnos t : allTurnos) {
+            // Filtrar turnos de días anteriores
+            if (t.getFechaTurno().isBefore(today)) {
+                continue;
+            }
+            // Filtrar turnos de hoy que ya pasaron
+            if (t.getFechaTurno().equals(today) && t.getHoraTurno().isBefore(now)) {
+                continue;
+            }
+            filtered.add(t);
+        }
+        
+        return filtered;
     }
 
     @Override
     public List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDate(String specialty, String dateIso) {
         java.time.LocalDate date = java.time.LocalDate.parse(dateIso);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
         com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
         List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoAndAvailableTrue(specEnum, date);
 
         java.util.Map<Long, MedicTurnosDTO> map = new java.util.HashMap<>();
 
         for (Turnos t : turnos) {
+            // Filtrar turnos que ya pasaron: si es hoy y la hora ya pasó, no mostrar
+            if (t.getFechaTurno().equals(today) && t.getHoraTurno().isBefore(now)) {
+                continue; // Saltar turnos que ya pasaron hoy
+            }
+            
             MedicTurnosDTO dto = map.computeIfAbsent(
                     t.getMedic().getMedicId(),
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
@@ -415,6 +493,9 @@ public class PatientServiceImpl implements PatientService {
     public List<MedicTurnosDTO> searchAvailableTurnosBySpecialtyAndDateRange(String specialty, String startDateIso) {
         java.time.LocalDate startDate = java.time.LocalDate.parse(startDateIso);
         java.time.LocalDate endDate = startDate.plusDays(29); // 30 días incluyendo el de inicio
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
         com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
 
         List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoBetweenAndAvailableTrue(specEnum, startDate, endDate);
@@ -422,6 +503,11 @@ public class PatientServiceImpl implements PatientService {
         java.util.Map<Long, MedicTurnosDTO> map = new java.util.HashMap<>();
 
         for (Turnos t : turnos) {
+            // Filtrar turnos que ya pasaron: si es hoy y la hora ya pasó, no mostrar
+            if (t.getFechaTurno().equals(today) && t.getHoraTurno().isBefore(now)) {
+                continue; // Saltar turnos que ya pasaron hoy
+            }
+            
             MedicTurnosDTO dto = map.computeIfAbsent(
                     t.getMedic().getMedicId(),
                     id -> new MedicTurnosDTO(id, t.getMedicFullName(), t.getMedicSpecialty(), t.getMedicalCenter().getName(), new java.util.ArrayList<>())
@@ -439,15 +525,73 @@ public class PatientServiceImpl implements PatientService {
     public List<String> getMedicsWithAvailableTurnosBySpecialty(String specialty, String startDateIso) {
         java.time.LocalDate startDate = java.time.LocalDate.parse(startDateIso);
         java.time.LocalDate endDate = startDate.plusDays(29);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
         com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE specEnum = com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE.getEnumFromName(specialty);
         List<Turnos> turnos = turnosRepository.findByMedicSpecialtyAndFechaTurnoBetweenAndAvailableTrue(specEnum, startDate, endDate);
         java.util.Set<String> medics = new java.util.HashSet<>();
         for (Turnos t : turnos) {
+            // Filtrar turnos que ya pasaron
+            if (t.getFechaTurno().equals(today) && t.getHoraTurno().isBefore(now)) {
+                continue;
+            }
             medics.add(t.getMedic().getName() + " " + t.getMedic().getLastname());
         }
         return new java.util.ArrayList<>(medics);
     }
 
+    /**
+     * Inicia una consulta médica desde un turno acordado.
+     * Verifica que el turno pertenezca al médico y tenga un paciente asignado.
+     * Genera un linkCode para el paciente si no tiene uno.
+     * 
+     * @param medicId ID del médico que inicia la consulta
+     * @param turnoId ID del turno desde el cual se inicia la consulta
+     * @return linkCode del paciente, o null si el turno no es válido
+     */
+    public String iniciarConsultaDesdeTurno(Long medicId, Long turnoId) {
+        Optional<Turnos> turnoOpt = turnosRepository.findById(turnoId);
+        
+        if (turnoOpt.isEmpty()) {
+            return null;
+        }
+        
+        Turnos turno = turnoOpt.get();
+        
+        // Verificar que el turno pertenece al médico
+        if (turno.getMedic() == null || !turno.getMedic().getMedicId().equals(medicId)) {
+            return null;
+        }
+        
+        // Verificar que el turno tiene un paciente asignado
+        if (turno.getPatient() == null) {
+            return null;
+        }
+        
+        Patient patient = turno.getPatient();
+        
+        // Si el paciente no tiene linkCode, generarle uno
+        if (patient.getLinkCode() == null || patient.getLinkCode().isEmpty()) {
+            String newLinkCode = generateLinkCode(patient.getPatientId());
+            return newLinkCode;
+        }
+        
+        return patient.getLinkCode();
+    }
+
+    /**
+     * Actualiza el estado de un turno.
+     * 
+     * @param turnoId ID del turno a actualizar
+     * @param estado Nuevo estado del turno
+     */
+    public void updateTurnoEstado(Long turnoId, EstadoConsultaE estado) {
+        Turnos turno = turnosRepository.findById(turnoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turno no encontrado"));
+        turno.setEstadoConsulta(estado);
+        turnosRepository.save(turno);
+    }
 
 }
 

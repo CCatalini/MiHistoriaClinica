@@ -12,11 +12,20 @@ export class AllMedicsListComponent implements OnInit {
     // Datos base
     specialties: string[] = [];
     names: string[] = [];
+    medicalCenters: string[] = [
+        'SEDE_PRINCIPAL_HOSPITAL_AUSTRAL',
+        'CENTRO_ESPECIALIDAD_OFFICIA',
+        'CENTRO_ESPECIALIDAD_CHAMPAGNAT',
+        'CENTRO_ESPECIALIDAD_LUJAN'
+    ];
     
     // Filtros seleccionados
     selectedSpecialty: string = '';
     selectedName: string = '';
     selectedDate: string = '';
+    selectedMedicalCenter: string = '';
+    fechaDesde: string = '';
+    fechaHasta: string = '';
     
     // Turnos
     availableTurnos: any[] = [];
@@ -54,9 +63,12 @@ export class AllMedicsListComponent implements OnInit {
         // Resetear filtros dependientes
         this.selectedName = '';
         this.selectedDate = '';
+        this.selectedMedicalCenter = '';
+        this.fechaDesde = '';
+        this.fechaHasta = '';
         this.names = [];
-            this.availableTurnos = [];
-            this.filteredTurnos = [];
+        this.availableTurnos = [];
+        this.filteredTurnos = [];
         this.availableDates = [];
         
         if (!this.selectedSpecialty) {
@@ -113,7 +125,41 @@ export class AllMedicsListComponent implements OnInit {
         );
     }
 
+    onMedicalCenterChange(): void {
+        this.extractAvailableDates();
+        if (this.selectedDate && !this.availableDates.includes(this.selectedDate)) {
+            this.selectedDate = '';
+        }
+        this.filterTurnos();
+    }
+
+    onDateRangeChange(): void {
+        this.extractAvailableDates();
+        if (this.selectedDate && !this.availableDates.includes(this.selectedDate)) {
+            this.selectedDate = '';
+        }
+        this.filterTurnos();
+    }
+
+    clearAllFilters(): void {
+        this.selectedName = '';
+        this.selectedDate = '';
+        this.selectedMedicalCenter = '';
+        this.fechaDesde = '';
+        this.fechaHasta = '';
+        this.extractAvailableDates();
+        this.filterTurnos();
+    }
+
     onNameChange(): void {
+        // Actualizar fechas disponibles según el médico seleccionado
+        this.extractAvailableDates();
+        
+        // Si la fecha seleccionada ya no está disponible, limpiarla
+        if (this.selectedDate && !this.availableDates.includes(this.selectedDate)) {
+            this.selectedDate = '';
+        }
+        
         this.filterTurnos();
     }
 
@@ -138,7 +184,35 @@ export class AllMedicsListComponent implements OnInit {
 
     private extractAvailableDates(): void {
         if (this.availableTurnos.length > 0) {
-            const uniqueDates = Array.from(new Set(this.availableTurnos.map((t: any) => t.fechaTurno)));
+            // Filtrar turnos según los filtros seleccionados
+            let turnosParaFechas = this.availableTurnos;
+            
+            if (this.selectedName) {
+                turnosParaFechas = turnosParaFechas.filter(
+                    (t: any) => t.medicName === this.selectedName
+                );
+            }
+            
+            if (this.selectedMedicalCenter) {
+                const formattedCenter = this.formatMedicalCenter(this.selectedMedicalCenter);
+                turnosParaFechas = turnosParaFechas.filter(
+                    (t: any) => t.medicalCenter === formattedCenter
+                );
+            }
+            
+            // Filtrar por rango de fechas
+            if (this.fechaDesde) {
+                turnosParaFechas = turnosParaFechas.filter(
+                    (t: any) => t.fechaTurno >= this.fechaDesde
+                );
+            }
+            if (this.fechaHasta) {
+                turnosParaFechas = turnosParaFechas.filter(
+                    (t: any) => t.fechaTurno <= this.fechaHasta
+                );
+            }
+            
+            const uniqueDates = Array.from(new Set(turnosParaFechas.map((t: any) => t.fechaTurno)));
             this.availableDates = uniqueDates.sort().slice(0, 14); // Máximo 14 días para mostrar
         } else {
             this.availableDates = [];
@@ -158,10 +232,15 @@ export class AllMedicsListComponent implements OnInit {
         this.filteredTurnos = this.availableTurnos.filter(turno => {
             const nameMatch = this.selectedName ? turno.medicName === this.selectedName : true;
             const dateMatch = this.selectedDate ? turno.fechaTurno === this.selectedDate : true;
-            return nameMatch && dateMatch;
+            // Comparar con el nombre formateado porque el backend devuelve el nombre legible
+            const centerMatch = this.selectedMedicalCenter ? turno.medicalCenter === this.formatMedicalCenter(this.selectedMedicalCenter) : true;
+            const fechaDesdeMatch = this.fechaDesde ? turno.fechaTurno >= this.fechaDesde : true;
+            const fechaHastaMatch = this.fechaHasta ? turno.fechaTurno <= this.fechaHasta : true;
+            
+            return nameMatch && dateMatch && centerMatch && fechaDesdeMatch && fechaHastaMatch;
         });
         
-        // Ordenar por hora
+        // Ordenar por fecha y hora
         this.filteredTurnos.sort((a, b) => {
             if (a.fechaTurno !== b.fechaTurno) {
                 return a.fechaTurno.localeCompare(b.fechaTurno);
@@ -169,6 +248,7 @@ export class AllMedicsListComponent implements OnInit {
             return a.horaTurno.localeCompare(b.horaTurno);
         });
         
+        this.currentPage = 1;
         this.calculatePagination();
     }
 
@@ -232,6 +312,58 @@ export class AllMedicsListComponent implements OnInit {
     }
 
     // ============================================
+    // FORMATEO DE ENUMS
+    // ============================================
+
+    formatSpecialty(specialty: string): string {
+        if (!specialty) return '';
+        const specialtyMap: {[key: string]: string} = {
+            'MEDICINA_CLINICA': 'Medicina Clínica',
+            'CARDIOLOGIA': 'Cardiología',
+            'DERMATOLOGIA': 'Dermatología',
+            'ENDOCRINOLOGIA': 'Endocrinología',
+            'GASTROENTEROLOGIA': 'Gastroenterología',
+            'HEMATOLOGIA': 'Hematología',
+            'INFECTOLOGIA': 'Infectología',
+            'NEUROLOGIA': 'Neurología',
+            'ONCOLOGIA': 'Oncología',
+            'OFTALMOLOGIA': 'Oftalmología',
+            'OTORRINOLARINGOLOGIA': 'Otorrinolaringología',
+            'PEDIATRIA': 'Pediatría',
+            'PSIQUIATRIA': 'Psiquiatría',
+            'RADIOLOGIA': 'Radiología',
+            'REUMATOLOGIA': 'Reumatología',
+            'TRAUMATOLOGIA': 'Traumatología',
+            'UROLOGIA': 'Urología',
+            'GINECOLOGIA': 'Ginecología',
+            'MEDICINA_INTERNA': 'Medicina Interna',
+            'CIRUGIA_GENERAL': 'Cirugía General',
+            'ANESTESIOLOGIA': 'Anestesiología'
+        };
+        return specialtyMap[specialty] || specialty.replace(/_/g, ' ');
+    }
+
+    formatMedicalCenter(center: string): string {
+        if (!center) return '';
+        // Mapear los nombres del enum a los nombres que devuelve el backend
+        const centerMap: {[key: string]: string} = {
+            'SEDE_PRINCIPAL_HOSPITAL_AUSTRAL': 'Sede Principal - Hospital Universitario Austral',
+            'CENTRO_ESPECIALIDAD_OFFICIA': 'Centro de especialidad Officia',
+            'CENTRO_ESPECIALIDAD_LUJAN': 'Centro de especialidad Lujan',
+            'CENTRO_ESPECIALIDAD_CHAMPAGNAT': 'Centro de especialidad Champagnat'
+        };
+        return centerMap[center] || center;
+    }
+
+    getMinDate(): string {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    hasActiveFilters(): boolean {
+        return !!(this.selectedName || this.selectedMedicalCenter || this.fechaDesde || this.fechaHasta || this.selectedDate);
+    }
+
+    // ============================================
     // FORMATEO DE FECHAS
     // ============================================
 
@@ -287,8 +419,8 @@ export class AllMedicsListComponent implements OnInit {
             html: `
                 <div style="text-align: left; padding: 10px 0;">
                     <p style="margin: 8px 0;"><strong>Médico:</strong> ${turno.medicName}</p>
-                    <p style="margin: 8px 0;"><strong>Especialidad:</strong> ${turno.specialty}</p>
-                    <p style="margin: 8px 0;"><strong>Centro:</strong> ${turno.medicalCenter}</p>
+                    <p style="margin: 8px 0;"><strong>Especialidad:</strong> ${this.formatSpecialty(turno.specialty)}</p>
+                    <p style="margin: 8px 0;"><strong>Centro:</strong> ${this.formatMedicalCenter(turno.medicalCenter)}</p>
                     <p style="margin: 8px 0;"><strong>Fecha:</strong> ${formattedDate}</p>
                     <p style="margin: 8px 0;"><strong>Hora:</strong> ${turno.horaTurno}</p>
                 </div>
@@ -318,12 +450,24 @@ export class AllMedicsListComponent implements OnInit {
                     (error: any) => {
                         console.error('Error al reservar turno:', error);
                         let errorMessage = 'No se pudo reservar el turno.';
+                        let errorTitle = 'Error';
+                        
                         if (error.status === 404) {
                             errorMessage = 'El turno no existe o ya no está disponible.';
+                        } else if (error.status === 409) {
+                            // Conflicto - ya tiene un turno en esa hora
+                            errorTitle = 'Conflicto de horario';
+                            errorMessage = error.error?.message || 'Ya tenés un turno reservado en ese horario.';
                         } else if (error.error && error.error.message) {
                             errorMessage = error.error.message;
                         }
-                        Swal.fire('Error', errorMessage, 'error');
+                        
+                        Swal.fire({
+                            title: errorTitle,
+                            text: errorMessage,
+                            icon: error.status === 409 ? 'warning' : 'error',
+                            confirmButtonColor: '#3fb5eb'
+                        });
                     }
                 );
             }

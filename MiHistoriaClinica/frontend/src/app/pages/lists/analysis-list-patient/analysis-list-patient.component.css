@@ -285,21 +285,22 @@ table tbody tr:hover {
 
 /* ---------------- BOTONES DE ACCIÓN ---------------- */
 .btn-action {
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.3s;
+    transition: all 0.2s;
+    text-transform: uppercase;
 }
 
 .btn-reserve {
     background: #3fb5eb;
     color: white;
+    border: none;
 }
 
 .btn-reserve:hover {
@@ -307,21 +308,25 @@ table tbody tr:hover {
 }
 
 .btn-reschedule {
-    background: #ffc107;
-    color: #212529;
+    background: transparent;
+    color: #3fb5eb;
+    border: 2px solid #3fb5eb;
 }
 
 .btn-reschedule:hover {
-    background: #e0a800;
-}
-
-.btn-cancel {
-    background: #dc3545;
+    background: #3fb5eb;
     color: white;
 }
 
+.btn-cancel {
+    background: transparent;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+}
+
 .btn-cancel:hover {
-    background: #c82333;
+    background: #6c757d;
+    color: white;
 }
 
 /* Celda de acciones */

@@ -34,63 +34,530 @@ body {
     letter-spacing: 0.5px;
 }
 
-.container {
-    width: 100%;
+/* Layout principal 2/3 - 1/3 */
+.main-layout {
+    display: flex;
+    gap: 25px;
     max-width: 1200px;
     margin: 0 auto;
+    align-items: stretch;
+    min-height: calc(100vh - 250px);
 }
 
-html {
-    height: 100%;
-}
-
-.bootstrap-wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-.options {
-    display: flex;
-    justify-content: center;
-    flex-wrap: nowrap;
-    gap: 15px;
-}
-
-.option {
-    margin: 10px;
-    text-align: center;
-    text-decoration: none;
-    color: #000;
-    flex-shrink: 0;
-}
-
-.option-box {
-    width: 200px;
-    height: 200px;
-    background-color: #FFFFFF;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* Sección de Pacientes del Día (2/3) */
+.patients-section {
+    flex: 2;
+    background: white;
+    padding: 25px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Menú lateral (1/3) */
+.sidebar-menu {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header de sección */
+.section-header {
+    border-bottom: 2px solid #3fb5eb;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i {
+    color: #3fb5eb;
+}
+
+/* Estados de carga y vacío */
+.loading-state,
+.empty-state {
+    text-align: center;
+    padding: 50px 30px;
+    color: #6c757d;
+}
+
+.loading-state i,
+.empty-state i {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color: #3fb5eb;
+}
+
+.loading-state p,
+.empty-state p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Lista de pacientes */
+.patients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Tarjeta de paciente */
+.patient-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #3fb5eb;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.option-box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+.patient-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.option-box img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+/* Estados de las tarjetas */
+.patient-card.estado-pendiente {
+    border-left-color: #ffc107;
+    background: #fffdf5;
 }
 
-.option-box span {
-    margin-top: 10px;
+.patient-card.estado-realizada,
+.patient-card.estado-completada {
+    border-left-color: #28a745;
+    background: #f5fff7;
+}
+
+.patient-card.estado-cancelada,
+.patient-card.estado-vencido {
+    border-left-color: #6c757d;
+    background: #f8f9fa;
+    opacity: 0.7;
+}
+
+/* Info del paciente */
+.patient-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.patient-time,
+.patient-name,
+.patient-estado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.patient-time {
+    font-weight: 600;
+    color: #3fb5eb;
+    font-size: 18px;
+    min-width: 70px;
+}
+
+.patient-time i {
+    font-size: 16px;
+}
+
+.patient-name {
+    color: #2c3e50;
+    font-size: 16px;
+    min-width: 200px;
+}
+
+.patient-name i {
+    color: #6c757d;
+}
+
+/* Badge de estado */
+.estado-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.estado-badge.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado-badge.estado-realizada,
+.estado-badge.estado-completada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-badge.estado-cancelada,
+.estado-badge.estado-vencido {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* Contenedor de acciones del paciente */
+.patient-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Botón iniciar consulta */
+.btn-iniciar {
+    background: linear-gradient(135deg, #3fb5eb 0%, #2da0d4 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
     font-size: 14px;
     font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.btn-iniciar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(63, 181, 235, 0.4);
+}
+
+.btn-iniciar i {
+    font-size: 16px;
+}
+
+/* Botón cancelar turno */
+.btn-cancelar-turno {
+    background: transparent;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-cancelar-turno:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancelar-turno i {
+    font-size: 14px;
+}
+
+/* Icono consulta finalizada */
+.consulta-finalizada {
+    font-size: 24px;
+    padding: 0 10px;
+}
+
+.consulta-finalizada .fa-check-circle {
+    color: #28a745;
+}
+
+.consulta-finalizada .fa-times-circle,
+.consulta-finalizada .fa-clock {
+    color: #6c757d;
+}
+
+/* Menú de opciones */
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+
+.menu-option {
+    text-decoration: none;
+    color: inherit;
+    flex: 1;
+    display: flex;
+}
+
+.menu-option-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    border: 2px solid transparent;
+    width: 100%;
+    height: 100%;
+}
+
+.menu-option-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: white;
+    border-color: #3fb5eb;
+}
+
+.menu-option-box img {
+    width: 40%;
+    max-width: 120px;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.menu-option-box span {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 600;
     color: #2c3e50;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .main-layout {
+        flex-direction: column;
+    }
+
+    .patients-section,
+    .sidebar-menu {
+        flex: none;
+        width: 100%;
+    }
+
+    .sidebar-menu {
+        order: -1;
+    }
+
+    .menu-options {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .menu-option-box {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 25px;
+    }
+}
+
+@media (max-width: 600px) {
+    .patient-card {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .patient-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .patient-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .btn-iniciar,
+    .btn-cancelar-turno {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .patient-name {
+        min-width: auto;
+    }
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: modalIn 0.2s ease-out;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #2c3e50;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #3fb5eb;
+}
+
+.modal-header h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+}
+
+.modal-patient-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    flex-wrap: wrap;
+}
+
+.modal-patient-info i {
+    color: #3fb5eb;
+}
+
+.modal-time {
+    color: #3fb5eb;
+    font-weight: 500;
+}
+
+.modal-body {
+    margin-bottom: 25px;
+}
+
+.modal-body .full-width {
+    width: 100%;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-cancelar {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 2px solid #6c757d;
+    border-radius: 6px;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-cancelar:hover {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-confirmar {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    background: #3fb5eb;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+}
+
+.btn-confirmar:hover:not(:disabled) {
+    background: #2da0d4;
+}
+
+.btn-confirmar:disabled {
+    background: #9dd5f5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 25px 20px;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .btn-cancelar,
+    .btn-confirmar {
+        width: 100%;
+        justify-content: center;
+    }
 }

@@ -1,5 +1,6 @@
 :host {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     min-height: 100vh;
     padding: 120px 16px 40px 16px;
@@ -17,46 +18,54 @@ body {
 .page-title {
     background: white;
     padding: 20px;
-    margin: 0 0 30px 0;
+    margin: 0 auto 30px auto;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     text-align: center;
     border-bottom: 3px solid #3fb5eb;
     width: 100%;
+    max-width: 1200px;
     box-sizing: border-box;
 }
 
 .page-title h1 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
     margin: 0 0 8px 0;
     color: #2c3e50;
     letter-spacing: 0.5px;
 }
 
-.page-title .patient-info {
+.page-title h1 .patient-name {
+    font-weight: 400;
+    color: #4a5568;
+}
+
+.page-title .patient-dni {
     font-size: 16px;
-    color: #666;
+    color: #718096;
     margin: 0;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .bootstrap-wrapper {
     display: flex;
     justify-content: center;
     width: 100%;
+    flex: 1;
 }
 
 .container {
     width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .options {
-    display: flex;
-    justify-content: center;
-    flex-wrap: nowrap;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    width: 100%;
 }
 
 .option {
@@ -66,15 +75,15 @@ body {
 }
 
 .option-box {
-    width: 200px;
-    min-height: 220px;
+    width: 100%;
+    min-height: 280px;
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
-    padding: 20px 15px;
-    border-radius: 8px;
+    padding: 30px 20px;
+    border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -85,29 +94,29 @@ body {
 }
 
 .option-box img {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .option-box span {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .option-buttons {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     width: 100%;
 }
 
 .btn-action {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 14px;
     font-weight: 500;
     text-decoration: none;
@@ -141,31 +150,48 @@ body {
 .finish-button-container {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
-    padding-bottom: 40px;
+    margin-top: auto;
+    padding: 30px 0;
 }
 
 .btn-finish {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 32px;
-    font-size: 16px;
+    padding: 16px 40px;
+    font-size: 17px;
     font-weight: 600;
     color: white;
-    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    background: linear-gradient(135deg, #3fb5eb 0%, #2196F3 100%);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    box-shadow: 0 4px 15px rgba(63, 181, 235, 0.3);
 }
 
 .btn-finish:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+    box-shadow: 0 6px 20px rgba(63, 181, 235, 0.4);
 }
 
 .btn-finish i {
     font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .options {
+        grid-template-columns: 1fr;
+    }
+    
+    .option-box {
+        min-height: 220px;
+    }
 }

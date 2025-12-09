@@ -2,7 +2,7 @@
 
     <!-- Título principal -->
     <div class="page-title">
-        <h1>Mis Médicos</h1>
+        <h1>Médicos</h1>
     </div>
 
     <!-- Sección de filtros -->
@@ -18,7 +18,7 @@
                         (selectionChange)="getMedicsBySpecialty()"
                         placeholder="Todas las especialidades">
                         <mat-option *ngFor="let option of specialtyOptions" [value]="option">
-                            {{ option }}
+                            {{ formatSpecialty(option) }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -55,7 +55,7 @@
                     <tr *ngFor="let medic of medicsList">
                         <td><strong>{{ medic.name }}</strong></td>
                         <td>{{ medic.lastname }}</td>
-                        <td>{{ medic.specialty }}</td>
+                        <td>{{ formatSpecialty(medic.specialty) }}</td>
                         <td>{{ medic.dni }}</td>
                         <td>{{ medic.email }}</td>
                     </tr>

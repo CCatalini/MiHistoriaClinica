@@ -120,6 +120,76 @@ html, body {
     font-style: italic;
 }
 
+/* ---------------- INPUT DE FECHA ---------------- */
+.filter-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    color: #495057;
+    transition: border-color 0.3s;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: #3fb5eb;
+}
+
+/* ---------------- ACCIONES DE FILTRO ---------------- */
+.filter-actions {
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 2px;
+}
+
+.btn-limpiar {
+    background: transparent;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-limpiar:hover {
+    background: #6c757d;
+    color: white;
+}
+
+/* ---------------- FILTROS ACTIVOS ---------------- */
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e9ecef;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #e3f2fd;
+    border: 1px solid #3fb5eb;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #1976d2;
+}
+
+.filter-tag i {
+    font-size: 11px;
+}
+
 /* ---------------- SECCIÓN DE FECHAS ---------------- */
 .dates-section {
     width: 100%;
@@ -415,6 +485,15 @@ table tbody tr:hover {
         min-width: 100%;
     }
 
+    .filter-actions {
+        justify-content: center;
+        padding-top: 10px;
+    }
+
+    .active-filters {
+        justify-content: center;
+    }
+
     table {
         min-width: 600px;
     }
@@ -424,4 +503,11 @@ table tbody tr:hover {
         padding: 8px 10px;
         font-size: 12px;
     }
+}
+
+/* ---------------- SEGUNDA FILA DE FILTROS ---------------- */
+.filters-row + .filters-row {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #e9ecef;
 }

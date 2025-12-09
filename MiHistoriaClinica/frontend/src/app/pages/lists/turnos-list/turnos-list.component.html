@@ -2,8 +2,82 @@
 
     <!-- Título principal -->
     <div class="page-title">
-        <h1>Mis Turnos</h1>
+        <h1>Turnos</h1>
         <p class="subtitle">Gestiona tus citas médicas agendadas</p>
+    </div>
+
+    <!-- Sección de filtros -->
+    <div class="filters-section">
+        <h4><i class="fas fa-filter"></i> Filtrar Turnos</h4>
+        <div class="filters-row">
+            <!-- Filtro por Estado -->
+            <div class="filter-group">
+                <label>Estado:</label>
+                <select class="filter-select" [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="realizada">Realizada</option>
+                    <option value="cancelada">Cancelada</option>
+                    <option value="vencido">Vencido</option>
+                </select>
+            </div>
+
+            <!-- Filtro por Especialidad -->
+            <div class="filter-group">
+                <label>Especialidad:</label>
+                <select class="filter-select" [(ngModel)]="filtroEspecialidad" (change)="aplicarFiltros()">
+                    <option value="">Todas las especialidades</option>
+                    <option *ngFor="let esp of especialidadesDisponibles" [value]="esp">{{ esp }}</option>
+                </select>
+            </div>
+
+            <!-- Filtro por Médico -->
+            <div class="filter-group">
+                <label>Médico:</label>
+                <select class="filter-select" [(ngModel)]="filtroMedico" (change)="aplicarFiltros()">
+                    <option value="">Todos los médicos</option>
+                    <option *ngFor="let med of medicosDisponibles" [value]="med">{{ med }}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Segunda fila: Rango de fechas y botón limpiar -->
+        <div class="filters-row">
+            <!-- Fecha Desde -->
+            <div class="filter-group">
+                <label>Desde:</label>
+                <input type="date" class="filter-input" [(ngModel)]="filtroFechaDesde" (change)="aplicarFiltros()">
+            </div>
+
+            <!-- Fecha Hasta -->
+            <div class="filter-group">
+                <label>Hasta:</label>
+                <input type="date" class="filter-input" [(ngModel)]="filtroFechaHasta" (change)="aplicarFiltros()">
+            </div>
+
+            <!-- Ordenar por -->
+            <div class="filter-group">
+                <label>Ordenar por:</label>
+                <select class="filter-select" [(ngModel)]="ordenarPor" (change)="aplicarFiltros()">
+                    <option value="fecha-asc">Fecha (más próximo)</option>
+                    <option value="fecha-desc">Fecha (más lejano)</option>
+                    <option value="medico">Médico (A-Z)</option>
+                    <option value="especialidad">Especialidad (A-Z)</option>
+                </select>
+            </div>
+
+            <!-- Botón limpiar filtros -->
+            <div class="filter-group filter-actions">
+                <button class="btn-limpiar" (click)="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i> Limpiar filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Contador de resultados -->
+        <div class="filter-results" *ngIf="turnosFiltrados.length !== turnosOriginales.length">
+            <span>Mostrando {{ turnosFiltrados.length }} de {{ turnosOriginales.length }} turnos</span>
+        </div>
     </div>
 
     <!-- Tabla de turnos -->
@@ -11,7 +85,7 @@
         <h2 class="text-center">Turnos Agendados</h2>
         
         <!-- Estado vacío -->
-        <div *ngIf="turnos.length === 0" class="empty-state">
+        <div *ngIf="turnosFiltrados.length === 0" class="empty-state">
             <div class="empty-icon">
                 <i class="fas fa-calendar-alt"></i>
             </div>
@@ -20,7 +94,7 @@
         </div>
 
         <!-- Tabla -->
-        <div *ngIf="turnos.length > 0" class="table-responsive">
+        <div *ngIf="turnosFiltrados.length > 0" class="table-responsive">
             <table>
                 <thead>
                     <tr>
@@ -29,20 +103,31 @@
                         <th>Médico</th>
                         <th>Especialidad</th>
                         <th>Centro Médico</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let turno of turnos">
+                    <tr *ngFor="let turno of turnosFiltrados" [ngClass]="getRowClass(turno)">
                         <td><strong>{{ formatDate(turno.fechaTurno) }}</strong></td>
-                        <td class="hora-cell">{{ turno.horaTurno }}</td>
+                        <td class="hora-cell">{{ formatTime(turno.horaTurno) }}</td>
                         <td>{{ turno.medicFullName }}</td>
-                        <td>{{ turno.medicSpecialy }}</td>
+                        <td>{{ formatSpecialty(turno.medicSpecialty) }}</td>
                         <td>{{ formatMedicalCenter(turno.medicalCenter) }}</td>
+                        <td>
+                            <span class="estado-badge" [ngClass]="getEstadoClass(turno)">
+                                {{ getEstadoTexto(turno) }}
+                            </span>
+                        </td>
                         <td class="action-cell">
-                            <button class="btn-cancelar" (click)="deleteTurno(turno)">
+                            <button class="btn-cancelar" 
+                                    *ngIf="puedeCancelar(turno)"
+                                    (click)="deleteTurno(turno)">
                                 <i class="fas fa-times"></i> Cancelar
                             </button>
+                            <span class="no-action" *ngIf="!puedeCancelar(turno)">
+                                -
+                            </span>
                         </td>
                     </tr>
                 </tbody>

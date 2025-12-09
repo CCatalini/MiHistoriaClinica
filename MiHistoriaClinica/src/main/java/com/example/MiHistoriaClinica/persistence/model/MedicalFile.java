@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
 import com.example.MiHistoriaClinica.util.constant.BloodTypeE;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class MedicalFile implements java.io.Serializable {
 
     @OneToOne
     @JoinColumn(name = "patientId")
+    @JsonBackReference
     private Patient patient;
 
 }

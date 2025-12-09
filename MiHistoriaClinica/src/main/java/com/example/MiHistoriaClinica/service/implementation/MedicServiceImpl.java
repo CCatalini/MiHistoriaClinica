@@ -1,6 +1,7 @@
 package com.example.MiHistoriaClinica.service.implementation;
 
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
+import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.example.MiHistoriaClinica.util.exception.MedicNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.PatientNotFoundException;
 import com.example.MiHistoriaClinica.util.exception.ResourceNotFoundException;
@@ -343,9 +344,7 @@ public class MedicServiceImpl implements MedicService {
         return medicRepository.getMedicsBySpecialty(specialtyE);
     }
 
-    /**
-     * Crear turnos disponibles según la configuración recibida.
-     */
+
     @Override
     public void createSchedule(Long medicId, ScheduleDTO scheduleDTO) {
         Medic medic = medicRepository.findById(medicId)
@@ -379,7 +378,40 @@ public class MedicServiceImpl implements MedicService {
         java.time.LocalDate startIter = scheduleDTO.getStartDate() != null ? scheduleDTO.getStartDate() : java.time.LocalDate.now();
         java.time.LocalDate endIter = startIter.plusDays(29); // 30 días en total (día inicial + 29 días más)
 
-        // Recorrer el rango de fechas
+        // --- VALIDACIÓN PREVIA: Verificar si ya existen turnos en la franja horaria seleccionada ---
+        java.util.List<String> conflictos = new java.util.ArrayList<>();
+        for (java.time.LocalDate currentDate = startIter;
+             !currentDate.isAfter(endIter);
+             currentDate = currentDate.plusDays(1)) {
+            
+            if (!scheduleDTO.getDaysOfWeek().contains(currentDate.getDayOfWeek())) {
+                continue;
+            }
+            
+            java.time.LocalTime currentTime = scheduleDTO.getStartTime();
+            while (!currentTime.isAfter(scheduleDTO.getEndTime().minusMinutes(duration))) {
+                // saltar si el turno cae en el descanso
+                boolean overlapsBreak = (currentTime.isBefore(breakEnd) && currentTime.plusMinutes(duration).isAfter(breakStart));
+                if (overlapsBreak) {
+                    currentTime = breakEnd;
+                    continue;
+                }
+
+                boolean exists = turnosRepository.existsByMedic_MedicIdAndFechaTurnoAndHoraTurno(medicId, currentDate, currentTime);
+                if (exists && conflictos.size() < 5) {
+                    // Guardar los primeros 5 conflictos para mostrar en el mensaje de error
+                    conflictos.add(currentDate.toString() + " a las " + currentTime.toString().substring(0, 5));
+                }
+                currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
+            }
+        }
+
+        if (!conflictos.isEmpty()) {
+            String ejemplos = String.join(", ", conflictos);
+            String mensaje = "Ya tenés turnos cargados en estos horarios. Elegí una franja horaria diferente o modificá los días seleccionados.";
+            throw new IllegalArgumentException(mensaje);
+        }
+
         for (java.time.LocalDate currentDate = startIter;
              !currentDate.isAfter(endIter);
              currentDate = currentDate.plusDays(1)) {
@@ -395,13 +427,6 @@ public class MedicServiceImpl implements MedicService {
                 if (overlapsBreak) {
                     currentTime = breakEnd; // saltamos al final del descanso
                     continue;
-                }
-
-                // validar superposición con otros centros u horarios previos
-                boolean exists = turnosRepository.existsByMedic_MedicIdAndFechaTurnoAndHoraTurno(medicId, currentDate, currentTime);
-                if (exists) {
-                    currentTime = currentTime.plusMinutes(duration + GAP_MINUTES);
-                    continue; // ya existe un turno en ese horario (en cualquier centro)
                 }
 
                 // Crear bloque disponible
@@ -450,6 +475,107 @@ public class MedicServiceImpl implements MedicService {
     @Override
     public List<Turnos> getReservedTurnos(Long medicId) {
         return turnosRepository.findByMedic_MedicIdAndAvailableFalseOrderByFechaTurnoAscHoraTurnoAsc(medicId);
+    }
+
+    /**
+     * Obtiene los turnos pendientes del día de hoy para un médico.
+     * Son turnos reservados (available=false) con fecha de hoy y estado PENDIENTE, ordenados por hora.
+     */
+    public List<PatientQueueDTO> getTodayPendingPatients(Long medicId) {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        List<Turnos> turnos = turnosRepository.findByMedic_MedicIdAndFechaTurnoAndAvailableFalseAndEstadoConsultaOrderByHoraTurnoAsc(
+                medicId, today, EstadoConsultaE.PENDIENTE);
+        List<PatientQueueDTO> list = new java.util.ArrayList<>();
+        for (Turnos t : turnos) {
+            if (t.getPatient() == null) continue;
+            PatientQueueDTO dto = new PatientQueueDTO(
+                    t.getTurnoId(),
+                    t.getPatient().getName() + " " + t.getPatient().getLastname(),
+                    t.getFechaTurno(),
+                    t.getHoraTurno()
+            );
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * Obtiene TODOS los turnos del día de hoy para un médico, incluyendo su estado.
+     * Muestra turnos PENDIENTES, REALIZADAS, CANCELADAS y VENCIDOS.
+     */
+    public List<PatientQueueDTO> getTodayAllPatients(Long medicId) {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        List<Turnos> turnos = turnosRepository.findByMedic_MedicIdAndFechaTurnoAndAvailableFalseOrderByHoraTurnoAsc(medicId, today);
+        List<PatientQueueDTO> list = new java.util.ArrayList<>();
+        for (Turnos t : turnos) {
+            if (t.getPatient() == null) continue;
+            PatientQueueDTO dto = new PatientQueueDTO();
+            dto.setTurnoId(t.getTurnoId());
+            dto.setPatientFullName(t.getPatient().getName() + " " + t.getPatient().getLastname());
+            dto.setDate(t.getFechaTurno());
+            dto.setTime(t.getHoraTurno());
+            dto.setEstadoConsulta(t.getEstadoConsulta() != null ? t.getEstadoConsulta().getName() : "Pendiente");
+            list.add(dto);
+        }
+        return list;
+    }
+
+    /**
+     * Limpia los turnos vacíos (disponibles) que ya pasaron para un médico.
+     * - Elimina turnos de días anteriores que quedaron vacíos
+     * - Elimina turnos de hoy cuya hora ya pasó y quedaron vacíos
+     */
+    @Transactional
+    public void cleanupPastEmptyTurnos(Long medicId) {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
+        // 1. Eliminar todos los turnos vacíos de días anteriores
+        turnosRepository.deleteByMedic_MedicIdAndFechaTurnoBeforeAndAvailableTrue(medicId, today);
+        
+        // 2. Eliminar turnos vacíos de hoy cuya hora ya pasó
+        List<Turnos> turnosHoyVacios = turnosRepository.findByMedic_MedicIdAndFechaTurnoAndAvailableTrue(medicId, today);
+        for (Turnos turno : turnosHoyVacios) {
+            if (turno.getHoraTurno().isBefore(now)) {
+                turnosRepository.delete(turno);
+            }
+        }
+    }
+
+    /**
+     * Obtiene todos los turnos de un médico, filtrando los vacíos que ya pasaron.
+     * Mantiene los turnos reservados como registro histórico.
+     */
+    public List<Turnos> getAllTurnosFiltered(Long medicId) {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        java.time.LocalTime now = java.time.LocalTime.now();
+        
+        List<Turnos> allTurnos = turnosRepository.findByMedic_MedicId(medicId);
+        List<Turnos> filtered = new java.util.ArrayList<>();
+        
+        for (Turnos t : allTurnos) {
+            // Si el turno está reservado (tiene paciente o no está disponible), siempre mostrarlo
+            if (!t.isAvailable()) {
+                filtered.add(t);
+                continue;
+            }
+            
+            // Si es un turno vacío, verificar si ya pasó
+            // Turnos de días anteriores vacíos: no mostrar
+            if (t.getFechaTurno().isBefore(today)) {
+                continue;
+            }
+            
+            // Turnos de hoy vacíos cuya hora ya pasó: no mostrar
+            if (t.getFechaTurno().equals(today) && t.getHoraTurno().isBefore(now)) {
+                continue;
+            }
+            
+            // Turnos vacíos futuros: mostrar
+            filtered.add(t);
+        }
+        
+        return filtered;
     }
 
     public void deleteMedic(Long medicId) {

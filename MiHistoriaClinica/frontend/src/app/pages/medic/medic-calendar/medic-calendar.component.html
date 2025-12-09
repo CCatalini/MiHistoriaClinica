@@ -117,7 +117,9 @@
             <select class="form-select" [(ngModel)]="viewType">
               <option value="all">Todos los turnos</option>
               <option value="available">Solo disponibles</option>
-              <option value="reserved">Solo reservados</option>
+              <option value="reserved">Solo reservados (pendientes)</option>
+              <option value="realizada">Solo realizadas</option>
+              <option value="finalizados">Cancelados/Vencidos</option>
             </select>
           </div>
         </div>
@@ -164,15 +166,32 @@
                   </div>
                   
                   <!-- Acciones para turno RESERVADO o BLOQUEADO -->
-                  <div *ngIf="!turno.available">
-                    <button class="btn btn-sm" 
-                            (click)="liberarTurnoIndividual(turno)" 
-                            [title]="turno.patientName ? 'Cancelar turno' : 'Desbloquear'"
-                            [style.background-color]="turno.patientName ? 'transparent' : '#495057'"
-                            [style.border]="turno.patientName ? '2px solid #6c757d' : '1px solid #495057'"
-                            [style.color]="turno.patientName ? '#6c757d' : 'white'">
-                      <i class="fas fa-unlock"></i> {{ turno.patientName ? 'Cancelar turno' : 'Desbloquear' }}
-                    </button>
+                  <div *ngIf="!turno.available" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <!-- Acciones solo si la consulta NO está finalizada -->
+                    <ng-container *ngIf="puedeAccionar(turno)">
+                      <!-- Botón Iniciar Consulta - solo para turnos con paciente -->
+                      <button *ngIf="turno.patientName" 
+                              class="btn btn-sm" 
+                              (click)="iniciarConsulta(turno)" 
+                              title="Iniciar consulta médica"
+                              style="background-color: #28a745; border-color: #28a745; color: white;">
+                        <i class="fas fa-stethoscope"></i> Iniciar consulta
+                      </button>
+                      <button class="btn btn-sm" 
+                              (click)="liberarTurnoIndividual(turno)" 
+                              [title]="turno.patientName ? 'Cancelar turno' : 'Desbloquear'"
+                              [style.background-color]="turno.patientName ? 'transparent' : '#495057'"
+                              [style.border]="turno.patientName ? '2px solid #6c757d' : '1px solid #495057'"
+                              [style.color]="turno.patientName ? '#6c757d' : 'white'">
+                        <i class="fas fa-unlock"></i> {{ turno.patientName ? 'Cancelar turno' : 'Desbloquear' }}
+                      </button>
+                    </ng-container>
+                    <!-- Mensaje cuando la consulta ya finalizó -->
+                    <span *ngIf="consultaFinalizada(turno)" class="text-muted" style="font-size: 12px;">
+                      <i class="fas fa-check-circle" *ngIf="turno.estadoConsulta?.toLowerCase() === 'realizada'" style="color: #28a745;"></i>
+                      <i class="fas fa-ban" *ngIf="turno.estadoConsulta?.toLowerCase() === 'cancelada' || turno.estadoConsulta?.toLowerCase() === 'vencido'" style="color: #6c757d;"></i>
+                      Sin acciones
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -233,9 +252,9 @@
 <div class="modal show d-block" tabindex="-1" *ngIf="showErrorModal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" [style.background-color]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? '#3fb5eb' : '#dc3545'" style="color: white;">
+      <div class="modal-header" [style.background-color]="isSuccessModal() ? '#3fb5eb' : '#6c757d'" style="color: white;">
         <h5 class="modal-title">
-          <i [class]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'"></i>
+          <i [class]="isSuccessModal() ? 'fas fa-check-circle' : 'fas fa-info-circle'"></i>
           {{ errorTitle }}
         </h5>
         <button type="button" class="close" aria-label="Close" (click)="closeErrorModal()" style="font-size:2rem;line-height:1;color:#fff;background:transparent;border:none;outline:none;">
@@ -243,13 +262,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <div [class]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? 'alert alert-success' : 'alert alert-danger'">
-          <p style="margin: 0;">{{ errorMessage }}</p>
+        <div [style.background-color]="isSuccessModal() ? 'rgba(63, 181, 235, 0.1)' : 'rgba(108, 117, 125, 0.1)'"
+             [style.border]="isSuccessModal() ? '1px solid rgba(63, 181, 235, 0.3)' : '1px solid rgba(108, 117, 125, 0.3)'"
+             style="padding: 15px; border-radius: 6px;">
+          <p style="margin: 0; color: #2c3e50; line-height: 1.5;">{{ errorMessage }}</p>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" 
-                [style.background-color]="errorTitle.includes('Exitosa') || errorTitle.includes('Bloqueado') || errorTitle.includes('Cargada') ? '#3fb5eb' : '#6c757d'" 
+                [style.background-color]="isSuccessModal() ? '#3fb5eb' : '#6c757d'" 
                 style="color: white;"
                 (click)="closeErrorModal()">
           <i class="fas fa-check"></i> Entendido

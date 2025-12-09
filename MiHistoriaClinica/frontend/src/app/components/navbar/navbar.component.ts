@@ -122,4 +122,33 @@ export class NavbarComponent implements OnInit {
     isMedicalHistoryListPage() {
         return this.router.url == '/medic/medicalHistoryList';
     }
+
+    formatSpecialty(specialty: string): string {
+        if (!specialty) return '';
+        
+        const specialtyMap: {[key: string]: string} = {
+            'MEDICINA_CLINICA': 'Medicina Clínica',
+            'CARDIOLOGIA': 'Cardiología',
+            'DERMATOLOGIA': 'Dermatología',
+            'ENDOCRINOLOGIA': 'Endocrinología',
+            'GASTROENTEROLOGIA': 'Gastroenterología',
+            'GINECOLOGIA': 'Ginecología',
+            'HEMATOLOGIA': 'Hematología',
+            'INFECTOLOGIA': 'Infectología',
+            'NEFROLOGIA': 'Nefrología',
+            'NEUMOLOGIA': 'Neumología',
+            'NEUROLOGIA': 'Neurología',
+            'NUTRICION': 'Nutrición',
+            'OFTALMOLOGIA': 'Oftalmología',
+            'ONCOLOGIA': 'Oncología',
+            'OTORRINOLARINGOLOGIA': 'Otorrinolaringología',
+            'PEDIATRIA': 'Pediatría',
+            'PSIQUIATRIA': 'Psiquiatría',
+            'REUMATOLOGIA': 'Reumatología',
+            'TRAUMATOLOGIA': 'Traumatología',
+            'UROLOGIA': 'Urología'
+        };
+        
+        return specialtyMap[specialty] || specialty.replace(/_/g, ' ');
+    }
 }

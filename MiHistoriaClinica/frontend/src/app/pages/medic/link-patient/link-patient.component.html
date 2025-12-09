@@ -1,5 +1,5 @@
 <div class="page-title">
-    <h1>Atender Paciente</h1>
+    <h1>{{ isFromTurno ? 'Iniciar Consulta' : 'Atender Paciente' }}</h1>
     <p class="subtitle">Ingrese el código de vinculación del paciente</p>
 </div>
 
@@ -18,8 +18,11 @@
             </mat-form-field>
 
             <div class="button-group">
+                <button type="button" class="btn-secondary" routerLink="/medic/home" *ngIf="isFromTurno">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
                 <button type="submit" class="btn-primary">
-                    <i class="fas fa-user-plus"></i> Atender
+                    <i class="fas fa-play-circle"></i> {{ isFromTurno ? 'Iniciar' : 'Atender' }}
                 </button>
             </div>
         </form>

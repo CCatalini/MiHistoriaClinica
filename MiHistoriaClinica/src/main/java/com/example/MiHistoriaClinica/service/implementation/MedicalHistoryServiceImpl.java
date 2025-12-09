@@ -363,8 +363,9 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         if (estado == null) return "Pendiente";
         switch (estado) {
             case PENDIENTE: return "Pendiente";
-            case COMPLETADA: return "Completada";
+            case REALIZADA: return "Realizada";
             case CANCELADA: return "Cancelada";
+            case VENCIDO: return "Vencido";
             default: return "Pendiente";
         }
     }
@@ -373,8 +374,9 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         if (estado == null) return new DeviceRgb(255, 165, 0); // Naranja para pendiente
         switch (estado) {
             case PENDIENTE: return new DeviceRgb(255, 165, 0); // Naranja
-            case COMPLETADA: return new DeviceRgb(40, 167, 69); // Verde
-            case CANCELADA: return new DeviceRgb(220, 53, 69); // Rojo
+            case REALIZADA: return new DeviceRgb(40, 167, 69); // Verde
+            case CANCELADA: return new DeviceRgb(108, 117, 125); // Gris
+            case VENCIDO: return new DeviceRgb(108, 117, 125); // Gris
             default: return new DeviceRgb(255, 165, 0);
         }
     }

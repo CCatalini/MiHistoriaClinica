@@ -1,31 +1,111 @@
 <div class="page-title">
     <h1>Portal Médico</h1>
 </div>
-<div class="bootstrap-wrapper">
-    <div class="container">
-        <div class="row mt20">
-            <div class = "col-md-6 offset-md-3 text-center">
-                <div class="options">
-                    <a routerLink="/medic/patientsList" class="option">
-                        <div class="option-box">
+
+<div class="main-layout">
+    <!-- Sección de Pacientes del Día (2/3) -->
+    <div class="patients-section">
+        <div class="section-header">
+            <h2><i class="fas fa-calendar-day"></i> Pacientes de Hoy</h2>
+    </div>
+    
+    <div *ngIf="isLoading" class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando pacientes...</p>
+    </div>
+
+        <div *ngIf="!isLoading && todayPatients.length === 0" class="empty-state">
+        <i class="fas fa-calendar-check"></i>
+            <p>No tienes pacientes agendados para hoy</p>
+    </div>
+
+        <div *ngIf="!isLoading && todayPatients.length > 0" class="patients-list">
+            <div class="patient-card" *ngFor="let patient of todayPatients" 
+                 [ngClass]="getEstadoClass(patient.estadoConsulta)">
+            <div class="patient-info">
+                <div class="patient-time">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ formatTime(patient.time) }}</span>
+                </div>
+                <div class="patient-name">
+                    <i class="fas fa-user"></i>
+                    <span>{{ patient.patientFullName }}</span>
+                </div>
+                    <div class="patient-estado">
+                        <span class="estado-badge" [ngClass]="getEstadoClass(patient.estadoConsulta)">
+                            {{ patient.estadoConsulta }}
+                        </span>
+                    </div>
+            </div>
+                <div class="patient-actions" *ngIf="isPendiente(patient.estadoConsulta)">
+                    <button class="btn-iniciar" (click)="abrirModal(patient)">
+                        <i class="fas fa-play-circle"></i> Iniciar Consulta
+                    </button>
+                    <button class="btn-cancelar-turno" (click)="cancelarConsulta(patient)">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+                <span class="consulta-finalizada" *ngIf="!isPendiente(patient.estadoConsulta)">
+                    <i class="fas fa-check-circle" *ngIf="patient.estadoConsulta?.toLowerCase() === 'realizada' || patient.estadoConsulta?.toLowerCase() === 'completada'"></i>
+                    <i class="fas fa-times-circle" *ngIf="patient.estadoConsulta?.toLowerCase() === 'cancelada'"></i>
+                    <i class="fas fa-clock" *ngIf="patient.estadoConsulta?.toLowerCase() === 'vencido'"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú lateral (1/3) -->
+    <div class="sidebar-menu">
+        <div class="section-header">
+            <h2><i class="fas fa-th-large"></i> Acciones</h2>
+</div>
+
+        <div class="menu-options">
+            <a routerLink="/medic/patientsList" class="menu-option">
+                <div class="menu-option-box">
                             <img src="../../../../assets/Pacientes.png" alt="Pacientes">
-                            <span>Ver Mis Pacientes</span>
+                    <span>Mis Pacientes</span>
                         </div>
                     </a>
-                    <a routerLink="/medic/linkPatient" class="option">
-                        <div class="option-box">
-                            <img src="../../../../assets/Atender.png" alt="Pacientes">
-                            <span>Atender Paciente</span>
-                        </div>
-                    </a>
-                    <a routerLink="/medic/calendar" class="option">
-                        <div class="option-box">
-                            <img src="../../../../assets/Programar.png" alt="Pacientes">
+            <a routerLink="/medic/calendar" class="menu-option">
+                <div class="menu-option-box">
+                    <img src="../../../../assets/Programar.png" alt="Agenda">
                             <span>Agenda</span>
                         </div>
                     </a>
                 </div>
             </div>
+</div>
+
+<!-- Modal para ingresar código de vinculación -->
+<div class="modal-overlay" *ngIf="showModal" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="modal-close" (click)="cerrarModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="modal-header">
+            <h3>Iniciar Consulta</h3>
+            <p class="modal-patient-info" *ngIf="selectedPatient">
+                <i class="fas fa-user"></i> {{ selectedPatient.patientFullName }}
+                <span class="modal-time"><i class="fas fa-clock"></i> {{ formatTime(selectedPatient.time) }}</span>
+            </p>
+        </div>
+        
+        <div class="modal-body">
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Código del paciente</mat-label>
+                <input matInput [(ngModel)]="codigoVinculacion" placeholder="Ej: ABC123"
+                       (keyup.enter)="confirmarCodigo()">
+                <mat-hint>El paciente debe generar este código desde su portal</mat-hint>
+            </mat-form-field>
+        </div>
+        
+        <div class="modal-actions">
+            <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+            <button class="btn-confirmar" (click)="confirmarCodigo()" [disabled]="!codigoVinculacion">
+                <i class="fas fa-play-circle"></i> Iniciar
+            </button>
         </div>
     </div>
 </div>

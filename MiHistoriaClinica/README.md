@@ -70,24 +70,23 @@
                                                                         BACK              FRONT
   * Agregar nuevos filtros para sacar turnos
   OBS: los filtros podemos hacerlos desde el front directamente
-  --> Por rangos de fechas                                               --                --
+  --> Por rangos de fechas                                               --                OK
   --> Por especialidad                                                   --                OK
   --> Por médico                                                         --                OK
-  --> Por centro médico                                                  --                --
+  --> Por centro médico                                                  --                OK
 
   * Descargar 
   --> Descargar historia general                                         OK                OK         
   --> Descargar historial de consultas médicas filtradas                 OK                OK
 
-  * Iniciar consulta desde turnos acordados                              --                --
-  --> Agregar estado a las consultas médicas (default=pendiente)         --                --
+  * Iniciar consulta desde turnos acordados                              OK                OK
+  --> Agregar estado a las consultas médicas (default=pendiente)         OK                OK
 
   * Calendarios
   Agenda de médicos 
   --> Asignar horarios disponibles de atención                           OK                OK
   --> Ver turnos reservados y disponibles                                OK                OK
   Agenda de pacientes
-  --> Ver turnos agendados en calendario                                 --                --
   --> Ver calendario con turnos disponibles a la hora de programar uno   OK                OK
 
     * Mails

@@ -17,4 +17,13 @@ public class PatientQueueDTO {
     private String patientFullName;
     private LocalDate date;
     private LocalTime time;
+    private String estadoConsulta;
+    
+    // Constructor sin estado (para compatibilidad)
+    public PatientQueueDTO(Long turnoId, String patientFullName, LocalDate date, LocalTime time) {
+        this.turnoId = turnoId;
+        this.patientFullName = patientFullName;
+        this.date = date;
+        this.time = time;
+    }
 } 

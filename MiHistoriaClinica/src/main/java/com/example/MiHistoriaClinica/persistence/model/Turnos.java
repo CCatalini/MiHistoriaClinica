@@ -2,6 +2,7 @@ package com.example.MiHistoriaClinica.persistence.model;
 
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
 import com.example.MiHistoriaClinica.util.constant.MedicalCenterE;
+import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -45,5 +46,10 @@ public class Turnos {
     private Medic medic;
 
     private boolean available = true;
+
+    // Estado de la consulta: PENDIENTE (default), REALIZADA, CANCELADA, VENCIDO
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado_consulta")
+    private EstadoConsultaE estadoConsulta = EstadoConsultaE.PENDIENTE;
 
 }
