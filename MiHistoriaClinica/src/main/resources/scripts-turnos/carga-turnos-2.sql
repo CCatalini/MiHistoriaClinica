@@ -58,3 +58,6 @@ INSERT INTO turnos (available, fecha_turno, hora_turno, medic_full_name, medic_s
 (true, '2025-12-19', '15:10:00', 'Valeria Torres', 2, 'CENTRO_ESPECIALIDAD_CHAMPAGNAT', 38),
 (true, '2025-12-19', '15:45:00', 'Valeria Torres', 2, 'CENTRO_ESPECIALIDAD_CHAMPAGNAT', 38);
 
+
+
+
