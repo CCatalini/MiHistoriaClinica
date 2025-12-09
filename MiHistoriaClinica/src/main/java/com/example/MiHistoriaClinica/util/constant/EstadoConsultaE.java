@@ -5,8 +5,9 @@ import lombok.Getter;
 @Getter
 public enum EstadoConsultaE {
     PENDIENTE("Pendiente"),
-    COMPLETADA("Completada"),
-    CANCELADA("Cancelada");
+    REALIZADA("Realizada"),
+    CANCELADA("Cancelada"),
+    VENCIDO("Vencido");
 
     private final String name;
 

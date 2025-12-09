@@ -28,5 +28,5 @@
 <div class="user-info-bar" *ngIf="isMedicPage() && medic">
     <span class="user-name">Dr/a. {{ medic.name }} {{ medic.lastname }}</span>
     <span class="user-separator">|</span>
-    <span class="user-detail">{{ medic.specialty }}</span>
+    <span class="user-detail">{{ formatSpecialty(medic.specialty) }}</span>
 </div>

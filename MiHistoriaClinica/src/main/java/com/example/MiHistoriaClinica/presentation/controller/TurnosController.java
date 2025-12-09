@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.presentation.controller;
 import com.example.MiHistoriaClinica.util.exception.InvalidTokenException;
 import com.example.MiHistoriaClinica.persistence.model.Turnos;
 import com.example.MiHistoriaClinica.service.implementation.PatientServiceImpl;
+import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.example.MiHistoriaClinica.util.jwt.JwtGenerator;
 import com.example.MiHistoriaClinica.util.jwt.JwtGeneratorImpl;
 import com.example.MiHistoriaClinica.util.jwt.JwtValidator;
@@ -29,11 +30,16 @@ public class TurnosController {
 
 
     @PostMapping("/patient/reserve-turno")
-    public ResponseEntity<Void> reserveTurno (@RequestHeader("Authorization") String token,
+    public ResponseEntity<?> reserveTurno (@RequestHeader("Authorization") String token,
                                              @RequestParam("turnoId") Long turnoId) throws InvalidTokenException {
-        Long patientId = jwtValidator.getId(token);
-        patientService.reserveTurno(patientId, turnoId);
-        return ResponseEntity.ok().build();
+        try {
+            Long patientId = jwtValidator.getId(token);
+            patientService.reserveTurno(patientId, turnoId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/patient/available")
@@ -90,9 +96,61 @@ public class TurnosController {
     }
 
     @PostMapping("/medic/reservar-turno")
-    public ResponseEntity<Void> reservarTurnoParaPaciente (@RequestParam("turnoId") Long turnoId,
+    public ResponseEntity<?> reservarTurnoParaPaciente (@RequestParam("turnoId") Long turnoId,
                                                            @RequestParam("patientDni") Long patientDni){
-        patientService.reserveTurnoByDni(patientDni, turnoId);
-        return ResponseEntity.ok().build();
+        try {
+            patientService.reserveTurnoByDni(patientDni, turnoId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", e.getMessage()));
+        }
+    }
+
+    /**
+     * Inicia una consulta médica desde un turno acordado.
+     * Retorna el linkCode del paciente para poder atenderlo.
+     */
+    @PostMapping("/medic/iniciar-consulta")
+    public ResponseEntity<String> iniciarConsultaDesdeTurno(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("turnoId") Long turnoId) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        String linkCode = patientService.iniciarConsultaDesdeTurno(medicId, turnoId);
+        if (linkCode == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Turno no encontrado o sin paciente asignado");
+        }
+        return ResponseEntity.ok(linkCode);
+    }
+
+    /**
+     * Actualiza el estado de un turno (PENDIENTE, REALIZADA, CANCELADA, VENCIDO)
+     */
+    @PutMapping("/medic/update-estado")
+    public ResponseEntity<String> updateTurnoEstado(
+            @RequestParam("turnoId") Long turnoId,
+            @RequestParam("estado") String estado) {
+        try {
+            EstadoConsultaE nuevoEstado = EstadoConsultaE.getEnumFromName(estado);
+            patientService.updateTurnoEstado(turnoId, nuevoEstado);
+            return ResponseEntity.ok("Estado actualizado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Estado inválido: " + estado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    /**
+     * Cancela un turno cambiando su estado a CANCELADA
+     */
+    @PutMapping("/medic/cancelar-turno")
+    public ResponseEntity<String> cancelarTurno(@RequestParam("turnoId") Long turnoId) {
+        try {
+            patientService.updateTurnoEstado(turnoId, EstadoConsultaE.CANCELADA);
+            return ResponseEntity.ok("Turno cancelado correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

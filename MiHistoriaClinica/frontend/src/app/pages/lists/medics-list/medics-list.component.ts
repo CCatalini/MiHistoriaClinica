@@ -94,4 +94,33 @@ export class MedicsListComponent implements OnInit{
             );
         }
     }
+
+    formatSpecialty(specialty: string): string {
+        if (!specialty) return '';
+        const specialtyMap: {[key: string]: string} = {
+            'MEDICINA_CLINICA': 'Medicina Clínica',
+            'CARDIOLOGIA': 'Cardiología',
+            'DERMATOLOGIA': 'Dermatología',
+            'ENDOCRINOLOGIA': 'Endocrinología',
+            'GASTROENTEROLOGIA': 'Gastroenterología',
+            'HEMATOLOGIA': 'Hematología',
+            'INFECTOLOGIA': 'Infectología',
+            'NEUROLOGIA': 'Neurología',
+            'ONCOLOGIA': 'Oncología',
+            'OFTALMOLOGIA': 'Oftalmología',
+            'OTORRINOLARINGOLOGIA': 'Otorrinolaringología',
+            'PEDIATRIA': 'Pediatría',
+            'PSIQUIATRIA': 'Psiquiatría',
+            'RADIOLOGIA': 'Radiología',
+            'REUMATOLOGIA': 'Reumatología',
+            'TRAUMATOLOGIA': 'Traumatología',
+            'UROLOGIA': 'Urología',
+            'GINECOLOGIA': 'Ginecología',
+            'MEDICINA_INTERNA': 'Medicina Interna',
+            'CIRUGIA_GENERAL': 'Cirugía General',
+            'ANESTESIOLOGIA': 'Anestesiología',
+            'Sin filtro': 'Todas las especialidades'
+        };
+        return specialtyMap[specialty] || specialty.replace(/_/g, ' ');
+    }
 }

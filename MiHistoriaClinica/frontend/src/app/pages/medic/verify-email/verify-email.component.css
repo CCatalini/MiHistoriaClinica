@@ -94,12 +94,14 @@ h1 {
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
+  background: transparent;
+  color: #6c757d;
+  border: 2px solid #6c757d;
 }
 
 .btn-secondary:hover {
-  background: #5a6268;
+  background: #6c757d;
+  color: white;
   transform: translateY(-2px);
 }
 

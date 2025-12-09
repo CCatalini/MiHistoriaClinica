@@ -41,6 +41,113 @@
     font-size: 15px;
 }
 
+/* ---------------- SECCIÓN DE FILTROS ---------------- */
+.filters-section {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.filters-section h4 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid #3fb5eb;
+    padding-bottom: 10px;
+}
+
+.filters-section h4 i {
+    color: #3fb5eb;
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.filters-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+    flex: 1;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.filter-select,
+.filter-input {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #495057;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: #3fb5eb;
+    box-shadow: 0 0 0 3px rgba(63, 181, 235, 0.15);
+}
+
+.filter-actions {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.btn-limpiar {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #6c757d;
+    color: #6c757d;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-limpiar:hover {
+    background: #6c757d;
+    color: white;
+}
+
+.filter-results {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.filter-results span {
+    background: #e9ecef;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
 /* ---------------- SECCIÓN DE DATOS ---------------- */
 .data-section {
     width: 100%;
@@ -132,28 +239,90 @@ table tbody tr:hover {
     text-align: center;
 }
 
+/* ---------------- BADGES DE ESTADO ---------------- */
+.estado-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.estado-badge.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.estado-badge.estado-realizada {
+    background: #d4edda;
+    color: #155724;
+}
+
+.estado-badge.estado-cancelada,
+.estado-badge.estado-vencido {
+    background: #e9ecef;
+    color: #495057;
+}
+
+/* ---------------- FILAS SEGÚN ESTADO ---------------- */
+.row-inactive {
+    opacity: 0.6;
+    background-color: #f8f9fa;
+}
+
+.row-completed {
+    background-color: #f5fff7;
+}
+
 /* ---------------- BOTÓN CANCELAR ---------------- */
 .btn-cancelar {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-size: 13px;
+    background: transparent;
+    color: #6c757d;
+    border: 2px solid #6c757d;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.2s;
+    text-transform: uppercase;
 }
 
 .btn-cancelar:hover {
-    background: #c82333;
+    background: #6c757d;
+    color: white;
 }
 
 .btn-cancelar i {
     margin-right: 5px;
 }
 
+.no-action {
+    color: #6c757d;
+    font-size: 14px;
+}
+
 /* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 992px) {
+    .filters-row {
+        flex-direction: column;
+    }
+
+    .filter-group {
+        min-width: 100%;
+    }
+
+    .filter-actions {
+        align-items: stretch;
+    }
+
+    .btn-limpiar {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 60px 12px 0 12px;
@@ -161,6 +330,14 @@ table tbody tr:hover {
 
     .page-title h1 {
         font-size: 26px;
+    }
+
+    .filters-section {
+        padding: 15px;
+    }
+
+    .filters-section h4 {
+        font-size: 14px;
     }
 
     table {

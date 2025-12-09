@@ -1,20 +1,19 @@
 <div class="page-title">
-    <h1>Atender Paciente</h1>
-    <p class="patient-info" *ngIf="patient">{{ patient?.name }} {{ patient?.lastname }} - DNI: {{ patient?.dni }}</p>
+    <h1 *ngIf="patient">Paciente: <span class="patient-name">{{ patient?.name }} {{ patient?.lastname }}</span></h1>
+    <h1 *ngIf="!patient">Cargando...</h1>
+    <p class="patient-dni" *ngIf="patient">DNI: {{ patient?.dni }}</p>
 </div>
 
 <div class="bootstrap-wrapper">
     <div class="container">
-        <div class="row mt20">
-            <div class="col-md-6 offset-md-3 text-center">
-                <div class="options">
+        <div class="options">
                     <div class="option">
                         <div class="option-box">
                             <img src="../../../../assets/Medicamentos.png" alt="Medicamentos">
                             <span>Medicamentos</span>
                             <div class="option-buttons">
-                                <a routerLink="/medic/addMedicine" class="btn-action">Agregar</a>
-                                <a routerLink="/medic/medicinesList" class="btn-action btn-secondary">Ver historial</a>
+                                <a routerLink="/medic/addMedicine" class="btn-action">Cargar</a>
+                                <a routerLink="/medic/medicinesList" class="btn-action btn-secondary">Ver</a>
                             </div>
                         </div>
                     </div>
@@ -23,8 +22,8 @@
                             <img src="../../../../assets/Estudios.png" alt="Estudios">
                             <span>Estudios</span>
                             <div class="option-buttons">
-                                <a routerLink="/medic/addAnalysis" class="btn-action">Agregar</a>
-                                <a routerLink="/medic/analysisList" class="btn-action btn-secondary">Ver historial</a>
+                                <a routerLink="/medic/addAnalysis" class="btn-action">Cargar</a>
+                                <a routerLink="/medic/analysisList" class="btn-action btn-secondary">Ver</a>
                             </div>
                         </div>
                     </div>
@@ -43,13 +42,11 @@
                             <img src="../../../../assets/MedicalAppointment.png" alt="Consulta Médica">
                             <span>Consulta Médica</span>
                             <div class="option-buttons">
-                                <a routerLink="/medic/medicalAppointment" class="btn-action">Agregar</a>
-                                <a routerLink="/medic/appointmentList" class="btn-action btn-secondary">Ver historial</a>
+                                <a routerLink="/medic/medicalAppointment" class="btn-action">Cargar</a>
+                                <a routerLink="/medic/appointmentList" class="btn-action btn-secondary">Ver</a>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

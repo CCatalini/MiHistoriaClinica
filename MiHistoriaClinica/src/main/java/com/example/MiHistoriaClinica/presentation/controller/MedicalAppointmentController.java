@@ -3,6 +3,7 @@ package com.example.MiHistoriaClinica.presentation.controller;
 import com.example.MiHistoriaClinica.persistence.model.*;
 import com.example.MiHistoriaClinica.persistence.repository.MedicRepository;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
+import com.example.MiHistoriaClinica.persistence.repository.TurnosRepository;
 import com.example.MiHistoriaClinica.presentation.dto.MedicalAppointmentDTO;
 import com.example.MiHistoriaClinica.service.EmailService;
 import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
@@ -28,6 +29,7 @@ public class MedicalAppointmentController {
     private final MedicalAppointmentServiceImpl medicalAppointmentService;
     private final PatientRepository patientRepository;
     private final MedicRepository medicRepository;
+    private final TurnosRepository turnosRepository;
     private final EmailService emailService;
     private final JwtGenerator jwt = new JwtGeneratorImpl();
     private final JwtValidator jwtValidator = new JwtValidatorImpl(jwt);
@@ -37,10 +39,12 @@ public class MedicalAppointmentController {
     public MedicalAppointmentController(MedicalAppointmentServiceImpl medicalAppointmentService,
                                         PatientRepository patientRepository,
                                         MedicRepository medicRepository,
+                                        TurnosRepository turnosRepository,
                                         EmailService emailService) {
         this.medicalAppointmentService = medicalAppointmentService;
         this.patientRepository = patientRepository;
         this.medicRepository = medicRepository;
+        this.turnosRepository = turnosRepository;
         this.emailService = emailService;
     }
 
@@ -109,12 +113,14 @@ public class MedicalAppointmentController {
     }
 
     /**
-     * Finaliza la consulta y envía email de resumen al paciente
+     * Finaliza la consulta y envía email de resumen al paciente.
+     * También actualiza el estado del turno a REALIZADA.
      */
     @PostMapping("/medic/finish-consultation")
     public ResponseEntity<String> finishConsultation(
             @RequestHeader("Authorization") String token,
             @RequestHeader("patientLinkCode") String patientLinkCode,
+            @RequestHeader(value = "turnoId", required = false) Long turnoId,
             @RequestBody(required = false) ConsultationChanges changes) throws InvalidTokenException {
         
         Long medicId = jwtValidator.getId(token);
@@ -125,6 +131,16 @@ public class MedicalAppointmentController {
         
         if (medicOpt.isEmpty() || patientOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Médico o paciente no encontrado");
+        }
+        
+        // Actualizar estado del turno a REALIZADA si se proporciona el turnoId
+        if (turnoId != null) {
+            Optional<Turnos> turnoOpt = turnosRepository.findById(turnoId);
+            if (turnoOpt.isPresent()) {
+                Turnos turno = turnoOpt.get();
+                turno.setEstadoConsulta(EstadoConsultaE.REALIZADA);
+                turnosRepository.save(turno);
+            }
         }
         
         // Extraer datos de cambios (si existen)

@@ -10,6 +10,20 @@ import Swal from "sweetalert2";
 })
 export class TurnosListComponent implements OnInit{
     turnos: any[] = [];
+    turnosOriginales: any[] = [];
+    turnosFiltrados: any[] = [];
+
+    // Filtros
+    filtroEstado: string = '';
+    filtroEspecialidad: string = '';
+    filtroMedico: string = '';
+    filtroFechaDesde: string = '';
+    filtroFechaHasta: string = '';
+    ordenarPor: string = 'fecha-asc';
+
+    // Opciones de filtros
+    especialidadesDisponibles: string[] = [];
+    medicosDisponibles: string[] = [];
 
     constructor(private userService: PatientService, private router: Router) { }
 
@@ -29,6 +43,10 @@ export class TurnosListComponent implements OnInit{
                 (data: any) => {
                     console.log('Turnos:', data);
                     this.turnos = Array.isArray(data) ? data : [];
+                    this.turnosOriginales = [...this.turnos];
+                    this.turnosFiltrados = [...this.turnos];
+                    this.extraerOpcionesFiltros();
+                    this.aplicarFiltros();
                 },
                 (error: any) => {
                     console.log('Error fetching turnos:', error);
@@ -37,11 +55,124 @@ export class TurnosListComponent implements OnInit{
                         Swal.fire('Error', 'Se produjo un error en el servidor.', 'error');
                     }
                     this.turnos = [];
+                    this.turnosOriginales = [];
+                    this.turnosFiltrados = [];
                 }
             );
         } else {
             // Manejar el caso en el que no se encuentre el token en el local storage
         }
+    }
+
+    /**
+     * Extrae las opciones únicas de especialidades y médicos para los filtros
+     */
+    extraerOpcionesFiltros(): void {
+        // Extraer especialidades únicas
+        const especialidades = new Set<string>();
+        this.turnosOriginales.forEach(turno => {
+            const esp = this.formatSpecialty(turno.medicSpecialty);
+            if (esp) especialidades.add(esp);
+        });
+        this.especialidadesDisponibles = Array.from(especialidades).sort();
+
+        // Extraer médicos únicos
+        const medicos = new Set<string>();
+        this.turnosOriginales.forEach(turno => {
+            if (turno.medicFullName) medicos.add(turno.medicFullName);
+        });
+        this.medicosDisponibles = Array.from(medicos).sort();
+    }
+
+    /**
+     * Aplica todos los filtros y ordenamiento
+     */
+    aplicarFiltros(): void {
+        let resultado = [...this.turnosOriginales];
+
+        // Filtro por estado
+        if (this.filtroEstado) {
+            resultado = resultado.filter(turno => {
+                const estado = this.getEstadoTexto(turno).toLowerCase();
+                return estado === this.filtroEstado.toLowerCase();
+            });
+        }
+
+        // Filtro por especialidad
+        if (this.filtroEspecialidad) {
+            resultado = resultado.filter(turno => 
+                this.formatSpecialty(turno.medicSpecialty) === this.filtroEspecialidad
+            );
+        }
+
+        // Filtro por médico
+        if (this.filtroMedico) {
+            resultado = resultado.filter(turno => 
+                turno.medicFullName === this.filtroMedico
+            );
+        }
+
+        // Filtro por fecha desde
+        if (this.filtroFechaDesde) {
+            resultado = resultado.filter(turno => 
+                turno.fechaTurno >= this.filtroFechaDesde
+            );
+        }
+
+        // Filtro por fecha hasta
+        if (this.filtroFechaHasta) {
+            resultado = resultado.filter(turno => 
+                turno.fechaTurno <= this.filtroFechaHasta
+            );
+        }
+
+        // Ordenamiento
+        resultado = this.ordenarTurnos(resultado);
+
+        this.turnosFiltrados = resultado;
+    }
+
+    /**
+     * Ordena los turnos según el criterio seleccionado
+     */
+    ordenarTurnos(turnos: any[]): any[] {
+        switch (this.ordenarPor) {
+            case 'fecha-asc':
+                return turnos.sort((a, b) => {
+                    const dateA = new Date(a.fechaTurno + 'T' + a.horaTurno);
+                    const dateB = new Date(b.fechaTurno + 'T' + b.horaTurno);
+                    return dateA.getTime() - dateB.getTime();
+                });
+            case 'fecha-desc':
+                return turnos.sort((a, b) => {
+                    const dateA = new Date(a.fechaTurno + 'T' + a.horaTurno);
+                    const dateB = new Date(b.fechaTurno + 'T' + b.horaTurno);
+                    return dateB.getTime() - dateA.getTime();
+                });
+            case 'medico':
+                return turnos.sort((a, b) => 
+                    (a.medicFullName || '').localeCompare(b.medicFullName || '')
+                );
+            case 'especialidad':
+                return turnos.sort((a, b) => 
+                    this.formatSpecialty(a.medicSpecialty).localeCompare(this.formatSpecialty(b.medicSpecialty))
+                );
+            default:
+                return turnos;
+        }
+    }
+
+    /**
+     * Limpia todos los filtros
+     */
+    limpiarFiltros(): void {
+        this.filtroEstado = '';
+        this.filtroEspecialidad = '';
+        this.filtroMedico = '';
+        this.filtroFechaDesde = '';
+        this.filtroFechaHasta = '';
+        this.ordenarPor = 'fecha-asc';
+        this.aplicarFiltros();
     }
 
     formatDate(dateStr: string): string {
@@ -68,6 +199,136 @@ export class TurnosListComponent implements OnInit{
             })
             .join(' ')
             .replace('  ', ' ');
+    }
+
+    formatSpecialty(specialty: any): string {
+        if (specialty === null || specialty === undefined) return '';
+        
+        // Mapeo de ordinales a nombres legibles (según el orden del enum en Java)
+        const ordinalMap: {[key: number]: string} = {
+            0: 'Cardiología',
+            1: 'Dermatología',
+            2: 'Endocrinología',
+            3: 'Gastroenterología',
+            4: 'Hematología',
+            5: 'Infectología',
+            6: 'Neurología',
+            7: 'Oncología',
+            8: 'Oftalmología',
+            9: 'Otorrinolaringología',
+            10: 'Pediatría',
+            11: 'Psiquiatría',
+            12: 'Radiología',
+            13: 'Reumatología',
+            14: 'Traumatología',
+            15: 'Urología',
+            16: 'Ginecología',
+            17: 'Medicina Interna',
+            18: 'Cirugía General',
+            19: 'Anestesiología',
+            20: 'Medicina Clínica'
+        };
+        
+        // Si es un número (ordinal), usar el mapeo
+        if (typeof specialty === 'number') {
+            return ordinalMap[specialty] || `Especialidad ${specialty}`;
+        }
+        
+        // Si es string con formato ENUM (CARDIOLOGIA, MEDICINA_CLINICA, etc.)
+        if (typeof specialty === 'string') {
+            const stringMap: {[key: string]: string} = {
+                'CARDIOLOGIA': 'Cardiología',
+                'DERMATOLOGIA': 'Dermatología',
+                'ENDOCRINOLOGIA': 'Endocrinología',
+                'GASTROENTEROLOGIA': 'Gastroenterología',
+                'HEMATOLOGIA': 'Hematología',
+                'INFECTOLOGIA': 'Infectología',
+                'NEUROLOGIA': 'Neurología',
+                'ONCOLOGIA': 'Oncología',
+                'OFTALMOLOGIA': 'Oftalmología',
+                'OTORRINOLARINGOLOGIA': 'Otorrinolaringología',
+                'PEDIATRIA': 'Pediatría',
+                'PSIQUIATRIA': 'Psiquiatría',
+                'RADIOLOGIA': 'Radiología',
+                'REUMATOLOGIA': 'Reumatología',
+                'TRAUMATOLOGIA': 'Traumatología',
+                'UROLOGIA': 'Urología',
+                'GINECOLOGIA': 'Ginecología',
+                'MEDICINA_INTERNA': 'Medicina Interna',
+                'CIRUGIA_GENERAL': 'Cirugía General',
+                'ANESTESIOLOGIA': 'Anestesiología',
+                'MEDICINA_CLINICA': 'Medicina Clínica'
+            };
+            return stringMap[specialty] || specialty.replace(/_/g, ' ');
+        }
+        
+        return String(specialty);
+    }
+
+    formatTime(time: string): string {
+        if (!time) return '';
+        // Formato HH:MM (sin segundos)
+        return time.substring(0, 5);
+    }
+
+    /**
+     * Obtiene el estado del turno considerando si ya pasó la hora
+     */
+    getEstadoTexto(turno: any): string {
+        // Si tiene estado del backend, usarlo
+        if (turno.estadoConsulta) {
+            const estado = turno.estadoConsulta.toLowerCase();
+            if (estado === 'realizada') return 'Realizada';
+            if (estado === 'cancelada') return 'Cancelada';
+            if (estado === 'vencido') return 'Vencido';
+        }
+        
+        // Si está pendiente, verificar si ya pasó la hora
+        const now = new Date();
+        const turnoDate = new Date(turno.fechaTurno + 'T' + turno.horaTurno);
+        
+        if (turnoDate < now) {
+            return 'Vencido';
+        }
+        
+        return 'Pendiente';
+    }
+
+    /**
+     * Obtiene la clase CSS para el badge de estado
+     */
+    getEstadoClass(turno: any): string {
+        const estado = this.getEstadoTexto(turno).toLowerCase();
+        switch (estado) {
+            case 'pendiente': return 'estado-pendiente';
+            case 'realizada': return 'estado-realizada';
+            case 'cancelada': return 'estado-cancelada';
+            case 'vencido': return 'estado-vencido';
+            default: return 'estado-pendiente';
+        }
+    }
+
+    /**
+     * Obtiene la clase CSS para la fila según el estado
+     */
+    getRowClass(turno: any): string {
+        const estado = this.getEstadoTexto(turno).toLowerCase();
+        if (estado === 'cancelada' || estado === 'vencido') {
+            return 'row-inactive';
+        }
+        if (estado === 'realizada') {
+            return 'row-completed';
+        }
+        return '';
+    }
+
+    /**
+     * Determina si el turno puede ser cancelado
+     * Solo se puede cancelar si está pendiente y no ha pasado la hora
+     */
+    puedeCancelar(turno: any): boolean {
+        const estado = this.getEstadoTexto(turno).toLowerCase();
+        return estado === 'pendiente';
     }
 
     deleteTurno(turno: any) {

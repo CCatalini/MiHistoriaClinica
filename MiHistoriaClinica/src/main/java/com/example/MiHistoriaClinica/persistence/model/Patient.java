@@ -54,6 +54,7 @@ public class Patient {
 
 
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private MedicalFile medicalFile;
 
 

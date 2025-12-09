@@ -319,7 +319,7 @@ export class MedicService {
         console.log('Token presente:', token ? 'Sí' : 'No');
         console.log('Headers:', headers);
 
-        return this.http.post('http://localhost:8080/medic/create-schedule', scheduleDTO, { headers });
+        return this.http.post('http://localhost:8080/medic/create-schedule', scheduleDTO, { headers, responseType: 'text' });
     }
 
     updateAppointmentEstado(appointmentId: number, estado: string): Observable<string> {
@@ -371,17 +371,83 @@ export class MedicService {
         historiaActualizada?: boolean
     }): Observable<string> {
         const token = localStorage.getItem('token');
+        const turnoId = localStorage.getItem('currentTurnoId');
         let headers = new HttpHeaders();
         if (token) {
             headers = headers.set('Authorization', 'Bearer ' + token);
         }
         headers = headers.set('patientLinkCode', patientLinkCode);
         headers = headers.set('Content-Type', 'application/json');
+        if (turnoId) {
+            headers = headers.set('turnoId', turnoId);
+        }
         
         return this.http.post('http://localhost:8080/medicalAppointment/medic/finish-consultation', 
             changes || {}, 
             { headers, responseType: 'text' }
         );
+    }
+
+    /**
+     * Actualiza el estado de un turno
+     */
+    updateTurnoEstado(turnoId: number, estado: string): Observable<string> {
+        const params = new HttpParams()
+            .set('turnoId', turnoId.toString())
+            .set('estado', estado);
+        return this.http.put('http://localhost:8080/turno/medic/update-estado', null, { params, responseType: 'text' });
+    }
+
+    /**
+     * Cancela un turno
+     */
+    cancelarTurno(turnoId: number): Observable<string> {
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+        return this.http.put('http://localhost:8080/turno/medic/cancelar-turno', null, { params, responseType: 'text' });
+    }
+
+    /**
+     * Inicia una consulta médica desde un turno acordado.
+     * Retorna el linkCode del paciente para poder atenderlo.
+     */
+    iniciarConsultaDesdeTurno(turnoId: number): Observable<string> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        const params = new HttpParams().set('turnoId', turnoId.toString());
+        return this.http.post('http://localhost:8080/turno/medic/iniciar-consulta', null, { 
+            headers, 
+            params, 
+            responseType: 'text' 
+        });
+    }
+
+    /**
+     * Obtiene los pacientes pendientes de atender del día de hoy.
+     * Devuelve una lista de turnos reservados para hoy ordenados por hora.
+     */
+    getTodayPendingPatients(): Observable<any[]> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/medic/today-pending-patients', { headers });
+    }
+
+    /**
+     * Obtiene TODOS los pacientes del día de hoy (pendientes, completados, cancelados).
+     * Incluye el estado de cada consulta.
+     */
+    getTodayAllPatients(): Observable<any[]> {
+        const token = localStorage.getItem('token');
+        let headers = new HttpHeaders();
+        if (token) {
+            headers = headers.set('Authorization', 'Bearer ' + token);
+        }
+        return this.http.get<any[]>('http://localhost:8080/medic/today-all-patients', { headers });
     }
 }
 

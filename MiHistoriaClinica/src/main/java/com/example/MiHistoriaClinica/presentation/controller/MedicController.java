@@ -93,7 +93,10 @@ public class MedicController {
     @GetMapping("/all-turnos")
     public ResponseEntity<List<Turnos>> getAllTurnos(@RequestHeader("Authorization") String token) throws InvalidTokenException {
         Long medicId = jwtValidator.getId(token);
-        List<Turnos> turnos = medicService.getAllTurnos(medicId);
+        // Primero limpia los turnos vacíos que ya pasaron
+        medicService.cleanupPastEmptyTurnos(medicId);
+        // Luego devuelve los turnos filtrados (sin vacíos pasados)
+        List<Turnos> turnos = medicService.getAllTurnosFiltered(medicId);
         if(turnos.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(turnos, HttpStatus.OK);
     }
@@ -155,11 +158,19 @@ public class MedicController {
     }
 
     @PostMapping("/create-schedule")
-    public ResponseEntity<Void> createSchedule(@RequestHeader("Authorization") String token,
-                                              @RequestBody ScheduleDTO scheduleDTO) throws InvalidTokenException {
+    public ResponseEntity<String> createSchedule(@RequestHeader("Authorization") String token,
+                                              @RequestBody ScheduleDTO scheduleDTO) {
+        try {
         Long medicId = jwtValidator.getId(token);
         medicService.createSchedule(medicId, scheduleDTO);
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Agenda creada exitosamente");
+        } catch (InvalidTokenException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesión expirada. Por favor, volvé a iniciar sesión.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear la agenda. Por favor, intentá nuevamente.");
+        }
     }
 
     @GetMapping("/upcoming-patients")
@@ -169,6 +180,19 @@ public class MedicController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    @GetMapping("/today-pending-patients")
+    public ResponseEntity<List<PatientQueueDTO>> getTodayPendingPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<PatientQueueDTO> list = medicService.getTodayPendingPatients(medicId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/today-all-patients")
+    public ResponseEntity<List<PatientQueueDTO>> getTodayAllPatients(@RequestHeader("Authorization") String token) throws InvalidTokenException {
+        Long medicId = jwtValidator.getId(token);
+        List<PatientQueueDTO> list = medicService.getTodayAllPatients(medicId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 
 }
 

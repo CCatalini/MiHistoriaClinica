@@ -8,13 +8,15 @@
 
     <!-- Sección de búsqueda -->
     <div class="search-section">
-        <h4>Buscar Turno</h4>
+        <h4><i class="fas fa-search"></i> Buscar Turno</h4>
+        
+        <!-- Primera fila: Especialidad y Médico -->
         <div class="filters-row">
             <div class="filter-group">
                 <label>Especialidad:</label>
                 <select [(ngModel)]="selectedSpecialty" (change)="onSpecialtyChange()" class="filter-select">
                     <option value="">Seleccione una especialidad</option>
-                    <option *ngFor="let specialty of specialties" [value]="specialty">{{specialty}}</option>
+                    <option *ngFor="let specialty of specialties" [value]="specialty">{{ formatSpecialty(specialty) }}</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -25,6 +27,54 @@
                 </select>
                 <small *ngIf="!selectedSpecialty" class="hint">Seleccione primero una especialidad</small>
             </div>
+            <div class="filter-group">
+                <label>Centro Médico:</label>
+                <select [(ngModel)]="selectedMedicalCenter" (change)="onMedicalCenterChange()" [disabled]="!selectedSpecialty" class="filter-select">
+                    <option value="">Todos los centros</option>
+                    <option *ngFor="let center of medicalCenters" [value]="center">{{ formatMedicalCenter(center) }}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Segunda fila: Rango de fechas -->
+        <div class="filters-row" *ngIf="selectedSpecialty">
+            <div class="filter-group">
+                <label>Fecha desde:</label>
+                <input type="date" 
+                       [(ngModel)]="fechaDesde" 
+                       (change)="onDateRangeChange()" 
+                       [min]="getMinDate()"
+                       class="filter-input">
+            </div>
+            <div class="filter-group">
+                <label>Fecha hasta:</label>
+                <input type="date" 
+                       [(ngModel)]="fechaHasta" 
+                       (change)="onDateRangeChange()" 
+                       [min]="fechaDesde || getMinDate()"
+                       class="filter-input">
+            </div>
+            <div class="filter-group filter-actions">
+                <button class="btn-limpiar" (click)="clearAllFilters()" *ngIf="hasActiveFilters()">
+                    <i class="fas fa-eraser"></i> Limpiar filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Resumen de filtros activos -->
+        <div class="active-filters" *ngIf="selectedSpecialty && hasActiveFilters()">
+            <span class="filter-tag" *ngIf="selectedName">
+                <i class="fas fa-user-md"></i> {{ selectedName }}
+            </span>
+            <span class="filter-tag" *ngIf="selectedMedicalCenter">
+                <i class="fas fa-hospital"></i> {{ formatMedicalCenter(selectedMedicalCenter) }}
+            </span>
+            <span class="filter-tag" *ngIf="fechaDesde">
+                <i class="fas fa-calendar"></i> Desde: {{ formatDateShort(fechaDesde) }}
+            </span>
+            <span class="filter-tag" *ngIf="fechaHasta">
+                <i class="fas fa-calendar"></i> Hasta: {{ formatDateShort(fechaHasta) }}
+            </span>
         </div>
     </div>
 
@@ -92,8 +142,8 @@
                 <tbody>
                     <tr *ngFor="let turno of getCurrentPageTurnos()">
                         <td><strong>{{ turno.medicName }}</strong></td>
-                        <td>{{ turno.specialty }}</td>
-                        <td>{{ turno.medicalCenter }}</td>
+                        <td>{{ formatSpecialty(turno.specialty) }}</td>
+                        <td>{{ formatMedicalCenter(turno.medicalCenter) }}</td>
                         <td>{{ formatDateShort(turno.fechaTurno) }}</td>
                         <td class="hora-cell">{{ turno.horaTurno }}</td>
                         <td>

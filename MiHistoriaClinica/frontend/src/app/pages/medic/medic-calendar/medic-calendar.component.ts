@@ -7,6 +7,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { MedicService } from '../../../services/medic/medic.service';
 import { forkJoin } from 'rxjs';
 import { FullCalendarComponent } from '@fullcalendar/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-medic-calendar',
@@ -70,7 +71,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
     showDetailModal: boolean = false;
     selectedDate: string = '';
     selectedDateTurnos: any[] = [];
-    viewType: 'all' | 'available' | 'reserved' = 'all';
+    viewType: 'all' | 'available' | 'reserved' | 'realizada' | 'finalizados' = 'all';
 
     // Variables para gestión de turnos individuales
     showReserveModal: boolean = false;
@@ -78,7 +79,7 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
     showCancelModal: boolean = false;
     showErrorModal: boolean = false;
     errorMessage: string = '';
-    errorTitle: string = 'Error';
+    errorTitle: string = 'Información';
     myPatients: any[] = [];
     selectedPatientDni: string = '';
     turnoToReserve: any = null;
@@ -98,7 +99,8 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
 
     constructor(
         private medicService: MedicService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router
     ) {}
 
     ngOnInit(): void {
@@ -244,11 +246,17 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
             error: (err) => {
                 console.error('=== ERROR AL CARGAR TURNOS ===');
                 console.error('Error completo:', err);
-                console.error('Status:', err.status);
-                console.error('Message:', err.message);
-                console.error('URL:', err.url);
                 
-                // En caso de error, inicializar con array vacío
+                // Verificar si es error de autenticación (token inválido/expirado)
+                if (err.status === 500 || err.status === 401 || err.status === 403 || 
+                    (err.error && typeof err.error === 'string' && err.error.includes('Token'))) {
+                    // Limpiar sesión y redirigir al login
+                    localStorage.clear();
+                    this.router.navigate(['/medic/login']);
+                    return;
+                }
+                
+                // En caso de otro error, inicializar con array vacío
                 this.allTurnos = [];
                 this.processCalendarEvents();
             }
@@ -448,9 +456,20 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
             // Turno disponible - gris claro
             return 'rgba(210, 210, 210, 0.5)';
         } else if (turno.patientName) {
-            // Turno reservado (con paciente) - celeste principal con poca opacidad
-            // #3fb5eb = rgb(63, 181, 235)
-            return 'rgba(63, 181, 235, 0.2)';
+            // Color según estado de la consulta
+            const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+            switch (estado) {
+                case 'realizada':
+                    // Verde claro para realizada
+                    return 'rgba(40, 167, 69, 0.15)';
+                case 'cancelada':
+                case 'vencido':
+                    // Gris claro para cancelada/vencido
+                    return 'rgba(108, 117, 125, 0.15)';
+                default:
+                    // Celeste para reservado/pendiente
+                    return 'rgba(63, 181, 235, 0.2)';
+            }
         } else {
             // Turno bloqueado (sin paciente) - gris oscuro
             return 'rgba(73, 80, 87, 0.4)';
@@ -461,7 +480,14 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
         if (turno.available) {
             return '#9e9e9e'; // Gris para disponible
         } else if (turno.patientName) {
-            return '#3fb5eb'; // Celeste principal para reservado
+            // Color según estado de la consulta
+            const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+            switch (estado) {
+                case 'realizada': return '#28a745'; // Verde para realizada
+                case 'cancelada': return '#6c757d'; // Gris para cancelada
+                case 'vencido': return '#6c757d'; // Gris para vencido
+                default: return '#3fb5eb'; // Celeste para reservado/pendiente
+            }
         } else {
             return '#495057'; // Gris oscuro para bloqueado
         }
@@ -471,10 +497,34 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
         if (turno.available) {
             return 'Disponible';
         } else if (turno.patientName) {
-            return 'Reservado';
+            // Verificar estado de la consulta
+            const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+            switch (estado) {
+                case 'realizada': return 'Realizada';
+                case 'cancelada': return 'Cancelada';
+                case 'vencido': return 'Vencido';
+                default: return 'Reservado';
+            }
         } else {
-            return 'No disponible';
+            return 'Bloqueado';
         }
+    }
+
+    /**
+     * Determina si se pueden realizar acciones sobre el turno
+     */
+    puedeAccionar(turno: any): boolean {
+        if (turno.available) return true;
+        const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+        return estado === 'pendiente';
+    }
+
+    /**
+     * Verifica si la consulta ya fue completada o está vencida/cancelada
+     */
+    consultaFinalizada(turno: any): boolean {
+        const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+        return estado === 'realizada' || estado === 'cancelada' || estado === 'vencido';
     }
 
     getTimeSlotSummary(turnos: any[]): string {
@@ -535,7 +585,15 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
             info += `Este turno está disponible para ser reservado por un paciente.`;
         } else if (turno.patientName) {
             const patientName = `${turno.patientName} ${turno.patientLastname}`;
-            info += `🔒 Estado: Reservado\n`;
+            const estado = turno.estadoConsulta?.toLowerCase() || 'pendiente';
+            
+            let estadoTexto = 'Reservado';
+            if (estado === 'realizada') estadoTexto = '✅ Realizada';
+            else if (estado === 'cancelada') estadoTexto = '❌ Cancelada';
+            else if (estado === 'vencido') estadoTexto = '⏰ Vencido';
+            else estadoTexto = '🔒 Reservado (Pendiente)';
+            
+            info += `Estado: ${estadoTexto}\n`;
             info += `👤 Paciente: ${patientName}\n`;
             if (turno.patientEmail) {
                 info += `📧 Email: ${turno.patientEmail}\n`;
@@ -578,7 +636,23 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
             case 'available':
                 return this.selectedDateTurnos.filter(t => t.available);
             case 'reserved':
-                return this.selectedDateTurnos.filter(t => !t.available);
+                // Solo reservados pendientes (con paciente y estado pendiente)
+                return this.selectedDateTurnos.filter(t => 
+                    !t.available && t.patientName && 
+                    (!t.estadoConsulta || t.estadoConsulta.toLowerCase() === 'pendiente')
+                );
+            case 'realizada':
+                // Solo consultas realizadas
+                return this.selectedDateTurnos.filter(t => 
+                    !t.available && t.estadoConsulta?.toLowerCase() === 'realizada'
+                );
+            case 'finalizados':
+                // Cancelados y vencidos
+                return this.selectedDateTurnos.filter(t => 
+                    !t.available && 
+                    (t.estadoConsulta?.toLowerCase() === 'cancelada' || 
+                     t.estadoConsulta?.toLowerCase() === 'vencido')
+                );
             default:
                 return this.selectedDateTurnos;
         }
@@ -587,6 +661,44 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
     // ============================================
     // MÉTODOS PARA ACCIONES INDIVIDUALES DE TURNOS
     // ============================================
+
+    /**
+     * Inicia una consulta médica desde un turno acordado.
+     * Obtiene el linkCode del paciente y redirige a la página de atención.
+     */
+    iniciarConsulta(turno: any) {
+        if (!turno || !turno.turnoId) {
+            this.mostrarError('Error', 'No se encontró información del turno.');
+            return;
+        }
+
+        if (!turno.patientName) {
+            this.mostrarError('Error', 'Este turno no tiene un paciente asignado.');
+            return;
+        }
+
+        this.medicService.iniciarConsultaDesdeTurno(turno.turnoId).subscribe({
+            next: (linkCode: string) => {
+                if (linkCode) {
+                    // Guardar el linkCode en localStorage
+                    localStorage.setItem('patientLinkCode', linkCode);
+                    
+                    // Cerrar el modal
+                    this.showDetailModal = false;
+                    
+                    // Redirigir a la página de atención del paciente
+                    this.router.navigate(['/medic/attendPatient']);
+                } else {
+                    this.mostrarError('Error', 'No se pudo obtener el código del paciente.');
+                }
+            },
+            error: (err) => {
+                console.error('Error al iniciar consulta:', err);
+                const errorMsg = err.error || err.message || 'No se pudo iniciar la consulta';
+                this.mostrarError('Error al Iniciar Consulta', errorMsg);
+            }
+        });
+    }
 
     // Abrir modal para reservar turno individual
     abrirReservarTurno(turno: any) {
@@ -741,12 +853,20 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
         this.showErrorModal = true;
     }
 
+    // Verificar si es un modal de éxito
+    isSuccessModal(): boolean {
+        return this.errorTitle.includes('Exitosa') || 
+               this.errorTitle.includes('Bloqueado') || 
+               this.errorTitle.includes('Cargada') ||
+               this.errorTitle.includes('Desbloqueado');
+    }
+
     // Cerrar modal de error
     closeErrorModal() {
-        const wasSuccess = this.errorTitle.includes('Exitosa') || this.errorTitle.includes('Bloqueado') || this.errorTitle.includes('Cargada');
+        const wasSuccess = this.isSuccessModal();
         this.showErrorModal = false;
         this.errorMessage = '';
-        this.errorTitle = 'Error';
+        this.errorTitle = 'Información';
         
         // Si fue un mensaje de éxito, recargar los turnos y cerrar el modal de detalle
         if (wasSuccess) {
@@ -855,11 +975,29 @@ export class MedicCalendarComponent implements OnInit, AfterViewInit, OnDestroy 
             },
             error: (err) => {
                 console.error('Error al crear turnos:', err);
-                let errorMsg = 'Error al crear los turnos.';
-                if (err.error && err.error.message) {
-                    errorMsg += ' ' + err.error.message;
+                
+                // Verificar si es error de autenticación (sesión expirada)
+                if (err.status === 401 || err.status === 403) {
+                    localStorage.clear();
+                    this.showModal = false;
+                    this.mostrarError('Sesión expirada', 'Tu sesión ha expirado. Serás redirigido al login.');
+                    setTimeout(() => {
+                        this.router.navigate(['/medic/login']);
+                    }, 2000);
+                    return;
                 }
-                this.mostrarError('Error al Crear Agenda', errorMsg + ' Por favor, intente nuevamente.');
+                
+                let errorMsg = 'No se pudo crear la agenda. Por favor, intentá nuevamente.';
+                let titulo = 'Horarios no disponibles';
+                
+                // El backend devuelve el mensaje de error directamente en err.error cuando es string
+                if (typeof err.error === 'string' && !err.error.includes('timestamp') && !err.error.includes('trace')) {
+                    errorMsg = err.error;
+                } else if (err.error && err.error.message && !err.error.message.includes('trace')) {
+                    errorMsg = err.error.message;
+                }
+                
+                this.mostrarError(titulo, errorMsg);
             }
         });
     }
