@@ -119,6 +119,28 @@ table td {
     color: #2c3e50;
 }
 
+/* Anchos de columnas */
+table th:nth-child(1),
+table td:nth-child(1) {
+    width: 12%;
+}
+
+table th:nth-child(2),
+table td:nth-child(2) {
+    width: 12%;
+}
+
+table th:nth-child(3),
+table td:nth-child(3),
+table th:nth-child(4),
+table td:nth-child(4),
+table th:nth-child(5),
+table td:nth-child(5),
+table th:nth-child(6),
+table td:nth-child(6) {
+    width: 19%;
+}
+
 table tbody tr:hover {
     background-color: #f8f9fa;
 }
@@ -167,7 +189,7 @@ table tbody tr:hover {
 .expandable-text {
     cursor: pointer;
     display: inline-block;
-    max-width: 150px;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

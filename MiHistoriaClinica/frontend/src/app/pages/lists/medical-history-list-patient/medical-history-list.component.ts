@@ -40,13 +40,7 @@ export class MedicalHistoryListComponent implements OnInit {
             medicamentos: false,
             estudios: false,
             consultasMedicas: false,
-            estadoConsulta: [''],
-            especialidadMedico: [''],
         });
-        
-        // Escuchar cambios en los filtros
-        this.downloadList.get('estadoConsulta')?.valueChanges.subscribe(() => this.filterAppointments());
-        this.downloadList.get('especialidadMedico')?.valueChanges.subscribe(() => this.filterAppointments());
     }
 
     ngOnInit(): void {
@@ -236,12 +230,8 @@ export class MedicalHistoryListComponent implements OnInit {
             const includeMedications = this.downloadList.get('medicamentos')?.value || false;
             const includeAnalysis = this.downloadList.get('estudios')?.value || false;
             const includeAppointments = this.downloadList.get('consultasMedicas')?.value || false;
-            const estadoConsulta = this.downloadList.get('estadoConsulta')?.value || '';
-            const especialidadMedico = this.downloadList.get('especialidadMedico')?.value || '';
 
-            console.log(`includeMedicalFile: ${includeMedicalFile}, includeMedications: ${includeMedications}, includeAnalysis: ${includeAnalysis}, includeAppointments: ${includeAppointments}, estadoConsulta: ${estadoConsulta}, especialidadMedico: ${especialidadMedico}`);
-
-            this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments, estadoConsulta, especialidadMedico)
+            this.patientService.downloadMedicalHistory(token, includeMedicalFile, includeAnalysis, includeMedications, includeAppointments)
                 .subscribe({
                     next: (response: HttpResponse<Blob>) => {
                         const blob = response.body!;
@@ -304,33 +294,6 @@ export class MedicalHistoryListComponent implements OnInit {
             confirmButtonText: 'Cerrar',
             width: '600px',
             confirmButtonColor: '#4A90E2'
-        });
-    }
-
-    filterAppointments(): void {
-        const estadoFiltro = this.downloadList.get('estadoConsulta')?.value;
-        const especialidadFiltro = this.downloadList.get('especialidadMedico')?.value;
-        
-        this.appointments = this.allAppointments.filter(appointment => {
-            let matchEstado = true;
-            let matchEspecialidad = true;
-            
-            // Filtrar por estado
-            if (estadoFiltro) {
-                const estadoMap: { [key: string]: number } = {
-                    'Pendiente': 0,
-                    'Completada': 1,
-                    'Cancelada': 2
-                };
-                matchEstado = appointment.estado === estadoMap[estadoFiltro];
-            }
-            
-            // Filtrar por especialidad
-            if (especialidadFiltro) {
-                matchEspecialidad = appointment.specialty === especialidadFiltro;
-            }
-            
-            return matchEstado && matchEspecialidad;
         });
     }
 

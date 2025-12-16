@@ -1,7 +1,6 @@
 package com.example.MiHistoriaClinica.persistence.model;
 
 import com.example.MiHistoriaClinica.util.constant.MedicalSpecialtyE;
-import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,10 +26,7 @@ public class MedicalAppointment {
     private MedicalSpecialtyE specialty;
     private Long matricula;
     private LocalDate appointmentDay;
-    
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "estado")
-    private EstadoConsultaE estado = EstadoConsultaE.PENDIENTE;
+
 
     @ManyToOne
     @JoinColumn(name = "patientId")

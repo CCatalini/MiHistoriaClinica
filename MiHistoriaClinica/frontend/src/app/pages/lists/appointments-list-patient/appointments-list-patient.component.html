@@ -28,15 +28,19 @@
                         <th>Síntomas</th>
                         <th>Examen Físico</th>
                         <th>Observaciones</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let appointment of appointments">
                         <td><strong>{{ appointment.medicFullName }}</strong></td>
                         <td>{{ appointment.specialty }}</td>
-                        <td>{{ appointment.appointmentReason }}</td>
+                        <td>
+                            <span class="expandable-text" 
+                                  (mouseenter)="showTooltip($event, appointment.appointmentReason)" 
+                                  (mouseleave)="hideTooltip()">
+                                {{ appointment.appointmentReason && appointment.appointmentReason.length > 40 ? (appointment.appointmentReason.substring(0, 40) + '...') : appointment.appointmentReason }}
+                            </span>
+                        </td>
                         <td>
                             <span class="expandable-text" 
                                   (mouseenter)="showTooltip($event, appointment.currentIllness)" 
@@ -57,20 +61,6 @@
                                   (mouseleave)="hideTooltip()">
                                 {{ appointment.observations && appointment.observations.length > 40 ? (appointment.observations.substring(0, 40) + '...') : appointment.observations }}
                             </span>
-                        </td>
-                        <td>
-                            <span class="badge" [ngClass]="getEstadoBadgeClass(appointment.estado)">
-                                {{ getEstadoLabel(appointment.estado) }}
-                            </span>
-                        </td>
-                        <td>
-                            <select class="status-select" 
-                                    [value]="appointment.estado" 
-                                    (change)="cambiarEstado(appointment.medicalAppointmentId, $event)">
-                                <option value="0">Pendiente</option>
-                                <option value="1">Completada</option>
-                                <option value="2">Cancelada</option>
-                            </select>
                         </td>
                     </tr>
                 </tbody>

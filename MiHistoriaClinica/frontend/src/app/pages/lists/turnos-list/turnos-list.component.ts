@@ -191,8 +191,8 @@ export class TurnosListComponent implements OnInit{
             .map((word, index, arr) => {
                 // Capitalizar primera letra, resto en minúscula
                 const formatted = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                // Agregar guión antes de "Hospital" o palabras clave similares
-                if (word.toLowerCase() === 'hospital' || word.toLowerCase() === 'clinica' || word.toLowerCase() === 'centro') {
+                // Agregar guión antes de "Hospital" o "Clinica", pero NO si es la primera palabra
+                if (index > 0 && (word.toLowerCase() === 'hospital' || word.toLowerCase() === 'clinica')) {
                     return '- ' + formatted;
                 }
                 return formatted;
@@ -355,15 +355,14 @@ export class TurnosListComponent implements OnInit{
             if (result.isConfirmed) {
                 this.userService.deleteTurno(turno.turnoId).subscribe(
                     () => {
-                        const index = this.turnos.findIndex((m) => m.turnoId === turno.turnoId);
-                        if (index !== -1) {
-                            this.turnos.splice(index, 1);
-                        }
                         Swal.fire({
                             title: '¡Turno Cancelado!',
                             text: 'Tu turno médico ha sido cancelado exitosamente.',
                             icon: 'success',
                             confirmButtonColor: '#3fb5eb'
+                        }).then(() => {
+                            // Recargar la lista de turnos
+                            this.formSubmit();
                         });
                     },
                     (error) => {

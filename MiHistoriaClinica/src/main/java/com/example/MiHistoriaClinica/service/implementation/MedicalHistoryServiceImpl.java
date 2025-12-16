@@ -288,19 +288,6 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     private void addAppointmentsContent(Document document, Long id, String estadoConsulta, String especialidadMedico){
         List<MedicalAppointment> appointments = medicalAppointmentService.getAppointmentListById(id);
         
-        // Filtrar por estado si se especificó
-        if (estadoConsulta != null && !estadoConsulta.isEmpty()) {
-            try {
-                com.example.MiHistoriaClinica.util.constant.EstadoConsultaE estadoEnum = 
-                    com.example.MiHistoriaClinica.util.constant.EstadoConsultaE.getEnumFromName(estadoConsulta);
-                appointments = appointments.stream()
-                    .filter(apt -> apt.getEstado() == estadoEnum)
-                    .collect(java.util.stream.Collectors.toList());
-            } catch (IllegalArgumentException e) {
-                // Si el estado no es válido, mostrar todas
-            }
-        }
-        
         // Filtrar por especialidad si se especificó
         if (especialidadMedico != null && !especialidadMedico.isEmpty()) {
             try {
@@ -325,7 +312,6 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             table.addHeaderCell(new Paragraph("Observaciones").addStyle(columnsStyle)).setPadding(5);
             table.addHeaderCell(new Paragraph("Médico").addStyle(columnsStyle)).setPadding(5);
             table.addHeaderCell(new Paragraph("Especialidad").addStyle(columnsStyle)).setPadding(5);
-            table.addHeaderCell(new Paragraph("Estado").addStyle(columnsStyle)).setPadding(5);
 
             DeviceRgb grisClaro = new DeviceRgb(240, 240, 240);
             int rowIndex = 0;
@@ -339,45 +325,13 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
                 table.addCell(new Paragraph(appointment.getObservations() != null ? appointment.getObservations() : "-").addStyle(contentTableStyle).setPadding(5).setBackgroundColor(isEvenRow ? grisClaro : DeviceRgb.WHITE));
                 table.addCell(new Paragraph(appointment.getMedicFullName() != null ? appointment.getMedicFullName() : "-").addStyle(contentTableStyle).setPadding(5).setBackgroundColor(isEvenRow ? grisClaro : DeviceRgb.WHITE));
                 table.addCell(new Paragraph(appointment.getSpecialty() != null ? appointment.getSpecialty().name() : "-").addStyle(contentTableStyle).setPadding(5).setBackgroundColor(isEvenRow ? grisClaro : DeviceRgb.WHITE));
-                
-                // Estado con color
-                String estadoTexto = getEstadoTexto(appointment.getEstado());
-                DeviceRgb estadoColor = getEstadoColor(appointment.getEstado());
-                table.addCell(new Paragraph(estadoTexto)
-                        .addStyle(contentTableStyle)
-                        .setBold()
-                        .setFontColor(estadoColor)
-                        .setPadding(5)
-                        .setBackgroundColor(isEvenRow ? grisClaro : DeviceRgb.WHITE));
-                
+
                 rowIndex++;
             }
 
             document.add(new LineSeparator(new SolidLine()).setMarginTop(10).setMarginBottom(10));
             document.add(new Paragraph("Consultas Médicas").addStyle(subtitleStyle).setMarginBottom(10));
             document.add(table);
-        }
-    }
-    
-    private String getEstadoTexto(com.example.MiHistoriaClinica.util.constant.EstadoConsultaE estado) {
-        if (estado == null) return "Pendiente";
-        switch (estado) {
-            case PENDIENTE: return "Pendiente";
-            case REALIZADA: return "Realizada";
-            case CANCELADA: return "Cancelada";
-            case VENCIDO: return "Vencido";
-            default: return "Pendiente";
-        }
-    }
-    
-    private DeviceRgb getEstadoColor(com.example.MiHistoriaClinica.util.constant.EstadoConsultaE estado) {
-        if (estado == null) return new DeviceRgb(255, 165, 0); // Naranja para pendiente
-        switch (estado) {
-            case PENDIENTE: return new DeviceRgb(255, 165, 0); // Naranja
-            case REALIZADA: return new DeviceRgb(40, 167, 69); // Verde
-            case CANCELADA: return new DeviceRgb(108, 117, 125); // Gris
-            case VENCIDO: return new DeviceRgb(108, 117, 125); // Gris
-            default: return new DeviceRgb(255, 165, 0);
         }
     }
 

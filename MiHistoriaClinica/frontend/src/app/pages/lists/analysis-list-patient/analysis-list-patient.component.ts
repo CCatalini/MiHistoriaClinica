@@ -201,7 +201,8 @@ export class AnalysisListPatientComponent implements OnInit{
 
     formatDate(dateString: string): string {
         if (!dateString) return '';
-        const date = new Date(dateString);
+        // Agregar T12:00:00 para evitar problemas de zona horaria
+        const date = new Date(dateString + 'T12:00:00');
         const options: Intl.DateTimeFormatOptions = { 
             weekday: 'long', 
             day: 'numeric', 

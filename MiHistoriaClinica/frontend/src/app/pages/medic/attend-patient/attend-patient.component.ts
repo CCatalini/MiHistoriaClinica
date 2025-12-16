@@ -67,7 +67,6 @@ export class AttendPatientComponent implements OnInit {
                 localStorage.setItem('patientLinkCode', '');
                 Swal.fire({
                     title: 'Consulta Finalizada',
-                    text: 'Se ha enviado un email de resumen al paciente.',
                     icon: 'success',
                     confirmButtonColor: '#3fb5eb'
                 }).then(() => {

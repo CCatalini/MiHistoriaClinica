@@ -9,7 +9,6 @@ import com.example.MiHistoriaClinica.persistence.repository.MedicalAppointmentRe
 import com.example.MiHistoriaClinica.persistence.repository.MedicRepository;
 import com.example.MiHistoriaClinica.persistence.repository.PatientRepository;
 import com.example.MiHistoriaClinica.service.MedicalAppointmentService;
-import com.example.MiHistoriaClinica.util.constant.EstadoConsultaE;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class MedicalAppointmentServiceImpl implements MedicalAppointmentService 
     public List<MedicalAppointment> getAppointmentListByLinkCode(String patientLinkCode) {
         Optional<Patient> patient = patientRepository.findByLinkCode(patientLinkCode);
         if (patient.isPresent())        return patient.get().getMedicalAppointments();
-        else                            return new ArrayList<>(); // Devuelve una lista vacía o null según corresponda
+        else                            return new ArrayList<>();
 
     }
 
@@ -58,23 +57,9 @@ public class MedicalAppointmentServiceImpl implements MedicalAppointmentService 
 
     }
 
-    @Override
-    public boolean updateEstado(Long appointmentId, EstadoConsultaE nuevoEstado) {
-        Optional<MedicalAppointment> appointment = medicalAppointmentRepository.findById(appointmentId);
-        if (appointment.isPresent()) {
-            MedicalAppointment medicalAppointment = appointment.get();
-            medicalAppointment.setEstado(nuevoEstado);
-            medicalAppointmentRepository.save(medicalAppointment);
-            return true;
-        }
-        return false;
-    }
 
     @Override
-    public List<MedicalAppointment> getAppointmentsByPatientIdAndEstado(Long patientId, EstadoConsultaE estado) {
-        if (estado == null) {
-            return medicalAppointmentRepository.findByPatientId(patientId);
-        }
-        return medicalAppointmentRepository.findByPatientIdAndEstado(patientId, estado);
+    public List<MedicalAppointment> getAppointmentsByPatientId(Long patientId) {
+        return medicalAppointmentRepository.findByPatientId(patientId);
     }
 }

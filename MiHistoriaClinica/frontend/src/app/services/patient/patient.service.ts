@@ -190,24 +190,16 @@ export class PatientService {
         return this.http.post('http://localhost:8080/turno/patient/create-turno', body, { headers: headers, params: params });
     }
 
-    downloadMedicalHistory(token: string, includeMedicalFile: boolean, includeAnalysis: boolean, includeMedications: boolean, includeAppointments: boolean, estadoConsulta: string = '', especialidadMedico: string = ''): Observable<HttpResponse<Blob>> {
+    downloadMedicalHistory(token: string, includeMedicalFile: boolean, includeAnalysis: boolean, includeMedications: boolean, includeAppointments: boolean): Observable<HttpResponse<Blob>> {
         const headers = new HttpHeaders({
             'Authorization': 'Bearer ' + token
         });
 
-        let params = new HttpParams()
+        const params = new HttpParams()
             .set('includeMedicalFile', includeMedicalFile.toString())
             .set('includeAnalysis', includeAnalysis.toString())
             .set('includeMedications', includeMedications.toString())
             .set('includeAppointments', includeAppointments.toString());
-        
-        if (estadoConsulta) {
-            params = params.set('estadoConsulta', estadoConsulta);
-        }
-        
-        if (especialidadMedico) {
-            params = params.set('especialidadMedico', especialidadMedico);
-        }
 
         return this.http.get('http://localhost:8080/medical-history/download-pdf', { headers: headers, params: params, observe: 'response', responseType: 'blob' });
     }

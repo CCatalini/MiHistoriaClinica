@@ -28,7 +28,8 @@ export class AddMedicineComponent implements OnInit {
 
     constructor(private userService: MedicService,
                 private router: Router,
-                private httpClient: HttpClient) {}
+                private httpClient: HttpClient,
+                private cdr: ChangeDetectorRef) {}
 
     ngOnInit(): void {
         // Verifico usuario
@@ -130,6 +131,8 @@ export class AddMedicineComponent implements OnInit {
 
     getPatientInfo(): void {
         const patientLinkCode = localStorage.getItem('patientLinkCode');
+        console.log('patientLinkCode:', patientLinkCode); // DEBUG
+        
         if (!patientLinkCode) {
             console.error('No hay paciente vinculado');
             return;
@@ -144,7 +147,9 @@ export class AddMedicineComponent implements OnInit {
 
         this.httpClient.get<any>('http://localhost:8080/medic/get-patient-info', { headers }).subscribe(
             (response: any) => {
+                console.log('Patient info loaded:', response);
                 this.patient = response;
+                this.cdr.detectChanges(); // Forzar actualización de la vista
             },
             (error: any) => {
                 console.error('Error fetching patient info:', error);
