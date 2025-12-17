@@ -1,96 +1,88 @@
-# MiHistoriaClinica
+# Mi Historia Clinica
 
-## Proyecto para Laboratorio 1 - Universidad Austral
+**Mi Historia Clinica** es una aplicación web para la gestión de historias clínicas digitales, desarrollada como proyecto de la materia **Laboratorio 1** en la **Universidad Austral**.
 
-### **Resumen de URLs**
+La plataforma permite a pacientes y médicos gestionar de manera centralizada información médica: historias clínicas, turnos, medicamentos, estudios y consultas médicas. Incluye funcionalidades de notificaciones por email, calendarios de turnos y descarga de documentación médica.
 
-* **Backend:** [http://localhost:8080](http://localhost:8080)
-* **Frontend:** [http://localhost:4200](http://localhost:4200)
+### Stack Tecnológico
+- **Backend:** Java + Spring Boot
+- **Frontend:** Angular
+- **Base de datos:** MySQL
+
 ---
 
+## URLs de Desarrollo
 
-### Casos de Uso CURSADA:
-                                                                        BACK              FRONT                                                        
+| Servicio | URL |
+|----------|-----|
+| Backend | http://localhost:8080 |
+| Frontend | http://localhost:4200 |
 
-  * Login - Logout						                     	        OK	              OK
-  * AMB medicamentos desde el medico
-        --> createPatientMedicine 			                            OK	              OK
-        --> getPatientMedicine				                            OK                OK
-        --> updatePatientMedicine			                            OK                OK
-        --> deletePatientMedicine                                       OK                OK
-	
-  * ABM estudios--> AnalysisModel
-      --> createPatientAnalysis (medic)                                 OK                OK
-      --> getPatientAnalysis    (medic)                                 OK                OK       
-      --> getAnalysis           (patient)                               OK                OK
-      --> updateAnalysisStatus  (patient)                               OK                OK
-      --> deletePatientAnalysis (medic)                                 OK                OK
+---
 
-  * Altas historias clinicas ---> createPatientMedicalHistory 	        OK 	              OK
+## Casos de Uso
 
-  * Agregar paciente --> 	LinkPatient 				                OK 	              OK
+### Autenticación
+1. Login y Logout de usuarios
 
-  * Ver lista de pacientes desde un medico --> getPatients 		        OK  	          OK
-  * Ver lista de medicos desde un paciente --> getMedics		        OK	              OK
+### Gestión de Medicamentos (desde el médico)
+2. Crear medicamento para paciente
+3. Ver medicamentos del paciente
+4. Modificar medicamento
+5. Eliminar medicamento
 
-  * Ver historia clinica como medico                                    OK                OK
-  * Modificar historia clinica como medico                              OK                OK
-  * Alta  de consulta 						                            OK	              OK
-  * Ver Historial de consulta        (como médico y como paciente)      OK                OK 
+### Gestión de Estudios/Análisis
+6. Crear estudio para paciente (médico)
+7. Ver estudios del paciente (médico)
+8. Ver estudios propios (paciente)
+9. Actualizar estado del estudio (paciente)
+10. Eliminar estudio (médico)
 
-  * Ver lista de medicamentos desde el paciente 			            OK	              OK
-  * Ver estudios como paciente                                          OK                OK
+### Historias Clínicas
+11. Alta de historia clínica
+12. Ver historia clínica como médico
+13. Modificar historia clínica como médico
 
-  * Cambiar estado medicamentos desde el paciente 			            OK	              OK 
-  * Cambiar estado de estudios como paciente                            OK                OK 
-  * Cambiar estado medicamento desde el paciente 			            OK	              OK 
-  * Cambiar estado de estudios como paciente                            OK                OK
-    --> si esta pendiente o realizado                                                       
+### Relación Médico-Paciente
+14. Agregar/vincular paciente
+15. Ver lista de pacientes (desde médico)
+16. Ver lista de médicos (desde paciente)
 
-  * Filtrar listas por estado                                                             
-  --> Medicamentos como paciente                                        OK                OK
-  --> Medicamentos como medico                                          OK                OK
-  --> Analysis como paciente                                            OK                OK
-  --> Análisis como médico                                              OK                OK
+### Consultas Médicas
+17. Alta de consulta médica
+18. Ver historial de consultas (médico y paciente)
+19. Iniciar consulta desde turnos acordados
+20. Gestión de estados de consulta (pendiente, en curso, finalizada)
 
-  * Agendar turnos propios                                                                
-  --> createTurno                                                       OK                  OK
-  * 
-  * Listar turnos propios                                               OK                  OK
+### Visualización y Estados (Paciente)
+21. Ver lista de medicamentos
+22. Ver estudios
+23. Cambiar estado de medicamentos
+24. Cambiar estado de estudios (pendiente/realizado)
 
-    --> que el paciente pueda añadir su propio turno, viendo SU lista de medicos y teniendo la opcion de cargar un medico nuevo
-    --> el método que usemos para cargar un nuevo médico debería verificar que no esté ya cargado
-    --> que para el médico nuevo se muestre toda la lista de medicos ya registrados
-    --> CAMBIAR ESPECIALIDADES DE MEDICOS para que desde el front se elija la especialidad desde una lista para poder filtrar
+### Filtros
+25. Filtrar medicamentos por estado (paciente y médico)
+26. Filtrar análisis por estado (paciente y médico)
 
+### Turnos
+27. Agendar turnos propios
+28. Listar turnos propios
+29. Filtrar turnos por rango de fechas
+30. Filtrar turnos por especialidad
+31. Filtrar turnos por médico
+32. Filtrar turnos por centro médico
 
+### Descargas
+33. Descargar historia clínica general
+34. Descargar historial de consultas médicas filtradas
 
-### Casos de Uso FINAL:
+### Calendarios y Agendas
+35. Asignar horarios disponibles de atención (médico)
+36. Ver turnos reservados y disponibles (médico)
+37. Ver calendario con turnos disponibles al programar (paciente)
 
-                                                                        BACK              FRONT
-  * Agregar nuevos filtros para sacar turnos
-  OBS: los filtros podemos hacerlos desde el front directamente
-  --> Por rangos de fechas                                               --                OK
-  --> Por especialidad                                                   --                OK
-  --> Por médico                                                         --                OK
-  --> Por centro médico                                                  --                OK
-
-  * Descargar 
-  --> Descargar historia general                                         OK                OK         
-  --> Descargar historial de consultas médicas filtradas                 OK                OK
-
-  * Iniciar consulta desde turnos acordados                              OK                OK
-  --> Agregar estado a las consultas médicas (default=pendiente)         OK                OK
-
-  * Calendarios
-  Agenda de médicos 
-  --> Asignar horarios disponibles de atención                           OK                OK
-  --> Ver turnos reservados y disponibles                                OK                OK
-  Agenda de pacientes
-  --> Ver calendario con turnos disponibles a la hora de programar uno   OK                OK
-
-    * Mails
-    --> Confirmar y validar cuenta al registrarse                          OK                OK
-    --> Mail de confirmación al agendar turno o estudio                    OK                OK
-    --> Mail de recordatorio día anterior al turno o estudio               OK                OK 
-    --> Mail de resumen post consulta médica                               OK                OK
+### Notificaciones por Email
+38. Confirmar y validar cuenta al registrarse
+39. Email de confirmación al agendar turno o estudio
+40. Email de recordatorio día anterior al turno o estudio
+41. Email de resumen post consulta médica
